@@ -117,9 +117,13 @@ class SimpleAuth {
      */
     static logout() {
         const keys = [
-            'auth_token', 'bge_auth_token', 'authToken', 'token', 'student_auth_token', 'teachers_auth_token', 'parent_auth_token',
-            'auth_user', 'bge_auth_user', 'userData', 'currentUser', 'current_student', 'current_parent', 'bge_auth_session',
-            'secure_admin_session', 'auth_expires', 'admin_token'
+            'bge_auth_token', 'authToken', 'auth_token', 'token', 'admin_token',
+            'student_auth_token', 'teachers_auth_token', 'parent_auth_token',
+            'bge_refresh_token', 'refreshToken',
+            'bge_auth_user', 'bge_user_data', 'userData', 'auth_user', 'currentUser',
+            'current_student', 'current_parent', 'current_teacher',
+            'bge_auth_session', 'secure_admin_session', 'auth_expires', 'bge_auth_expiry',
+            'redirect_after_login'
         ];
 
         keys.forEach(k => {
@@ -135,7 +139,10 @@ class SimpleAuth {
             });
         } catch (e) {}
 
-        window.location.href = '/login.html';
+        window.dispatchEvent(new CustomEvent('bge-user-logged-out'));
+        window.dispatchEvent(new CustomEvent('auth:logout'));
+
+        window.location.href = 'index.html';
     }
 
     /**

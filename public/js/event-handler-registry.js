@@ -76,12 +76,34 @@
       }
     },
     'logout-admin-panel': function (event) {
+      if (event && event.preventDefault) event.preventDefault();
       if (typeof window.logoutAdminPanel === 'function') {
         window.logoutAdminPanel();
-      } else if (typeof logoutAdminPanel === 'function') {
-        logoutAdminPanel();
+      } else if (typeof window.logoutAdmin === 'function') {
+        window.logoutAdmin();
+      } else if (window.unifiedLogin && typeof window.unifiedLogin.logout === 'function') {
+        window.unifiedLogin.logout();
+      } else if (window.unifiedAuthManager && typeof window.unifiedAuthManager.logout === 'function') {
+        window.unifiedAuthManager.logout();
+      } else if (window.SimpleAuth && typeof window.SimpleAuth.logout === 'function') {
+        window.SimpleAuth.logout();
       } else {
-        console.error('[EVENT-HANDLER] logoutAdminPanel no está disponible');
+        const ALL_AUTH_STORAGE_KEYS = [
+          'bge_auth_token', 'authToken', 'auth_token', 'token', 'admin_token',
+          'student_auth_token', 'teachers_auth_token', 'parent_auth_token',
+          'bge_refresh_token', 'refreshToken',
+          'bge_auth_user', 'bge_user_data', 'userData', 'auth_user', 'currentUser',
+          'current_student', 'current_parent', 'current_teacher',
+          'bge_auth_session', 'secure_admin_session', 'auth_expires', 'bge_auth_expiry',
+          'redirect_after_login'
+        ];
+        ALL_AUTH_STORAGE_KEYS.forEach(k => {
+          try {
+            localStorage.removeItem(k);
+            sessionStorage.removeItem(k);
+          } catch(e) {}
+        });
+        window.location.href = 'index.html';
       }
     },
 

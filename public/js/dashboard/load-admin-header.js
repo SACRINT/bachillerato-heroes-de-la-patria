@@ -13,13 +13,24 @@
         const headerHTML = await response.text();
         document.getElementById('main-header').innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(headerHTML) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(headerHTML) : headerHTML));
 
-        // INICIALIZAR DROPDOWNS DE BOOTSTRAP DINÁMICAMENTE
-        var dropdownElementList = [].slice.call(document.querySelectorAll('[data-bs-toggle="dropdown"]'));
-        var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
-            return new bootstrap.Dropdown(dropdownToggleEl);
-        });
-
-        // ELIMINADO: El fix de preventDefault() rompía los enlaces de los submenús.
+        // Ejecutar scripts del header
+        const scripts = document.getElementById('main-header').querySelectorAll('script');
+        for (const script of scripts) {
+            if (script.src) {
+                await new Promise((resolve) => {
+                    const newScript = document.createElement('script');
+                    newScript.src = script.src;
+                    newScript.async = false;
+                    newScript.onload = resolve;
+                    newScript.onerror = resolve;
+                    document.body.appendChild(newScript);
+                });
+            } else {
+                const newScript = document.createElement('script');
+                newScript.textContent = script.textContent;
+                document.body.appendChild(newScript);
+            }
+        }
 
 
         // Esperar a que bge-security-module esté disponible y luego actualizar el estado

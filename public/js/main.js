@@ -29,14 +29,20 @@
 
                     const scripts = headerElement.querySelectorAll('script');
                     for (const script of scripts) {
-                        const newScript = document.createElement('script');
                         if (script.src) {
-                            newScript.src = script.src;
-                            newScript.async = false;
+                            await new Promise((resolve) => {
+                                const newScript = document.createElement('script');
+                                newScript.src = script.src;
+                                newScript.async = false;
+                                newScript.onload = resolve;
+                                newScript.onerror = resolve;
+                                document.body.appendChild(newScript);
+                            });
                         } else {
+                            const newScript = document.createElement('script');
                             newScript.textContent = script.textContent;
+                            document.body.appendChild(newScript);
                         }
-                        document.body.appendChild(newScript);
                     }
                 }
             }
@@ -51,14 +57,20 @@
 
                     const scripts = footerElement.querySelectorAll('script');
                     for (const script of scripts) {
-                        const newScript = document.createElement('script');
                         if (script.src) {
-                            newScript.src = script.src;
-                            newScript.async = false;
+                            await new Promise((resolve) => {
+                                const newScript = document.createElement('script');
+                                newScript.src = script.src;
+                                newScript.async = false;
+                                newScript.onload = resolve;
+                                newScript.onerror = resolve;
+                                document.body.appendChild(newScript);
+                            });
                         } else {
+                            const newScript = document.createElement('script');
                             newScript.textContent = script.textContent;
+                            document.body.appendChild(newScript);
                         }
-                        document.body.appendChild(newScript);
                     }
                 }
             }
@@ -74,11 +86,14 @@
     // ========================================
 
     function restoreUserSession() {
-        let userSession = null;
         let userToken = sessionStorage.getItem('bge_auth_token') ||
                         localStorage.getItem('bge_auth_token') ||
                         sessionStorage.getItem('authToken') ||
                         localStorage.getItem('authToken');
+
+        if (!userToken || userToken === 'null' || userToken === 'undefined') {
+            return null;
+        }
 
         const userDataStr = sessionStorage.getItem('bge_auth_user') ||
                             localStorage.getItem('bge_auth_user') ||
@@ -87,15 +102,17 @@
                             sessionStorage.getItem('userData') ||
                             localStorage.getItem('userData');
 
-        if (userDataStr) {
-            try {
-                userSession = JSON.parse(userDataStr);
-            } catch (e) {}
+        if (!userDataStr || userDataStr === 'null' || userDataStr === 'undefined') {
+            return null;
         }
 
-        if (userSession && userToken) {
-            return { user: userSession, token: userToken };
-        }
+        try {
+            const userSession = JSON.parse(userDataStr);
+            if (userSession && (userSession.id || userSession.email || userSession.role || userSession.nombre)) {
+                return { user: userSession, token: userToken };
+            }
+        } catch (e) {}
+
         return null;
     }
 
@@ -104,10 +121,6 @@
     // ========================================
 
     function updateUserUIInHeader(user, isAuthenticated) {
-        if (!user || !isAuthenticated) {
-            return;
-        }
-
         const updateUI = () => {
             const userMenuName = document.getElementById('userMenuName');
             const userMenuRole = document.getElementById('userMenuRole');
@@ -116,6 +129,17 @@
             const adminMenuItems = document.getElementById('adminMenuItems');
             const teacherMenuItems = document.getElementById('teacherMenuItems');
             const studentMenuItems = document.getElementById('studentMenuItems');
+            const adminSection = document.getElementById('adminOnlySection');
+
+            if (!user || !isAuthenticated) {
+                if (loginButtons) loginButtons.classList.remove('d-none');
+                if (userMenu) userMenu.classList.add('d-none');
+                if (adminMenuItems) adminMenuItems.classList.add('d-none');
+                if (teacherMenuItems) teacherMenuItems.classList.add('d-none');
+                if (studentMenuItems) studentMenuItems.classList.add('d-none');
+                if (adminSection) adminSection.classList.add('d-none');
+                return;
+            }
 
             if (userMenuName) {
                 userMenuName.textContent = user.nombre || user.email?.split('@')[0] || 'Usuario';
@@ -140,7 +164,6 @@
                 studentMenuItems.classList.toggle('d-none', !['estudiante', 'student'].includes(role));
             }
 
-            const adminSection = document.getElementById('adminOnlySection');
             if (adminSection) {
                 adminSection.classList.toggle('d-none', !['admin', 'administrator', 'directivo'].includes(role));
             }

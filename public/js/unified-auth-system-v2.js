@@ -659,21 +659,43 @@ class UnifiedAuthSystem {
         this.state.isAuthenticated = false;
 
         // Limpiar almacenamiento
-        this.managers.session.clearSession();
+        if (this.managers && this.managers.session) {
+            this.managers.session.clearSession();
+        }
+
+        // Limpieza directa de respaldo
+        const ALL_AUTH_STORAGE_KEYS = [
+            'bge_auth_token', 'authToken', 'auth_token', 'token', 'admin_token',
+            'student_auth_token', 'teachers_auth_token', 'parent_auth_token',
+            'bge_refresh_token', 'refreshToken',
+            'bge_auth_user', 'bge_user_data', 'userData', 'auth_user', 'currentUser',
+            'current_student', 'current_parent', 'current_teacher',
+            'bge_auth_session', 'secure_admin_session', 'auth_expires', 'bge_auth_expiry',
+            'redirect_after_login'
+        ];
+        ALL_AUTH_STORAGE_KEYS.forEach(key => {
+            try {
+                localStorage.removeItem(key);
+                sessionStorage.removeItem(key);
+            } catch (e) {}
+        });
+
+        // Limpiar cookies
+        try {
+            document.cookie.split(";").forEach(function (c) {
+                document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+            });
+        } catch (e) {}
 
         // Actualizar UI
         this.updateAuthUI();
 
-        // Mostrar mensaje
-        this.showSuccess('Sesión cerrada correctamente');
-
-        // Redirigir si estamos en admin
-        if (window.location.pathname.includes('admin')) {
-            window.location.href = '/';
-        }
-
-        // Disparar evento
+        // Disparar eventos
         window.dispatchEvent(new CustomEvent('bge-user-logged-out'));
+        window.dispatchEvent(new CustomEvent('auth:logout'));
+
+        // Redirigir siempre a index.html
+        window.location.href = 'index.html';
     }
 
     /**
@@ -767,12 +789,21 @@ class UnifiedAuthSystem {
                 }
 
                 // Mostrar dashboard admin si es admin
+                const isAdmin = ['admin', 'administrator', 'directivo', 'administrativo'].includes(role);
                 const adminOnlySection = document.getElementById('adminOnlySection');
                 if (adminOnlySection) {
-                    adminOnlySection.classList.toggle('d-none', !['admin', 'administrator'].includes(role));
+                    adminOnlySection.classList.toggle('d-none', !isAdmin);
                 }
 
-                
+                const adminPanelLogoutOption = document.getElementById('adminPanelLogoutOption');
+                if (adminPanelLogoutOption) {
+                    adminPanelLogoutOption.classList.toggle('d-none', !isAdmin);
+                }
+
+                const adminPanelSessionStatus = document.getElementById('adminPanelSessionStatus');
+                if (adminPanelSessionStatus) {
+                    adminPanelSessionStatus.classList.toggle('d-none', !isAdmin);
+                }
             } else {
                 // Usuario no autenticado - mostrar botón login, ocultar menú usuario
                 if (loginButtons) loginButtons.classList.remove('d-none');
@@ -782,7 +813,11 @@ class UnifiedAuthSystem {
                 const adminOnlySection = document.getElementById('adminOnlySection');
                 if (adminOnlySection) adminOnlySection.classList.add('d-none');
 
-                
+                const adminPanelLogoutOption = document.getElementById('adminPanelLogoutOption');
+                if (adminPanelLogoutOption) adminPanelLogoutOption.classList.add('d-none');
+
+                const adminPanelSessionStatus = document.getElementById('adminPanelSessionStatus');
+                if (adminPanelSessionStatus) adminPanelSessionStatus.classList.add('d-none');
             }
         };
 
@@ -1305,9 +1340,17 @@ class ManualLoginManager {
         // 1. INTERCEPTAR TODOS LOS CLICS EN BOTONES DE LOGIN (Delegación Global)
         document.addEventListener('click', (e) => {
             // Botón para abrir modal (cualquiera con ID o clase correcta)
+            const logoutAdminBtn = e.target.closest('[data-action="logout-admin-panel"]') || e.target.closest('#logoutBtn');
+            if (logoutAdminBtn) {
+                e.preventDefault();
+                this.auth.logout();
+                return;
+            }
+
             const toggleBtn = e.target.closest('#authToggleBtn') ||
                 e.target.closest('#loginButton') ||
-                e.target.closest('.login-trigger');
+                e.target.closest('.login-trigger') ||
+                e.target.closest('[data-action="open-unified-login"]');
 
             if (toggleBtn) {
                 e.preventDefault();
@@ -1877,27 +1920,30 @@ class SessionManager {
      * LIMPIAR SESIÓN
      */
     clearSession() {
-        // Limpiar localStorage
-        Object.values(this.STORAGE_KEYS).forEach(key => {
-            localStorage.removeItem(key);
+        const ALL_AUTH_STORAGE_KEYS = [
+            'bge_auth_token', 'authToken', 'auth_token', 'token', 'admin_token',
+            'student_auth_token', 'teachers_auth_token', 'parent_auth_token',
+            'bge_refresh_token', 'refreshToken',
+            'bge_auth_user', 'bge_user_data', 'userData', 'auth_user', 'currentUser',
+            'current_student', 'current_parent', 'current_teacher',
+            'bge_auth_session', 'secure_admin_session', 'auth_expires', 'bge_auth_expiry',
+            'redirect_after_login'
+        ];
+
+        ALL_AUTH_STORAGE_KEYS.forEach(key => {
+            try {
+                localStorage.removeItem(key);
+                sessionStorage.removeItem(key);
+            } catch (e) {}
         });
 
-        // ✅ FIX (18 Ene 2026): Limpiar keys legacy también
-        localStorage.removeItem('token');
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('bge_auth_session');
+        try {
+            document.cookie.split(";").forEach(function (c) {
+                document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+            });
+        } catch (e) {}
 
-        // Limpiar sessionStorage
-        Object.values(this.STORAGE_KEYS).forEach(key => {
-            sessionStorage.removeItem(key);
-        });
-
-        // ✅ FIX (18 Ene 2026): Limpiar keys legacy en sessionStorage
-        sessionStorage.removeItem('token');
-        sessionStorage.removeItem('authToken');
-        sessionStorage.removeItem('bge_auth_session');
-
-        debugLog.log('APP', '✅ Sesión limpiada');
+        debugLog.log('APP', '✅ Sesión limpiada completamente');
     }
 }
 
@@ -2191,6 +2237,36 @@ if (!window.unifiedLogin) {
 if (!window.bgeAuth) {
     window.bgeAuth = window.unifiedLogin;
 }
+
+// Exponer funciones globales de logout para compatibilidad
+window.logoutAdminPanel = function() {
+    if (window.unifiedLogin && typeof window.unifiedLogin.logout === 'function') {
+        window.unifiedLogin.logout();
+    } else {
+        const ALL_AUTH_STORAGE_KEYS = [
+            'bge_auth_token', 'authToken', 'auth_token', 'token', 'admin_token',
+            'student_auth_token', 'teachers_auth_token', 'parent_auth_token',
+            'bge_refresh_token', 'refreshToken',
+            'bge_auth_user', 'bge_user_data', 'userData', 'auth_user', 'currentUser',
+            'current_student', 'current_parent', 'current_teacher',
+            'bge_auth_session', 'secure_admin_session', 'auth_expires', 'bge_auth_expiry',
+            'redirect_after_login'
+        ];
+        ALL_AUTH_STORAGE_KEYS.forEach(k => {
+            try {
+                localStorage.removeItem(k);
+                sessionStorage.removeItem(k);
+            } catch(e) {}
+        });
+        try {
+            document.cookie.split(";").forEach(function (c) {
+                document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+            });
+        } catch (e) {}
+        window.location.href = 'index.html';
+    }
+};
+window.logoutAdmin = window.logoutAdminPanel;
 
 // Exportar para usar en otros scripts
 window.UnifiedAuthSystem = UnifiedAuthSystem;

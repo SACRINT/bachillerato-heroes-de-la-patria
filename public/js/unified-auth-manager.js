@@ -561,8 +561,10 @@
             }
 
             window.dispatchEvent(new CustomEvent('auth:logout'));
+            window.dispatchEvent(new CustomEvent('bge-user-logged-out'));
 
-            void 0;
+            // Redirigir siempre a index.html
+            window.location.href = 'index.html';
         }
 
         /**
@@ -758,22 +760,28 @@
          * Limpiar sesión
          */
         clearSession() {
-            // Limpiar nuevas keys
-            localStorage.removeItem(this.sessionKey);
-            localStorage.removeItem(this.tokenKey);
-            localStorage.removeItem(this.refreshTokenKey);
-            sessionStorage.removeItem(this.sessionKey);
-            sessionStorage.removeItem(this.tokenKey);
-            sessionStorage.removeItem(this.refreshTokenKey);
+            const ALL_AUTH_STORAGE_KEYS = [
+                'bge_auth_token', 'authToken', 'auth_token', 'token', 'admin_token',
+                'student_auth_token', 'teachers_auth_token', 'parent_auth_token',
+                'bge_refresh_token', 'refreshToken',
+                'bge_auth_user', 'bge_user_data', 'userData', 'auth_user', 'currentUser',
+                'current_student', 'current_parent', 'current_teacher',
+                'bge_auth_session', 'secure_admin_session', 'auth_expires', 'bge_auth_expiry',
+                'redirect_after_login'
+            ];
 
-            // Limpiar keys antiguas para compatibilidad
-            localStorage.removeItem('token');
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('jwt');
-            localStorage.removeItem('secure_admin_session');
-            localStorage.removeItem('student_auth_token');
-            localStorage.removeItem('current_student');
-            sessionStorage.removeItem('token');
+            ALL_AUTH_STORAGE_KEYS.forEach(key => {
+                try {
+                    localStorage.removeItem(key);
+                    sessionStorage.removeItem(key);
+                } catch (e) {}
+            });
+
+            try {
+                document.cookie.split(";").forEach(function (c) {
+                    document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+                });
+            } catch (e) {}
         }
 
         /**

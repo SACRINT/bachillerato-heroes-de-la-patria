@@ -154,75 +154,75 @@ const mountRouteSafe = (routePrefix, routeModule) => {
             console.error(`[VERCEL-ROUTER] Handler no válido para ${routePrefix}`);
         }
     } catch (err) {
-        console.error(`[VERCEL-ROUTER] Error montando ${routePrefix}:`, err);
+        console.error(`[VERCEL-ROUTER] Error montando ${routePrefix}:`, err.stack || err);
     }
 };
 
 // 1. Admin y Dashboard
-try { mountRouteSafe('/api/admin', require('../backend/routes/admin.js')); } catch (e) { console.error('[ROUTER] admin:', e); }
-try { mountRouteSafe('/api/dashboard', require('../backend/routes/dashboard.js')); } catch (e) { console.error('[ROUTER] dashboard:', e); }
+try { mountRouteSafe('/api/admin', require('../backend/routes/admin.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/admin:', e.stack || e); }
+try { mountRouteSafe('/api/dashboard', require('../backend/routes/dashboard.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/dashboard:', e.stack || e); }
 
 // 2. Portales y Usuarios
-try { mountRouteSafe('/api/students', require('../backend/routes/students.js')); } catch (e) { console.error('[ROUTER] students:', e); }
-try { mountRouteSafe('/api/teachers', require('../backend/routes/teachers.js')); } catch (e) { console.error('[ROUTER] teachers:', e); }
-try { mountRouteSafe('/api/parents', require('../backend/routes/parents.js')); } catch (e) { console.error('[ROUTER] parents:', e); }
-try { mountRouteSafe('/api/students-auth', require('../backend/routes/students-auth.js')); } catch (e) { console.error('[ROUTER] students-auth:', e); }
-try { mountRouteSafe('/api/teachers-portal', require('../backend/routes/teachers-portal.js')); } catch (e) { console.error('[ROUTER] teachers-portal:', e.message); }
-try { mountRouteSafe('/api/teachers-portal-ext', require('../backend/routes/teachers-portal-extended.js')); } catch (e) { console.error('[ROUTER] teachers-portal-ext:', e.message); }
+try { mountRouteSafe('/api/students', require('../backend/routes/students.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/students:', e.stack || e); }
+try { mountRouteSafe('/api/teachers', require('../backend/routes/teachers.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/teachers:', e.stack || e); }
+try { mountRouteSafe('/api/parents', require('../backend/routes/parents.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/parents:', e.stack || e); }
+try { mountRouteSafe('/api/students-auth', require('../backend/routes/students-auth.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/students-auth:', e.stack || e); }
+try { mountRouteSafe('/api/teachers-portal', require('../backend/routes/teachers-portal.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/teachers-portal:', e.stack || e); }
+try { mountRouteSafe('/api/teachers-portal-ext', require('../backend/routes/teachers-portal-extended.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/teachers-portal-ext:', e.stack || e); }
 
 // 3. Calificaciones, Asistencia y Cursos
-try { mountRouteSafe('/api/grades', require('../backend/routes/grades.js')); } catch (e) { console.warn('[ROUTER] grades:', e.message); }
-try { mountRouteSafe('/api/grades-validation', require('../backend/routes/grades-validation.js')); } catch (e) { console.warn('[ROUTER] grades-validation:', e.message); }
-try { mountRouteSafe('/api/attendance', require('../backend/routes/attendance.js')); } catch (e) { console.warn('[ROUTER] attendance:', e.message); }
-try { mountRouteSafe('/api/courses', require('../backend/routes/courses.js')); } catch (e) { console.warn('[ROUTER] courses:', e.message); }
+try { mountRouteSafe('/api/grades', require('../backend/routes/grades.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/grades:', e.stack || e); }
+try { mountRouteSafe('/api/grades-validation', require('../backend/routes/grades-validation.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/grades-validation:', e.stack || e); }
+try { mountRouteSafe('/api/attendance', require('../backend/routes/attendance.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/attendance:', e.stack || e); }
+try { mountRouteSafe('/api/courses', require('../backend/routes/courses.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/courses:', e.stack || e); }
 
 // 4. Formularios Públicos e Institucionales
-try { mountRouteSafe('/api/bolsa-trabajo', require('../backend/routes/bolsa-trabajo.js')); } catch (e) { console.warn('[ROUTER] bolsa-trabajo:', e.message); }
-try { mountRouteSafe('/api/egresados', require('../backend/routes/egresados.js')); } catch (e) { console.warn('[ROUTER] egresados:', e.message); }
-try { mountRouteSafe('/api/contact', require('../backend/routes/contact.js')); } catch (e) { console.warn('[ROUTER] contact:', e.message); }
-try { mountRouteSafe('/api/citas', require('../backend/routes/citas.js')); } catch (e) { console.warn('[ROUTER] citas:', e.message); }
-try { mountRouteSafe('/api/citas-improved', require('../backend/routes/citas-improved.js')); } catch (e) { console.warn('[ROUTER] citas-improved:', e.message); }
-try { mountRouteSafe('/api/inscriptions', require('../backend/routes/inscriptions.js')); } catch (e) { console.warn('[ROUTER] inscriptions:', e.message); }
-try { mountRouteSafe('/api/enrollment', require('../backend/routes/enrollment.js')); } catch (e) { console.warn('[ROUTER] enrollment:', e.message); }
+try { mountRouteSafe('/api/bolsa-trabajo', require('../backend/routes/bolsa-trabajo.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/bolsa-trabajo:', e.stack || e); }
+try { mountRouteSafe('/api/egresados', require('../backend/routes/egresados.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/egresados:', e.stack || e); }
+try { mountRouteSafe('/api/contact', require('../backend/routes/contact.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/contact:', e.stack || e); }
+try { mountRouteSafe('/api/citas', require('../backend/routes/citas.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/citas:', e.stack || e); }
+try { mountRouteSafe('/api/citas-improved', require('../backend/routes/citas-improved.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/citas-improved:', e.stack || e); }
+try { mountRouteSafe('/api/inscriptions', require('../backend/routes/inscriptions.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/inscriptions:', e.stack || e); }
+try { mountRouteSafe('/api/enrollment', require('../backend/routes/enrollment.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/enrollment:', e.stack || e); }
 
 // 5. Comunicación, Finanzas, Suscriptores, Solicitudes y Avisos
-try { mountRouteSafe('/api/avisos', require('../backend/routes/avisos.js')); } catch (e) { console.warn('[ROUTER] avisos:', e.message); }
-try { mountRouteSafe('/api/noticias', require('../backend/routes/noticias.js')); } catch (e) { console.warn('[ROUTER] noticias:', e.message); }
-try { mountRouteSafe('/api/eventos', require('../backend/routes/eventos.js')); } catch (e) { console.warn('[ROUTER] eventos:', e.message); }
-try { mountRouteSafe('/api/comunicados', require('../backend/routes/comunicados.js')); } catch (e) { console.warn('[ROUTER] comunicados:', e.message); }
-try { mountRouteSafe('/api/finances', require('../backend/routes/finances.js')); } catch (e) { console.warn('[ROUTER] finances:', e.message); }
-try { mountRouteSafe('/api/suscriptores', require('../backend/routes/suscriptores.js')); } catch (e) { console.warn('[ROUTER] suscriptores:', e.message); }
-try { mountRouteSafe('/api/approvals', require('../backend/routes/approvals.js')); } catch (e) { console.warn('[ROUTER] approvals:', e.message); }
-try { mountRouteSafe('/api/solicitudes', require('../backend/routes/solicitudes.js')); } catch (e) { console.warn('[ROUTER] solicitudes:', e.message); }
-try { mountRouteSafe('/api/notifications', require('../backend/routes/notifications.js')); } catch (e) { console.warn('[ROUTER] notifications:', e.message); }
-try { mountRouteSafe('/api/settings', require('../backend/routes/settings.js')); } catch (e) { console.warn('[ROUTER] settings:', e.message); }
-try { mountRouteSafe('/api/reports', require('../backend/routes/reports.js')); } catch (e) { console.warn('[ROUTER] reports:', e.message); }
-try { mountRouteSafe('/api/analytics', require('../backend/routes/analytics.js')); } catch (e) { console.warn('[ROUTER] analytics:', e.message); }
-try { mountRouteSafe('/api/pendientes-aprobacion', require('../backend/routes/pendientes-aprobacion.js')); } catch (e) { console.warn('[ROUTER] pendientes-aprobacion:', e.message); }
-try { mountRouteSafe('/api/polls', require('../backend/routes/polls.js')); } catch (e) { console.warn('[ROUTER] polls:', e.message); }
-try { mountRouteSafe('/api/quejas', require('../backend/routes/quejas.js')); } catch (e) { console.warn('[ROUTER] quejas:', e.message); }
-try { mountRouteSafe('/api/knowledge', require('../backend/routes/knowledge-graph.js')); } catch (e) { console.warn('[ROUTER] knowledge:', e.message); }
-try { mountRouteSafe('/api/mentorship', require('../backend/routes/mentorship.js')); } catch (e) { console.warn('[ROUTER] mentorship:', e.message); }
-try { mountRouteSafe('/api/support-tickets', require('../backend/routes/support-tickets.js')); } catch (e) { console.warn('[ROUTER] support-tickets:', e.message); }
-try { mountRouteSafe('/api/messaging', require('../backend/routes/messaging.js')); } catch (e) { console.warn('[ROUTER] messaging:', e.message); }
-try { mountRouteSafe('/api/digital-library', require('../backend/routes/digital-library.js')); } catch (e) { console.warn('[ROUTER] digital-library:', e.message); }
-try { mountRouteSafe('/api/groups', require('../backend/routes/study-plans.js')); } catch (e) { console.warn('[ROUTER] groups:', e.message); }
-try { mountRouteSafe('/api/study-groups', require('../backend/routes/study-groups.js')); } catch (e) { console.warn('[ROUTER] study-groups:', e.message); }
-try { mountRouteSafe('/api/competitions', require('../backend/routes/team-competitions.js')); } catch (e) { console.warn('[ROUTER] competitions:', e.message); }
-try { mountRouteSafe('/api/community', require('../backend/routes/community-forums.js')); } catch (e) { console.warn('[ROUTER] community:', e.message); }
+try { mountRouteSafe('/api/avisos', require('../backend/routes/avisos.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/avisos:', e.stack || e); }
+try { mountRouteSafe('/api/noticias', require('../backend/routes/noticias.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/noticias:', e.stack || e); }
+try { mountRouteSafe('/api/eventos', require('../backend/routes/eventos.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/eventos:', e.stack || e); }
+try { mountRouteSafe('/api/comunicados', require('../backend/routes/comunicados.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/comunicados:', e.stack || e); }
+try { mountRouteSafe('/api/finances', require('../backend/routes/finances.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/finances:', e.stack || e); }
+try { mountRouteSafe('/api/suscriptores', require('../backend/routes/suscriptores.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/suscriptores:', e.stack || e); }
+try { mountRouteSafe('/api/approvals', require('../backend/routes/approvals.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/approvals:', e.stack || e); }
+try { mountRouteSafe('/api/solicitudes', require('../backend/routes/solicitudes.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/solicitudes:', e.stack || e); }
+try { mountRouteSafe('/api/notifications', require('../backend/routes/notifications.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/notifications:', e.stack || e); }
+try { mountRouteSafe('/api/settings', require('../backend/routes/settings.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/settings:', e.stack || e); }
+try { mountRouteSafe('/api/reports', require('../backend/routes/reports.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/reports:', e.stack || e); }
+try { mountRouteSafe('/api/analytics', require('../backend/routes/analytics.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/analytics:', e.stack || e); }
+try { mountRouteSafe('/api/pendientes-aprobacion', require('../backend/routes/pendientes-aprobacion.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/pendientes-aprobacion:', e.stack || e); }
+try { mountRouteSafe('/api/polls', require('../backend/routes/polls.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/polls:', e.stack || e); }
+try { mountRouteSafe('/api/quejas', require('../backend/routes/quejas.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/quejas:', e.stack || e); }
+try { mountRouteSafe('/api/knowledge', require('../backend/routes/knowledge-graph.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/knowledge:', e.stack || e); }
+try { mountRouteSafe('/api/mentorship', require('../backend/routes/mentorship.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/mentorship:', e.stack || e); }
+try { mountRouteSafe('/api/support-tickets', require('../backend/routes/support-tickets.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/support-tickets:', e.stack || e); }
+try { mountRouteSafe('/api/messaging', require('../backend/routes/messaging.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/messaging:', e.stack || e); }
+try { mountRouteSafe('/api/digital-library', require('../backend/routes/digital-library.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/digital-library:', e.stack || e); }
+try { mountRouteSafe('/api/groups', require('../backend/routes/study-plans.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/groups:', e.stack || e); }
+try { mountRouteSafe('/api/study-groups', require('../backend/routes/study-groups.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/study-groups:', e.stack || e); }
+try { mountRouteSafe('/api/competitions', require('../backend/routes/team-competitions.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/competitions:', e.stack || e); }
+try { mountRouteSafe('/api/community', require('../backend/routes/community-forums.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/community:', e.stack || e); }
 
 // 6. Gamificación, Retos, Juegos y Economía (Paridad Vercel ↔ Local)
-try { mountRouteSafe('/api/store', require('../backend/routes/store.js')); } catch (e) { console.warn('[ROUTER] store:', e.message); }
-try { mountRouteSafe('/api/challenges', require('../backend/routes/challenges.js')); } catch (e) { console.warn('[ROUTER] challenges:', e.message); }
-try { mountRouteSafe('/api/wallet', require('../backend/routes/wallet.js')); } catch (e) { console.warn('[ROUTER] wallet:', e.message); }
-try { mountRouteSafe('/api/iacoins', require('../backend/routes/iacoins.js')); } catch (e) { console.warn('[ROUTER] iacoins:', e.message); }
-try { mountRouteSafe('/api/gamification', require('../backend/routes/gamification.js')); } catch (e) { console.warn('[ROUTER] gamification:', e.message); }
-try { mountRouteSafe('/api/gamification-ext', require('../backend/routes/gamification-extended.js')); } catch (e) { console.warn('[ROUTER] gamification-ext:', e.message); }
-try { mountRouteSafe('/api/games/trivia', require('../backend/routes/trivia-game.js')); } catch (e) { console.warn('[ROUTER] games/trivia:', e.message); }
-try { mountRouteSafe('/api/trivia', require('../backend/routes/trivia-game.js')); } catch (e) { console.warn('[ROUTER] trivia:', e.message); }
-try { mountRouteSafe('/api/games/concepts', require('../backend/routes/concept-builder.js')); } catch (e) { console.warn('[ROUTER] games/concepts:', e.message); }
-try { mountRouteSafe('/api/ar', require('../backend/routes/ar-experiences.js')); } catch (e) { console.warn('[ROUTER] ar:', e.message); }
-try { mountRouteSafe('/api/labs', require('../backend/routes/virtual-labs.js')); } catch (e) { console.warn('[ROUTER] labs:', e.message); }
+try { mountRouteSafe('/api/store', require('../backend/routes/store.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/store:', e.stack || e); }
+try { mountRouteSafe('/api/challenges', require('../backend/routes/challenges.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/challenges:', e.stack || e); }
+try { mountRouteSafe('/api/wallet', require('../backend/routes/wallet.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/wallet:', e.stack || e); }
+try { mountRouteSafe('/api/iacoins', require('../backend/routes/iacoins.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/iacoins:', e.stack || e); }
+try { mountRouteSafe('/api/gamification', require('../backend/routes/gamification.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/gamification:', e.stack || e); }
+try { mountRouteSafe('/api/gamification-ext', require('../backend/routes/gamification-extended.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/gamification-ext:', e.stack || e); }
+try { mountRouteSafe('/api/games/trivia', require('../backend/routes/trivia-game.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/games/trivia:', e.stack || e); }
+try { mountRouteSafe('/api/trivia', require('../backend/routes/trivia-game.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/trivia:', e.stack || e); }
+try { mountRouteSafe('/api/games/concepts', require('../backend/routes/concept-builder.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/games/concepts:', e.stack || e); }
+try { mountRouteSafe('/api/ar', require('../backend/routes/ar-experiences.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/ar:', e.stack || e); }
+try { mountRouteSafe('/api/labs', require('../backend/routes/virtual-labs.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/labs:', e.stack || e); }
 
 // Logout universal
 app.post('/api/auth/logout', (req, res) => {
