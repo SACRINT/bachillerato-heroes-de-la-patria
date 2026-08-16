@@ -31,7 +31,7 @@ class PWAModernFeatures {
     }
 
     init() {
-        //console.log('🚀 Inicializando PWA Modern Features...');
+        //void 0;
         
         this.setupEventListeners();
         this.checkFeatureSupport();
@@ -41,8 +41,8 @@ class PWAModernFeatures {
         this.setupWebShareButtons();
         this.setupClipboardFeatures();
         
-        //console.log('✅ PWA Modern Features inicializado');
-        //console.log('🔧 Features soportadas:', this.features);
+        //void 0;
+        //void 0;
     }
 
     // === FEATURE DETECTION ===
@@ -52,7 +52,7 @@ class PWAModernFeatures {
         
         // Log available features
         Object.entries(this.features).forEach(([feature, supported]) => {
-            //console.log(`${supported ? '✅' : '❌'} ${feature}: ${supported}`);
+            //void 0;
         });
     }
 
@@ -78,7 +78,7 @@ class PWAModernFeatures {
             this.isInstalled = true;
             this.hideInstallBanner();
             this.trackInstallation();
-            //console.log('🎉 PWA instalada exitosamente');
+            //void 0;
         });
 
         // Network status
@@ -114,11 +114,11 @@ class PWAModernFeatures {
                 url: data.url || window.location.href
             });
             
-            //console.log('✅ Contenido compartido exitosamente');
+            //void 0;
             this.trackShare('native', data);
         } catch (error) {
             if (error.name !== 'AbortError') {
-                console.warn('Error sharing:', error);
+                void 0;
                 this.fallbackShare(data);
             }
         }
@@ -226,7 +226,7 @@ class PWAModernFeatures {
     // === INSTALL FEATURES ===
     async promptInstall() {
         if (!this.installPrompt) {
-            console.warn('Install prompt not available');
+            void 0;
             return false;
         }
 
@@ -234,7 +234,7 @@ class PWAModernFeatures {
             this.installPrompt.prompt();
             const result = await this.installPrompt.userChoice;
             
-            //console.log('Install prompt result:', result.outcome);
+            //void 0;
             this.trackInstallPrompt(result.outcome);
             
             this.installPrompt = null;
@@ -307,7 +307,7 @@ class PWAModernFeatures {
     }
 
     handleOffline() {
-        //console.log('📵 Modo offline activado');
+        //void 0;
         
         document.body.classList.add('pwa-offline');
         document.querySelector('.pwa-offline-indicator')?.classList.add('show');
@@ -320,7 +320,7 @@ class PWAModernFeatures {
     }
 
     handleOnline() {
-        //console.log('🌐 Conexión restaurada');
+        //void 0;
         
         document.body.classList.remove('pwa-offline');
         document.querySelector('.pwa-offline-indicator')?.classList.remove('show');
@@ -380,11 +380,11 @@ class PWAModernFeatures {
         this.offlineQueue.push(queueItem);
         this.saveOfflineQueue();
         
-        //console.log('📋 Request queued for offline sync:', queueItem.id);
+        //void 0;
     }
 
     async processOfflineQueue() {
-        //console.log(`📤 Processing ${this.offlineQueue.length} queued requests...`);
+        //void 0;
         
         const processed = [];
         
@@ -392,12 +392,12 @@ class PWAModernFeatures {
             try {
                 await fetch(...item.args);
                 processed.push(item);
-                //console.log('✅ Processed queued request:', item.id);
+                //void 0;
             } catch (error) {
                 item.retries++;
                 if (item.retries >= 3) {
                     processed.push(item); // Remove after 3 failed attempts
-                    console.warn('❌ Failed to process request after 3 attempts:', item.id);
+                    void 0;
                 }
             }
         }
@@ -410,7 +410,7 @@ class PWAModernFeatures {
     // === BACKGROUND SYNC ===
     setupBackgroundSync() {
         if (!this.features.backgroundSync) {
-            console.warn('Background Sync not supported');
+            void 0;
             return;
         }
 
@@ -422,7 +422,7 @@ class PWAModernFeatures {
 
     setupPeriodicSync() {
         if (!this.features.periodicBackgroundSync) {
-            console.warn('Periodic Background Sync not supported');
+            void 0;
             return;
         }
 
@@ -431,15 +431,15 @@ class PWAModernFeatures {
                 await registration.periodicSync.register('periodic-background-sync', {
                     minInterval: 24 * 60 * 60 * 1000, // 24 hours
                 });
-                //console.log('✅ Periodic Background Sync registered');
+                //void 0;
             } catch (error) {
-                console.warn('Error registering Periodic Background Sync:', error);
+                void 0;
             }
         });
     }
 
     async syncAppData() {
-        //console.log('🔄 Syncing data...');
+        //void 0;
         
         try {
             // Sync critical data
@@ -449,7 +449,7 @@ class PWAModernFeatures {
             this.syncData.lastSync = Date.now();
             localStorage.setItem('pwa-last-sync', this.syncData.lastSync.toString());
             
-            //console.log('✅ Data sync completed');
+            //void 0;
         } catch (error) {
             console.error('❌ Data sync failed:', error);
         }
@@ -469,7 +469,7 @@ class PWAModernFeatures {
     // === CLIPBOARD FEATURES ===
     setupClipboardFeatures() {
         if (!this.features.clipboard) {
-            console.warn('Clipboard API not supported');
+            void 0;
             return;
         }
 
@@ -485,10 +485,10 @@ class PWAModernFeatures {
                 this.showCopyFeedback();
             }
             
-            //console.log('✅ Text copied to clipboard');
+            //void 0;
             return true;
         } catch (error) {
-            console.warn('Error copying to clipboard:', error);
+            void 0;
             return this.fallbackCopy(text);
         }
     }
@@ -570,17 +570,17 @@ class PWAModernFeatures {
 
     // === ANALYTICS ===
     trackShare(method, data) {
-        //console.log('📊 Share tracked:', method, data);
+        //void 0;
         // Send to analytics service
     }
 
     trackInstallPrompt(outcome) {
-        //console.log('📊 Install prompt tracked:', outcome);
+        //void 0;
         // Send to analytics service
     }
 
     trackInstallation() {
-        //console.log('📊 Installation tracked');
+        //void 0;
         // Send to analytics service
     }
 
@@ -594,17 +594,17 @@ class PWAModernFeatures {
     // === UTILITY FUNCTIONS ===
     async syncUserPreferences() {
         // Placeholder for syncing user preferences
-        //console.log('🔄 Syncing user preferences...');
+        //void 0;
     }
 
     async syncCachedData() {
         // Placeholder for syncing cached data
-        //console.log('🔄 Syncing cached data...');
+        //void 0;
     }
 
     async syncAnalytics() {
         // Placeholder for syncing analytics
-        //console.log('🔄 Syncing analytics...');
+        //void 0;
     }
 
     // === STYLES ===

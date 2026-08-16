@@ -123,7 +123,7 @@ class DarkModeManager {
 
     setTheme(theme) {
         if (theme !== 'light' && theme !== 'dark') {
-            console.warn('Invalid theme:', theme);
+            void 0;
             return;
         }
         this.applyTheme(theme);

@@ -53,7 +53,7 @@ class PushNotificationManager {
     }
 
     async init() {
-        console.log('🚀 Inicializando Sistema de Notificaciones Push...');
+        void 0;
 
         try {
             this.checkSupport();
@@ -64,7 +64,7 @@ class PushNotificationManager {
             await this.bindEvents();
             await this.loadNotificationHistory();
 
-            console.log('✅ Sistema de Notificaciones Push inicializado correctamente');
+            void 0;
         } catch (error) {
             console.error('❌ Error inicializando Sistema de Notificaciones:', error);
             this.showError('Error al inicializar el sistema de notificaciones');
@@ -75,12 +75,12 @@ class PushNotificationManager {
         this.isSupported = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
 
         if (!this.isSupported) {
-            console.warn('⚠️ Push notifications no son soportadas en este navegador');
+            void 0;
             return false;
         }
 
         this.permissionStatus = Notification.permission;
-        console.log('✅ Push notifications soportadas, estado:', this.permissionStatus);
+        void 0;
         return true;
     }
 
@@ -106,15 +106,15 @@ class PushNotificationManager {
                 scope: '/'
             });
 
-            console.log('✅ Service Worker registrado:', this.swRegistration.scope);
+            void 0;
 
             // Verificar que el service worker esté activo
             if (this.swRegistration.installing) {
-                console.log('Service Worker instalándose...');
+                void 0;
             } else if (this.swRegistration.waiting) {
-                console.log('Service Worker instalado, esperando activación...');
+                void 0;
             } else if (this.swRegistration.active) {
-                console.log('Service Worker activo');
+                void 0;
             }
 
         } catch (error) {
@@ -130,10 +130,10 @@ class PushNotificationManager {
             this.subscription = await this.swRegistration.pushManager.getSubscription();
 
             if (this.subscription) {
-                console.log('✅ Suscripción existente encontrada');
+                void 0;
                 await this.syncSubscriptionWithServer();
             } else {
-                console.log('No hay suscripción existente');
+                void 0;
             }
         } catch (error) {
             console.error('Error verificando suscripción:', error);
@@ -517,7 +517,7 @@ class PushNotificationManager {
             });
 
             this.subscription = subscription;
-            console.log('✅ Suscripción creada:', subscription.endpoint);
+            void 0;
 
             // Enviar suscripción al servidor
             await this.syncSubscriptionWithServer();
@@ -547,7 +547,7 @@ class PushNotificationManager {
             });
 
             if (response.ok) {
-                console.log('✅ Suscripción sincronizada con el servidor');
+                void 0;
             } else {
                 console.error('Error sincronizando suscripción');
             }
@@ -995,7 +995,7 @@ class PushNotificationManager {
     }
 
     handleServiceWorkerMessage(data) {
-        console.log('Mensaje del Service Worker:', data);
+        void 0;
 
         if (data.type === 'notification-clicked') {
             // Manejar clic en notificación
@@ -1007,7 +1007,7 @@ class PushNotificationManager {
     }
 
     handleNotificationClick(notification) {
-        console.log('Notificación clickeada:', notification);
+        void 0;
 
         // Redirigir según el tipo de notificación
         switch (notification.type) {
@@ -1024,7 +1024,7 @@ class PushNotificationManager {
                 window.location.href = '/calendario.html';
                 break;
             default:
-                console.log('Tipo de notificación no manejado:', notification.type);
+                void 0;
         }
     }
 
@@ -1089,7 +1089,7 @@ class PushNotificationManager {
     }
 
     destroy() {
-        console.log('🧹 Limpiando Sistema de Notificaciones Push...');
+        void 0;
 
         if (this.subscription) {
             // Optionally unsubscribe

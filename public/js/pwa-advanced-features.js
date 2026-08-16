@@ -25,7 +25,7 @@ class PWAAdvancedFeatures {
     }
 
     async init() {
-        //console.log('🚀 Initializing PWA Advanced Features...');
+        //void 0;
         await this.detectCapabilities();
         await this.setupAdvancedFeatures();
         this.setupEventListeners();
@@ -53,7 +53,7 @@ class PWAAdvancedFeatures {
         // File System Access
         this.capabilities.fileSystem = 'showOpenFilePicker' in window;
         
-        //console.log('📱 Device capabilities detected:', this.capabilities);
+        //void 0;
     }
 
     async setupAdvancedFeatures() {
@@ -93,7 +93,7 @@ class PWAAdvancedFeatures {
 
         // App installed
         window.addEventListener('appinstalled', () => {
-            //console.log('📱 PWA installed successfully');
+            //void 0;
             this.hideInstallButton();
             this.trackInstallation();
         });
@@ -205,7 +205,7 @@ class PWAAdvancedFeatures {
     }
 
     async handleQRScan(qrData) {
-        //console.log('📱 QR Scanned:', qrData);
+        //void 0;
         
         // Vibrate if supported
         if (this.capabilities.vibration) {
@@ -269,7 +269,7 @@ class PWAAdvancedFeatures {
 
             return distance <= this.campusLocation.radius;
         } catch (error) {
-            console.warn('⚠️ Location verification failed:', error);
+            void 0;
             return null; // Allow if location can't be determined
         }
     }
@@ -278,7 +278,7 @@ class PWAAdvancedFeatures {
         if (Notification.permission === 'default') {
             const permission = await Notification.requestPermission();
             if (permission !== 'granted') {
-                //console.log('❌ Notification permission denied');
+                //void 0;
                 return;
             }
         }
@@ -295,7 +295,7 @@ class PWAAdvancedFeatures {
                 )
             });
 
-            //console.log('📱 Push subscription:', subscription);
+            //void 0;
             
             // Send subscription to server
             await this.sendSubscriptionToServer(subscription);
@@ -330,7 +330,7 @@ class PWAAdvancedFeatures {
             });
             
             if (response.ok) {
-                //console.log('✅ Push subscription saved to server');
+                //void 0;
             }
         } catch (error) {
             console.error('❌ Failed to save subscription:', error);
@@ -360,7 +360,7 @@ class PWAAdvancedFeatures {
     }
 
     handleDeviceShake() {
-        //console.log('📱 Device shake detected');
+        //void 0;
         
         // Show quick action menu
         this.showQuickActionMenu();
@@ -450,14 +450,14 @@ class PWAAdvancedFeatures {
         try {
             if (navigator.share) {
                 await navigator.share(shareData);
-                //console.log('✅ Content shared successfully');
+                //void 0;
             } else {
                 // Fallback to clipboard
                 await navigator.clipboard.writeText(`${shareData.title}\n${shareData.text}\n${shareData.url}`);
                 this.showAlert('📋 Contenido copiado al portapapeles');
             }
         } catch (error) {
-            //console.log('Share cancelled or failed:', error);
+            //void 0;
         }
     }
 
@@ -504,7 +504,7 @@ class PWAAdvancedFeatures {
             const result = await this.deferredPrompt.userChoice;
             
             if (result.outcome === 'accepted') {
-                //console.log('✅ PWA installed');
+                //void 0;
             }
             
             this.deferredPrompt = null;
@@ -542,11 +542,11 @@ class PWAAdvancedFeatures {
     handleVisibilityChange() {
         if (document.hidden) {
             // App went to background
-            //console.log('📱 App backgrounded');
+            //void 0;
             this.onAppBackground();
         } else {
             // App came to foreground
-            //console.log('📱 App foregrounded');
+            //void 0;
             this.onAppForeground();
         }
     }
@@ -626,7 +626,7 @@ class PWAAdvancedFeatures {
                 body: JSON.stringify({ event, data })
             });
         } catch (error) {
-            console.warn('Analytics failed:', error);
+            void 0;
         }
     }
 
@@ -801,7 +801,7 @@ class GeolocationService {
 
         this.watchId = navigator.geolocation.watchPosition(
             callback,
-            (error) => console.warn('Geolocation error:', error),
+            (error) => void 0,
             {
                 enableHighAccuracy: false,
                 timeout: 30000,

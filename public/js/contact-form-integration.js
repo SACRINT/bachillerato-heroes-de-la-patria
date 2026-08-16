@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const contactForm = document.querySelector('#contact-form, form[name="contact"], form.contact-form');
 
     if (!contactForm) {
-        console.warn('Contact form not found on this page');
+        void 0;
         return;
     }
 

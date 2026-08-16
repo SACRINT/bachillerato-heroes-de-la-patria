@@ -48,10 +48,10 @@ class BGEPushNotificationSystem {
     }
 
     async init() {
-        console.log('🔔 [BGE-NOTIFICATIONS] Inicializando sistema de notificaciones push');
+        void 0;
 
         if (!this.isSupported) {
-            console.warn('⚠️ [BGE-NOTIFICATIONS] Push notifications no soportadas en este navegador');
+            void 0;
             this.showFallbackMessage();
             return;
         }
@@ -77,7 +77,7 @@ class BGEPushNotificationSystem {
             // Sincronizar notificaciones pendientes
             await this.syncPendingNotifications();
 
-            console.log('✅ [BGE-NOTIFICATIONS] Sistema inicializado correctamente');
+            void 0;
 
         } catch (error) {
             console.error('❌ [BGE-NOTIFICATIONS] Error inicializando sistema:', error);
@@ -95,11 +95,11 @@ class BGEPushNotificationSystem {
                 scope: '/'
             });
 
-            console.log('📄 [BGE-NOTIFICATIONS] Service Worker registrado:', this.swRegistration.scope);
+            void 0;
 
             // Escuchar actualizaciones del SW
             this.swRegistration.addEventListener('updatefound', () => {
-                console.log('🔄 [BGE-NOTIFICATIONS] Actualización de Service Worker encontrada');
+                void 0;
             });
 
             // Verificar si hay un SW esperando activación
@@ -120,7 +120,7 @@ class BGEPushNotificationSystem {
             this.subscriptionData = await this.swRegistration.pushManager.getSubscription();
             this.isSubscribed = !!this.subscriptionData;
 
-            console.log(`📋 [BGE-NOTIFICATIONS] Estado de suscripción: ${this.isSubscribed ? 'Suscrito' : 'No suscrito'}`);
+            void 0;
 
             if (this.isSubscribed) {
                 await this.validateSubscription();
@@ -149,7 +149,7 @@ class BGEPushNotificationSystem {
             const result = await response.json();
 
             if (!result.success) {
-                console.warn('⚠️ [BGE-NOTIFICATIONS] Suscripción no válida, renovando...');
+                void 0;
                 await this.renewSubscription();
             }
 
@@ -164,7 +164,7 @@ class BGEPushNotificationSystem {
         }
 
         try {
-            console.log('📝 [BGE-NOTIFICATIONS] Solicitando suscripción...');
+            void 0;
 
             // Solicitar permisos
             const permission = await Notification.requestPermission();
@@ -186,7 +186,7 @@ class BGEPushNotificationSystem {
             await this.sendSubscriptionToServer();
 
             this.isSubscribed = true;
-            console.log('✅ [BGE-NOTIFICATIONS] Suscripción exitosa');
+            void 0;
 
             // Mostrar notificación de bienvenida
             await this.showWelcomeNotification();
@@ -202,7 +202,7 @@ class BGEPushNotificationSystem {
         if (!this.subscriptionData) return;
 
         try {
-            console.log('🗑️ [BGE-NOTIFICATIONS] Cancelando suscripción...');
+            void 0;
 
             // Cancelar en el servidor
             await fetch(`${this.apiBase}/unsubscribe`, {
@@ -222,7 +222,7 @@ class BGEPushNotificationSystem {
             this.subscriptionData = null;
             this.isSubscribed = false;
 
-            console.log('✅ [BGE-NOTIFICATIONS] Suscripción cancelada');
+            void 0;
 
         } catch (error) {
             console.error('❌ [BGE-NOTIFICATIONS] Error cancelando suscripción:', error);
@@ -247,7 +247,7 @@ class BGEPushNotificationSystem {
 
     async sendNotification(notification) {
         try {
-            console.log('📤 [BGE-NOTIFICATIONS] Enviando notificación:', notification.title);
+            void 0;
 
             const notificationData = this.prepareNotificationData(notification);
 
@@ -265,7 +265,7 @@ class BGEPushNotificationSystem {
             if (result.success) {
                 this.stats.sent++;
                 this.addToHistory(notificationData);
-                console.log('✅ [BGE-NOTIFICATIONS] Notificación enviada exitosamente');
+                void 0;
                 return result;
             } else {
                 throw new Error(result.message);
@@ -277,7 +277,7 @@ class BGEPushNotificationSystem {
             // Agregar a cola offline si está habilitada
             if (this.config.offlineQueue) {
                 this.offlineQueue.push(notification);
-                console.log('💾 [BGE-NOTIFICATIONS] Notificación agregada a cola offline');
+                void 0;
             }
 
             this.stats.failed++;
@@ -288,7 +288,7 @@ class BGEPushNotificationSystem {
     async sendBulkNotifications(notifications, options = {}) {
         const { batchSize = 10, delay = 100 } = options;
 
-        console.log(`📦 [BGE-NOTIFICATIONS] Enviando ${notifications.length} notificaciones en lotes`);
+        void 0;
 
         const results = [];
 
@@ -316,7 +316,7 @@ class BGEPushNotificationSystem {
         const successful = results.filter(r => !r.error).length;
         const failed = results.filter(r => r.error).length;
 
-        console.log(`📊 [BGE-NOTIFICATIONS] Lote completado: ${successful} exitosas, ${failed} fallidas`);
+        void 0;
 
         return { successful, failed, results };
     }
@@ -498,7 +498,7 @@ class BGEPushNotificationSystem {
             timeoutId
         });
 
-        console.log(`⏰ [BGE-NOTIFICATIONS] Notificación programada para ${new Date(scheduleTime).toLocaleString()}`);
+        void 0;
 
         return { scheduledId, scheduleTime };
     }
@@ -509,7 +509,7 @@ class BGEPushNotificationSystem {
         if (scheduled) {
             clearTimeout(scheduled.timeoutId);
             this.removeScheduledNotification(scheduledId);
-            console.log(`❌ [BGE-NOTIFICATIONS] Notificación programada cancelada: ${scheduledId}`);
+            void 0;
             return true;
         }
 
@@ -536,10 +536,10 @@ class BGEPushNotificationSystem {
             if (response.ok) {
                 const config = await response.json();
                 Object.assign(this.config, config.data);
-                console.log('⚙️ [BGE-NOTIFICATIONS] Configuración de usuario cargada');
+                void 0;
             }
         } catch (error) {
-            console.warn('⚠️ [BGE-NOTIFICATIONS] Error cargando configuración, usando defaults');
+            void 0;
         }
     }
 
@@ -557,7 +557,7 @@ class BGEPushNotificationSystem {
             });
 
             if (response.ok) {
-                console.log('✅ [BGE-NOTIFICATIONS] Configuración actualizada');
+                void 0;
                 return true;
             }
         } catch (error) {
@@ -712,7 +712,7 @@ class BGEPushNotificationSystem {
 
         try {
             await this.sendNotification(testNotification);
-            console.log('✅ [BGE-NOTIFICATIONS] Notificación de prueba enviada');
+            void 0;
         } catch (error) {
             this.showError('Error enviando notificación de prueba: ' + error.message);
         }
@@ -732,12 +732,12 @@ class BGEPushNotificationSystem {
 
         // Listener para cambios de conexión
         window.addEventListener('online', () => {
-            console.log('🌐 [BGE-NOTIFICATIONS] Conexión restaurada');
+            void 0;
             this.syncOfflineQueue();
         });
 
         window.addEventListener('offline', () => {
-            console.log('📡 [BGE-NOTIFICATIONS] Sin conexión - modo offline activado');
+            void 0;
         });
 
         // Listener para visibilidad de la página
@@ -762,13 +762,13 @@ class BGEPushNotificationSystem {
                 this.stats.delivered++;
                 break;
             default:
-                console.log('📨 [BGE-NOTIFICATIONS] Mensaje del SW:', type, data);
+                void 0;
         }
     }
 
     handleNotificationClick(data) {
         this.stats.clicked++;
-        console.log('👆 [BGE-NOTIFICATIONS] Notificación clickeada:', data);
+        void 0;
 
         // Manejar acciones específicas basadas en el tipo
         switch (data.type) {
@@ -794,7 +794,7 @@ class BGEPushNotificationSystem {
 
     handleNotificationClose(data) {
         this.stats.dismissed++;
-        console.log('❌ [BGE-NOTIFICATIONS] Notificación cerrada:', data);
+        void 0;
     }
 
     handleEmergencyClick(data) {
@@ -837,7 +837,7 @@ class BGEPushNotificationSystem {
     async syncOfflineQueue() {
         if (this.offlineQueue.length === 0) return;
 
-        console.log(`🔄 [BGE-NOTIFICATIONS] Sincronizando ${this.offlineQueue.length} notificaciones offline`);
+        void 0;
 
         const queueToProcess = [...this.offlineQueue];
         this.offlineQueue = [];
@@ -849,7 +849,7 @@ class BGEPushNotificationSystem {
             const failed = results.results.filter(r => r.error).map(r => r.notification);
             this.offlineQueue.push(...failed);
 
-            console.log(`✅ [BGE-NOTIFICATIONS] Sincronización completada: ${results.successful} exitosas`);
+            void 0;
 
         } catch (error) {
             // Restaurar cola si falla completamente
@@ -870,7 +870,7 @@ class BGEPushNotificationSystem {
                 const result = await response.json();
 
                 if (result.data.length > 0) {
-                    console.log(`📥 [BGE-NOTIFICATIONS] ${result.data.length} notificaciones pendientes encontradas`);
+                    void 0;
 
                     // Mostrar notificaciones pendientes
                     for (const notification of result.data) {
@@ -1071,7 +1071,7 @@ class BGEPushNotificationSystem {
     }
 
     showFallbackMessage() {
-        console.warn('📱 [BGE-NOTIFICATIONS] Usando modo fallback - notificaciones no soportadas');
+        void 0;
 
         // Mostrar mensaje informativo al usuario
         const fallbackHTML = `
@@ -1130,7 +1130,7 @@ class BGEPushNotificationSystem {
                     'Authorization': `Bearer ${this.getAuthToken()}`
                 }
             });
-            console.log('✅ [BGE-NOTIFICATIONS] Emergencia reconocida:', emergencyId);
+            void 0;
         } catch (error) {
             console.error('❌ [BGE-NOTIFICATIONS] Error reconociendo emergencia:', error);
         }
@@ -1191,7 +1191,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Hacer disponible globalmente
         window.notify = (title, options) => window.bgeNotifications.notify(title, options);
 
-        console.log('🔔 [BGE-NOTIFICATIONS] Sistema disponible globalmente');
+        void 0;
     }
 });
 

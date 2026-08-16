@@ -121,7 +121,7 @@ class BGEConfigValidator {
             }
         };
 
-        console.log(`🔍 BGE Config Validator v${this.version} inicializado`);
+        void 0;
     }
 
     /**
@@ -130,7 +130,7 @@ class BGEConfigValidator {
      * @returns {Object} Resultado de validación
      */
     validateConfig(config) {
-        console.log('🔍 Iniciando validación completa de configuración...');
+        void 0;
 
         const result = {
             valid: true,
@@ -168,7 +168,7 @@ class BGEConfigValidator {
             // Determinar validez general
             result.valid = result.errors.length === 0;
 
-            console.log(`✅ Validación completada. Score: ${result.score}/100`);
+            void 0;
 
         } catch (error) {
             console.error('❌ Error durante validación:', error);
@@ -395,7 +395,7 @@ class BGEConfigValidator {
     migrateConfig(config, targetVersion = null) {
         const target = targetVersion || this.currentSchemaVersion;
 
-        console.log(`🔄 Migrando configuración a versión ${target}...`);
+        void 0;
 
         const migrated = JSON.parse(JSON.stringify(config)); // Deep clone
 
@@ -410,7 +410,7 @@ class BGEConfigValidator {
         migrated.version = target;
         migrated.lastUpdated = new Date().toISOString();
 
-        console.log(`✅ Migración completada a versión ${target}`);
+        void 0;
 
         return migrated;
     }
@@ -419,7 +419,7 @@ class BGEConfigValidator {
      * Migración desde versión 0.9.0
      */
     migrateFrom0_9_0(config) {
-        console.log('📦 Aplicando migración desde v0.9.0...');
+        void 0;
 
         // Migrar esquema de colores legacy
         if (config.oldColorScheme) {
@@ -442,7 +442,7 @@ class BGEConfigValidator {
         // Agregar campos nuevos con valores por defecto
         this.applyDefaults(config);
 
-        console.log('✅ Migración v0.9.0 completada');
+        void 0;
     }
 
     /**
@@ -461,7 +461,7 @@ class BGEConfigValidator {
      * Reparar configuración automáticamente
      */
     repairConfig(config) {
-        console.log('🔧 Iniciando reparación automática...');
+        void 0;
 
         const repaired = JSON.parse(JSON.stringify(config));
         const repairLog = [];
@@ -490,7 +490,7 @@ class BGEConfigValidator {
             }
         }
 
-        console.log(`✅ Reparación completada: ${repairLog.join(', ')}`);
+        void 0;
 
         return {
             config: repaired,
@@ -681,7 +681,7 @@ if (typeof window !== 'undefined') {
     configValidator = new BGEConfigValidator();
     window.configValidator = configValidator;
 
-    console.log('🔍 BGE Config Validator disponible globalmente');
+    void 0;
 }
 
 // Exportar para uso en módulos

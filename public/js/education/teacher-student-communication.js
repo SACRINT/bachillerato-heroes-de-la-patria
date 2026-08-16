@@ -661,4 +661,4 @@ if (window.BGEContext) {
         window.BGETeacherStudentCommunication, ['logger']);
 }
 
-console.log('✅ BGE Teacher-Student Communication System cargado exitosamente');
+void 0;

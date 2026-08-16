@@ -7,12 +7,12 @@ class ReportsModule {
         this.eventBus = eventBus;
         this.reports = [];
         this.apiEndpoint = '/api/reports';
-        console.log('[REPORTS-MODULE] 📈 Reports Module creado');
+        void 0;
     }
 
     async init() {
         this.subscribeToEvents();
-        console.log('[REPORTS-MODULE] ✅ Inicializado');
+        void 0;
     }
 
     subscribeToEvents() {
@@ -22,7 +22,7 @@ class ReportsModule {
 
     async generateReport(reportConfig) {
         try {
-            console.log('[REPORTS-MODULE] 📊 Generando reporte:', reportConfig.type);
+            void 0;
             const response = await fetch(`${this.apiEndpoint}/generate`, {
                 method: 'POST',
                 headers: this.getAuthHeaders(),
@@ -41,7 +41,7 @@ class ReportsModule {
 
     async exportReport(exportConfig) {
         try {
-            console.log('[REPORTS-MODULE] 📥 Exportando reporte:', exportConfig.format);
+            void 0;
             const response = await fetch(`${this.apiEndpoint}/export`, {
                 method: 'POST',
                 headers: this.getAuthHeaders(),
@@ -85,6 +85,6 @@ class ReportsModule {
         return headers;
     }
 
-    destroy() { this.reports = []; console.log('[REPORTS-MODULE] ✅ Destruido'); }
+    destroy() { this.reports = []; void 0; }
 }
 window.ReportsModule = ReportsModule;

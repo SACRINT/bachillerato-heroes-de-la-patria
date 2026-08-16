@@ -35,9 +35,12 @@
 
     function renderTournaments(list) {
         const container = document.getElementById('tournaments-list');
+        if (!container) return;
         container.innerHTML = '';
 
-        if (list.length === 0) {
+        let items = Array.isArray(list) ? list : (list?.tournaments || list?.data || []);
+
+        if (items.length === 0) {
             container.innerHTML = `
                 <div class="text-center py-5 t-card">
                     <h3 class="text-muted">No hay torneos activos</h3>
@@ -46,7 +49,7 @@
             return;
         }
 
-        list.forEach(t => {
+        items.forEach(t => {
             const div = document.createElement('div');
             div.className = 't-card';
 

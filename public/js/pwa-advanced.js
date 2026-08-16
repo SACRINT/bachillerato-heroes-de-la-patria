@@ -42,7 +42,7 @@ class PWAAdvanced {
     }
 
     async init() {
-        //console.log('📱 Iniciando PWA Advanced...');
+        //void 0;
         
         // Detectar si la app está instalada
         await this.detectInstallation();
@@ -60,8 +60,8 @@ class PWAAdvanced {
         // Inicializar características avanzadas
         this.initAdvancedFeatures();
         
-        //console.log('✅ PWA Advanced inicializado');
-        //console.log('🔧 Capacidades:', this.capabilities);
+        //void 0;
+        //void 0;
     }
 
     async detectInstallation() {
@@ -82,10 +82,10 @@ class PWAAdvanced {
         if (this.state.isInstalled) {
             document.body.classList.add('pwa-installed');
             this.hideInstallElements();
-            console.log('✅ PWA detectada como instalada - Elementos de instalación ocultados');
+            void 0;
         } else {
             document.body.classList.remove('pwa-installed');
-            console.log('📱 PWA no instalada - Elementos de instalación visibles');
+            void 0;
         }
     }
 
@@ -177,9 +177,9 @@ class PWAAdvanced {
         
         try {
             await navigator.share(shareData);
-            //console.log('✅ Contenido compartido exitosamente');
+            //void 0;
         } catch (error) {
-            //console.log('ℹ️ Compartir cancelado o no soportado');
+            //void 0;
             // Fallback a clipboard
             this.copyToClipboard(shareData.url);
         }
@@ -357,7 +357,7 @@ class PWAAdvanced {
                 await document.exitFullscreen();
             }
         } catch (error) {
-            console.warn('Fullscreen no soportado:', error);
+            void 0;
         }
     }
 
@@ -380,7 +380,7 @@ class PWAAdvanced {
 
     onAppBackground() {
         // La app va a background
-        //console.log('📱 App en background');
+        //void 0;
         
         // Registrar tiempo en background
         this.backgroundStartTime = Date.now();
@@ -391,7 +391,7 @@ class PWAAdvanced {
 
     onAppForeground() {
         // La app vuelve a foreground
-        //console.log('📱 App en foreground');
+        //void 0;
         
         document.body.classList.remove('app-background');
         
@@ -407,7 +407,7 @@ class PWAAdvanced {
     onOrientationChange() {
         // Manejar cambio de orientación
         const orientation = screen.orientation?.type || 'unknown';
-        //console.log('📱 Orientación:', orientation);
+        //void 0;
         
         // Ajustar layout si es necesario
         document.body.setAttribute('data-orientation', orientation);
@@ -581,7 +581,7 @@ class NotificationManager {
 
     async setupPushSubscription() {
         // LITE MODE - Push notifications disabled (require valid VAPID keys)
-        //console.log('📱 Push notifications skipped (requires VAPID key configuration)');
+        //void 0;
         return;
         
         /* FULL VERSION - Requires backend setup:
@@ -604,7 +604,7 @@ class NotificationManager {
                 await this.sendSubscriptionToServer(this.subscription);
             }
         } catch (error) {
-            console.warn('Error configurando push subscription:', error);
+            void 0;
         }
         */
     }
@@ -634,7 +634,7 @@ class NotificationManager {
                 body: JSON.stringify(subscription)
             });
         } catch (error) {
-            console.warn('Error enviando suscripción al servidor:', error);
+            void 0;
         }
     }
 }
@@ -694,7 +694,7 @@ class OfflineManager {
             try {
                 await this.processQueueItem(item);
             } catch (error) {
-                console.warn('Error procesando item de cola offline:', error);
+                void 0;
                 // Re-agregar a la cola si falla
                 this.offlineQueue.push(item);
             }
@@ -745,7 +745,7 @@ class BackgroundSyncManager {
             
             return true;
         } catch (error) {
-            console.warn('Error registrando background sync:', error);
+            void 0;
             return false;
         }
     }
@@ -762,7 +762,7 @@ class BackgroundSyncManager {
                 await this.processSync(tag, data);
                 localStorage.removeItem(key);
             } catch (error) {
-                console.warn(`Error procesando sync ${tag}:`, error);
+                void 0;
             }
         }
     }
@@ -835,7 +835,7 @@ class UpdateManager {
         // Verificar si ya existe un banner de actualización para evitar duplicados
         const existingBanner = document.querySelector('.update-banner');
         if (existingBanner) {
-            console.log('🔄 Banner de actualización ya existe, evitando duplicado');
+            void 0;
             return;
         }
 
@@ -843,7 +843,7 @@ class UpdateManager {
         const now = Date.now();
         const lastBannerTime = localStorage.getItem('lastUpdateBannerTime');
         if (lastBannerTime && (now - parseInt(lastBannerTime)) < 10000) { // 10 segundos mínimo
-            console.log('🔄 Banner de actualización mostrado recientemente, esperando...');
+            void 0;
             return;
         }
 
@@ -977,7 +977,7 @@ class InstallManager {
         const { outcome } = await this.deferredPrompt.userChoice;
         
         if (outcome === 'accepted') {
-            //console.log('✅ PWA instalada');
+            //void 0;
         }
         
         this.deferredPrompt = null;
@@ -1127,5 +1127,5 @@ document.head.appendChild(pwaStyles);
 // Exponer la clase
 window.PWAAdvanced = PWAAdvanced;
 
-//console.log('📱 PWA Advanced cargado. Usa window.pwaAdvanced para acceso directo.');
+//void 0;
 }

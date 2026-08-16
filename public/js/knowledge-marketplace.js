@@ -806,4 +806,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-console.log('🏪 Marketplace de Conocimiento cargado correctamente');
+void 0;

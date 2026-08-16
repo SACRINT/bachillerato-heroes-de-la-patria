@@ -15,7 +15,7 @@ class BGEAdvancedAnalytics {
         this.userBehavior = {};
         this.educationalMetrics = {};
 
-        console.log('📊 [ADVANCED-ANALYTICS] Sistema iniciado - Sesión:', this.sessionId);
+        void 0;
         this.init();
     }
 
@@ -112,7 +112,7 @@ class BGEAdvancedAnalytics {
         };
 
         this.trackEvent('pageview', pageData);
-        console.log('📄 [ADVANCED-ANALYTICS] Página vista registrada:', pageData.url);
+        void 0;
     }
 
     trackClick(event) {
@@ -603,7 +603,7 @@ class BGEAdvancedAnalytics {
             this.events = this.events.slice(-this.config.maxEvents);
         }
 
-        console.log(`📊 [ADVANCED-ANALYTICS] Evento registrado: ${type}`);
+        void 0;
     }
 
     generateEventId() {
@@ -654,7 +654,7 @@ class BGEAdvancedAnalytics {
         };
 
         // En un entorno real, esto se enviaría a un servidor
-        console.log('📤 [ADVANCED-ANALYTICS] Enviando datos de analytics:', analyticsPayload);
+        void 0;
 
         // Simular envío (en producción sería una llamada a API)
         this.simulateAnalyticsSend(analyticsPayload, isBeforeUnload);
@@ -676,7 +676,7 @@ class BGEAdvancedAnalytics {
             const recent = stored.slice(-10);
             localStorage.setItem('bge_analytics_data', JSON.stringify(recent));
 
-            console.log('💾 [ADVANCED-ANALYTICS] Datos guardados localmente');
+            void 0;
 
             // En un entorno real, aquí se haría:
             // fetch('/api/analytics', {
@@ -707,7 +707,7 @@ class BGEAdvancedAnalytics {
     updateConfig(newConfig) {
         this.config = { ...this.config, ...newConfig };
         localStorage.setItem('bge_analytics_config', JSON.stringify(this.config));
-        console.log('⚙️ [ADVANCED-ANALYTICS] Configuración actualizada:', newConfig);
+        void 0;
     }
 
     getAnalyticsData() {
@@ -733,13 +733,13 @@ class BGEAdvancedAnalytics {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
 
-        console.log('📥 [ADVANCED-ANALYTICS] Datos exportados');
+        void 0;
     }
 
     clearAnalyticsData() {
         this.events = [];
         localStorage.removeItem('bge_analytics_data');
-        console.log('🗑️ [ADVANCED-ANALYTICS] Datos de analytics eliminados');
+        void 0;
     }
 }
 
@@ -753,4 +753,4 @@ document.addEventListener('DOMContentLoaded', () => {
     window.bgeAdvancedAnalytics = bgeAdvancedAnalytics;
 });
 
-console.log('✅ [COMPLETE] bge-advanced-analytics.js cargado - Sistema de analytics avanzado BGE v1.0');
+void 0;

@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const inscriptionForm = document.querySelector('#inscription-form, form[name="inscription"], form.inscription-form');
 
     if (!inscriptionForm) {
-        console.warn('Inscription form not found on this page');
+        void 0;
         return;
     }
 

@@ -254,7 +254,7 @@ class InteractiveCalendar {
             return [...convertedEvents, ...staticEvents];
 
         } catch (error) {
-            console.warn('Error cargando eventos PWA, usando eventos estáticos:', error);
+            void 0;
             // Fallback a eventos estáticos si falla la carga
             return staticEvents;
         }

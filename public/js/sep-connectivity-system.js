@@ -59,7 +59,7 @@ class SEPConnectivitySystem {
         this.startConnectivityMonitoring();
         this.setupComplianceChecks();
 
-        console.log('🏛️ SEP Connectivity System inicializado');
+        void 0;
     }
 
     // === CONECTIVIDAD Y MONITOREO ===
@@ -104,7 +104,7 @@ class SEPConnectivitySystem {
         try {
             // Deshabilitar temporalmente las verificaciones de conectividad SEP
             // para evitar errores de CSP en desarrollo
-            console.log(`🔍 Simulando verificación de ${endpoint} (CSP bypass)`);
+            void 0;
             return false; // Simular que todos los servicios están offline
         } catch (error) {
             return false;
@@ -127,7 +127,7 @@ class SEPConnectivitySystem {
 
     async syncWithSEPServices() {
         if (!this.connectionStatus.overall) {
-            console.warn('🔄 SEP services no disponibles para sincronización');
+            void 0;
             return false;
         }
 
@@ -161,7 +161,7 @@ class SEPConnectivitySystem {
         };
 
         // En producción, aquí iría la conexión real con SICEP
-        console.log('📚 Sincronizando datos estudiantiles con SICEP...');
+        void 0;
 
         return this.simulateAPICall(mockStudentSync, 'sicep_student_sync');
     }
@@ -176,7 +176,7 @@ class SEPConnectivitySystem {
             lastUpdate: new Date().toISOString()
         };
 
-        console.log('🎓 Sincronizando registros académicos...');
+        void 0;
 
         return this.simulateAPICall(mockAcademicSync, 'academic_records_sync');
     }
@@ -206,7 +206,7 @@ class SEPConnectivitySystem {
             lastUpdate: new Date().toISOString()
         };
 
-        console.log('🏫 Sincronizando datos institucionales...');
+        void 0;
 
         return this.simulateAPICall(institutionalData, 'institutional_sync');
     }
@@ -233,7 +233,7 @@ class SEPConnectivitySystem {
             lastUpdate: new Date().toISOString()
         };
 
-        console.log('⚖️ Verificando cumplimiento normativo...');
+        void 0;
 
         return this.simulateAPICall(complianceData, 'compliance_sync');
     }
@@ -265,7 +265,7 @@ class SEPConnectivitySystem {
             }
         };
 
-        console.log(`🆔 Validando CURP: ${curp}`);
+        void 0;
 
         return this.simulateAPICall(mockValidation, 'curp_validation');
     }
@@ -291,7 +291,7 @@ class SEPConnectivitySystem {
 
         const validation = this.performRecordValidation(recordData, validationRules);
 
-        console.log(`📋 Validando registro académico: ${studentId}`);
+        void 0;
 
         return validation;
     }
@@ -351,7 +351,7 @@ class SEPConnectivitySystem {
         // Guardar reporte generado
         this.saveGeneratedReport(formattedReport, reportType, period);
 
-        console.log(`📊 Reporte SEP generado: ${reportType} - ${period}`);
+        void 0;
 
         return formattedReport;
     }
@@ -476,9 +476,9 @@ class SEPConnectivitySystem {
         // Configurar Service Worker para manejo offline
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js').then(registration => {
-                console.log('🔧 Service Worker registrado para SEP connectivity');
+                void 0;
             }).catch(error => {
-                console.warn('Service Worker registration failed:', error);
+                void 0;
             });
         }
         */
@@ -539,7 +539,7 @@ class SEPConnectivitySystem {
                 const data = JSON.parse(stored);
                 this.connectionStatus = data.connectionStatus || this.connectionStatus;
             } catch (error) {
-                console.warn('Error loading stored SEP data:', error);
+                void 0;
             }
         }
     }
@@ -567,15 +567,15 @@ class SEPConnectivitySystem {
 
     notifyConnectionStatus(status) {
         if (status.overall) {
-            console.log('✅ Conectividad SEP: Todos los servicios disponibles');
+            void 0;
         } else {
-            console.warn('⚠️ Conectividad SEP: Algunos servicios no disponibles');
+            void 0;
 
             const unavailableServices = Object.entries(status.services)
                 .filter(([_, service]) => !service.available)
                 .map(([name]) => name);
 
-            console.warn('Servicios no disponibles:', unavailableServices.join(', '));
+            void 0;
         }
     }
 
@@ -583,11 +583,11 @@ class SEPConnectivitySystem {
         const nonCompliant = results.filter(r => !r.compliant);
 
         if (nonCompliant.length === 0) {
-            console.log('✅ Cumplimiento SEP: Todos los requisitos cumplidos');
+            void 0;
         } else {
-            console.warn('⚠️ Cumplimiento SEP: Requisitos pendientes');
+            void 0;
             nonCompliant.forEach(item => {
-                console.warn(`- ${item.name}: ${item.error || 'No cumple'}`);
+                void 0;
             });
         }
     }

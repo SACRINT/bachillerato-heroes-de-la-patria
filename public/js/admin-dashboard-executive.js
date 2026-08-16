@@ -682,7 +682,7 @@ document.addEventListener('click', (e) => {
             return;
         }
 
-        console.warn('[ADMIN-DASHBOARD-EXECUTIVE] Unhandled data-action:', action);
+        void 0;
     } catch (error) {
         console.error('[ADMIN-DASHBOARD-EXECUTIVE] Error handling action:', action, error);
     }

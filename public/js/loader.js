@@ -11,7 +11,7 @@ class LoaderSystem {
     }
 
     initializeLoader() {
-        console.log('🔄 [LOADER] Sistema de carga inicializado');
+        void 0;
         this.createGlobalLoader();
     }
 
@@ -115,4 +115,4 @@ window.loaderSystem = loaderSystem;
 window.showLoader = () => loaderSystem.show();
 window.hideLoader = () => loaderSystem.hide();
 
-console.log('✅ [LOADER] loader.js cargado exitosamente');
+void 0;

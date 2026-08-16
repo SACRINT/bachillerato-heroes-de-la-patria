@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
         initIntegratedCalendar();
     } else {
         // Usuario no autenticado - mantener calendario básico
-        console.log('[CALENDARIO] Usuario no autenticado - usando calendario básico');
+        void 0;
     }
 });
 
@@ -40,9 +40,9 @@ function initIntegratedCalendar() {
                 advancedContainer.classList.remove('d-none');
             }
 
-            console.log('[CALENDARIO] ✅ Sistema integrado de calendario inicializado');
+            void 0;
         } else {
-            console.warn('[CALENDARIO] ⚠ IntegratedCalendarManager no disponible');
+            void 0;
         }
     } catch (error) {
         console.error('[CALENDARIO] Error inicializando calendario integrado:', error);

@@ -66,7 +66,7 @@ class BGEAITutorPersonalizado {
 
     async init() {
         try {
-            console.log('🤖 Inicializando BGE AI Tutor Personalizado...');
+            void 0;
 
             await this.cargarBasesConocimiento();
             await this.configurarMotorIA();
@@ -75,7 +75,7 @@ class BGEAITutorPersonalizado {
             this.configurarEventListeners();
             this.iniciarMonitoreoRendimiento();
 
-            console.log('✅ AI Tutor inicializado exitosamente');
+            void 0;
 
         } catch (error) {
             console.error('❌ Error inicializando AI Tutor:', error);

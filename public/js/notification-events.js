@@ -17,14 +17,14 @@ class NotificationEvents {
         this.monitoringIntervals = [];
         this.eventQueue = [];
 
-        console.log('🎯 Notification Events system initializing...');
+        void 0;
 
         this.init();
     }
 
     async init() {
         if (!this.notificationManager) {
-            console.warn('⚠️ NotificationManager not available, retrying in 2 seconds...');
+            void 0;
             setTimeout(() => this.init(), 2000);
             return;
         }
@@ -33,7 +33,7 @@ class NotificationEvents {
         this.startPeriodicChecks();
         this.setupContentObservers();
 
-        console.log('✅ Notification Events system ready');
+        void 0;
     }
 
     // === CONFIGURACIÓN DE MONITOREO ===
@@ -64,7 +64,7 @@ class NotificationEvents {
                     await this.checkForNewNews(newsData.noticias);
                 }
             } catch (error) {
-                console.warn('⚠️ Failed to check news:', error);
+                void 0;
             }
         };
 
@@ -86,7 +86,7 @@ class NotificationEvents {
                     await this.checkForUpcomingEvents(eventsData.eventos);
                 }
             } catch (error) {
-                console.warn('⚠️ Failed to check events:', error);
+                void 0;
             }
         };
 
@@ -110,7 +110,7 @@ class NotificationEvents {
                 await this.checkScheduleChanges();
 
             } catch (error) {
-                console.warn('⚠️ Failed to check academic updates:', error);
+                void 0;
             }
         };
 
@@ -131,7 +131,7 @@ class NotificationEvents {
                     await this.checkForEmergencyNotices(avisosData.avisos);
                 }
             } catch (error) {
-                console.warn('⚠️ Failed to check emergency notices:', error);
+                void 0;
             }
         };
 
@@ -152,7 +152,7 @@ class NotificationEvents {
                     await this.checkForNewAnnouncements(comunicadosData.comunicados);
                 }
             } catch (error) {
-                console.warn('⚠️ Failed to check announcements:', error);
+                void 0;
             }
         };
 
@@ -305,7 +305,7 @@ class NotificationEvents {
             }
         );
 
-        console.log('📰 News notification sent:', noticia.titulo);
+        void 0;
     }
 
     async sendEventReminder(evento, timing) {
@@ -329,7 +329,7 @@ class NotificationEvents {
             }
         );
 
-        console.log('📅 Event reminder sent:', evento.titulo, timing);
+        void 0;
     }
 
     async sendGradeNotification(gradeUpdate) {
@@ -347,7 +347,7 @@ class NotificationEvents {
             }
         );
 
-        console.log('🎓 Grade notification sent:', gradeUpdate.materia);
+        void 0;
     }
 
     async sendDeadlineNotification(deadline, timeRemaining) {
@@ -365,7 +365,7 @@ class NotificationEvents {
             }
         );
 
-        console.log('⏰ Deadline notification sent:', deadline.titulo);
+        void 0;
     }
 
     async sendScheduleChangeNotification(change) {
@@ -383,7 +383,7 @@ class NotificationEvents {
             }
         );
 
-        console.log('📋 Schedule change notification sent:', change.descripcion);
+        void 0;
     }
 
     async sendEmergencyNotification(aviso) {
@@ -402,7 +402,7 @@ class NotificationEvents {
             }
         );
 
-        console.log('🚨 Emergency notification sent:', aviso.titulo);
+        void 0;
     }
 
     async sendAnnouncementNotification(comunicado) {
@@ -419,7 +419,7 @@ class NotificationEvents {
             }
         );
 
-        console.log('📢 Announcement notification sent:', comunicado.titulo);
+        void 0;
     }
 
     // === VERIFICACIONES Y UTILIDADES ===
@@ -470,7 +470,7 @@ class NotificationEvents {
     handleContentChange(mutation) {
         // React to real-time content changes
         if (mutation.addedNodes.length > 0) {
-            console.log('📝 Content change detected, checking for new notifications...');
+            void 0;
 
             // Debounce to avoid excessive checks
             clearTimeout(this.contentChangeTimeout);
@@ -491,7 +491,7 @@ class NotificationEvents {
             ];
 
             await Promise.all(promises);
-            console.log('🔄 All sources checked for updates');
+            void 0;
         } catch (error) {
             console.error('❌ Error checking sources:', error);
         }
@@ -592,12 +592,12 @@ class NotificationEvents {
     }
 
     handleQueuedEvent(event) {
-        console.log('📋 Processing queued event:', event);
+        void 0;
         // Process the event based on its type
     }
 
     performDailyMaintenance() {
-        console.log('🧹 Performing daily maintenance...');
+        void 0;
 
         // Clean up old notification flags
         const keys = Object.keys(localStorage);
@@ -624,7 +624,7 @@ class NotificationEvents {
         });
 
         this.monitoringIntervals = [];
-        console.log('🗑️ Notification Events system destroyed');
+        void 0;
     }
 }
 
@@ -640,4 +640,4 @@ if (document.readyState === 'loading') {
     window.heroesNotificationEvents = new NotificationEvents();
 }
 
-console.log('🎯 Notification Events system loaded successfully');
+void 0;

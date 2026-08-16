@@ -729,4 +729,4 @@ if (window.BGEContext) {
     window.BGEContext.registerModule('sep-connectivity', window.BGESEPConnectivitySystem, ['logger']);
 }
 
-console.log('✅ BGE SEP Connectivity System cargado exitosamente');
+void 0;

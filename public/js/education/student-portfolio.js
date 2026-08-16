@@ -718,4 +718,4 @@ if (window.BGEContext) {
     window.BGEContext.registerModule('student-portfolio', window.BGEStudentPortfolio, ['logger']);
 }
 
-console.log('✅ BGE Student Portfolio System cargado exitosamente');
+void 0;

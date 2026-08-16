@@ -15,7 +15,7 @@ class DynamicDashboardData {
     }
 
     async init() {
-        console.log('📊 Inicializando Dynamic Dashboard Data System...');
+        void 0;
 
         // Cargar datos iniciales
         await this.loadDashboardStats();
@@ -26,7 +26,7 @@ class DynamicDashboardData {
         // Configurar auto-actualización
         this.startAutoUpdate();
 
-        console.log('✅ Dynamic Dashboard Data System inicializado');
+        void 0;
     }
 
     /**
@@ -38,10 +38,10 @@ class DynamicDashboardData {
             if (response.ok) {
                 const data = await response.json();
                 this.cache.set('dashboardStats', data);
-                console.log('📥 Estadísticas del dashboard cargadas:', data);
+                void 0;
                 return data;
             } else {
-                console.warn('⚠️ No se pudo cargar dashboard-stats.json, usando datos por defecto');
+                void 0;
                 return this.getDefaultStats();
             }
         } catch (error) {
@@ -55,7 +55,7 @@ class DynamicDashboardData {
      */
     async updateActivityCounts() {
         try {
-            console.log('🔄 Actualizando contadores de actividad...');
+            void 0;
 
             const counts = await Promise.all([
                 this.countItemsInFile('noticias.json'),
@@ -82,9 +82,7 @@ class DynamicDashboardData {
             // Guardar en archivo
             await this.saveDashboardStats(stats);
 
-            console.log('✅ Contadores actualizados:', {
-                noticias, eventos, avisos, comunicados
-            });
+            void 0;
 
             return stats;
         } catch (error) {
@@ -119,7 +117,7 @@ class DynamicDashboardData {
             }
             return 0;
         } catch (error) {
-            console.warn(`⚠️ No se pudo contar elementos en ${filename}:`, error.message);
+            void 0;
             return 0;
         }
     }
@@ -133,7 +131,7 @@ class DynamicDashboardData {
             // Por ahora, actualizamos localStorage como respaldo
             localStorage.setItem('dashboard_stats_backup', JSON.stringify(stats));
 
-            console.log('💾 Estadísticas guardadas en localStorage como respaldo');
+            void 0;
 
             // También disparar evento para notificar a otros componentes
             window.dispatchEvent(new CustomEvent('dashboardStatsUpdated', {
@@ -206,10 +204,10 @@ class DynamicDashboardData {
                 this.cache.set('dashboardStats', stats);
                 await this.saveDashboardStats(stats);
 
-                console.log(`✅ Estadística actualizada: ${category}.${key} = ${value}`);
+                void 0;
                 return true;
             } else {
-                console.warn(`⚠️ Categoría no encontrada: ${category}`);
+                void 0;
                 return false;
             }
         } catch (error) {
@@ -226,7 +224,7 @@ class DynamicDashboardData {
             await this.updateActivityCounts();
         }, this.updateInterval);
 
-        console.log(`🔄 Auto-actualización configurada cada ${this.updateInterval/1000} segundos`);
+        void 0;
     }
 
     /**
@@ -254,7 +252,7 @@ class DynamicDashboardData {
             const element = document.getElementById(id);
             if (element) {
                 element.textContent = value;
-                console.log(`📊 Actualizado ${id}: ${value}`);
+                void 0;
             }
         });
 
@@ -281,7 +279,7 @@ class DynamicDashboardData {
             await this.saveDashboardStats(stats);
             this.updateDOMElements();
 
-            console.log(`📈 Incrementado ${type}: ${stats.activityStats[key]}`);
+            void 0;
         }
     }
 
@@ -289,10 +287,10 @@ class DynamicDashboardData {
      * Fuerza una actualización completa
      */
     async forceUpdate() {
-        console.log('🔄 Forzando actualización completa...');
+        void 0;
         await this.updateActivityCounts();
         this.updateDOMElements();
-        console.log('✅ Actualización completa finalizada');
+        void 0;
     }
 }
 
@@ -340,7 +338,7 @@ window.addEventListener('dashboardStatsUpdated', (event) => {
     }
 });
 
-console.log('📊 Dynamic Dashboard Data System cargado');
+void 0;
 
 // Exportar para módulos
 if (typeof module !== 'undefined' && module.exports) {

@@ -66,8 +66,8 @@ class AREducationSystem {
         this.setupInteractionHandlers();
         this.createARInterface();
 
-        console.log('🥽 AR Education System inicializado');
-        console.log(`📱 Capacidades AR: ${this.arSupport.available ? 'Disponibles' : 'Limitadas'}`);
+        void 0;
+        void 0;
     }
 
     loadUserProgress() {
@@ -85,7 +85,7 @@ class AREducationSystem {
                 };
             }
         } catch (error) {
-            console.warn('Error loading user progress:', error);
+            void 0;
             this.userProgress = {
                 completedExperiences: [],
                 totalTime: 0,
@@ -101,7 +101,7 @@ class AREducationSystem {
             this.userProgress.lastAccess = new Date().toISOString();
             localStorage.setItem('ar_education_progress', JSON.stringify(this.userProgress));
         } catch (error) {
-            console.warn('Error saving user progress:', error);
+            void 0;
         }
     }
 
@@ -136,7 +136,7 @@ class AREducationSystem {
     handleTouchInteraction(event) {
         // Manejar interacciones táctiles en elementos AR
         event.preventDefault();
-        console.log('🖐️ Touch interaction detected on AR element');
+        void 0;
     }
 
     setupViewerControls() {
@@ -150,7 +150,7 @@ class AREducationSystem {
     }
 
     handleViewerControl(action) {
-        console.log(`🎮 Viewer control: ${action}`);
+        void 0;
         // Implementar acciones de control del visor
         switch (action) {
             case 'rotate-left':
@@ -170,7 +170,7 @@ class AREducationSystem {
             try {
                 this.arSupport.webxr = await navigator.xr.isSessionSupported('immersive-ar');
             } catch (error) {
-                console.warn('WebXR no soportado:', error);
+                void 0;
             }
         }
 
@@ -187,7 +187,7 @@ class AREducationSystem {
         this.arSupport.available = this.arSupport.webgl &&
                                    (this.arSupport.webxr || this.arSupport.camera);
 
-        console.log('🔍 Capacidades AR detectadas:', this.arSupport);
+        void 0;
     }
 
     checkWebGLSupport() {
@@ -216,11 +216,11 @@ class AREducationSystem {
         } catch (error) {
             // Manejar error de cámara de forma inteligente
             if (error.name === 'NotFoundError') {
-                console.log('📷 Cámara no detectada - activando modo simulación');
+                void 0;
             } else if (error.name === 'NotAllowedError') {
-                console.log('🔒 Permisos de cámara denegados - usando fallback');
+                void 0;
             } else {
-                console.log('⚠️ Error de cámara:', error.name, '- continuando sin cámara');
+                void 0;
             }
 
             // Configurar modo alternativo automáticamente
@@ -231,7 +231,7 @@ class AREducationSystem {
 
     setupCameraFallback() {
         // Configurar sistema de simulación avanzado cuando no hay cámara
-        console.log('🎭 Configurando sistema de simulación AR avanzado...');
+        void 0;
 
         // Habilitar controles de ratón/teclado para simular AR
         this.enableMouseKeyboardControls();
@@ -264,7 +264,7 @@ class AREducationSystem {
     }
 
     simulateARMovement(direction) {
-        console.log(`🎮 Simulando movimiento AR: ${direction}`);
+        void 0;
         // Aquí se implementaría la lógica de movimiento simulado
     }
 
@@ -309,7 +309,7 @@ class AREducationSystem {
     setupAlternativeARExperience() {
         // Configurar experiencias que no requieren cámara
         this.alternativeMode = true;
-        console.log('✨ Experiencia AR alternativa configurada');
+        void 0;
     }
 
     checkSensorSupport() {
@@ -321,7 +321,7 @@ class AREducationSystem {
 
     async initializeARFramework() {
         if (!this.arSupport.available) {
-            console.log('📱 Activando modo de simulación AR interactivo - ¡Experiencia alternativa disponible!');
+            void 0;
             this.initializeFallbackMode();
             return;
         }
@@ -369,7 +369,7 @@ class AREducationSystem {
             far: 1000
         };
 
-        console.log('🎬 Three.js configurado para AR');
+        void 0;
     }
 
     setupMarkerDetection() {
@@ -387,7 +387,7 @@ class AREducationSystem {
             confidenceThreshold: 0.6
         };
 
-        console.log('🎯 Sistema de marcadores configurado');
+        void 0;
     }
 
     setupTracking() {
@@ -400,7 +400,7 @@ class AREducationSystem {
             handTracking: this.config.enableHandTracking && this.arSupport.webxr
         };
 
-        console.log('📍 Sistema de tracking configurado');
+        void 0;
     }
 
     async loadARModels() {
@@ -436,9 +436,9 @@ class AREducationSystem {
                 try {
                     await this.loadModel(model.url);
                     model.loaded = true;
-                    console.log(`📦 Modelo cargado: ${subject}/${name}`);
+                    void 0;
                 } catch (error) {
-                    console.warn(`⚠️ Error cargando modelo ${name}:`, error);
+                    void 0;
                 }
             }
         }
@@ -471,7 +471,7 @@ class AREducationSystem {
             throw new Error(`Escenario no disponible: ${scenario}`);
         }
 
-        console.log(`🚀 Iniciando experiencia AR: ${experience.name} - ${scenario}`);
+        void 0;
 
         try {
             // Preparar sesión AR
@@ -489,7 +489,7 @@ class AREducationSystem {
             // Mostrar interfaz AR
             this.showARInterface();
 
-            console.log(`✅ Experiencia AR iniciada: ${this.activeSession.id}`);
+            void 0;
             return this.activeSession;
 
         } catch (error) {
@@ -595,7 +595,7 @@ class AREducationSystem {
             this.setupOcclusion();
         }
 
-        console.log('🏗️ Entorno AR configurado');
+        void 0;
     }
 
     async setupARCamera() {
@@ -662,7 +662,7 @@ class AREducationSystem {
             }
         };
 
-        console.log('💡 Iluminación AR configurada');
+        void 0;
     }
 
     async loadExperienceContent(session) {
@@ -672,9 +672,9 @@ class AREducationSystem {
             try {
                 const model = await this.loadARModel(session.subject, modelName);
                 session.models.push(model);
-                console.log(`📦 Modelo cargado en sesión: ${modelName}`);
+                void 0;
             } catch (error) {
-                console.warn(`⚠️ Error cargando modelo ${modelName}:`, error);
+                void 0;
             }
         }
 
@@ -798,7 +798,7 @@ class AREducationSystem {
             this.checkAchievements();
         }, 100); // 10 FPS de tracking
 
-        console.log('📍 Tracking iniciado');
+        void 0;
     }
 
     stopTracking() {
@@ -807,7 +807,7 @@ class AREducationSystem {
             this.trackingInterval = null;
         }
 
-        console.log('⏹️ Tracking detenido');
+        void 0;
     }
 
     updateTracking() {
@@ -848,10 +848,10 @@ class AREducationSystem {
 
         if (fps < 20 && currentQuality !== 'low') {
             this.config.renderQuality = 'low';
-            console.log('📉 Calidad reducida a LOW para mantener rendimiento');
+            void 0;
         } else if (fps > 50 && currentQuality === 'low') {
             this.config.renderQuality = 'medium';
-            console.log('📈 Calidad aumentada a MEDIUM');
+            void 0;
         }
     }
 
@@ -1098,7 +1098,7 @@ class AREducationSystem {
             try {
                 return JSON.parse(userData);
             } catch (error) {
-                console.warn('Error parsing user data:', error);
+                void 0;
             }
         }
 
@@ -1124,7 +1124,7 @@ class AREducationSystem {
         // Actualizar puntuación
         this.updateScore(type);
 
-        console.log(`🎯 Interacción registrada: ${type} en ${target}`);
+        void 0;
     }
 
     updateScore(interactionType) {
@@ -1156,7 +1156,7 @@ class AREducationSystem {
     // === FALLBACK PARA DISPOSITIVOS SIN AR ===
 
     initializeFallbackMode() {
-        console.log('📱 Iniciando modo de simulación AR');
+        void 0;
 
         this.fallbackMode = {
             enabled: true,
@@ -1203,7 +1203,7 @@ class AREducationSystem {
 
     show3DViewer() {
         // Redirigir al Laboratorio AR/VR completo
-        console.log('🥽 Redirigiendo al Laboratorio AR/VR completo');
+        void 0;
 
         // Abrir en nueva ventana para mantener la página actual
         window.open('ar-vr-lab.html', '_blank');
@@ -1387,7 +1387,7 @@ class AREducationSystem {
         document.getElementById('ar-session-ui').style.display = 'none';
         document.getElementById('ar-selector').style.display = 'block';
 
-        console.log('🛑 Sesión AR finalizada');
+        void 0;
     }
 
     closeARInterface() {
@@ -1402,7 +1402,7 @@ class AREducationSystem {
             arInterface.classList.add('hidden');
         }
 
-        console.log('❌ Interfaz AR cerrada');
+        void 0;
     }
 
     saveSessionProgress() {
@@ -1424,7 +1424,7 @@ class AREducationSystem {
         userProgress.push(progress);
         localStorage.setItem('ar_user_progress', JSON.stringify(userProgress));
 
-        console.log('💾 Progreso de sesión guardado');
+        void 0;
     }
 }
 

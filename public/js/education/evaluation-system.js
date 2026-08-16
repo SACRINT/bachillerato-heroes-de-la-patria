@@ -613,4 +613,4 @@ if (window.BGEContext) {
     window.BGEContext.registerModule('evaluation-system', window.BGEEvaluationSystem, ['logger']);
 }
 
-console.log('✅ BGE Evaluation System cargado exitosamente');
+void 0;

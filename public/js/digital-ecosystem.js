@@ -26,8 +26,8 @@ class DigitalEcosystem {
             await this.setupSystemHealth();
             await this.connectAllSystems();
 
-            console.log('🌟 Ecosistema Digital BGE Héroes de la Patria COMPLETADO');
-            console.log('🎓 Plataforma Educativa Integral de Nueva Generación ACTIVA');
+            void 0;
+            void 0;
         } catch (error) {
             console.error('❌ Error inicializando ecosistema digital:', error);
         }
@@ -65,7 +65,7 @@ class DigitalEcosystem {
                 this.systems.set(systemId, system);
                 digitalEcosystem.connectedSystems.set(systemName, system);
 
-                console.log(`🔗 Sistema registrado: ${systemName}`);
+                void 0;
                 return system;
             },
 
@@ -85,7 +85,7 @@ class DigitalEcosystem {
 
                 this.workflows.set(workflowId, workflow);
 
-                console.log(`⚙️ Flujo de trabajo creado: ${workflowName}`);
+                void 0;
                 return workflow;
             },
 
@@ -248,7 +248,7 @@ class DigitalEcosystem {
                     sentAt: new Date().toISOString()
                 };
 
-                console.log(`📧 Notificación enviada: ${message.subject}`);
+                void 0;
                 return message;
             },
 
@@ -304,7 +304,7 @@ class DigitalEcosystem {
             }
         };
 
-        console.log('🎼 Orquestador del ecosistema inicializado');
+        void 0;
     }
 
     async initializeIntegrationHub() {
@@ -334,7 +334,7 @@ class DigitalEcosystem {
 
                 this.connectors.set(connectorId, connector);
 
-                console.log(`🔌 Conector creado: ${sourceSystem} → ${targetSystem}`);
+                void 0;
                 return connector;
             },
 
@@ -554,7 +554,7 @@ class DigitalEcosystem {
             }
         };
 
-        console.log('🔄 Hub de integración inicializado');
+        void 0;
     }
 
     async setupDataLake() {
@@ -765,7 +765,7 @@ class DigitalEcosystem {
             retention: '365d'
         });
 
-        console.log('🏊 Data Lake configurado');
+        void 0;
     }
 
     async createUnifiedAPI() {
@@ -914,7 +914,7 @@ class DigitalEcosystem {
         };
 
         await this.registerCoreEndpoints();
-        console.log('🌐 API unificada creada');
+        void 0;
     }
 
     async registerCoreEndpoints() {
@@ -1052,7 +1052,7 @@ class DigitalEcosystem {
                         await this.handleConflicts(syncSession.conflicts_detected, synchronizer);
                     }
 
-                    console.log(`🔄 Sincronización completada: ${synchronizer.name}`);
+                    void 0;
 
                 } catch (error) {
                     console.error(`Error en sincronización ${synchronizer.name}:`, error);
@@ -1203,7 +1203,7 @@ class DigitalEcosystem {
             },
 
             async applyChanges(targetSystem, differences) {
-                console.log(`📝 Aplicando ${differences.length} cambios a ${targetSystem}`);
+                void 0;
                 return true;
             },
 
@@ -1249,7 +1249,7 @@ class DigitalEcosystem {
             conflict_resolution: 'merge'
         });
 
-        console.log('🔗 Sincronización multi-plataforma configurada');
+        void 0;
     }
 
     async initializeGlobalAnalytics() {
@@ -1640,7 +1640,7 @@ class DigitalEcosystem {
         };
 
         await this.globalAnalytics.setupGlobalCollectors();
-        console.log('📊 Analytics globales inicializados');
+        void 0;
     }
 
     async setupSystemHealth() {
@@ -1822,7 +1822,7 @@ class DigitalEcosystem {
             },
 
             async handleAlert(alert) {
-                console.warn(`🚨 Alerta ${alert.severity}: ${alert.system} - ${alert.metric}: ${alert.value}`);
+                void 0;
 
                 if (alert.severity === 'critical') {
                     await this.triggerIncidentResponse(alert);
@@ -1866,7 +1866,7 @@ class DigitalEcosystem {
 
             async executeAction(action, incident) {
                 try {
-                    console.log(`🔧 Ejecutando acción: ${action.description}`);
+                    void 0;
 
                     incident.actions_taken.push({
                         action: action.type,
@@ -1921,7 +1921,7 @@ class DigitalEcosystem {
         };
 
         await this.systemHealth.initializeHealthMonitoring();
-        console.log('💊 Sistema de salud inicializado');
+        void 0;
     }
 
     async connectAllSystems() {
@@ -1993,7 +1993,7 @@ class DigitalEcosystem {
             );
         }
 
-        console.log('🌐 Todos los sistemas conectados al ecosistema');
+        void 0;
     }
 
     async deployNewCapability(capability) {

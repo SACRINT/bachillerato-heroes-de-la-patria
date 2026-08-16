@@ -49,15 +49,15 @@ class AdvancedAnalyticsManager {
     }
 
     async init() {
-        //console.log('📊 Initializing Advanced Analytics System...');
+        //void 0;
         
         // Initialize all analytics providers
         for (const [name, provider] of Object.entries(this.analytics)) {
             try {
                 await provider.init();
-                //console.log(`✅ ${name} analytics initialized`);
+                //void 0;
             } catch (error) {
-                console.warn(`⚠️ ${name} analytics failed:`, error);
+                void 0;
             }
         }
 
@@ -411,7 +411,7 @@ class AdvancedAnalyticsManager {
         try {
             await Promise.allSettled(promises);
         } catch (error) {
-            console.warn('Analytics provider error:', error);
+            void 0;
         }
     }
 
@@ -808,7 +808,7 @@ class FacebookPixelIntegration {
     async init() {
         // Only load if Pixel ID is configured
         if (!this.pixelId) {
-            //console.log('⚠️ Facebook Pixel ID not configured, skipping initialization');
+            //void 0;
             return;
         }
         
@@ -847,7 +847,7 @@ class CustomAnalyticsEngine {
     }
 
     async init() {
-        //console.log('🔧 Custom analytics engine initialized');
+        //void 0;
     }
 
     track(event, data) {
@@ -890,7 +890,7 @@ class HeatmapAnalytics {
     }
 
     async init() {
-        //console.log('🔥 Heatmap analytics initialized');
+        //void 0;
         this.setupMouseTracking();
     }
 
@@ -949,7 +949,7 @@ class PerformanceAnalytics {
     }
 
     async init() {
-        //console.log('⚡ Performance analytics initialized');
+        //void 0;
         this.setupPerformanceObserver();
     }
 

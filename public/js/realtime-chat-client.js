@@ -31,13 +31,13 @@ class RealtimeChatClient {
      */
     async connect() {
         if (this.socket?.connected) {
-            console.log('[RealtimeChat] Already connected');
+            void 0;
             return;
         }
 
         const token = this.getAuthToken();
         if (!token) {
-            console.warn('[RealtimeChat] No auth token available');
+            void 0;
             this.onError({ message: 'No authentication token' });
             return;
         }
@@ -90,14 +90,14 @@ class RealtimeChatClient {
 
         // Connection events
         this.socket.on('connect', () => {
-            console.log('[RealtimeChat] ✅ Connected');
+            void 0;
             this.connected = true;
             this.reconnectAttempts = 0;
             this.onConnect();
         });
 
         this.socket.on('disconnect', (reason) => {
-            console.log('[RealtimeChat] 🔌 Disconnected:', reason);
+            void 0;
             this.connected = false;
             this.onDisconnect(reason);
         });
@@ -110,7 +110,7 @@ class RealtimeChatClient {
 
         // Chat events
         this.socket.on('chat:message', (message) => {
-            console.log('[RealtimeChat] 📩 New message:', message);
+            void 0;
             this.onMessage(message);
             this.triggerMessageHandlers(message.conversation_id, message);
         });
@@ -126,13 +126,13 @@ class RealtimeChatClient {
 
         // Notification events
         this.socket.on('notification:new', (notification) => {
-            console.log('[RealtimeChat] 🔔 New notification:', notification);
+            void 0;
             this.onNotification(notification);
             this.showNotificationToast(notification);
         });
 
         this.socket.on('notification:read:confirmed', (data) => {
-            console.log('[RealtimeChat] Notification marked as read:', data.id);
+            void 0;
         });
 
         // Presence events
@@ -159,13 +159,13 @@ class RealtimeChatClient {
      */
     joinConversation(conversationId) {
         if (!this.socket || !this.connected) {
-            console.warn('[RealtimeChat] Not connected');
+            void 0;
             return;
         }
 
         this.currentConversation = conversationId;
         this.socket.emit('chat:join', conversationId);
-        console.log('[RealtimeChat] Joined conversation:', conversationId);
+        void 0;
     }
 
     /**
@@ -183,12 +183,12 @@ class RealtimeChatClient {
      */
     sendMessage(content, type = 'text', attachments = []) {
         if (!this.socket || !this.connected) {
-            console.warn('[RealtimeChat] Not connected');
+            void 0;
             return false;
         }
 
         if (!this.currentConversation) {
-            console.warn('[RealtimeChat] No active conversation');
+            void 0;
             return false;
         }
 
@@ -351,11 +351,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (chatContainer) {
         window.realtimeChat = new RealtimeChatClient({
             onConnect: () => {
-                console.log('🟢 Chat connected');
+                void 0;
                 chatContainer.classList.add('chat-connected');
             },
             onDisconnect: () => {
-                console.log('🔴 Chat disconnected');
+                void 0;
                 chatContainer.classList.remove('chat-connected');
             },
             onMessage: (msg) => {

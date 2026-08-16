@@ -81,7 +81,7 @@ class AutomatedTestingSystem {
             setTimeout(() => this.runAllTests(), 2000);
         }
 
-        console.log('🧪 [TESTING] Sistema de testing automático inicializado');
+        void 0;
     }
 
     createTestingUI() {
@@ -629,7 +629,7 @@ class AutomatedTestingSystem {
             outputElement.textContent += message;
             outputElement.scrollTop = outputElement.scrollHeight;
         }
-        console.log(`🧪 [TESTING] ${message.trim()}`);
+        void 0;
     }
 
     clearResults() {
@@ -702,9 +702,9 @@ class AutomatedTestingSystem {
         if (history) {
             try {
                 const data = JSON.parse(history);
-                console.log('📊 [TESTING] Historial cargado:', data.length, 'reportes anteriores');
+                void 0;
             } catch (error) {
-                console.warn('Error cargando historial de tests:', error);
+                void 0;
             }
         }
     }

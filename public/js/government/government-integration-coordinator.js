@@ -841,4 +841,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 2000);
 });
 
-console.log('✅ BGE Government Integration Coordinator cargado exitosamente');
+void 0;

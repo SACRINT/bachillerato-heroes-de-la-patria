@@ -7,7 +7,7 @@
 
 // ✅ FUNCIÓN DESACTIVADA TEMPORALMENTE - CAUSABA PROBLEMAS DE LAYOUT
 function initAcademicReportsSystem() {
-    console.log('ℹ️ Sistema de reportes académicos avanzado DESACTIVADO - usando sistema integrado del dashboard');
+    void 0;
     return false;
 }
 
@@ -30,14 +30,14 @@ function addAcademicReportsButton() {
             </ul>
         `;
         navbar.appendChild(reportsButton);
-        console.log('📊 Botón de reportes académicos agregado');
+        void 0;
     }
 }
 
 // Funciones para generar reportes específicos
 function generateAcademicReport(type) {
     if (window.academicReportsManager) {
-        console.log('📊 Generando reporte académico:', type);
+        void 0;
         window.academicReportsManager.generateReport(type);
     } else {
         alert('⚠️ Sistema de reportes no disponible. Reinicia la página.');

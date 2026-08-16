@@ -24,7 +24,7 @@
          * Inicializar la experiencia de historia
          */
         async initialize(containerId) {
-            console.log('[HISTORY-VR] Inicializando experiencia...');
+            void 0;
 
             if (!window.threeLoader) {
                 throw new Error('ThreeJSLoader no disponible');
@@ -59,7 +59,7 @@
             this.addEnvironment();
 
             this.isInitialized = true;
-            console.log('[HISTORY-VR] ✅ Experiencia inicializada');
+            void 0;
 
             return this;
         }
@@ -229,11 +229,11 @@
          * Visitar una locación histórica
          */
         async visitLocation(locationId) {
-            console.log(`[HISTORY-VR] Visitando: ${locationId}`);
+            void 0;
 
             const location = this.locations.get(locationId);
             if (!location) {
-                console.warn(`[HISTORY-VR] Locación ${locationId} no encontrada`);
+                void 0;
                 return;
             }
 
@@ -488,7 +488,7 @@
             });
 
             this.isInitialized = false;
-            console.log('[HISTORY-VR] Experiencia terminada');
+            void 0;
         }
     }
 
@@ -499,6 +499,6 @@
     window.HistoryVRExperience = HistoryVRExperience;
     window.historyVR = new HistoryVRExperience();
 
-    console.log('🏛️ History VR Experience cargado');
+    void 0;
 
 })();

@@ -890,7 +890,7 @@ if (typeof window !== 'undefined' && !window.BGE) {
         if (!window.bgeAPIsModule) {
             window.bgeAPIsModule = new BGEAPIsModule({
                 config: { debug: true },
-                dispatchEvent: (event, data) => console.log(`Event: ${event}`, data),
+                dispatchEvent: (event, data) => void 0,
                 modules: new Map()
             });
         }

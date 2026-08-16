@@ -29,7 +29,7 @@ class E2ETestingChromeMCP {
         this.isAvailable = typeof window.mcp__chrome_devtools__take_snapshot === 'function' ||
                           typeof window.mcp__chrome_devtools__navigate_page === 'function';
 
-        console.log('🤖 [E2E-MCP] Chrome DevTools MCP disponible:', this.isAvailable);
+        void 0;
     }
 
     defineTestScenarios() {
@@ -110,7 +110,7 @@ class E2ETestingChromeMCP {
 
     init() {
         this.createE2EUI();
-        console.log('🤖 [E2E-MCP] Sistema E2E inicializado con', this.testScenarios.length, 'escenarios');
+        void 0;
     }
 
     createE2EUI() {
@@ -590,7 +590,7 @@ class E2ETestingChromeMCP {
             }
         } else {
             // Simulación
-            console.log('📸 [E2E-SIMULATED] Snapshot tomado');
+            void 0;
             return { success: true, duration: Date.now() - startTime };
         }
     }
@@ -679,7 +679,7 @@ class E2ETestingChromeMCP {
             outputElement.textContent += message;
             outputElement.scrollTop = outputElement.scrollHeight;
         }
-        console.log(`🤖 [E2E-MCP] ${message.trim()}`);
+        void 0;
     }
 
     updateE2EStats(type, delta) {

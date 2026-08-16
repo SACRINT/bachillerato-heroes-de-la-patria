@@ -64,7 +64,7 @@
             localStorage.getItem('authToken');
 
         if (!token) {
-            console.warn('[IACOINS] ⚠️ No se encontró token de autenticación');
+            void 0;
             throw new Error('No autenticado - redirigiendo a login');
         }
 
@@ -457,7 +457,7 @@
     // INICIALIZACIÓN
     // =========================================
     async function init() {
-        console.log('[IACOINS] Inicializando IACoins Dashboard...');
+        void 0;
 
         // Verificar autenticación (buscar token en sistema unificado)
         const token = sessionStorage.getItem('bge_auth_token') ||
@@ -466,7 +466,7 @@
             localStorage.getItem('authToken');
 
         if (!token) {
-            console.warn('[IACOINS] 🔐 Usuario no autenticado - redirigiendo a login');
+            void 0;
             // Esperar un poco antes de redirigir para que se cargue bien la página
             setTimeout(() => {
                 window.location.href = '/index.html';
@@ -489,7 +489,7 @@
                 checkPersonalityProfile() // ✅ Semana 9
             ]);
 
-            console.log('[IACOINS] Dashboard cargado correctamente');
+            void 0;
         } catch (error) {
             console.error('[IACOINS] Error inicializando dashboard:', error);
             state.error = error.message;
@@ -676,7 +676,7 @@
                 }
             }
         } catch (error) {
-            console.warn('[IACOINS] Error checking personality profile:', error);
+            void 0;
         }
     }
 

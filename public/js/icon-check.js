@@ -23,13 +23,13 @@ function checkFontAwesome() {
                         fontFamily.includes('Font Awesome');
         
         if (!isLoaded) {
-            console.warn('⚠️ Font Awesome no se cargó correctamente');
+            void 0;
             // Opcional: Mostrar notificación discreta al admin
             if (window.location.pathname.includes('admin-dashboard')) {
                 showAdminNotification('Font Awesome no se cargó. Algunos iconos pueden no aparecer.');
             }
         } else {
-            //console.log('✅ Font Awesome funcionando correctamente');
+            //void 0;
         }
         
         document.body.removeChild(testIcon);

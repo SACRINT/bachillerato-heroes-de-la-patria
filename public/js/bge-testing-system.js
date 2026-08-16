@@ -97,7 +97,7 @@ class BGETestingSystem {
 
     async init() {
         try {
-            console.log('🧪 Iniciando BGE Sistema de Testing Integral...');
+            void 0;
 
             // Crear interfaz de testing
             this.createTestingInterface();
@@ -108,7 +108,7 @@ class BGETestingSystem {
             // Preparar entorno de testing
             await this.prepareTestingEnvironment();
 
-            console.log('✅ Sistema de Testing iniciado exitosamente');
+            void 0;
 
         } catch (error) {
             console.error('❌ Error inicializando Sistema de Testing:', error);
@@ -1077,7 +1077,7 @@ class BGETestingSystem {
         logContainer.scrollTop = logContainer.scrollHeight;
 
         // También log en consola
-        console.log(`[BGE Testing] ${message}`);
+        void 0;
     }
 
     generateTestReport() {
@@ -1095,7 +1095,7 @@ class BGETestingSystem {
         localStorage.setItem('bge_test_report', JSON.stringify(report));
 
         // Mostrar en consola
-        console.log('📊 REPORTE DE TESTING BGE:', report);
+        void 0;
 
         // Simular descarga (en implementación real sería un archivo)
         this.log('✅ Reporte generado y guardado localmente', 'success');
@@ -1153,7 +1153,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Esperar un poco para que se carguen los otros sistemas
         setTimeout(() => {
             window.bgeTestingSystem = new BGETestingSystem();
-            console.log('🧪 Sistema de Testing BGE inicializado');
+            void 0;
 
             // Exponer métodos globales
             window.runBGETests = () => window.bgeTestingSystem.runAllTests();

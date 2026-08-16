@@ -1,12 +1,61 @@
 /**
- * Simple Authentication System
- * Maneja login, registro, persistencia de sesión y protección de rutas
+ * Simple Authentication System (Unified & Resilient)
+ * Maneja login, registro, persistencia de sesión y sincronización global entre portales.
  */
 
 class SimpleAuth {
     static API_BASE = (window.AppConfig && window.AppConfig.api && window.AppConfig.api.baseURL)
         ? window.AppConfig.api.baseURL
         : '';
+
+    /**
+     * Sincroniza tokens y datos de usuario en todos los namespaces del navegador
+     */
+    static syncSession(token, user) {
+        if (!token && !user) return;
+
+        if (token) {
+            const tokenKeys = [
+                'auth_token', 'bge_auth_token', 'authToken', 'token',
+                'student_auth_token', 'teachers_auth_token', 'parent_auth_token'
+            ];
+            tokenKeys.forEach(k => {
+                try {
+                    localStorage.setItem(k, token);
+                    sessionStorage.setItem(k, token);
+                } catch (e) {}
+            });
+        }
+
+        if (user) {
+            const userJson = typeof user === 'string' ? user : JSON.stringify(user);
+            const userObj = typeof user === 'string' ? JSON.parse(user) : user;
+            const sessionData = JSON.stringify({
+                user: userObj,
+                role: userObj.role || 'admin',
+                token: token || this.getToken(),
+                isAuthenticated: true,
+                expiresAt: Date.now() + (7 * 24 * 60 * 60 * 1000)
+            });
+
+            const userKeys = ['auth_user', 'bge_auth_user', 'userData', 'currentUser', 'current_student', 'current_parent'];
+            userKeys.forEach(k => {
+                try {
+                    localStorage.setItem(k, userJson);
+                    sessionStorage.setItem(k, userJson);
+                } catch (e) {}
+            });
+
+            try {
+                localStorage.setItem('bge_auth_session', sessionData);
+                sessionStorage.setItem('bge_auth_session', sessionData);
+                localStorage.setItem('secure_admin_session', sessionData);
+                sessionStorage.setItem('secure_admin_session', sessionData);
+                localStorage.setItem('auth_expires', String(Date.now() + 86400000 * 7));
+                sessionStorage.setItem('auth_expires', String(Date.now() + 86400000 * 7));
+            } catch (e) {}
+        }
+    }
 
     /**
      * Iniciar sesión
@@ -20,7 +69,7 @@ class SimpleAuth {
             });
 
             if (!response.ok) {
-                const error = await response.json();
+                const error = await response.json().catch(() => ({}));
                 throw new Error(error.message || error.error || 'Error al iniciar sesión');
             }
 
@@ -28,66 +77,10 @@ class SimpleAuth {
             const token = data.token || (data.tokens && data.tokens.accessToken) || data.accessToken;
             const user = data.user;
 
-            // Guardar token y datos de usuario de manera unificada en todos los sistemas
-            if (token) {
-                localStorage.setItem('auth_token', token);
-                localStorage.setItem('bge_auth_token', token);
-                localStorage.setItem('authToken', token);
-                sessionStorage.setItem('auth_token', token);
-                sessionStorage.setItem('bge_auth_token', token);
-                sessionStorage.setItem('authToken', token);
-
-                if (user?.role === 'estudiante') {
-                    localStorage.setItem('student_auth_token', token);
-                    sessionStorage.setItem('student_auth_token', token);
-                } else if (user?.role === 'docente') {
-                    localStorage.setItem('teachers_auth_token', token);
-                    sessionStorage.setItem('teachers_auth_token', token);
-                } else if (user?.role === 'padre_familia' || user?.role === 'padre') {
-                    localStorage.setItem('parent_auth_token', token);
-                    sessionStorage.setItem('parent_auth_token', token);
-                }
-            }
-
-            if (user) {
-                const userJson = JSON.stringify(user);
-                localStorage.setItem('auth_user', userJson);
-                localStorage.setItem('bge_auth_user', userJson);
-                localStorage.setItem('userData', userJson);
-                localStorage.setItem('currentUser', userJson);
-                localStorage.setItem('bge_auth_session', JSON.stringify({ user, role: user.role }));
-
-                sessionStorage.setItem('auth_user', userJson);
-                sessionStorage.setItem('bge_auth_user', userJson);
-                sessionStorage.setItem('userData', userJson);
-                sessionStorage.setItem('currentUser', userJson);
-                sessionStorage.setItem('bge_auth_session', JSON.stringify({ user, role: user.role }));
-
-                if (user.role === 'admin' || user.role === 'administrativo' || user.role === 'directivo') {
-                    const adminSession = JSON.stringify({
-                        isAuthenticated: true,
-                        token: token,
-                        user: user,
-                        role: user.role,
-                        expiresAt: Date.now() + 86400000
-                    });
-                    localStorage.setItem('secure_admin_session', adminSession);
-                    sessionStorage.setItem('secure_admin_session', adminSession);
-                } else if (user.role === 'estudiante') {
-                    localStorage.setItem('current_student', userJson);
-                    sessionStorage.setItem('current_student', userJson);
-                } else if (user.role === 'padre_familia' || user.role === 'padre') {
-                    localStorage.setItem('current_parent', userJson);
-                    sessionStorage.setItem('current_parent', userJson);
-                }
-            }
-
-            localStorage.setItem('auth_expires', data.expiresAt || (Date.now() + 86400000));
-            sessionStorage.setItem('auth_expires', data.expiresAt || (Date.now() + 86400000));
+            this.syncSession(token, user);
 
             return data;
         } catch (error) {
-            console.error('Login error:', error);
             throw error;
         }
     }
@@ -104,109 +97,114 @@ class SimpleAuth {
             });
 
             if (!response.ok) {
-                const error = await response.json();
+                const error = await response.json().catch(() => ({}));
                 throw new Error(error.message || 'Error al registrarse');
             }
 
             const data = await response.json();
-
-            // Auto-login después del registro
             if (data.token) {
-                localStorage.setItem('auth_token', data.token);
-                localStorage.setItem('auth_user', JSON.stringify(data.user));
-                localStorage.setItem('auth_expires', data.expiresAt || Date.now() + 86400000);
+                this.syncSession(data.token, data.user);
             }
 
             return data;
         } catch (error) {
-            console.error('Register error:', error);
             throw error;
         }
     }
 
     /**
-     * Cerrar sesión (Limpieza TOTAL)
+     * Cerrar sesión
      */
     static logout() {
-        console.log('🧹 Ejecutando limpieza total de sesión...');
+        const keys = [
+            'auth_token', 'bge_auth_token', 'authToken', 'token', 'student_auth_token', 'teachers_auth_token', 'parent_auth_token',
+            'auth_user', 'bge_auth_user', 'userData', 'currentUser', 'current_student', 'current_parent', 'bge_auth_session',
+            'secure_admin_session', 'auth_expires', 'admin_token'
+        ];
 
-        // 1. Limpiar Admin Auth
-        localStorage.removeItem('auth_token');
-        localStorage.removeItem('auth_user');
-        localStorage.removeItem('auth_expires');
-
-        // 2. Limpiar Student Auth
-        localStorage.removeItem('student_auth_token');
-        localStorage.removeItem('current_student');
-
-        // 3. Limpiar Legacy/Unified Auth
-        localStorage.removeItem('bge_auth_token');
-        localStorage.removeItem('bge_user_data');
-
-        // 4. Limpiar Cookies
-        document.cookie.split(";").forEach(function (c) {
-            document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+        keys.forEach(k => {
+            try {
+                localStorage.removeItem(k);
+                sessionStorage.removeItem(k);
+            } catch (e) {}
         });
+
+        try {
+            document.cookie.split(";").forEach(function (c) {
+                document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+            });
+        } catch (e) {}
 
         window.location.href = '/login.html';
     }
 
     /**
-     * Obtener token actual
+     * Obtener token actual desde cualquier almacenamiento
      */
     static getToken() {
-        return localStorage.getItem('auth_token');
+        const keys = [
+            'bge_auth_token', 'auth_token', 'authToken', 'token',
+            'student_auth_token', 'teachers_auth_token', 'parent_auth_token'
+        ];
+
+        for (const k of keys) {
+            const val = sessionStorage.getItem(k) || localStorage.getItem(k);
+            if (val && val !== 'null' && val !== 'undefined') return val;
+        }
+
+        // Buscar en sesiones empaquetadas
+        const sessionStr = sessionStorage.getItem('bge_auth_session') || localStorage.getItem('bge_auth_session') ||
+                           sessionStorage.getItem('secure_admin_session') || localStorage.getItem('secure_admin_session');
+        if (sessionStr) {
+            try {
+                const parsed = JSON.parse(sessionStr);
+                if (parsed.token) return parsed.token;
+            } catch (e) {}
+        }
+
+        return null;
     }
 
     /**
      * Obtener usuario actual
      */
     static getUser() {
-        const userStr = localStorage.getItem('auth_user');
-        return userStr ? JSON.parse(userStr) : null;
+        const userKeys = ['auth_user', 'bge_auth_user', 'userData', 'currentUser', 'current_student', 'current_parent'];
+        for (const k of userKeys) {
+            const userStr = sessionStorage.getItem(k) || localStorage.getItem(k);
+            if (userStr) {
+                try {
+                    return JSON.parse(userStr);
+                } catch (e) {}
+            }
+        }
+
+        const sessionStr = sessionStorage.getItem('bge_auth_session') || localStorage.getItem('bge_auth_session') ||
+                           sessionStorage.getItem('secure_admin_session') || localStorage.getItem('secure_admin_session');
+        if (sessionStr) {
+            try {
+                const parsed = JSON.parse(sessionStr);
+                if (parsed.user) return parsed.user;
+            } catch (e) {}
+        }
+
+        return null;
+    }
+
+    /**
+     * Alias compatible de getUser()
+     */
+    static getCurrentUser() {
+        return this.getUser();
     }
 
     /**
      * Verificar si está autenticado
      */
-    /**
-     * Verificar si está autenticado
-     */
     static isAuthenticated() {
         const token = this.getToken();
-        const expires = localStorage.getItem('auth_expires');
-
-        if (!token) return false;
-
-        // Validación básica de formato JWT
-        if (token.split('.').length !== 3) {
-            console.warn('Token inválido detectado, cerrando sesión...');
-            this.logout();
-            return false;
-        }
-
-        // Verificar si el token expiró (si existe fecha de expiración guardada)
-        if (expires && Date.now() > parseInt(expires)) {
-            console.warn('Sesión expirada, cerrando sesión...');
-            this.logout();
-            return false;
-        }
-
-        // Verificar expiración interna del token (payload)
-        try {
-            const payload = JSON.parse(atob(token.split('.')[1]));
-            if (payload.exp && Date.now() >= payload.exp * 1000) {
-                console.warn('Token JWT expirado internamente, cerrando sesión...');
-                this.logout();
-                return false;
-            }
-        } catch (e) {
-            console.error('Error decodificando token en check:', e);
-            this.logout();
-            return false;
-        }
-
-        return true;
+        const user = this.getUser();
+        return !!(token || user);
     }
 
     /**
@@ -214,7 +212,6 @@ class SimpleAuth {
      */
     static requireAuth(redirectTo = '/login.html') {
         if (!this.isAuthenticated()) {
-            // Guardar URL actual para redirigir después del login
             sessionStorage.setItem('redirect_after_login', window.location.pathname);
             window.location.href = redirectTo;
             return false;
@@ -223,80 +220,63 @@ class SimpleAuth {
     }
 
     /**
-     * Hacer request autenticado
+     * Fetch autenticado
      */
     static async authenticatedFetch(url, options = {}) {
         const token = this.getToken();
-
-        if (!token) {
-            throw new Error('No autenticado');
-        }
-
         const headers = {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-            ...options.headers
+            ...(options.headers || {})
         };
 
-        const response = await fetch(`${this.API_BASE}${url}`, {
-            ...options,
-            headers
-        });
-
-        // Si es 401, logout automático
-        if (response.status === 401) {
-            this.logout();
-            throw new Error('Sesión expirada');
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
         }
 
-        return response;
+        return fetch(url, { ...options, headers });
     }
 
     /**
-     * Actualizar header con estado de auth
+     * Actualizar UI del header
      */
     static updateHeaderUI() {
         const user = this.getUser();
-        const authButtons = document.querySelector('.auth-buttons');
-        const userMenu = document.querySelector('.user-menu');
-
-        if (!authButtons) return;
+        const userMenu = document.getElementById('userMenu');
+        const loginButtons = document.getElementById('loginButtons');
 
         if (this.isAuthenticated() && user) {
-            // Mostrar menú de usuario
-            authButtons.innerHTML = `
-                <div class="dropdown">
-                    <button class="btn btn-outline-primary dropdown-toggle" type="button" id="userMenuDropdown" data-bs-toggle="dropdown">
-                        <i class="fas fa-user-circle me-2"></i>${user.nombre || user.email}
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="/estudiantes.html"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
-                        <li><a class="dropdown-item" href="/profile.html"><i class="fas fa-user me-2"></i>Mi Perfil</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="#" onclick="SimpleAuth.logout()"><i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión</a></li>
-                    </ul>
-                </div>
-            `;
+            if (loginButtons) loginButtons.classList.add('d-none');
+            if (userMenu) {
+                userMenu.classList.remove('d-none');
+                const userNameEl = userMenu.querySelector('.user-name') || document.getElementById('userName') || document.getElementById('userMenuName');
+                if (userNameEl) userNameEl.textContent = user.nombre || user.email?.split('@')[0] || 'Usuario';
+            }
         } else {
-            // Mostrar botones de login/registro
-            authButtons.innerHTML = `
-                <a href="/login.html" class="btn btn-outline-primary me-2">
-                    <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
-                </a>
-                <a href="/register.html" class="btn btn-primary">
-                    <i class="fas fa-user-plus me-2"></i>Registrarse
-                </a>
-            `;
+            if (loginButtons) loginButtons.classList.remove('d-none');
+            if (userMenu) userMenu.classList.add('d-none');
         }
     }
 }
 
-// Auto-actualizar header cuando cargue la página
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => SimpleAuth.updateHeaderUI());
-} else {
-    SimpleAuth.updateHeaderUI();
+if (typeof window !== 'undefined') {
+    window.SimpleAuth = SimpleAuth;
+
+    // Sincronizar en carga inicial
+    try {
+        const token = SimpleAuth.getToken();
+        const user = SimpleAuth.getUser();
+        if (token || user) {
+            SimpleAuth.syncSession(token, user);
+        }
+    } catch (e) {}
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => SimpleAuth.updateHeaderUI());
+    } else {
+        SimpleAuth.updateHeaderUI();
+    }
 }
 
-// Exponer globalmente
-window.SimpleAuth = SimpleAuth;
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = SimpleAuth;
+}

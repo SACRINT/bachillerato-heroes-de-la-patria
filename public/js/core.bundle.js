@@ -13,7 +13,7 @@ class NotificationManager {
     }
 
     init() {
-        console.log('🔔 Sistema de Notificaciones Iniciado');
+        void 0;
         this.setupEventListeners();
     }
 
@@ -42,7 +42,7 @@ class AITutorInterface {
     }
 
     init() {
-        console.log('🤖 IA Tutor Iniciado');
+        void 0;
         this.createFloatingButton();
         this.createWidget();
     }
@@ -254,5 +254,5 @@ document.addEventListener('DOMContentLoaded', function() {
     window.notificationManager = new NotificationManager();
     window.aiTutor = new AITutorInterface();
 
-    console.log('✅ BGE Framework Core Bundle Cargado');
+    void 0;
 });

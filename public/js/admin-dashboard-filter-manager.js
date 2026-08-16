@@ -209,28 +209,28 @@
     // ============================================
 
     function filterEgresados() {
-        console.log('[ADMIN-FILTER-MANAGER] Filtrando egresados...');
+        void 0;
         if (window.filterEgresados) {
             window.filterEgresados();
         }
     }
 
     function filterBolsaTrabajo() {
-        console.log('[ADMIN-FILTER-MANAGER] Filtrando bolsa de trabajo...');
+        void 0;
         if (window.filterBolsaTrabajo) {
             window.filterBolsaTrabajo();
         }
     }
 
     function filterSuscriptores() {
-        console.log('[ADMIN-FILTER-MANAGER] Filtrando suscriptores...');
+        void 0;
         if (window.filterSuscriptores) {
             window.filterSuscriptores();
         }
     }
 
     function filterApprovals() {
-        console.log('[ADMIN-FILTER-MANAGER] Filtrando aprobaciones...');
+        void 0;
         if (window.filterApprovals) {
             window.filterApprovals();
         }

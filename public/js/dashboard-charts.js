@@ -70,7 +70,7 @@ class DashboardCharts {
 
             const ctx = document.getElementById('chartNoticiasPorMes');
             if (!ctx) {
-                console.warn('⚠️ Canvas chartNoticiasPorMes no encontrado');
+                void 0;
                 return;
             }
 
@@ -159,7 +159,7 @@ class DashboardCharts {
 
             const ctx = document.getElementById('chartEventosPorCategoria');
             if (!ctx) {
-                console.warn('⚠️ Canvas chartEventosPorCategoria no encontrado');
+                void 0;
                 return;
             }
 
@@ -241,7 +241,7 @@ class DashboardCharts {
 
             const ctx = document.getElementById('chartQuejasPorTipo');
             if (!ctx) {
-                console.warn('⚠️ Canvas chartQuejasPorTipo no encontrado');
+                void 0;
                 return;
             }
 
@@ -314,7 +314,7 @@ class DashboardCharts {
 
             const ctx = document.getElementById('chartSuscriptoresCrecimiento');
             if (!ctx) {
-                console.warn('⚠️ Canvas chartSuscriptoresCrecimiento no encontrado');
+                void 0;
                 return;
             }
 
@@ -394,7 +394,7 @@ class DashboardCharts {
      * Actualizar todas las gráficas
      */
     async refreshAll() {
-        console.log('🔄 Actualizando todas las gráficas...');
+        void 0;
         await this.init();
     }
 
@@ -408,7 +408,7 @@ class DashboardCharts {
             }
         });
         this.chartInstances = {};
-        console.log('🗑️ Todas las gráficas destruidas');
+        void 0;
     }
 }
 

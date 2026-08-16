@@ -122,7 +122,7 @@ class BGEAsistenteVirtualEducativo {
 
     async init() {
         try {
-            console.log('🤖 Iniciando BGE Asistente Virtual Educativo...');
+            void 0;
 
             // Cargar configuración personalizada
             await this.loadConfiguration();
@@ -142,7 +142,7 @@ class BGEAsistenteVirtualEducativo {
             // Activar sistema
             this.state.isActive = true;
 
-            console.log('✅ Asistente Virtual Educativo iniciado exitosamente');
+            void 0;
 
             // Registrar métricas de inicio
             this.trackEvent('system_initialized', {
@@ -172,10 +172,10 @@ class BGEAsistenteVirtualEducativo {
                 this.applyUserConfiguration(userConfig);
             }
 
-            console.log('📋 Configuración cargada:', this.config);
+            void 0;
 
         } catch (error) {
-            console.warn('⚠️ Error cargando configuración, usando valores por defecto');
+            void 0;
         }
     }
 
@@ -192,10 +192,10 @@ class BGEAsistenteVirtualEducativo {
 
             // Verificar disponibilidad de modelos
             const modelsStatus = await this.verifyModelsHealth();
-            console.log('🧠 Modelos de IA inicializados:', modelsStatus);
+            void 0;
 
         } catch (error) {
-            console.warn('⚠️ Algunos modelos de IA no están disponibles, usando fallbacks');
+            void 0;
             await this.initializeFallbackModels();
         }
     }
@@ -214,10 +214,10 @@ class BGEAsistenteVirtualEducativo {
             // Cargar recursos educativos
             this.educationalResources = await this.loadEducationalResources();
 
-            console.log('📚 Base de conocimientos preparada');
+            void 0;
 
         } catch (error) {
-            console.warn('⚠️ Error cargando base de conocimientos, usando contenido local');
+            void 0;
             this.setupLocalKnowledgeBase();
         }
     }
@@ -234,13 +234,13 @@ class BGEAsistenteVirtualEducativo {
 
             if (healthCheck.ok) {
                 this.backendStatus = 'connected';
-                console.log('🔗 Conexión con backend establecida');
+                void 0;
             } else {
                 throw new Error('Backend no disponible');
             }
 
         } catch (error) {
-            console.warn('⚠️ Backend no disponible, usando modo offline');
+            void 0;
             this.backendStatus = 'offline';
             this.setupOfflineMode();
         }
@@ -952,13 +952,13 @@ class BGEAsistenteVirtualEducativo {
 
     handleVoiceInput() {
         // Placeholder para reconocimiento de voz
-        console.log('🎤 Función de voz en desarrollo');
+        void 0;
         alert('Función de reconocimiento de voz próximamente disponible');
     }
 
     handleFileAttachment() {
         // Placeholder para adjuntos
-        console.log('📎 Función de adjuntos en desarrollo');
+        void 0;
         alert('Función de adjuntar archivos próximamente disponible');
     }
 
@@ -1008,7 +1008,7 @@ class BGEAsistenteVirtualEducativo {
             localStorage.setItem('bge_asistente_events', JSON.stringify(events.slice(-100))); // Mantener últimos 100
 
         } catch (error) {
-            console.warn('⚠️ Error en tracking:', error);
+            void 0;
         }
     }
 
@@ -1040,7 +1040,7 @@ window.bgeAsistenteVirtual = null;
 document.addEventListener('DOMContentLoaded', () => {
     try {
         window.bgeAsistenteVirtual = new BGEAsistenteVirtualEducativo();
-        console.log('🤖 Asistente Virtual BGE inicializado y listo');
+        void 0;
 
         // Exponer métodos globales para fácil acceso
         window.activarAsistente = () => window.bgeAsistenteVirtual.activate();

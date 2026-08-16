@@ -17,7 +17,7 @@ class BGELoader {
             'js/core/dependency-analyzer.js'
         ];
 
-        console.log('🚀 BGE Loader iniciando...');
+        void 0;
         this.init();
     }
 
@@ -48,7 +48,7 @@ class BGELoader {
         if (!this.isModuleLoaded(loggerPath)) {
             try {
                 await this.loadScript(loggerPath);
-                console.log('✅ BGE Logger cargado exitosamente');
+                void 0;
             } catch (error) {
                 console.error('❌ Error cargando BGE Logger:', error);
             }
@@ -298,4 +298,4 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = BGELoader;
 }
 
-console.log('✅ BGE Loader System cargado exitosamente');
+void 0;

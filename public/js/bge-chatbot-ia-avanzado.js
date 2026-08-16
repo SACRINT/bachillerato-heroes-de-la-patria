@@ -45,7 +45,7 @@ class BGEChatbotIAAvanzado {
      * INICIALIZACIÓN DEL SISTEMA IA
      */
     async init() {
-        console.log('🤖 BGE Chatbot IA Avanzado - Inicializando...');
+        void 0;
 
         try {
             // Verificar conexión con API
@@ -64,7 +64,7 @@ class BGEChatbotIAAvanzado {
             this.setupEventListeners();
 
             this.isInitialized = true;
-            console.log('✅ BGE Chatbot IA - Sistema inicializado correctamente');
+            void 0;
 
             // Mensaje de bienvenida inteligente
             await this.sendWelcomeMessage();
@@ -95,13 +95,13 @@ class BGEChatbotIAAvanzado {
                 const data = await response.json();
                 this.systemStatus.apiConnected = true;
                 this.aiConfig.model = data.availableModel || this.aiConfig.model;
-                console.log(`🔌 API IA conectada - Modelo: ${this.aiConfig.model}`);
+                void 0;
             } else {
                 throw new Error(`API health check failed: ${response.status}`);
             }
 
         } catch (error) {
-            console.warn('⚠️ API IA no disponible, usando modo fallback');
+            void 0;
             this.systemStatus.apiConnected = false;
             this.systemStatus.lastError = error.message;
         }
@@ -150,10 +150,10 @@ class BGEChatbotIAAvanzado {
             this.currentContext.userAgent = navigator.userAgent;
             this.currentContext.language = navigator.language || 'es-MX';
 
-            console.log('👤 Contexto de usuario inicializado:', this.currentContext.userType);
+            void 0;
 
         } catch (error) {
-            console.warn('⚠️ Error inicializando contexto:', error);
+            void 0;
         }
     }
 
@@ -305,7 +305,7 @@ class BGEChatbotIAAvanzado {
             return this.processEducationalResponse(aiResponse);
 
         } catch (error) {
-            console.warn('⚠️ Error con IA externa, usando fallback:', error.message);
+            void 0;
 
             // Si falla la IA externa, usar local
             return await this.processWithLocalIA(message);
@@ -671,7 +671,7 @@ CONTEXTO ACTUAL DEL USUARIO:
         try {
             localStorage.setItem('bge-chatbot-history', JSON.stringify(this.conversationHistory));
         } catch (error) {
-            console.warn('No se pudo guardar el historial:', error);
+            void 0;
         }
     }
 
@@ -682,7 +682,7 @@ CONTEXTO ACTUAL DEL USUARIO:
                 this.conversationHistory = JSON.parse(saved);
             }
         } catch (error) {
-            console.warn('No se pudo cargar el historial:', error);
+            void 0;
             this.conversationHistory = [];
         }
     }
@@ -1196,7 +1196,7 @@ CONTEXTO ACTUAL DEL USUARIO:
         this.currentContext.userType = userType;
         Object.assign(this.currentContext, additionalContext);
 
-        console.log('👤 Contexto actualizado:', this.currentContext);
+        void 0;
     }
 }
 

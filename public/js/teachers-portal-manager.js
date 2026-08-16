@@ -560,7 +560,7 @@ class TeachersPortalManager {
      */
     async loadAttendanceSection() {
         // Implementar según necesidad
-        console.log('Loading attendance section');
+        void 0;
     }
 
     /**
@@ -568,7 +568,7 @@ class TeachersPortalManager {
      */
     async startAttendanceSession() {
         // Implementar modal para seleccionar clase y fecha
-        console.log('Starting attendance session');
+        void 0;
     }
 
     /**

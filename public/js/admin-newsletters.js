@@ -21,7 +21,7 @@ const API_BASE = '/api';
 // ============================================
 
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('📧 Inicializando panel de newsletters...');
+    void 0;
 
     // Cargar estadísticas
     await loadStatistics();
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Configurar eventos
     setupEventListeners();
 
-    console.log('✅ Panel de newsletters listo');
+    void 0;
 });
 
 // ============================================
@@ -58,7 +58,7 @@ async function loadStatistics() {
                 : 0;
             document.getElementById('averageEmails').textContent = avg;
 
-            console.log('✅ Estadísticas cargadas:', statistics);
+            void 0;
         }
     } catch (error) {
         console.error('❌ Error cargando estadísticas:', error);
@@ -100,7 +100,7 @@ async function loadSubscribers() {
                 renderSubscribers(subscribers);
             }
 
-            console.log(`✅ ${subscribers.length} suscriptores cargados`);
+            void 0;
         }
     } catch (error) {
         console.error('❌ Error cargando suscriptores:', error);
@@ -187,7 +187,7 @@ async function loadNewsletterHistory() {
                 });
             }
 
-            console.log(`✅ ${newsletters.length} newsletters cargadas`);
+            void 0;
         }
     } catch (error) {
         console.error('❌ Error cargando historial:', error);
@@ -353,7 +353,7 @@ async function sendNewsletter(subject, content, targetCategory) {
         spinner.classList.add('active');
         resultDiv.innerHTML = DOMPurify.sanitize( DOMPurify.sanitize(''));
 
-        console.log('📤 Enviando newsletter...');
+        void 0;
 
         const response = await fetch(`${API_BASE}/newsletters/send`, {
             method: 'POST',
@@ -370,7 +370,7 @@ async function sendNewsletter(subject, content, targetCategory) {
         const data = await response.json();
 
         if (data.success) {
-            console.log('✅ Newsletter enviada:', data.newsletter);
+            void 0;
 
             resultDiv.innerHTML = DOMPurify.sanitize(`
                 <div class="alert alert-success">

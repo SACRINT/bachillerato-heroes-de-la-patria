@@ -76,7 +76,7 @@ class StudentSuccessPredictor {
 
       const data = await response.json();
 
-      console.log(`[ML-Client] Prediction for ${studentId}:`, data.prediction.risk_category);
+      void 0;
 
       return data.prediction;
 
@@ -148,7 +148,7 @@ class StudentSuccessPredictor {
 
       const data = await response.json();
 
-      console.log(`[ML-Client] Batch prediction complete: ${data.predictions.length} students`);
+      void 0;
 
       return data.predictions;
 
@@ -181,7 +181,7 @@ class StudentSuccessPredictor {
 
       const data = await response.json();
 
-      console.log(`[ML-Client] Found ${data.high_risk_count} high-risk students`);
+      void 0;
 
       return data.high_risk_students;
 
@@ -405,4 +405,4 @@ window.StudentSuccessPredictor = StudentSuccessPredictor;
 // Crear instancia global
 window.mlPredictor = new StudentSuccessPredictor();
 
-console.log('[ML-Client] Student Success Predictor loaded');
+void 0;

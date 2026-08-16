@@ -9,17 +9,17 @@
  * Actualizar las citas (refresh)
  */
 function refreshCitas() {
-    console.log('🔄 [CITAS] Actualizando datos de citas...');
+    void 0;
     if (window.citasManager) {
         window.citasManager.loadCitas().then(() => {
-            console.log('✅ [CITAS] Datos actualizados correctamente');
+            void 0;
             showNotification('✅ Citas actualizadas', 'success');
         }).catch(error => {
             console.error('❌ [CITAS] Error al actualizar:', error);
             showNotification('❌ Error al actualizar citas', 'error');
         });
     } else {
-        console.warn('⚠️ [CITAS] CitasManager no disponible');
+        void 0;
         showNotification('⚠️ El gestor de citas no está listo', 'warning');
     }
 }
@@ -28,7 +28,7 @@ function refreshCitas() {
  * Exportar citas a CSV
  */
 function exportCitasToCSV() {
-    console.log('📊 [CITAS] Exportando a CSV...');
+    void 0;
 
     try {
         const table = document.getElementById('citasTable');
@@ -65,7 +65,7 @@ function exportCitasToCSV() {
         link.click();
         document.body.removeChild(link);
 
-        console.log('✅ [CITAS] CSV exportado exitosamente');
+        void 0;
         showNotification('✅ CSV exportado exitosamente', 'success');
 
     } catch (error) {
@@ -78,7 +78,7 @@ function exportCitasToCSV() {
  * Imprimir reporte de citas
  */
 function printCitasReport() {
-    console.log('🖨️ [CITAS] Preparando reporte para impresión...');
+    void 0;
 
     try {
         const table = document.getElementById('citasTable');
@@ -211,7 +211,7 @@ function printCitasReport() {
             printWindow.close();
         }, 500);
 
-        console.log('✅ [CITAS] Reporte enviado a impresión');
+        void 0;
         showNotification('✅ Reporte enviado a impresora', 'success');
 
     } catch (error) {

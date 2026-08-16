@@ -732,4 +732,4 @@ if (window.BGEContext) {
         window.BGEDataSynchronizationSystem, ['logger']);
 }
 
-console.log('✅ BGE Data Synchronization System cargado exitosamente');
+void 0;

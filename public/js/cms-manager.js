@@ -1113,28 +1113,28 @@ function clearComunicadoForm() {
 
 // Funciones de edición (placeholders para futuras implementaciones)
 async function editNoticia(id) {
-    console.log('🖊️ Editando noticia:', id);
+    void 0;
     if (window.cmsManager) {
         await window.cmsManager.editNoticia(id);
     }
 }
 
 async function editEvento(id) {
-    console.log('🖊️ Editando evento:', id);
+    void 0;
     if (window.cmsManager) {
         await window.cmsManager.editEvento(id);
     }
 }
 
 async function editAviso(id) {
-    console.log('🖊️ Editando aviso:', id);
+    void 0;
     if (window.cmsManager) {
         await window.cmsManager.editAviso(id);
     }
 }
 
 async function editComunicado(id) {
-    console.log('🖊️ Editando comunicado:', id);
+    void 0;
     if (window.cmsManager) {
         await window.cmsManager.editComunicado(id);
     }

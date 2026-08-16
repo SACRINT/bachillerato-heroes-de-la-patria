@@ -24,7 +24,7 @@ class PushNotificationClient {
      */
     async initialize() {
         if (!this.isSupported) {
-            console.warn('[Push] Push notifications not supported in this browser');
+            void 0;
             return false;
         }
 
@@ -34,13 +34,13 @@ class PushNotificationClient {
 
             // Register service worker
             this.registration = await navigator.serviceWorker.register('/sw-push.js');
-            console.log('[Push] Service Worker registered');
+            void 0;
 
             // Check existing subscription
             this.subscription = await this.registration.pushManager.getSubscription();
 
             if (this.subscription) {
-                console.log('[Push] Already subscribed');
+                void 0;
                 return true;
             }
 
@@ -78,11 +78,11 @@ class PushNotificationClient {
         const permission = await Notification.requestPermission();
 
         if (permission === 'granted') {
-            console.log('[Push] Permission granted');
+            void 0;
             this.onPermissionGranted();
             return 'granted';
         } else {
-            console.log('[Push] Permission denied');
+            void 0;
             this.onPermissionDenied();
             return permission;
         }
@@ -115,7 +115,7 @@ class PushNotificationClient {
                 applicationServerKey
             });
 
-            console.log('[Push] Subscribed:', this.subscription.endpoint);
+            void 0;
 
             // Send subscription to server
             await this.sendSubscriptionToServer(this.subscription);
@@ -152,7 +152,7 @@ class PushNotificationClient {
             });
 
             this.subscription = null;
-            console.log('[Push] Unsubscribed');
+            void 0;
             return true;
 
         } catch (error) {

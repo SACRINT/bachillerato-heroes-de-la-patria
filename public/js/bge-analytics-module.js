@@ -1690,7 +1690,7 @@ if (typeof window !== 'undefined' && !window.BGE) {
         if (!window.bgeAnalyticsModule) {
             window.bgeAnalyticsModule = new BGEAnalyticsModule({
                 config: { debug: true },
-                dispatchEvent: (event, data) => console.log(`Event: ${event}`, data),
+                dispatchEvent: (event, data) => void 0,
                 modules: new Map()
             });
         }

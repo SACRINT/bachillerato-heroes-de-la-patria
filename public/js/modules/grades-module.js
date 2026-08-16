@@ -7,13 +7,13 @@ class GradesModule {
         this.eventBus = eventBus;
         this.grades = [];
         this.apiEndpoint = '/api/grades';
-        console.log('[GRADES-MODULE] 📊 Grades Module creado');
+        void 0;
     }
 
     async init() {
         this.subscribeToEvents();
         await this.loadGrades();
-        console.log('[GRADES-MODULE] ✅ Inicializado');
+        void 0;
     }
 
     subscribeToEvents() {
@@ -30,7 +30,7 @@ class GradesModule {
             const data = await response.json();
             this.grades = data.grades || data || [];
             this.eventBus.emit('grades.loaded', { grades: this.grades, count: this.grades.length });
-            console.log(`[GRADES-MODULE] ✅ ${this.grades.length} calificaciones cargadas`);
+            void 0;
         } catch (error) {
             console.error('[GRADES-MODULE] ❌ Error:', error);
             this.eventBus.emit('grades.error', { operation: 'load', error: error.message });
@@ -100,6 +100,6 @@ class GradesModule {
         return headers;
     }
 
-    destroy() { this.grades = []; console.log('[GRADES-MODULE] ✅ Destruido'); }
+    destroy() { this.grades = []; void 0; }
 }
 window.GradesModule = GradesModule;

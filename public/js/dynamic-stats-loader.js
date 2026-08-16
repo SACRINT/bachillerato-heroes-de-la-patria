@@ -7,7 +7,7 @@ class DynamicStatsLoader {
     constructor() {
         this.statsFile = '/data/estadisticas.json';
         this.stats = {};
-        console.log('📊 Dynamic Stats Loader inicializado');
+        void 0;
     }
 
     /**
@@ -15,7 +15,7 @@ class DynamicStatsLoader {
      */
     async loadStats() {
         try {
-            console.log('📡 Cargando estadísticas desde:', this.statsFile);
+            void 0;
             const response = await fetch(this.statsFile);
 
             if (!response.ok) {
@@ -23,7 +23,7 @@ class DynamicStatsLoader {
             }
 
             this.stats = await response.json();
-            console.log('✅ Estadísticas cargadas:', this.stats);
+            void 0;
 
             // Actualizar la interfaz
             this.updateDashboardStats();
@@ -43,7 +43,7 @@ class DynamicStatsLoader {
      * Cargar estadísticas por defecto
      */
     loadDefaultStats() {
-        console.log('📋 Cargando estadísticas por defecto...');
+        void 0;
 
         this.stats = {
             estudiantes: {
@@ -73,7 +73,7 @@ class DynamicStatsLoader {
      */
     updateDashboardStats() {
         try {
-            console.log('🔄 Actualizando dashboard principal...');
+            void 0;
 
             // Elementos del dashboard principal
             const elements = {
@@ -99,7 +99,7 @@ class DynamicStatsLoader {
                 elements.generalAverage.textContent = this.stats.promedio?.valor || '0.0';
             }
 
-            console.log('✅ Dashboard principal actualizado');
+            void 0;
         } catch (error) {
             console.error('❌ Error actualizando dashboard:', error);
         }
@@ -110,7 +110,7 @@ class DynamicStatsLoader {
      */
     updateModalStats() {
         try {
-            console.log('🔄 Actualizando estadísticas del modal...');
+            void 0;
 
             // Elementos del modal
             const modalElements = {
@@ -136,7 +136,7 @@ class DynamicStatsLoader {
                 modalElements.modalGeneralAverage.textContent = this.stats.promedio?.valor || '0.0';
             }
 
-            console.log('✅ Modal actualizado');
+            void 0;
         } catch (error) {
             console.error('❌ Error actualizando modal:', error);
         }
@@ -147,7 +147,7 @@ class DynamicStatsLoader {
      */
     async saveStats(newStats) {
         try {
-            console.log('💾 Guardando estadísticas:', newStats);
+            void 0;
 
             // Actualizar el objeto interno
             this.stats = {
@@ -198,19 +198,19 @@ class DynamicStatsLoader {
                 });
 
                 if (response.ok) {
-                    console.log('✅ Estadísticas guardadas en servidor');
+                    void 0;
                 } else {
-                    console.log('⚠️ Servidor no disponible, guardado solo en localStorage');
+                    void 0;
                 }
             } catch (serverError) {
-                console.log('⚠️ Servidor no disponible, guardado solo en localStorage');
+                void 0;
             }
 
             // Actualizar la interfaz
             this.updateDashboardStats();
             this.updateModalStats();
 
-            console.log('✅ Estadísticas guardadas exitosamente');
+            void 0;
             return true;
         } catch (error) {
             console.error('❌ Error guardando estadísticas:', error);
@@ -229,7 +229,7 @@ class DynamicStatsLoader {
      * Inicializar el sistema
      */
     async init() {
-        console.log('🚀 Inicializando Dynamic Stats Loader...');
+        void 0;
 
         // Cargar estadísticas al inicio
         await this.loadStats();
@@ -240,7 +240,7 @@ class DynamicStatsLoader {
         // Configurar recarga automática cuando se abre la página
         this.setupPageReloadHandler();
 
-        console.log('✅ Dynamic Stats Loader inicializado correctamente');
+        void 0;
     }
 
     /**
@@ -258,11 +258,11 @@ class DynamicStatsLoader {
         const saveButton = document.querySelector('#statisticsConfigForm button[type="submit"], button[onclick*="saveInstitutionalStats"], #saveStatsBtn');
 
         if (saveButton) {
-            console.log('🔧 Configurando evento de guardar estadísticas');
+            void 0;
 
             saveButton.addEventListener('click', async (e) => {
                 e.preventDefault();
-                console.log('💾 Botón guardar presionado');
+                void 0;
 
                 // Obtener valores del formulario
                 const newStats = {
@@ -272,7 +272,7 @@ class DynamicStatsLoader {
                     generalAverage: document.getElementById('configGeneralAverage')?.value || '0.0'
                 };
 
-                console.log('📊 Nuevas estadísticas:', newStats);
+                void 0;
 
                 // Guardar las estadísticas
                 const success = await this.saveStats(newStats);
@@ -294,7 +294,7 @@ class DynamicStatsLoader {
                 }
             });
         } else {
-            console.log('⚠️ Botón de guardar no encontrado, configurando evento alternativo...');
+            void 0;
 
             // Configurar evento en el documento para capturar cualquier clic en guardar
             document.addEventListener('click', async (e) => {
@@ -302,7 +302,7 @@ class DynamicStatsLoader {
                     e.target.id === 'saveStatsBtn' ||
                     e.target.closest('button')?.textContent?.includes('Guardar')) {
 
-                    console.log('💾 Evento guardar detectado');
+                    void 0;
 
                     const newStats = {
                         totalStudents: document.getElementById('configTotalStudents')?.value || '0',
@@ -324,7 +324,7 @@ class DynamicStatsLoader {
      * Mostrar mensaje de éxito
      */
     showSuccessMessage() {
-        console.log('✅ Mostrando mensaje de éxito');
+        void 0;
 
         // Crear toast o alerta
         const alertDiv = document.createElement('div');
@@ -350,7 +350,7 @@ class DynamicStatsLoader {
      * Mostrar mensaje de error
      */
     showErrorMessage() {
-        console.log('❌ Mostrando mensaje de error');
+        void 0;
 
         const alertDiv = document.createElement('div');
         alertDiv.className = 'alert alert-danger alert-dismissible fade show position-fixed';
@@ -373,7 +373,7 @@ class DynamicStatsLoader {
 
 // Auto-inicializar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('🚀 DOM cargado, inicializando Dynamic Stats Loader...');
+    void 0;
 
     // Crear instancia global
     window.dynamicStatsLoader = new DynamicStatsLoader();
@@ -391,4 +391,4 @@ window.reloadStats = async () => {
     }
 };
 
-console.log('📊 dynamic-stats-loader.js cargado correctamente');
+void 0;

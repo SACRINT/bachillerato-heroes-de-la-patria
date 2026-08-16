@@ -91,7 +91,7 @@ class TinyMCEManager {
             paste_data_images: true,
             paste_as_text: false,
             paste_preprocess: (plugin, args) => {
-                console.log('📋 [TINYMCE] Pegando contenido:', args.content.substring(0, 100) + '...');
+                void 0;
             },
 
             // Otros
@@ -109,17 +109,17 @@ class TinyMCEManager {
 
                     // VERIFICAR Y FORZAR MODO EDITABLE
                     if (editor.mode && editor.mode.get() === 'readonly') {
-                        console.warn(`⚠️ [TINYMCE] Editor #${editor.id} está en readonly. Forzando design mode...`);
+                        void 0;
                         editor.mode.set('design');
                     }
                 });
 
                 editor.on('change', () => {
-                    console.log(`📝 [TINYMCE] Contenido modificado en: #${editor.id}`);
+                    void 0;
                 });
 
                 editor.on('focus', () => {
-                    console.log(`👁️ [TINYMCE] Editor #${editor.id} tiene foco`);
+                    void 0;
                 });
             },
 
@@ -227,7 +227,7 @@ class TinyMCEManager {
         if (editor) {
             editor.remove();
             delete this.editors[selector];
-            console.log(`🗑️ [TINYMCE] Editor removido: ${selector}`);
+            void 0;
         }
     }
 
@@ -241,7 +241,7 @@ class TinyMCEManager {
         if (typeof tinymce !== 'undefined') {
             tinymce.remove();
         }
-        console.log('🗑️ [TINYMCE] Todos los editores removidos');
+        void 0;
     }
 
     /**
@@ -266,7 +266,7 @@ class TinyMCEManager {
             const result = await response.json();
 
             if (result.success && result.url) {
-                console.log('✅ [TINYMCE] Imagen subida:', result.url);
+                void 0;
                 return result.url;
             } else {
                 throw new Error(result.error || 'Error desconocido al subir imagen');

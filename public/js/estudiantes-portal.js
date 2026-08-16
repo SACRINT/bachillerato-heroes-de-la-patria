@@ -111,7 +111,7 @@ function showTasksModal() {
             const modal = new bootstrap.Modal(document.getElementById('tasksModal'));
             modal.show();
         } else {
-            console.warn('⚠️ Bootstrap no disponible, mostrando modal con fallback');
+            void 0;
             document.getElementById('tasksModal').style.display = 'block';
             document.getElementById('tasksModal').classList.add('show');
         }
@@ -392,7 +392,7 @@ function editClass(dia, modulo) {
             const modal = new bootstrap.Modal(document.getElementById('modal-clase-pwa'));
             modal.show();
         } else {
-            console.warn('⚠️ Bootstrap no disponible, mostrando modal con fallback');
+            void 0;
             document.getElementById('modal-clase-pwa').style.display = 'block';
             document.getElementById('modal-clase-pwa').classList.add('show');
         }
@@ -416,7 +416,7 @@ function deleteClass() {
                 document.getElementById('modal-clase-pwa').classList.remove('show');
             }
         } catch (error) {
-            console.warn('⚠️ Error cerrando modal:', error);
+            void 0;
         }
 
         showAlert('Clase eliminada correctamente', 'success');
@@ -583,7 +583,7 @@ function contactForRegistration() {
             const contactModal = new bootstrap.Modal(document.getElementById('contactModal'));
             contactModal.show();
         } else {
-            console.warn('⚠️ Bootstrap no disponible, mostrando modal con fallback');
+            void 0;
             document.getElementById('contactModal').style.display = 'block';
             document.getElementById('contactModal').classList.add('show');
         }
@@ -602,7 +602,7 @@ function contactForRegistration() {
 // ===========================================================================
 
 function showStudentLogin() {
-    console.log('[ESTUDIANTES] 🔐 Abriendo modal de login estudiantil...');
+    void 0;
     if (window.studentDashboard) {
         window.studentDashboard.showLoginModal();
     } else {
@@ -630,11 +630,11 @@ function checkStudentAuthStatus() {
     if (authToken) {
         // Usuario ya logueado, ocultar prompt
         hideLoginPrompt();
-        console.log('[ESTUDIANTES] ✅ Usuario ya autenticado');
+        void 0;
     } else {
         // Mostrar prompt de login
         showLoginPrompt();
-        console.log('[ESTUDIANTES] ℹ️ Usuario no autenticado, mostrando prompt');
+        void 0;
     }
 }
 
@@ -674,7 +674,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         document.getElementById('modal-clase-pwa').classList.remove('show');
                     }
                 } catch (error) {
-                    console.warn('[ESTUDIANTES] ⚠️ Error cerrando modal:', error);
+                    void 0;
                 }
 
                 showAlert('Clase guardada correctamente', 'success');

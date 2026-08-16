@@ -16,7 +16,7 @@ class MultiSchoolPlatform {
             await this.initializeRegionManager();
             await this.setupSharedResources();
 
-            console.log('💫 Sistema Multi-Escolar BGE Héroes iniciado');
+            void 0;
         } catch (error) {
             console.error('❌ Error inicializando sistema multi-escolar:', error);
         }
@@ -200,7 +200,7 @@ class MultiSchoolPlatform {
                         await this.reconcileStudentData(conflict);
                         break;
                     default:
-                        console.warn('Tipo de conflicto no reconocido:', conflict.type);
+                        void 0;
                 }
             }
         };

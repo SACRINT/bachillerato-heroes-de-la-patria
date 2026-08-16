@@ -22,11 +22,7 @@
       log: (tag, message, data = null) => {
         if (!window.DEBUG_MODE) return;
         const timestamp = new Date().toLocaleTimeString();
-        console.log(
-          `%c[${timestamp}] [${tag}] ${message}`,
-          'color: #0066cc; font-weight: bold;',
-          data || ''
-        );
+        void 0;
       },
 
       /**
@@ -38,11 +34,7 @@
       warn: (tag, message, data = null) => {
         if (!window.DEBUG_MODE) return;
         const timestamp = new Date().toLocaleTimeString();
-        console.warn(
-          `%c[${timestamp}] [${tag}] ${message}`,
-          'color: #ff9900; font-weight: bold;',
-          data || ''
-        );
+        void 0;
       },
 
       /**

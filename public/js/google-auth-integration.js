@@ -11,7 +11,7 @@ class GoogleAuthIntegration {
             this.clientId = window.AppConfig.getGoogleClientId();
             this.hasValidClientId = window.AppConfig.isEnabled('google');
         } else {
-            console.warn('⚠️ AppConfig no disponible, usando configuración legacy');
+            void 0;
             // ✅ CONFIGURACIÓN REAL DE GOOGLE OAUTH
             this.clientId = this.isDevelopment()
                 ? '411638938693-87nmapmm146kci8i0p80jo745cost08h.apps.googleusercontent.com' // Client ID real
@@ -25,11 +25,7 @@ class GoogleAuthIntegration {
         this.useOfflineMode = false;
         this.isIndexPage = window.location.pathname === '/' || window.location.pathname.includes('index.html');
 
-        console.log('🔧 [Google Auth] Inicializando con:', {
-            hasValidClientId: this.hasValidClientId,
-            clientIdConfigured: this.clientId ? '✅ Sí' : '❌ No',
-            isIndexPage: this.isIndexPage
-        });
+        void 0;
 
         if (this.isIndexPage) {
             this.initializeGoogleAuth();
@@ -43,7 +39,7 @@ class GoogleAuthIntegration {
     }
 
     async initializeGoogleAuth() {
-        console.log('🔧 Inicializando Google Auth con configuración mejorada...');
+        void 0;
 
         // Esperar a que el header se cargue dinámicamente
         await this.waitForHeader();
@@ -53,18 +49,18 @@ class GoogleAuthIntegration {
 
         // MEJORADO: Solo cargar Google Services si tenemos un Client ID válido
         if (this.hasValidClientId) {
-            console.log('🔑 Client ID válido detectado, cargando Google Services...');
+            void 0;
             try {
                 await this.loadGoogleIdentityServices();
-                console.log('✅ Google Identity Services cargado correctamente');
-                console.log('🔑 Client ID configurado:', this.clientId.substring(0, 20) + '...');
+                void 0;
+                void 0;
             } catch (error) {
-                console.log('⚠️ Error cargando Google Services:', error.message);
+                void 0;
                 this.setupOfflineMode();
             }
         } else {
-            console.log('💡 Client ID no configurado - usando modo demostración');
-            console.log('ℹ️ Para Google OAuth real, configura CLIENT_ID en google-auth-integration.js');
+            void 0;
+            void 0;
             this.setupOfflineMode();
         }
         this.setupLoginButton();
@@ -77,38 +73,38 @@ class GoogleAuthIntegration {
         return new Promise((resolve, reject) => {
             // Verificar si ya está cargado
             if (window.google && window.google.accounts) {
-                console.log('✅ Google Identity Services ya estaba cargado');
+                void 0;
                 resolve();
                 return;
             }
 
-            console.log('📥 Cargando Google Identity Services...');
+            void 0;
 
             const script = document.createElement('script');
             script.src = 'https://accounts.google.com/gsi/client';
 
             // Configurar timeout para evitar espera infinita
             const timeout = setTimeout(() => {
-                console.warn('⏰ Timeout cargando Google Services - continuando en modo offline');
+                void 0;
                 reject(new Error('Timeout loading Google Services'));
             }, 8000); // Aumentado a 8 segundos para dar más tiempo
 
             script.onload = () => {
                 clearTimeout(timeout);
-                console.log('✅ Google Identity Services cargado exitosamente');
+                void 0;
 
                 // Verificar que realmente se cargó correctamente
                 if (window.google && window.google.accounts) {
                     resolve();
                 } else {
-                    console.warn('⚠️ Google Services cargado pero API no disponible');
+                    void 0;
                     reject(new Error('Google API not available after load'));
                 }
             };
 
             script.onerror = (error) => {
                 clearTimeout(timeout);
-                console.warn('❌ Error cargando Google Services - usando modo offline');
+                void 0;
                 reject(error);
             };
 
@@ -117,17 +113,17 @@ class GoogleAuthIntegration {
     }
 
     setupOfflineMode() {
-        console.log('🔧 Configurando modo offline para Google Auth...');
+        void 0;
 
         // Simular que Google está disponible pero usar métodos alternativos
         window.google = {
             accounts: {
                 id: {
                     initialize: (config) => {
-                        console.log('📱 Google Auth en modo offline - usando fallbacks');
+                        void 0;
                     },
                     prompt: () => {
-                        console.log('📱 Google prompt simulado - usando login alternativo');
+                        void 0;
                         // Mostrar opciones de login alternativo
                         this.showAlternativeLoginOptions();
                     }
@@ -192,7 +188,7 @@ class GoogleAuthIntegration {
 
     showGoogleLoginModal() {
         // NUEVA FUNCIÓN: Modal que simula la interfaz de Google Sign-In
-        console.log('🎭 Creando modal de Google Sign-In simulado...');
+        void 0;
 
         // Remover modal anterior si existe
         const existingModal = document.getElementById('googleSignInModal');
@@ -291,12 +287,12 @@ class GoogleAuthIntegration {
             });
         }
 
-        console.log('✅ Modal de Google Sign-In mostrado exitosamente');
+        void 0;
     }
 
     showGoogleErrorModal(errorMessage) {
         // Modal para mostrar errores de Google OAuth de forma amigable
-        console.log('❌ Mostrando modal de error de Google OAuth...');
+        void 0;
 
         const modal = document.createElement('div');
         modal.className = 'modal fade';
@@ -344,7 +340,7 @@ class GoogleAuthIntegration {
         const bootstrapModal = new bootstrap.Modal(modal);
         bootstrapModal.show();
 
-        console.log('✅ Modal de error de Google mostrado');
+        void 0;
     }
 
     async waitForHeader() {
@@ -363,11 +359,11 @@ class GoogleAuthIntegration {
 
     createGoogleLoginButton() {
         if (!this.isIndexPage) {
-            console.log('📍 No está en página index, saltando creación de botón');
+            void 0;
             return;
         }
 
-        console.log('🔘 Creando botón de login...');
+        void 0;
 
         // Buscar el navbar con múltiples selectores de fallback
         let navbar = document.querySelector('.navbar .navbar-nav');
@@ -378,12 +374,12 @@ class GoogleAuthIntegration {
             navbar = document.querySelector('.navbar-nav');
         }
         if (!navbar) {
-            console.warn('❌ No se encontró el navbar para agregar el botón de login');
-            console.log('📋 Elementos navbar disponibles:', document.querySelectorAll('[class*="nav"]'));
+            void 0;
+            void 0;
             return;
         }
 
-        console.log('✅ Navbar encontrado:', navbar);
+        void 0;
 
         // Crear container para el botón de Google Auth
         const authContainer = document.createElement('li');
@@ -463,16 +459,16 @@ class GoogleAuthIntegration {
         `);
 
         // Agregar al final del navbar
-        console.log('🔗 Agregando botón al navbar...');
+        void 0;
         navbar.appendChild(authContainer);
-        console.log('✅ Botón de login agregado exitosamente al navbar');
+        void 0;
 
         // Verificar que el botón se agregó correctamente
         const addedButton = document.getElementById('googleLoginContainer');
         if (addedButton) {
-            console.log('✅ Verificación: Botón encontrado en DOM con ID:', addedButton.id);
+            void 0;
         } else {
-            console.warn('❌ Verificación: Botón NO encontrado en DOM después de agregarlo');
+            void 0;
         }
     }
 
@@ -542,18 +538,18 @@ class GoogleAuthIntegration {
 
     async handleGoogleLogin() {
         try {
-            console.log('🔐 Iniciando proceso de login con Google...');
+            void 0;
 
             // VERIFICAR: Si tenemos un Client ID válido configurado
             if (!this.hasValidClientId) {
-                console.log('⚠️ Client ID no configurado - usando modo demostración');
+                void 0;
                 this.showGoogleLoginModal();
                 return;
             }
 
             // PRIORIDAD 1: Intentar Google OAuth real si está disponible
             if (window.google && window.google.accounts) {
-                console.log('🌐 Usando Google OAuth real...');
+                void 0;
                 try {
                     window.google.accounts.id.initialize({
                         client_id: this.clientId,
@@ -564,7 +560,7 @@ class GoogleAuthIntegration {
                     window.google.accounts.id.prompt();
                     return; // Salir aquí si Google OAuth está disponible
                 } catch (initError) {
-                    console.warn('⚠️ Error inicializando Google OAuth:', initError);
+                    void 0;
                     this.showGoogleErrorModal(initError.message);
                     return;
                 }
@@ -572,11 +568,11 @@ class GoogleAuthIntegration {
 
             // PRIORIDAD 2: Solo intentar cargar si tenemos Client ID válido
             if (this.hasValidClientId) {
-                console.log('🔄 Google Services no disponible, intentando cargar...');
+                void 0;
 
                 try {
                     await this.loadGoogleIdentityServices();
-                    console.log('✅ Google Services cargado, reintentando login...');
+                    void 0;
 
                     // Si se cargó exitosamente, inicializar OAuth real
                     if (window.google && window.google.accounts) {
@@ -588,14 +584,14 @@ class GoogleAuthIntegration {
                         return;
                     }
                 } catch (loadError) {
-                    console.warn('⚠️ No se pudo cargar Google Services:', loadError);
+                    void 0;
                 }
             } else {
-                console.log('⚠️ Client ID no válido - saltando carga de Google Services');
+                void 0;
             }
 
             // FALLBACK: Solo si todo lo anterior falla, mostrar modal demo
-            console.log('🎭 Usando modal de demostración como fallback...');
+            void 0;
             this.showGoogleLoginModal();
 
         } catch (error) {
@@ -652,7 +648,7 @@ class GoogleAuthIntegration {
     }
 
     async handleSecureLogin(userEmail, userPassword) {
-        console.log('🔐 Iniciando login seguro con contraseña...');
+        void 0;
 
         // VALIDAR CONTRASEÑA
         if (!this.validateUserPassword(userEmail, userPassword)) {
@@ -759,7 +755,7 @@ class GoogleAuthIntegration {
     async isAccountApproved(email, role) {
         try {
             // NUEVO: Verificar aprobación contra el backend
-            console.log('[USER_ACTION]');
+            void 0;
 
             const response = await fetch(`/api/admin/check-approval/${encodeURIComponent(email)}`, {
                 method: 'GET',
@@ -769,7 +765,7 @@ class GoogleAuthIntegration {
             });
 
             if (!response.ok) {
-                console.warn('⚠️ Error del servidor al verificar aprobación:', response.status);
+                void 0;
                 // En caso de error del servidor, denegar acceso por seguridad
                 return false;
             }
@@ -777,12 +773,12 @@ class GoogleAuthIntegration {
             const data = await response.json();
 
             if (data.success && data.approved !== undefined) {
-                console.log(`✅ Aprobación verificada`);
+                void 0;
                 return data.approved;
             }
 
             // Si la respuesta no tiene el formato esperado, denegar acceso
-            console.warn('⚠️ Respuesta inesperada del servidor:', data);
+            void 0;
             return false;
 
         } catch (error) {
@@ -838,7 +834,7 @@ class GoogleAuthIntegration {
 
         // NUEVO: Recarga automática después del login para actualizar toda la UI
         setTimeout(() => {
-            console.log('🔄 Recargando página para actualizar toda la interfaz...');
+            void 0;
             window.location.reload();
         }, 2000); // Delay de 2 segundos para que se vea el mensaje de bienvenida
     }
@@ -894,12 +890,12 @@ class GoogleAuthIntegration {
     }
 
     notifyAdminNewRequest(user) {
-        console.log(`🔔 Nueva solicitud de acceso`);
+        void 0;
         // Aquí se podría enviar una notificación real al administrador
     }
 
     updateUIAfterLogin(user) {
-        console.log('🔧 Actualizando UI después del login');
+        void 0;
 
         const loginDropdownContainer = document.getElementById('loginDropdownContainer');
         const profileDropdown = document.getElementById('userProfileDropdown');
@@ -908,7 +904,7 @@ class GoogleAuthIntegration {
 
         // NUEVA LÓGICA: Crear menú completo con subelementos
         if (loginDropdownContainer && userSessionStatus && currentUserName) {
-            console.log('✅ Elementos encontrados, creando menú completo con subelementos');
+            void 0;
 
             // Actualizar el nombre del usuario
             currentUserName.textContent = user.name || 'Usuario';
@@ -955,22 +951,18 @@ class GoogleAuthIntegration {
                     ${user.name || 'Usuario Conectado'}
                 `);
                 loginButton.className = 'btn btn-success btn-sm dropdown-toggle ms-2';
-                console.log('✅ Botón de login actualizado correctamente');
+                void 0;
             } else {
-                console.warn('❌ No se encontró el botón loginDropdown');
+                void 0;
             }
 
-            console.log('✅ Menú completo con subelementos creado exitosamente');
+            void 0;
         } else {
-            console.warn('❌ No se encontraron los elementos necesarios:', {
-                loginDropdownContainer: !!loginDropdownContainer,
-                userSessionStatus: !!userSessionStatus,
-                currentUserName: !!currentUserName
-            });
+            void 0;
 
             // Intentar nuevamente después de un pequeño delay
             setTimeout(() => {
-                console.log('🔄 Reintentando actualización de UI...');
+                void 0;
                 this.updateUIAfterLogin(user);
             }, 1000);
         }
@@ -1092,11 +1084,11 @@ class GoogleAuthIntegration {
 
     setupPersistenceProtection() {
         // Sistema de protección ULTRA-AGRESIVO contra interferencias DOM
-        console.log('🛡️ Configurando protección de persistencia ULTRA-AGRESIVA...');
+        void 0;
 
         const userSessionStatus = document.getElementById('googleUserSessionStatus');
         if (!userSessionStatus) {
-            console.warn('⚠️ Elemento de sesión no encontrado para proteger');
+            void 0;
             return;
         }
 
@@ -1106,14 +1098,14 @@ class GoogleAuthIntegration {
                 if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
                     const target = mutation.target;
                     if (target.id === 'googleUserSessionStatus' && target.classList.contains('d-none')) {
-                        console.log('🚨 INTERFERENCIA DETECTADA - RESTAURANDO INMEDIATAMENTE');
+                        void 0;
 
                         // Verificar que realmente hay una sesión activa
                         const savedUser = localStorage.getItem('bge_user');
                         if (savedUser) {
                             // Restauración INMEDIATA sin timeout
                             target.classList.remove('d-none');
-                            console.log('⚡ Estado restaurado INSTANTÁNEAMENTE');
+                            void 0;
 
                             // Marcar elemento como protegido
                             target.setAttribute('data-google-protected', 'true');
@@ -1129,7 +1121,7 @@ class GoogleAuthIntegration {
             const savedUser = localStorage.getItem('bge_user');
 
             if (currentStatus && savedUser && currentStatus.classList.contains('d-none')) {
-                console.log('🔄 PROTECCIÓN AGRESIVA - FORZANDO VISIBILIDAD');
+                void 0;
                 currentStatus.classList.remove('d-none');
                 currentStatus.setAttribute('data-google-protected', 'true');
             }
@@ -1141,7 +1133,7 @@ class GoogleAuthIntegration {
             if (classes.includes('d-none')) {
                 const savedUser = localStorage.getItem('bge_user');
                 if (savedUser) {
-                    console.log('🚫 BLOQUEANDO intento de ocultar elemento de Google Auth');
+                    void 0;
                     return; // Bloquear completamente el addClass('d-none')
                 }
             }
@@ -1156,7 +1148,7 @@ class GoogleAuthIntegration {
                 const savedUser = localStorage.getItem('bge_user');
                 // Solo permitir cambios si hay contenido válido o no hay usuario logueado
                 if (savedUser && (!value || value.trim() === '')) {
-                    console.log('🚫 BLOQUEANDO intento de borrar contenido del menú de usuario');
+                    void 0;
                     return; // Bloquear vaciado del innerHTML
                 }
                 return originalInnerHTML.set.call(this, value);
@@ -1170,7 +1162,7 @@ class GoogleAuthIntegration {
                 const element = document.getElementById('googleUserSessionStatus');
                 const savedUser = localStorage.getItem('bge_user');
                 if (element && savedUser && element.classList.contains('d-none')) {
-                    console.log(`🔄 CONTRAATAQUE TEMPORIZADO ${delay}ms - RESTAURANDO`);
+                    void 0;
                     element.classList.remove('d-none');
                     element.setAttribute('data-google-protected', 'true');
                 }
@@ -1187,7 +1179,7 @@ class GoogleAuthIntegration {
         this.persistenceObserver = observer;
         this.aggressiveInterval = aggressiveInterval;
 
-        console.log('✅ PROTECCIÓN ULTRA-AGRESIVA configurada - Element ID:', userSessionStatus.id);
+        void 0;
     }
 
     // ===== FUNCIONES PARA REGISTRO DE NUEVOS USUARIOS =====
@@ -1301,7 +1293,7 @@ class GoogleAuthIntegration {
             }, 500);
         }
 
-        console.log('📝 Nueva solicitud de registro:', newUser);
+        void 0;
     }
 }
 
@@ -1455,7 +1447,7 @@ function initiateDemoLogin() {
 
 // NUEVO: Función para forzar actualización de TODOS los componentes de IA
 async function forceUpdateAllIAComponents(userSession) {
-    console.log('🔄 Forzando actualización de todos los componentes de IA...');
+    void 0;
 
     // 1. Actualizar panel de IA si existe
     if (window.iaDashboard) {
@@ -1463,9 +1455,9 @@ async function forceUpdateAllIAComponents(userSession) {
             window.iaDashboard.loadUserSession();
             window.iaDashboard.updateUIAfterLogin();
             window.iaDashboard.renderAccessInterface();
-            console.log('✅ Panel de IA actualizado');
+            void 0;
         } catch (error) {
-            console.warn('⚠️ Error actualizando panel de IA:', error);
+            void 0;
         }
     }
 
@@ -1481,7 +1473,7 @@ async function forceUpdateAllIAComponents(userSession) {
                 element.dispatchEvent(updateEvent);
             }
         });
-        console.log('✅ Modales de IA actualizados');
+        void 0;
     }, 200);
 
     // 3. Forzar re-renderizado de estado de usuario en navbar
@@ -1489,7 +1481,7 @@ async function forceUpdateAllIAComponents(userSession) {
         const authContainer = document.getElementById('googleLoginContainer');
         if (authContainer && userSession && window.googleAuth) {
             window.googleAuth.updateUIAfterLogin(userSession);
-            console.log('✅ Navbar actualizado');
+            void 0;
         }
     }, 300);
 
@@ -1523,7 +1515,7 @@ function openAchievements() {
 
 // PROTECCIÓN GLOBAL ULTRA-TEMPRANA
 (function() {
-    console.log('🛡️ INICIANDO PROTECCIÓN GLOBAL TEMPRANA CONTRA INTERFERENCIAS');
+    void 0;
 
     // Protección cada 1 segundo de forma permanente
     setInterval(() => {
@@ -1531,13 +1523,13 @@ function openAchievements() {
         const savedUser = localStorage.getItem('bge_user');
 
         if (element && savedUser && element.classList.contains('d-none')) {
-            console.log('🚨 PROTECCIÓN GLOBAL: Restaurando estado oculto');
+            void 0;
             element.classList.remove('d-none');
             element.setAttribute('data-global-protected', 'true');
         }
     }, 1000); // Cada segundo
 
-    console.log('✅ PROTECCIÓN GLOBAL ACTIVADA - Monitoreo cada 1 segundo');
+    void 0;
 })();
 
 // Inicializar solo en index.html
@@ -1556,7 +1548,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const user = JSON.parse(savedUser);
                 const userSession = JSON.parse(savedSession);
 
-                console.log('🔄 Restaurando sesión guardada:', user.name);
+                void 0;
 
                 // Verificar si el usuario sigue siendo válido/aprobado (con fallback)
                 const isApproved = window.googleAuth.checkUserApprovalStatus ?
@@ -1565,7 +1557,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 if (isApproved) {
                     // CRÍTICO: Actualizar UI inmediatamente y repetidamente para asegurar persistencia
-                    console.log('✅ Actualizando UI para usuario logueado');
+                    void 0;
                     window.googleAuth.updateUIAfterLogin(user);
 
                     // NUEVO: Sistema de protección anti-interferencia más agresivo
@@ -1575,14 +1567,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         const userSessionStatus = document.getElementById('googleUserSessionStatus');
 
                         if (userSessionStatus && userSessionStatus.classList.contains('d-none')) {
-                            console.log(`🔄 Reactivando estado de sesión interferido (intento ${verificationCount})`);
-                            console.log('🔍 Posible interferencia de admin-auth.js detectada');
+                            void 0;
+                            void 0;
                             window.googleAuth.updateUIAfterLogin(user);
                         }
 
                         if (verificationCount >= 10) { // Verificar 10 veces en 20 segundos (más agresivo)
                             clearInterval(persistenceInterval);
-                            console.log('✅ Verificación de persistencia completada');
+                            void 0;
 
                             // PROTECCIÓN FINAL: Observer para vigilar cambios DOM
                             window.googleAuth.setupPersistenceProtection();
@@ -1597,15 +1589,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Usuario ya no aprobado, limpiar sesión
                     localStorage.removeItem('bge_user');
                     localStorage.removeItem('userSession');
-                    console.log('🔒 Usuario ya no está aprobado, sesión limpiada');
+                    void 0;
                 }
             } catch (error) {
-                console.warn('⚠️ Error verificando sesión guardada:', error);
+                void 0;
                 localStorage.removeItem('bge_user');
                 localStorage.removeItem('userSession');
             }
         } else {
-            console.log('ℹ️ No hay sesión guardada para restaurar');
+            void 0;
         }
     }
 });

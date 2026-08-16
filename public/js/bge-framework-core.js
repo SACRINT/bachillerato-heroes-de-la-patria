@@ -153,12 +153,7 @@ class BGEFramework {
             const frameworkUptime = currentTime - this.performance.startTime;
 
             if (this.config.debug) {
-                console.log('📊 BGE Framework Metrics:', {
-                    uptime: `${(frameworkUptime / 1000).toFixed(2)}s`,
-                    modulesLoaded: this.performance.metrics.modulesLoaded,
-                    totalModules: this.modules.size,
-                    memoryUsage: this.getMemoryUsage()
-                });
+                void 0;
             }
         }, 30000);
     }
@@ -190,7 +185,7 @@ class BGEFramework {
             utils: {
                 isMobile: () => this.environment.isMobile,
                 isOffline: () => !navigator.onLine,
-                debug: (...args) => this.config.debug && console.log('🔧 BGE Debug:', ...args),
+                debug: (...args) => this.config.debug && void 0,
                 performance: () => this.getPerformanceReport()
             },
 
@@ -218,7 +213,7 @@ class BGEFramework {
             try {
                 await this.loadModule(moduleName);
             } catch (error) {
-                console.warn(`⚠️ No se pudo cargar módulo crítico ${moduleName}:`, error);
+                void 0;
             }
         }
     }
@@ -376,7 +371,7 @@ class BGEModule {
 
     log(...args) {
         if (this.framework && this.framework.config && this.framework.config.debug) {
-            console.log(`🔧 [${this.name.toUpperCase()}]`, ...args);
+            void 0;
         }
     }
 

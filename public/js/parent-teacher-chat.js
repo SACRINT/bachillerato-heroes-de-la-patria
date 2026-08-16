@@ -22,7 +22,7 @@ class ParentTeacherChat {
             this.setupEventListeners();
             await this.loadConversations();
 
-            console.log('💬 [CHAT] Sistema de comunicación padres-docentes inicializado');
+            void 0;
         } catch (error) {
             console.error('❌ [CHAT] Error inicializando:', error);
             this.showError('Error al inicializar el sistema de chat');
@@ -51,7 +51,7 @@ class ParentTeacherChat {
             this.socket = new WebSocket('ws://localhost:8000');
 
             this.socket.onopen = () => {
-                console.log('🌐 [WEBSOCKET] Conectado al servidor');
+                void 0;
                 // Autenticar el WebSocket
                 this.socket.send(JSON.stringify({
                     type: 'auth',
@@ -70,7 +70,7 @@ class ParentTeacherChat {
             };
 
             this.socket.onclose = () => {
-                console.log('⚠️ [WEBSOCKET] Conexión cerrada, intentando reconectar...');
+                void 0;
                 setTimeout(() => this.initializeWebSocket(), 3000);
             };
 
@@ -97,7 +97,7 @@ class ParentTeacherChat {
                 this.handleAppointmentNotification(data);
                 break;
             default:
-                console.log('📨 [WEBSOCKET] Mensaje recibido:', data);
+                void 0;
         }
     }
 
@@ -700,12 +700,12 @@ class ParentTeacherChat {
 
     async loadRecipients() {
         // Implementar carga de destinatarios disponibles
-        console.log('🔍 [CHAT] Cargando destinatarios...');
+        void 0;
     }
 
     async loadAppointmentRecipients() {
         // Implementar carga de personas para citas
-        console.log('📅 [CHAT] Cargando destinatarios para citas...');
+        void 0;
     }
 
     clearNewConversationForm() {

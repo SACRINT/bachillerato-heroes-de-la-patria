@@ -414,14 +414,14 @@ function initDashboardFilters(moduleName, onFilterChange) {
     const config = dashboardFiltersConfig[moduleName];
 
     if (!config) {
-        console.warn(`[Dashboard Filters] No existe configuración para: ${moduleName}`);
+        void 0;
         return null;
     }
 
     // Verificar que el contenedor existe
     const container = document.getElementById(config.containerId);
     if (!container) {
-        console.warn(`[Dashboard Filters] Contenedor no encontrado: ${config.containerId}`);
+        void 0;
         return null;
     }
 
@@ -429,7 +429,7 @@ function initDashboardFilters(moduleName, onFilterChange) {
     const filterInstance = createAdvancedFilters({
         ...config,
         onFilterChange: (filterValues) => {
-            console.log(`[Dashboard Filters] Filtros aplicados en ${moduleName}:`, filterValues);
+            void 0;
 
             if (typeof onFilterChange === 'function') {
                 onFilterChange(filterValues);
@@ -437,7 +437,7 @@ function initDashboardFilters(moduleName, onFilterChange) {
         }
     });
 
-    console.log(`✅ [Dashboard Filters] Filtros inicializados para: ${moduleName}`);
+    void 0;
 
     return filterInstance;
 }

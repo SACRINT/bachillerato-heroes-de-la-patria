@@ -47,7 +47,7 @@ async function loadGroups() {
         console.error('Error loading groups:', error);
         // Si falla (ej. 401), mostramos mock para no romper la demo visual si no hay auth configurado localmente
         // En prod: mostrar error real
-        console.warn('Falling back to mock data due to API error');
+        void 0;
         loadMockGroups(subject, search, grid, empty);
     }
 }

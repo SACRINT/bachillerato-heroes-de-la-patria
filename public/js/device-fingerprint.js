@@ -15,7 +15,7 @@
  * ```javascript
  * const fingerprinter = new DeviceFingerprint();
  * const fingerprint = await fingerprinter.generate();
- * console.log(fingerprint.hash); // "a1b2c3d4..."
+ * void 0; // "a1b2c3d4..."
  * ```
  *
  * Fecha: 20 Noviembre 2025
@@ -40,7 +40,7 @@ class DeviceFingerprint {
      */
     async generate() {
         try {
-            console.log('[DEVICE-FINGERPRINT] Generando fingerprint...');
+            void 0;
 
             // 1. Características básicas del navegador
             this.components.userAgent = navigator.userAgent;
@@ -110,7 +110,7 @@ class DeviceFingerprint {
                 version: '1.0.0'
             };
 
-            console.log('[DEVICE-FINGERPRINT] ✅ Fingerprint generado:', hash);
+            void 0;
 
             return fingerprint;
 

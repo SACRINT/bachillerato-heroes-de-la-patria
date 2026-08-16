@@ -33,7 +33,7 @@ class BolsaTrabajoManager {
         // API Base URL
         this.apiBase = '/api/bolsa-trabajo';
 
-        console.log('💼 [BOLSA-TRABAJO] Manager inicializado');
+        void 0;
     }
 
     /**
@@ -41,7 +41,7 @@ class BolsaTrabajoManager {
      */
     async init() {
         try {
-            console.log('💼 [BOLSA-TRABAJO] Cargando dashboard...');
+            void 0;
 
             // Mostrar loading
             this.showLoading(true);
@@ -64,7 +64,7 @@ class BolsaTrabajoManager {
             // Actualizar badge en nav
             this.updateNavBadge();
 
-            console.log('✅ [BOLSA-TRABAJO] Dashboard cargado exitosamente');
+            void 0;
             this.showToast('Dashboard de bolsa de trabajo cargado', 'success');
 
         } catch (error) {
@@ -84,7 +84,7 @@ class BolsaTrabajoManager {
             if (!response.ok) throw new Error('Error al cargar estadísticas');
 
             this.stats = await response.json();
-            console.log('📊 [BOLSA-TRABAJO] Estadísticas cargadas:', this.stats);
+            void 0;
 
         } catch (error) {
             console.error('❌ [BOLSA-TRABAJO] Error al cargar stats:', error);
@@ -108,7 +108,7 @@ class BolsaTrabajoManager {
             if (!response.ok) throw new Error('Error al cargar candidatos');
 
             this.candidatos = await response.json();
-            console.log(`📋 [BOLSA-TRABAJO] ${this.candidatos.length} candidatos cargados`);
+            void 0;
 
         } catch (error) {
             console.error('❌ [BOLSA-TRABAJO] Error al cargar lista:', error);
@@ -132,7 +132,7 @@ class BolsaTrabajoManager {
         const contratados = this.stats.porEstado?.find(e => e.estado === 'contratado')?.cantidad || 0;
         this.updateStatCard('stats-contratados-bolsa', contratados);
 
-        console.log('📊 [BOLSA-TRABAJO] Estadísticas renderizadas');
+        void 0;
     }
 
     /**
@@ -193,7 +193,7 @@ class BolsaTrabajoManager {
         // Actualizar contadores
         this.updateCounters();
 
-        console.log(`🔍 [BOLSA-TRABAJO] Filtros aplicados: ${this.filteredCandidatos.length} resultados`);
+        void 0;
     }
 
     /**
@@ -266,7 +266,7 @@ class BolsaTrabajoManager {
 
         tableBody.innerHTML = DOMPurify.sanitize(sanitizeHTML(pageData.map(candidato => this.renderTableRow(candidato)).join(''), 'ugc'));
 
-        console.log(`📋 [BOLSA-TRABAJO] Tabla renderizada: ${pageData.length} filas`);
+        void 0;
     }
 
     /**
@@ -968,4 +968,4 @@ window.exportBolsaTrabajoCSV = () => {
     }
 };
 
-console.log('✅ [BOLSA-TRABAJO] Script cargado');
+void 0;

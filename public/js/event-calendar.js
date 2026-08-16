@@ -93,7 +93,7 @@ class EventCalendar {
             });
 
             this.calendar.render();
-            console.log('✅ Calendario inicializado correctamente');
+            void 0;
         } catch (error) {
             console.error('❌ Error al inicializar calendario:', error);
         }
@@ -119,7 +119,7 @@ class EventCalendar {
             }
 
             successCallback(data.events);
-            console.log(`✅ ${data.events.length} eventos cargados`);
+            void 0;
         } catch (error) {
             console.error('❌ Error al cargar eventos:', error);
             failureCallback(error);
@@ -208,7 +208,7 @@ class EventCalendar {
      * Manejar selección de fecha
      */
     handleDateSelect(info) {
-        console.log('📅 Fecha seleccionada:', info.startStr, '-', info.endStr);
+        void 0;
         // Aquí podrías agregar funcionalidad para crear eventos si es admin
     }
 
@@ -259,7 +259,7 @@ class EventCalendar {
     applyFilters(filters) {
         this.currentFilters = { ...this.currentFilters, ...filters };
         this.calendar.refetchEvents();
-        console.log('🔄 Filtros aplicados:', this.currentFilters);
+        void 0;
     }
 
     /**
@@ -267,7 +267,7 @@ class EventCalendar {
      */
     changeView(viewName) {
         this.calendar.changeView(viewName);
-        console.log('👁️ Vista cambiada a:', viewName);
+        void 0;
     }
 
     /**
@@ -275,7 +275,7 @@ class EventCalendar {
      */
     goToDate(date) {
         this.calendar.gotoDate(date);
-        console.log('📍 Navegando a fecha:', date);
+        void 0;
     }
 
     /**
@@ -283,7 +283,7 @@ class EventCalendar {
      */
     goToToday() {
         this.calendar.today();
-        console.log('📅 Navegando a hoy');
+        void 0;
     }
 
     /**
@@ -291,7 +291,7 @@ class EventCalendar {
      */
     refetch() {
         this.calendar.refetchEvents();
-        console.log('🔄 Eventos actualizados');
+        void 0;
     }
 
     /**
@@ -316,7 +316,7 @@ class EventCalendar {
         if (this.calendar) {
             this.calendar.destroy();
             this.calendar = null;
-            console.log('🗑️ Calendario destruido');
+            void 0;
         }
     }
 }

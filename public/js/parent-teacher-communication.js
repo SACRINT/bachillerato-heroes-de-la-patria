@@ -35,7 +35,7 @@ class ParentTeacherCommunicationSystem {
             await this.loadInitialData();
             this.setupWebSocket();
             this.setupAutoRefresh();
-            console.log('👨‍👩‍👧‍👦 Sistema de comunicación inicializado');
+            void 0;
         } catch (error) {
             console.error('Error inicializando sistema de comunicación:', error);
             this.showAlert('Error cargando sistema de comunicación', 'error');
@@ -64,7 +64,7 @@ class ParentTeacherCommunicationSystem {
 
     async loadInitialData() {
         if (!this.authToken) {
-            console.warn('Usuario no autenticado para comunicación');
+            void 0;
             return;
         }
 
@@ -100,7 +100,7 @@ class ParentTeacherCommunicationSystem {
             const result = await response.json();
             this.conversations = result.data.conversations || [];
 
-            console.log(`✅ Cargadas ${this.conversations.length} conversaciones`);
+            void 0;
             return this.conversations;
         } catch (error) {
             console.error('Error cargando conversaciones:', error);
@@ -214,7 +214,7 @@ class ParentTeacherCommunicationSystem {
             const result = await response.json();
             this.appointments = result.data.appointments || [];
 
-            console.log(`✅ Cargadas ${this.appointments.length} citas`);
+            void 0;
             return this.appointments;
         } catch (error) {
             console.error('Error cargando citas:', error);
@@ -293,7 +293,7 @@ class ParentTeacherCommunicationSystem {
             const result = await response.json();
             this.reports = result.data.reports || [];
 
-            console.log(`✅ Cargados ${this.reports.length} reportes`);
+            void 0;
             return this.reports;
         } catch (error) {
             console.error('Error cargando reportes:', error);
@@ -1161,9 +1161,9 @@ class ParentTeacherCommunicationSystem {
     setupWebSocket() {
         try {
             // Placeholder para WebSocket
-            console.log('WebSocket configuración pendiente');
+            void 0;
         } catch (error) {
-            console.log('WebSocket no disponible:', error.message);
+            void 0;
         }
     }
 
@@ -1177,7 +1177,7 @@ class ParentTeacherCommunicationSystem {
                     this.renderConversationsList();
                 }
             } catch (error) {
-                console.warn('Auto-refresh falló:', error.message);
+                void 0;
             }
         }, this.config.refreshInterval);
     }

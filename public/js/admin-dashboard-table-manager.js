@@ -249,119 +249,119 @@
     // ============================================
 
     function reloadStudents() {
-        console.log('[ADMIN-TABLE-MANAGER] Recargando estudiantes...');
+        void 0;
         if (window.reloadStudents) {
             window.reloadStudents();
         }
     }
 
     function reloadTeachers() {
-        console.log('[ADMIN-TABLE-MANAGER] Recargando docentes...');
+        void 0;
         if (window.reloadTeachers) {
             window.reloadTeachers();
         }
     }
 
     function reloadParents() {
-        console.log('[ADMIN-TABLE-MANAGER] Recargando padres...');
+        void 0;
         if (window.reloadParents) {
             window.reloadParents();
         }
     }
 
     function loadEgresados() {
-        console.log('[ADMIN-TABLE-MANAGER] Cargando egresados...');
+        void 0;
         if (window.loadEgresados) {
             window.loadEgresados();
         }
     }
 
     function loadBolsaTrabajo() {
-        console.log('[ADMIN-TABLE-MANAGER] Cargando bolsa de trabajo...');
+        void 0;
         if (window.loadBolsaTrabajo) {
             window.loadBolsaTrabajo();
         }
     }
 
     function loadSuscriptores() {
-        console.log('[ADMIN-TABLE-MANAGER] Cargando suscriptores...');
+        void 0;
         if (window.loadSuscriptores) {
             window.loadSuscriptores();
         }
     }
 
     function refreshCitas() {
-        console.log('[ADMIN-TABLE-MANAGER] Refrescando citas...');
+        void 0;
         if (window.refreshCitas) {
             window.refreshCitas();
         }
     }
 
     function refreshApprovals() {
-        console.log('[ADMIN-TABLE-MANAGER] Refrescando aprobaciones...');
+        void 0;
         if (window.refreshApprovals) {
             window.refreshApprovals();
         }
     }
 
     function exportEgresados() {
-        console.log('[ADMIN-TABLE-MANAGER] Exportando egresados...');
+        void 0;
         if (window.exportEgresados) {
             window.exportEgresados();
         }
     }
 
     function clearParentFilters() {
-        console.log('[ADMIN-TABLE-MANAGER] Limpiando filtros de padres...');
+        void 0;
         if (window.clearParentFilters) {
             window.clearParentFilters();
         }
     }
 
     function clearFiltersBolsaTrabajo() {
-        console.log('[ADMIN-TABLE-MANAGER] Limpiando filtros de bolsa de trabajo...');
+        void 0;
         if (window.clearFiltersBolsaTrabajo) {
             window.clearFiltersBolsaTrabajo();
         }
     }
 
     function exportBolsaTrabajoCSV() {
-        console.log('[ADMIN-TABLE-MANAGER] Exportando bolsa de trabajo...');
+        void 0;
         if (window.exportBolsaTrabajoCSV) {
             window.exportBolsaTrabajoCSV();
         }
     }
 
     function clearFiltersSuscriptores() {
-        console.log('[ADMIN-TABLE-MANAGER] Limpiando filtros de suscriptores...');
+        void 0;
         if (window.clearFiltersSuscriptores) {
             window.clearFiltersSuscriptores();
         }
     }
 
     function exportSuscriptoresCSV() {
-        console.log('[ADMIN-TABLE-MANAGER] Exportando suscriptores...');
+        void 0;
         if (window.exportSuscriptoresCSV) {
             window.exportSuscriptoresCSV();
         }
     }
 
     function clearCitasFilters() {
-        console.log('[ADMIN-TABLE-MANAGER] Limpiando filtros de citas...');
+        void 0;
         if (window.clearCitasFilters) {
             window.clearCitasFilters();
         }
     }
 
     function exportCitasToCSV() {
-        console.log('[ADMIN-TABLE-MANAGER] Exportando citas...');
+        void 0;
         if (window.exportCitasToCSV) {
             window.exportCitasToCSV();
         }
     }
 
     function printCitasReport() {
-        console.log('[ADMIN-TABLE-MANAGER] Imprimiendo reporte de citas...');
+        void 0;
         if (window.printCitasReport) {
             window.printCitasReport();
         }

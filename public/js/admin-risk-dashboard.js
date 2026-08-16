@@ -13,7 +13,7 @@ class RiskDashboard {
      * Inicializa el dashboard.
      */
     init() {
-        console.log('🛡️ [RISK-DASHBOARD] Inicializando...');
+        void 0;
         // Buscar contenedores en el DOM
         this.container = document.getElementById('risk-dashboard-container');
         if (!this.container) return; // No estamos en la página correcta

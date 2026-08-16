@@ -100,8 +100,8 @@ class InteroperabilitySystem {
         this.startSyncScheduler();
         this.loadSyncHistory();
 
-        console.log('🔗 Interoperability System inicializado');
-        console.log(`📊 Integraciones activas: ${Object.keys(this.integrations).length}`);
+        void 0;
+        void 0;
     }
 
     // === ADAPTADORES DE SISTEMAS ===
@@ -116,7 +116,7 @@ class InteroperabilitySystem {
             cosdac: new COSDACAdapter(this)
         };
 
-        console.log('🔧 Adaptadores de sistema inicializados');
+        void 0;
     }
 
     // === GESTIÓN DE COLA DE MENSAJES ===
@@ -147,7 +147,7 @@ class InteroperabilitySystem {
             this.messageQueue.push(message);
         }
 
-        console.log(`📤 Mensaje agregado a cola: ${system}/${operation}`);
+        void 0;
         return message.id;
     }
 
@@ -195,7 +195,7 @@ class InteroperabilitySystem {
                 this.messageQueue.push(message);
             }, delay);
 
-            console.warn(`🔄 Reintentando mensaje ${message.id} (intento ${message.retries})`);
+            void 0;
         } else {
             console.error(`❌ Mensaje fallido después de ${this.config.maxRetries} intentos:`, message.id);
             this.logSyncError(message, error);
@@ -547,7 +547,7 @@ class InteroperabilitySystem {
             }, this.config.syncInterval);
         });
 
-        console.log('⏰ Programador de sincronización iniciado');
+        void 0;
     }
 
     async performScheduledSync(system, type) {
@@ -590,7 +590,7 @@ class InteroperabilitySystem {
         this.syncHistory.push(logEntry);
         this.saveSyncHistory();
 
-        console.log(`✅ Sincronización exitosa: ${message.system}/${message.operation}`);
+        void 0;
     }
 
     logSyncError(message, error) {
@@ -618,7 +618,7 @@ class InteroperabilitySystem {
             try {
                 this.syncHistory = JSON.parse(stored);
             } catch (error) {
-                console.warn('Error loading sync history:', error);
+                void 0;
             }
         }
     }

@@ -535,14 +535,14 @@ function initFormValidation(configKey) {
     const config = formValidationConfig[configKey];
 
     if (!config) {
-        console.warn(`[Form Validator] No existe configuración para: ${configKey}`);
+        void 0;
         return;
     }
 
     const form = document.getElementById(config.formId);
 
     if (!form) {
-        console.warn(`[Form Validator] No se encontró el formulario: ${config.formId}`);
+        void 0;
         return;
     }
 
@@ -557,7 +557,7 @@ function initFormValidation(configKey) {
         const validation = formValidator.validateForm(form, config.rules);
 
         if (validation.valid) {
-            console.log(`✅ [Form Validator] Formulario ${config.formId} válido`);
+            void 0;
 
             // Obtener datos sanitizados
             const formData = new FormData(form);
@@ -577,7 +577,7 @@ function initFormValidation(configKey) {
 
             form.dispatchEvent(validEvent);
         } else {
-            console.warn(`⚠️ [Form Validator] Errores en ${config.formId}:`, validation.errors);
+            void 0;
 
             // Disparar evento de errores
             const errorEvent = new CustomEvent('formValidationFailed', {

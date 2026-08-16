@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const body = document.body;
 
     if (!darkModeToggle) {
-        console.warn('[DARK-MODE] Toggle button not found');
+        void 0;
         return;
     }
 

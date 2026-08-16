@@ -106,7 +106,7 @@
         e.stopPropagation();
         e.stopImmediatePropagation();  // IMPORTANTE: Prevenir que professional-forms.js también procese este evento
 
-        console.log('📝 [BOLSA TRABAJO CV] Procesando envío de formulario...');
+        void 0;
 
         const form = e.target;
         const submitButton = form.querySelector('button[type="submit"]');
@@ -140,7 +140,7 @@
 
             // 5. Preparar datos y enviar mediante FormData para soportar adjunto PDF
             const formData = new FormData(form);
-            console.log('📤 [BOLSA TRABAJO CV] Enviando datos de formulario...');
+            void 0;
 
             // 6. Enviar al backend
             const response = await fetch(CONFIG.apiEndpoint, {
@@ -152,7 +152,7 @@
             });
 
             const result = await response.json();
-            console.log('📥 [BOLSA TRABAJO CV] Respuesta del servidor:', result);
+            void 0;
 
             if (response.ok && result.success) {
                 // ✅ Éxito: Mostrar modal de confirmación

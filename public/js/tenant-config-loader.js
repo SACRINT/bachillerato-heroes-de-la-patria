@@ -63,14 +63,20 @@
 
     async function loadTenantConfig() {
         try {
-            // Hacer petición al endpoint
+            const cached = sessionStorage.getItem('bge_cache_tenant_config');
+            if (cached) {
+                try {
+                    return JSON.parse(cached);
+                } catch (e) {}
+            }
+
             const response = await fetch('/api/config/tenant', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 },
-                credentials: 'include' // Incluir cookies de sesión
+                credentials: 'include'
             });
 
             if (!response.ok) {
@@ -92,6 +98,10 @@
             if (finalConfig.school_short_name === 'BGE') {
                 finalConfig.school_short_name = '"Héroes de la Patria"';
             }
+
+            try {
+                sessionStorage.setItem('bge_cache_tenant_config', JSON.stringify(finalConfig));
+            } catch (e) {}
 
             return finalConfig;
 
@@ -149,15 +159,15 @@
 /*
 
 // Acceder a configuración global
-console.log(window.TENANT_CONFIG.school_name);
+void 0;
 
 // Acceder con helper
-console.log(window.getTenantConfigValue('school_name'));
-console.log(window.getTenantConfigValue('features.google_oauth'));
+void 0;
+void 0;
 
 // Escuchar cuando está lista
 document.addEventListener('tenantConfigLoaded', (event) => {
-    console.log('Configuración cargada:', event.detail);
+    void 0;
 });
 
 // Actualizar elementos HTML dinámicamente

@@ -41,12 +41,7 @@ class MobileUXAdvanced {
         this.setupPerformanceOptimizations();
         this.createMobileToolbar();
 
-        console.log('📱 [MOBILE-UX] Sistema inicializado:', {
-            isMobile: this.isMobile,
-            isTablet: this.isTablet,
-            orientation: this.orientation,
-            touchSupport: this.touchSupport
-        });
+        void 0;
     }
 
     detectDeviceCapabilities() {
@@ -373,7 +368,7 @@ class MobileUXAdvanced {
                     // Reajustar layout
                     this.handleOrientationChange(newOrientation);
 
-                    console.log('📱 [MOBILE-UX] Cambio de orientación:', newOrientation);
+                    void 0;
                 }
             }, 100);
         };

@@ -92,36 +92,38 @@ window.AppConfig = {
     }
 };
 
-// --- CARGA DINÁMICA DE CONFIGURACIONES ---
+// --- CARGA DINÁMICA DE CONFIGURACIONES (CACHED) ---
 (async function loadRemoteConfig() {
     try {
-        const response = await fetch(`${window.AppConfig.api.baseURL}/api/config/public-keys`);
-        if (!response.ok) {
-            throw new Error(`Error al cargar la configuración remota: ${response.statusText}`);
+        let config = null;
+        const cached = sessionStorage.getItem('bge_cache_public_keys');
+        if (cached) {
+            try { config = JSON.parse(cached); } catch (e) {}
         }
-        const config = await response.json();
 
-        if (config.success && config.keys) {
+        if (!config) {
+            const response = await fetch(`${window.AppConfig.api.baseURL}/api/config/public-keys`);
+            if (response.ok) {
+                config = await response.json();
+                try { sessionStorage.setItem('bge_cache_public_keys', JSON.stringify(config)); } catch (e) {}
+            }
+        }
+
+        if (config && config.success && config.keys) {
             // Configurar Google OAuth
             if (config.keys.google_oauth_client_id) {
                 window.AppConfig.google.clientId = config.keys.google_oauth_client_id;
                 window.AppConfig.google.enabled = true;
-                
-            } else {
-                
             }
 
             // Configurar TinyMCE API Key
             if (config.keys.tinymce) {
                 window.TINYMCE_API_KEY = config.keys.tinymce;
-                
             } else {
-                
                 window.TINYMCE_API_KEY = 'no-key-configured';
             }
         }
     } catch (error) {
-        console.error('❌ Error al cargar configuración remota:', error);
         window.AppConfig.google.enabled = false;
         window.TINYMCE_API_KEY = 'no-key-configured';
     }

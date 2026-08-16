@@ -30,13 +30,13 @@ const TenantConfigManager = (function() {
     async function loadTenantConfig() {
         // Si ya está cargado, devolverlo inmediatamente
         if (config !== null) {
-            console.log('[TENANT-CONFIG] ✅ Configuración ya cargada, usando cache');
+            void 0;
             return config;
         }
 
         // Si ya está cargando, esperar a que termine
         if (isLoading) {
-            console.log('[TENANT-CONFIG] ⏳ Configuración cargándose, esperando...');
+            void 0;
             return loadPromise;
         }
 
@@ -44,7 +44,7 @@ const TenantConfigManager = (function() {
         isLoading = true;
         loadPromise = (async () => {
             try {
-                console.log('[TENANT-CONFIG] 🔄 Iniciando carga de configuración del tenant...');
+                void 0;
 
                 // LLAMADA CRÍTICA: Usar la URL exacta /api/admin/tenant/config
                 const response = await fetch('/api/admin/tenant/config');
@@ -63,7 +63,7 @@ const TenantConfigManager = (function() {
                 // Guardar en variable local (CRÍTICO: acceder a data dentro de la respuesta)
                 config = jsonData.data;
 
-                console.log('[TENANT-CONFIG] ✅ Configuración cargada para:', config.school?.name || 'Unknown School');
+                void 0;
 
                 // Disparar evento para que otros scripts se enturen
                 // Usar CustomEvent para pasar la configuración
@@ -74,7 +74,7 @@ const TenantConfigManager = (function() {
                 });
                 document.dispatchEvent(event);
 
-                console.log('[TENANT-CONFIG] 📢 Evento "tenantConfigLoaded" disparado');
+                void 0;
 
                 return config;
 
@@ -107,7 +107,7 @@ const TenantConfigManager = (function() {
      */
     function getConfig() {
         if (config === null) {
-            console.warn('[TENANT-CONFIG] ⚠️ Configuración no cargada. Llama a loadTenantConfig() primero.');
+            void 0;
             return null;
         }
         return config;
@@ -139,7 +139,7 @@ const TenantConfigManager = (function() {
 
             return value;
         } catch (error) {
-            console.warn(`[TENANT-CONFIG] ⚠️ Error accediendo a ${path}:`, error);
+            void 0;
             return defaultValue;
         }
     }
@@ -151,7 +151,7 @@ const TenantConfigManager = (function() {
      * @returns {Promise<Object|null>} Nueva configuración
      */
     async function reloadConfig() {
-        console.log('[TENANT-CONFIG] 🔄 Forzando recarga de configuración...');
+        void 0;
         config = null;
         isLoading = false;
         loadPromise = null;
@@ -192,4 +192,4 @@ if (document.readyState === 'loading') {
     });
 }
 
-console.log('[TENANT-CONFIG] 📦 TenantConfigManager cargado y disponible globalmente');
+void 0;

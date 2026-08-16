@@ -25,7 +25,7 @@ class MobilePerformanceOptimizer {
     }
 
     init() {
-        //console.log('📱 Inicializando Mobile Performance Optimizer...');
+        //void 0;
         
         if (this.isMobile) {
             this.detectBatteryStatus();
@@ -33,8 +33,8 @@ class MobilePerformanceOptimizer {
             this.setupMobileSpecificOptimizations();
             this.monitorMobilePerformance();
             
-            //console.log('✅ Mobile Performance Optimizer activado');
-            //console.log('📊 Dispositivo:', this.deviceInfo);
+            //void 0;
+            //void 0;
         }
     }
 
@@ -89,7 +89,7 @@ class MobilePerformanceOptimizer {
                 });
             }
         } catch (error) {
-            //console.log('Battery API no disponible');
+            //void 0;
         }
     }
 
@@ -107,7 +107,7 @@ class MobilePerformanceOptimizer {
     }
 
     enableBatterySavingMode() {
-        //console.log('🔋 Activando modo ahorro de batería');
+        //void 0;
         this.performanceMode = 'battery-saving';
         
         // Reducir animaciones
@@ -125,7 +125,7 @@ class MobilePerformanceOptimizer {
 
     disableBatterySavingMode() {
         if (this.performanceMode === 'battery-saving') {
-            //console.log('🔋 Desactivando modo ahorro de batería');
+            //void 0;
             this.performanceMode = 'auto';
             
             document.documentElement.style.removeProperty('--animation-duration');
@@ -156,7 +156,7 @@ class MobilePerformanceOptimizer {
     }
 
     enableLowEndOptimizations() {
-        //console.log('📱 Aplicando optimizaciones para dispositivos de gama baja');
+        //void 0;
         
         // Reducir calidad de imágenes
         this.optimizeImagesForLowEnd();
@@ -174,7 +174,7 @@ class MobilePerformanceOptimizer {
     }
 
     enableDataSavingOptimizations() {
-        //console.log('📊 Aplicando optimizaciones para ahorro de datos');
+        //void 0;
         
         // Cargar imágenes de menor calidad
         this.loadLowQualityImages();
@@ -554,7 +554,7 @@ class MobilePerformanceOptimizer {
     }
 
     enableMemoryOptimizations() {
-        //console.log('🧠 Aplicando optimizaciones de memoria');
+        //void 0;
         
         // Limpiar caches innecesarios
         if ('caches' in window) {
@@ -572,7 +572,7 @@ class MobilePerformanceOptimizer {
     }
 
     enableFrameRateOptimizations() {
-        //console.log('🎯 Aplicando optimizaciones de frame rate');
+        //void 0;
         
         // Reducir animaciones complejas
         document.documentElement.style.setProperty('--animation-duration', '0.2s');

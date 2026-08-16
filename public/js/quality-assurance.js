@@ -22,7 +22,7 @@ class QualityAssurance {
     }
 
     init() {
-        //console.log('🧪 Iniciando Quality Assurance...');
+        //void 0;
         
         // Esperar a que la página cargue completamente
         if (document.readyState === 'complete') {
@@ -44,7 +44,7 @@ class QualityAssurance {
     }
 
     runAllTests() {
-        //console.log('🔬 Ejecutando tests...');
+        //void 0;
         
         this.tests.forEach(test => {
             try {
@@ -96,17 +96,17 @@ class QualityAssurance {
     displayResults() {
         const passRate = ((this.results.passed / this.results.total) * 100).toFixed(1);
         
-        //console.log(`📊 RESULTADOS DE TESTING:`);
-        //console.log(`✅ Pasaron: ${this.results.passed}/${this.results.total} (${passRate}%)`);
-        //console.log(`❌ Fallaron: ${this.results.failed}`);
-        //console.log(`🚨 Críticos: ${this.criticalErrors.length}`);
+        //void 0;
+        //void 0;
+        //void 0;
+        //void 0;
         
         // Detalles de fallos
         const failures = this.results.details.filter(r => r.status !== 'PASS');
         if (failures.length > 0) {
-            //console.log('📝 DETALLES DE FALLOS:');
+            //void 0;
             failures.forEach(fail => {
-                //console.log(`${fail.critical ? '🚨' : '⚠️'} ${fail.name}: ${fail.error}`);
+                //void 0;
             });
         }
 
@@ -290,4 +290,4 @@ window.qa = qa;
 // Comando de consola para ejecutar tests manualmente
 window.runQATests = () => qa.runTests();
 
-//console.log('🧪 Quality Assurance inicializado. Usa runQATests() para ejecutar manualmente.');
+//void 0;

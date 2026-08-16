@@ -5,7 +5,7 @@
 let emotionalChartInstance = null;
 
 window.loadEmotionalHistory = async function () {
-    console.log('📊 Cargando historial emocional...');
+    void 0;
 
     // Obtener token (asumiendo que está en localStorage como 'student_auth_token' o similar)
     // NOTA: adaptive-lesson usa un token hardcoded o login flow. Aquí usaremos el token real.

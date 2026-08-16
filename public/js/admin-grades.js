@@ -34,7 +34,7 @@
      * Inicialización del módulo
      */
     async function init() {
-        console.log('🚀 Inicializando Sistema de Captura de Calificaciones...');
+        void 0;
         const token = localStorage.getItem('authToken');
         if (!token) {
             window.location.href = '/login.html';
@@ -449,7 +449,7 @@
         if (window.BGE && window.BGE.UI && window.BGE.UI.Toast) {
             window.BGE.UI.Toast.show(msg, type);
         } else {
-            console.log(`[TOAST ${type}] ${msg}`);
+            void 0;
             // Fallback
             const container = document.getElementById('toast-container') || createToastContainer();
             const toastId = 'toast-' + Date.now();

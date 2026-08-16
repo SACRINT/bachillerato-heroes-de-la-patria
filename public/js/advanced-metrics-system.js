@@ -1,11 +1,11 @@
 // ========================================
 // SISTEMA DE MÉTRICAS AVANZADAS 2025
 // ========================================
-console.log('📊 [STARTUP] advanced-metrics-system.js INICIANDO - VERSIÓN 2025-09-21');
+void 0;
 
 class AdvancedMetricsSystem {
     constructor() {
-        console.log('🏗️ [METRICS] Iniciando Sistema de Métricas Avanzadas...');
+        void 0;
         this.metricsData = {};
         this.kpiWidgets = new Map();
         this.realTimeUpdates = true;
@@ -16,15 +16,15 @@ class AdvancedMetricsSystem {
     }
 
     async init() {
-        console.log('🔄 [METRICS] Inicializando métricas avanzadas...');
+        void 0;
         await this.loadAdvancedMetrics();
         this.createExecutiveWidgets();
         this.startRealTimeUpdates();
-        console.log('✅ [METRICS] Sistema de métricas avanzadas inicializado');
+        void 0;
     }
 
     async loadAdvancedMetrics() {
-        console.log('📈 [METRICS] Cargando métricas avanzadas...');
+        void 0;
 
         // Simular datos en tiempo real (en producción sería desde API/DB)
         this.metricsData = {
@@ -54,15 +54,15 @@ class AdvancedMetricsSystem {
             }
         };
 
-        console.log('📊 [METRICS] Métricas cargadas:', this.metricsData);
+        void 0;
     }
 
     createExecutiveWidgets() {
-        console.log('🎨 [WIDGETS] Creando widgets ejecutivos...');
+        void 0;
 
         const widgetsContainer = document.getElementById('executive-widgets');
         if (!widgetsContainer) {
-            console.warn('⚠️ [WIDGETS] Contenedor executive-widgets no encontrado');
+            void 0;
             return;
         }
 
@@ -442,7 +442,7 @@ class AdvancedMetricsSystem {
 
     // Métodos de gestión
     startRealTimeUpdates() {
-        console.log('⏰ [METRICS] Iniciando actualizaciones en tiempo real...');
+        void 0;
 
         this.updateInterval = setInterval(() => {
             this.updateRealTimeMetrics();
@@ -452,7 +452,7 @@ class AdvancedMetricsSystem {
     async updateRealTimeMetrics() {
         if (!this.realTimeUpdates) return;
 
-        console.log('🔄 [METRICS] Actualizando métricas en tiempo real...');
+        void 0;
 
         // Actualizar datos
         await this.loadAdvancedMetrics();
@@ -510,12 +510,12 @@ class AdvancedMetricsSystem {
 
     // Métodos de acción de widgets
     refreshWidget(widgetId) {
-        console.log(`🔄 [WIDGET] Actualizando widget: ${widgetId}`);
+        void 0;
         this.updateRealTimeMetrics();
     }
 
     exportWidget(widgetId) {
-        console.log(`📊 [EXPORT] Exportando widget: ${widgetId}`);
+        void 0;
 
         const widgetData = {
             id: widgetId,
@@ -643,7 +643,7 @@ class AdvancedMetricsSystem {
 
     // Métodos de destrucción
     destroy() {
-        console.log('🗑️ [METRICS] Destruyendo sistema de métricas...');
+        void 0;
 
         if (this.updateInterval) {
             clearInterval(this.updateInterval);
@@ -656,7 +656,7 @@ class AdvancedMetricsSystem {
 
         this.realTimeUpdates = false;
 
-        console.log('✅ [METRICS] Sistema de métricas destruido');
+        void 0;
     }
 }
 
@@ -723,7 +723,7 @@ let advancedMetrics = null;
 document.addEventListener('DOMContentLoaded', () => {
     // Verificar si estamos en el dashboard de administración
     if (document.getElementById('executive-widgets') || window.location.pathname.includes('admin-dashboard')) {
-        console.log('📊 [INIT] Inicializando sistema de métricas avanzadas...');
+        void 0;
         advancedMetrics = new AdvancedMetricsSystem();
     }
 });
@@ -734,4 +734,4 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = AdvancedMetricsSystem;
 }
 
-console.log('✅ [STARTUP] advanced-metrics-system.js CARGADO COMPLETAMENTE');
+void 0;

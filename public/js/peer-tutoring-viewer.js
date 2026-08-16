@@ -32,7 +32,7 @@ async function loadTutors() {
             const result = await response.json();
             tutors = result.data;
         } catch (e) {
-            console.warn('Using mock tutor data', e);
+            void 0;
             tutors = getMockTutors(); // Fallback
         }
 

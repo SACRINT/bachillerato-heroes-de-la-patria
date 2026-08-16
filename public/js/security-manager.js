@@ -71,7 +71,7 @@ class SecurityManager {
     }
 
     init() {
-        //console.log('🔒 Iniciando Security Manager...');
+        //void 0;
         
         this.setupCSPMonitoring();
         this.setupXSSProtection();
@@ -82,7 +82,7 @@ class SecurityManager {
         this.setupContentFiltering();
         this.startSecurityMonitoring();
         
-        //console.log('✅ Security Manager inicializado');
+        //void 0;
     }
 
     // ============================================
@@ -111,7 +111,7 @@ class SecurityManager {
         this.securityPolicies.csp.violations.push(violation);
         this.securityMetrics.totalThreats++;
 
-        console.warn('🚨 CSP Violation:', violation);
+        void 0;
         
         // Reportar al servidor si está configurado
         this.reportSecurityIncident('csp_violation', violation);
@@ -120,7 +120,7 @@ class SecurityManager {
     enforceCSP() {
         // DISABLED - CSP via meta tags has limitations and causes warnings
         // CSP should be configured at server level for production
-        //console.log('📋 CSP enforcement skipped (requires server-level configuration)');
+        //void 0;
         return;
         
         // Solo aplicar si no existe CSP en el documento
@@ -249,7 +249,7 @@ class SecurityManager {
         this.securityMetrics.blockedRequests++;
         this.reportSecurityIncident('malicious_script', incident);
         
-        console.warn('🚨 Script malicioso bloqueado:', incident);
+        void 0;
     }
 
     sanitizeAttribute(element, attribute) {
@@ -382,7 +382,7 @@ class SecurityManager {
             window.history.replaceState({}, document.title, cleanURL);
             
             this.securityMetrics.sanitizedInputs++;
-            console.warn('🚨 Parámetros URL maliciosos removidos');
+            void 0;
         }
     }
 
@@ -642,7 +642,7 @@ class SecurityManager {
     setupSecureHeaders() {
         // DISABLED - HTTP headers via meta tags cause console warnings
         // These should be configured at server level for proper security
-        //console.log('📋 Secure headers skipped (requires server-level configuration)');
+        //void 0;
         
         // Store security preferences locally for client-side validation
         this.securityMetrics.headersConfigured = true;
@@ -730,11 +730,11 @@ class SecurityManager {
     checkSecurityThreshold() {
         // Solo alertar en casos críticos para evitar spam
         if (this.securityMetrics.securityScore < 30) {
-            console.warn('🚨 Score de seguridad crítico:', this.securityMetrics.securityScore);
+            void 0;
             this.escalateSecurityAlert();
         } else if (this.securityMetrics.securityScore < 50) {
             // Log silencioso para scores bajos pero no críticos
-            console.log('⚠️ Score de seguridad bajo:', this.securityMetrics.securityScore);
+            void 0;
         }
     }
 
@@ -785,7 +785,7 @@ class SecurityManager {
 
     async sendIncidentToServer(incident) {
         // DESHABILITADO - Backend no implementado (evita bucles de errores 404)
-        //console.log('📋 Security incident logged locally:', incident.type);
+        //void 0;
         return;
 
         // CÓDIGO DESHABILITADO - Backend no implementado
@@ -830,7 +830,7 @@ class SecurityManager {
         
         console.group('🔒 Security Report');
         console.table(report.metrics);
-        //console.log('Políticas:', report.policies);
+        //void 0;
         console.groupEnd();
         
         return report;
@@ -1020,5 +1020,5 @@ document.head.appendChild(securityStyles);
 // Exponer la clase
 window.SecurityManager = SecurityManager;
 
-//console.log('🔒 Security Manager cargado. Usa window.securityManager para acceso directo.');
+//void 0;
 }

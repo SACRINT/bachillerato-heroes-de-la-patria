@@ -78,9 +78,9 @@ class AdminAuth {
                 authForm.removeEventListener('submit', (e) => this.handleLogin(e));
                 // Agregar listener con binding correcto
                 authForm.addEventListener('submit', (e) => this.handleLogin(e));
-                console.log('✅ [ADMIN-AUTH] Formulario de autenticación configurado correctamente');
+                void 0;
             } else {
-                console.warn('⚠️ [ADMIN-AUTH] adminPanelAuthForm no encontrado en el DOM');
+                void 0;
             }
 
             // Auto-logout cuando se cierra la ventana

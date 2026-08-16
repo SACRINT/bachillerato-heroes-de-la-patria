@@ -225,7 +225,7 @@
         const section = document.getElementById(sectionId);
         if (section) {
             section.scrollIntoView({ behavior: 'smooth' });
-            console.log('[ADMIN-DASHBOARD-EVENTS] Scrolling a sección:', sectionId);
+            void 0;
         }
     }
 
@@ -233,7 +233,7 @@
      * Mostrar modal de información
      */
     function showInfoModal() {
-        console.log('[ADMIN-DASHBOARD-EVENTS] Mostrando modal de información');
+        void 0;
         // Implementar según necesidad del proyecto
         if (window.showInfoModal) {
             window.showInfoModal();
@@ -244,7 +244,7 @@
      * Mostrar modal de cambio de contraseña
      */
     function showChangePasswordModal() {
-        console.log('[ADMIN-DASHBOARD-EVENTS] Mostrando modal de cambio de contraseña');
+        void 0;
         if (window.showChangePasswordModal) {
             window.showChangePasswordModal();
         }
@@ -254,7 +254,7 @@
      * Mostrar modal de configuración de estadísticas
      */
     function showStatisticsConfigModal() {
-        console.log('[ADMIN-DASHBOARD-EVENTS] Mostrando modal de configuración de estadísticas');
+        void 0;
         if (window.showStatisticsConfigModal) {
             window.showStatisticsConfigModal();
         }
@@ -264,7 +264,7 @@
      * Login de admin
      */
     function loginAdmin() {
-        console.log('[ADMIN-DASHBOARD-EVENTS] Iniciando sesión de admin');
+        void 0;
         if (window.loginAdmin) {
             window.loginAdmin();
         }
@@ -274,7 +274,7 @@
      * Logout de admin
      */
     function logoutAdmin() {
-        console.log('[ADMIN-DASHBOARD-EVENTS] Cerrando sesión de admin');
+        void 0;
         if (window.logoutAdmin) {
             window.logoutAdmin();
         }
@@ -284,7 +284,7 @@
      * Actualizar contraseña
      */
     function updatePassword() {
-        console.log('[ADMIN-DASHBOARD-EVENTS] Actualizando contraseña');
+        void 0;
         if (window.updatePassword) {
             window.updatePassword();
         }
@@ -294,7 +294,7 @@
      * Refrescar dashboard
      */
     function refreshDashboard() {
-        console.log('[ADMIN-DASHBOARD-EVENTS] Refrescando dashboard');
+        void 0;
         if (window.refreshDashboard) {
             window.refreshDashboard();
         }
@@ -304,7 +304,7 @@
      * Abrir panel de notificaciones
      */
     function openNotificationPanel() {
-        console.log('[ADMIN-DASHBOARD-EVENTS] Abriendo panel de notificaciones');
+        void 0;
         if (window.openNotificationPanel) {
             window.openNotificationPanel();
         }
@@ -314,7 +314,7 @@
      * Recargar lista de estudiantes
      */
     function reloadStudents() {
-        console.log('[ADMIN-DASHBOARD-EVENTS] Recargando estudiantes');
+        void 0;
         if (window.reloadStudents) {
             window.reloadStudents();
         }
@@ -324,7 +324,7 @@
      * Guardar configuración de estadísticas
      */
     function saveStatisticsConfig() {
-        console.log('[ADMIN-DASHBOARD-EVENTS] Guardando configuración de estadísticas');
+        void 0;
         if (window.saveStatisticsConfig) {
             window.saveStatisticsConfig();
         }

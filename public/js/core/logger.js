@@ -110,9 +110,9 @@ class BGELogger {
         const style = `color: ${colors[levelName]}; font-weight: bold;`;
 
         console.groupCollapsed(`%c[${levelName}] ${module}: ${message}`, style);
-        console.log('📊 Detalles:', logEntry);
+        void 0;
         if (data) {
-            console.log('📋 Datos:', data);
+            void 0;
         }
         console.groupEnd();
 
@@ -227,4 +227,4 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = BGELogger;
 }
 
-console.log('✅ BGE Logger System cargado exitosamente');
+void 0;

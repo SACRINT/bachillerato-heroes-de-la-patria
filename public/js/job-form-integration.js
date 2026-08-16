@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const jobForm = document.querySelector('#job-form, #bolsa-trabajo-form, form[name="job"], form.job-form');
 
     if (!jobForm) {
-        console.warn('Job board form not found on this page');
+        void 0;
         return;
     }
 

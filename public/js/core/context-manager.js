@@ -312,4 +312,4 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = BGEContextManager;
 }
 
-console.log('✅ BGE Context Manager cargado exitosamente');
+void 0;

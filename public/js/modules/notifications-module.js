@@ -7,13 +7,13 @@ class NotificationsModule {
         this.eventBus = eventBus;
         this.notifications = [];
         this.apiEndpoint = '/api/notifications';
-        console.log('[NOTIFICATIONS-MODULE] 🔔 Notifications Module creado');
+        void 0;
     }
 
     async init() {
         this.subscribeToEvents();
         await this.loadNotifications();
-        console.log('[NOTIFICATIONS-MODULE] ✅ Inicializado');
+        void 0;
     }
 
     subscribeToEvents() {
@@ -29,7 +29,7 @@ class NotificationsModule {
             const data = await response.json();
             this.notifications = data.notifications || data || [];
             this.eventBus.emit('notifications.loaded', { notifications: this.notifications });
-            console.log(`[NOTIFICATIONS-MODULE] ✅ ${this.notifications.length} notificaciones cargadas`);
+            void 0;
         } catch (error) {
             console.error('[NOTIFICATIONS-MODULE] ❌ Error:', error);
             this.eventBus.emit('notifications.error', { operation: 'load', error: error.message });
@@ -81,6 +81,6 @@ class NotificationsModule {
         return headers;
     }
 
-    destroy() { this.notifications = []; console.log('[NOTIFICATIONS-MODULE] ✅ Destruido'); }
+    destroy() { this.notifications = []; void 0; }
 }
 window.NotificationsModule = NotificationsModule;

@@ -107,9 +107,10 @@
 
     function renderCatalog() {
         const grid = document.getElementById('items-grid');
+        if (!grid) return;
         grid.innerHTML = '';
 
-        let items = state.catalog;
+        let items = Array.isArray(state.catalog) ? state.catalog : (state.catalog?.items || state.catalog?.data || []);
         if (state.activeTab !== 'all') {
             // Mapeo frontend tab -> db item_type
             const map = {

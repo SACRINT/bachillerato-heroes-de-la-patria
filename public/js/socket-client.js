@@ -38,7 +38,7 @@
             const token = this.getAuthToken();
 
             if (!token) {
-                console.warn('[Socket Client] No auth token found. Socket connection disabled.');
+                void 0;
                 return;
             }
 
@@ -57,7 +57,7 @@
             });
 
             this.setupEventListeners();
-            console.log('[Socket Client] Initialized');
+            void 0;
         }
 
         /**
@@ -111,7 +111,7 @@
             this.connected = true;
             this.reconnectAttempts = 0;
 
-            console.log('[Socket Client] Connected to server:', this.socket.id);
+            void 0;
 
             // Mostrar indicador de conexión en UI
             this.updateConnectionStatus('connected');
@@ -128,7 +128,7 @@
         handleDisconnect(reason) {
             this.connected = false;
 
-            console.log('[Socket Client] Disconnected:', reason);
+            void 0;
 
             this.updateConnectionStatus('disconnected');
 
@@ -174,7 +174,7 @@
          * Manejo de notificación recibida
          */
         handleNotification(notification) {
-            console.log('[Socket Client] Notification received:', notification);
+            void 0;
 
             // Mostrar notificación en UI
             this.displayNotification(notification);
@@ -280,7 +280,7 @@
          * Manejo de historial de notificaciones
          */
         handleNotificationsHistory(notifications) {
-            console.log(`[Socket Client] Received ${notifications.length} historical notifications`);
+            void 0;
 
             // Disparar evento
             document.dispatchEvent(new CustomEvent('notificationsHistory', {
@@ -292,7 +292,7 @@
          * Manejo de presencia de usuario
          */
         handleUserPresence(data) {
-            console.log(`[Socket Client] User ${data.userId} is now ${data.status}`);
+            void 0;
 
             // Actualizar UI de presencia
             this.updateUserPresenceUI(data);
@@ -321,7 +321,7 @@
          * Manejo de lista de usuarios online
          */
         handleOnlineUsers(userIds) {
-            console.log(`[Socket Client] ${userIds.length} users online`);
+            void 0;
 
             // Disparar evento
             document.dispatchEvent(new CustomEvent('onlineUsers', {
@@ -333,7 +333,7 @@
          * Manejo de typing indicator
          */
         handleUserTyping(data) {
-            console.log(`[Socket Client] ${data.email} is typing in ${data.room}`);
+            void 0;
 
             document.dispatchEvent(new CustomEvent('userTyping', {
                 detail: data
@@ -353,14 +353,14 @@
          * Manejo de room joined
          */
         handleRoomJoined(data) {
-            console.log(`[Socket Client] Joined room: ${data.room}`);
+            void 0;
         }
 
         /**
          * Manejo de room left
          */
         handleRoomLeft(data) {
-            console.log(`[Socket Client] Left room: ${data.room}`);
+            void 0;
         }
 
         /**
@@ -387,7 +387,7 @@
          */
         sendNotification(to, message, type = 'info', metadata = {}) {
             if (!this.connected) {
-                console.warn('[Socket Client] Not connected. Cannot send notification.');
+                void 0;
                 return;
             }
 

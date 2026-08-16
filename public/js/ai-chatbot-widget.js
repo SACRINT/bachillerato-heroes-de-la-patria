@@ -67,7 +67,7 @@ class AIChatbotWidget {
   // ===========================================================================
 
   init() {
-    console.log('[AI-CHATBOT] Initializing widget...');
+    void 0;
 
     // Crear elementos DOM
     this.createWidget();
@@ -86,7 +86,7 @@ class AIChatbotWidget {
     // Check health
     this.checkHealth();
 
-    console.log('[AI-CHATBOT] Widget initialized successfully');
+    void 0;
   }
 
   /**
@@ -741,7 +741,7 @@ class AIChatbotWidget {
       const token = this.getAuthToken();
 
       if (!token) {
-        console.log('[AI-CHATBOT] No auth token - skipping history load');
+        void 0;
         return;
       }
 
@@ -779,7 +779,7 @@ class AIChatbotWidget {
       this.state.isConnected = data.status === 'healthy';
 
       if (!this.state.isConnected) {
-        console.warn('[AI-CHATBOT] Service unhealthy:', data);
+        void 0;
       }
 
     } catch (error) {
@@ -826,6 +826,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.aiChatbot.init();
 
-    console.log('[AI-CHATBOT] Auto-initialized from script tag');
+    void 0;
   }
 });

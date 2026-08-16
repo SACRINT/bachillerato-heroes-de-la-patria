@@ -28,13 +28,13 @@
     // ============================================
 
     function initializeEventHandlers() {
-        console.log('[AR-VR-LAB-EVENTS] Inicializando event handlers...');
+        void 0;
 
         // Registrar todos los handlers
         registerExperienceButtons();
         registerARViewerControls();
 
-        console.log('[AR-VR-LAB-EVENTS] ✅ Event handlers inicializados correctamente');
+        void 0;
     }
 
     // ============================================
@@ -127,11 +127,11 @@
      * Lanza una experiencia AR por subject
      */
     function launchARExperience(subject) {
-        console.log('[AR-VR-LAB-EVENTS] Lanzando experiencia AR:', subject);
+        void 0;
         if (window.launchARExperience) {
             window.launchARExperience(subject);
         } else {
-            console.warn('[AR-VR-LAB-EVENTS] launchARExperience no está disponible en window');
+            void 0;
         }
     }
 
@@ -139,11 +139,11 @@
      * Lanza el laboratorio virtual 3D
      */
     function launchVirtualLab() {
-        console.log('[AR-VR-LAB-EVENTS] Lanzando laboratorio virtual 3D...');
+        void 0;
         if (window.launchVirtualLab) {
             window.launchVirtualLab();
         } else {
-            console.warn('[AR-VR-LAB-EVENTS] launchVirtualLab no está disponible en window');
+            void 0;
         }
     }
 
@@ -151,11 +151,11 @@
      * Lanza experiencia VR inmersiva
      */
     function launchVRExperience() {
-        console.log('[AR-VR-LAB-EVENTS] Lanzando experiencia VR inmersiva...');
+        void 0;
         if (window.launchVRExperience) {
             window.launchVRExperience();
         } else {
-            console.warn('[AR-VR-LAB-EVENTS] launchVRExperience no está disponible en window');
+            void 0;
         }
     }
 
@@ -163,11 +163,11 @@
      * Alterna la grabación en el visor AR
      */
     function toggleARRecording() {
-        console.log('[AR-VR-LAB-EVENTS] Alternando grabación AR...');
+        void 0;
         if (window.toggleARRecording) {
             window.toggleARRecording();
         } else {
-            console.warn('[AR-VR-LAB-EVENTS] toggleARRecording no está disponible en window');
+            void 0;
         }
     }
 
@@ -175,11 +175,11 @@
      * Toma una captura de pantalla en el visor AR
      */
     function takeARScreenshot() {
-        console.log('[AR-VR-LAB-EVENTS] Tomando captura de pantalla AR...');
+        void 0;
         if (window.takeARScreenshot) {
             window.takeARScreenshot();
         } else {
-            console.warn('[AR-VR-LAB-EVENTS] takeARScreenshot no está disponible en window');
+            void 0;
         }
     }
 
@@ -187,11 +187,11 @@
      * Cierra el visor AR
      */
     function closeARViewer() {
-        console.log('[AR-VR-LAB-EVENTS] Cerrando visor AR...');
+        void 0;
         if (window.closeARViewer) {
             window.closeARViewer();
         } else {
-            console.warn('[AR-VR-LAB-EVENTS] closeARViewer no está disponible en window');
+            void 0;
         }
     }
 

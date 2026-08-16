@@ -24,7 +24,7 @@ class PWAInstaller {
         this.setupEventListeners();
         this.checkShowInstallPrompt();
 
-        console.log('📱 [PWA-INSTALLER] Sistema inicializado');
+        void 0;
     }
 
     detectInstallationState() {
@@ -36,16 +36,13 @@ class PWAInstaller {
         // Verificar si está instalada usando localStorage
         this.isInstalled = localStorage.getItem('pwa-installed') === 'true' || this.isStandalone;
 
-        console.log('📱 [PWA-INSTALLER] Estado:', {
-            isStandalone: this.isStandalone,
-            isInstalled: this.isInstalled
-        });
+        void 0;
     }
 
     setupInstallPrompt() {
         // Escuchar el evento beforeinstallprompt
         window.addEventListener('beforeinstallprompt', (event) => {
-            console.log('📱 [PWA-INSTALLER] beforeinstallprompt disparado');
+            void 0;
 
             // Prevenir que se muestre automáticamente
             event.preventDefault();
@@ -59,7 +56,7 @@ class PWAInstaller {
 
         // Escuchar evento de instalación exitosa
         window.addEventListener('appinstalled', (event) => {
-            console.log('✅ [PWA-INSTALLER] App instalada exitosamente');
+            void 0;
 
             this.isInstalled = true;
             localStorage.setItem('pwa-installed', 'true');
@@ -545,7 +542,7 @@ class PWAInstaller {
 
     checkShowInstallPrompt() {
         if (this.isInstalled) {
-            console.log('📱 [PWA-INSTALLER] App ya instalada');
+            void 0;
             return;
         }
 
@@ -553,7 +550,7 @@ class PWAInstaller {
         this.dismissCount = parseInt(localStorage.getItem('pwa-dismiss-count') || '0');
 
         if (this.dismissCount >= this.maxDismissals) {
-            console.log('📱 [PWA-INSTALLER] Máximo de descartes alcanzado');
+            void 0;
             return;
         }
 
@@ -637,7 +634,7 @@ class PWAInstaller {
 
     async installApp() {
         if (!this.deferredPrompt) {
-            console.warn('📱 [PWA-INSTALLER] No hay prompt disponible');
+            void 0;
             this.showFallbackInstructions();
             return;
         }
@@ -649,13 +646,13 @@ class PWAInstaller {
             // Esperar la respuesta del usuario
             const { outcome } = await this.deferredPrompt.userChoice;
 
-            console.log('📱 [PWA-INSTALLER] Resultado de instalación:', outcome);
+            void 0;
 
             if (outcome === 'accepted') {
-                console.log('✅ [PWA-INSTALLER] Usuario aceptó la instalación');
+                void 0;
                 this.trackInstallation('accepted');
             } else {
-                console.log('❌ [PWA-INSTALLER] Usuario rechazó la instalación');
+                void 0;
                 this.trackInstallation('rejected');
             }
 
@@ -679,7 +676,7 @@ class PWAInstaller {
 
         this.trackInstallation('dismissed');
 
-        console.log('📱 [PWA-INSTALLER] Prompt descartado, contador:', this.dismissCount);
+        void 0;
     }
 
     showFallbackInstructions() {
@@ -820,7 +817,7 @@ class PWAInstaller {
             standalone: this.isStandalone
         };
 
-        console.log('📊 [PWA-INSTALLER] Analytics:', installData);
+        void 0;
 
         // Guardar en localStorage para debugging
         const logs = JSON.parse(localStorage.getItem('pwa-install-logs') || '[]');
@@ -861,4 +858,4 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = PWAInstaller;
 }
 
-console.log('📱 [PWA-INSTALLER] Módulo cargado exitosamente');
+void 0;

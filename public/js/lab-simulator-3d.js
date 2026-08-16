@@ -778,4 +778,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-console.log('🔬 Simulador 3D Interactivo de Laboratorios cargado correctamente');
+void 0;

@@ -127,7 +127,7 @@ class BGESecurityManager {
      */
     async init() {
         try {
-            console.log(`🔐 Inicializando ${this.sistema} v${this.version}`);
+            void 0;
 
             await this.loadThreatSignatures();
             await this.initializeSecurityPolicies();
@@ -137,7 +137,7 @@ class BGESecurityManager {
             this.startSecurityServices();
 
             this.state.active = true;
-            console.log('✅ Sistema de Seguridad inicializado correctamente');
+            void 0;
             this.logSecurityEvent('info', 'Sistema de Seguridad BGE inicializado', 'SYSTEM');
 
         } catch (error) {
@@ -1028,7 +1028,7 @@ class BGESecurityManager {
         this.updateEventsDisplay();
 
         // Log en consola
-        console.log(`[BGE Security ${level.toUpperCase()}] ${message}`);
+        void 0;
     }
 
     /**
@@ -1306,9 +1306,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (typeof window !== 'undefined') {
         window.bgeSecurityManager = new BGESecurityManager();
 
-        console.log('🔐 Sistema de Seguridad BGE inicializado');
-        console.log('📊 Acceso: window.bgeSecurityManager');
-        console.log('🛡️ Comando rápido: window.bgeSecurityManager.performSecurityScan()');
+        void 0;
+        void 0;
+        void 0;
     }
 });
 

@@ -106,23 +106,23 @@ function sanitizeHTML(html, context = 'tablas') {
     case 'footer':
     case 'partial':
       config = DOMPURIFY_CONFIG_PARTIALS;
-      console.log(`🧼 [DOMPURIFY-HELPER] Usando configuración PARTIALS para contexto "${context}"`);
-      console.log(`🧼 [DOMPURIFY-HELPER] ALLOWED_TAGS:`, config.ALLOWED_TAGS);
+      void 0;
+      void 0;
       break;
 
     default:
       // Si no se reconoce el contexto, usar configuración más restrictiva
-      console.warn(`[XSS] Contexto "${context}" no reconocido. Usando config SIMPLE por seguridad.`);
+      void 0;
       config = DOMPURIFY_CONFIG_SIMPLE;
   }
 
   // Sanitizar y retornar
-  console.log(`🧼 [DOMPURIFY-HELPER] HTML antes de sanitizar (${html.length} chars):`, html.substring(0, 150));
+  void 0;
   const result = DOMPurify.sanitize(html, config);
-  console.log(`🧼 [DOMPURIFY-HELPER] HTML después de sanitizar (${result.length} chars):`, result.substring(0, 150));
+  void 0;
 
   if (result.length < html.length * 0.5) {
-    console.warn(`⚠️ [DOMPURIFY-HELPER] ADVERTENCIA: HTML sanitizado es ${((1 - result.length / html.length) * 100).toFixed(1)}% más pequeño. Posible eliminación excesiva de contenido.`);
+    void 0;
   }
 
   return result;
@@ -163,7 +163,7 @@ if (typeof window !== 'undefined') {
     PARTIALS: DOMPURIFY_CONFIG_PARTIALS
   };
 
-  console.log('✅ [DOMPURIFY-HELPER] Funciones de sanitización cargadas globalmente');
+  void 0;
 }
 
 // Para módulos (si se usa en Node.js)

@@ -27,7 +27,7 @@ class CoreWebVitalsOptimizer {
         this.observer = null;
         this.initialized = false;
 
-        console.log('🚀 CoreWebVitalsOptimizer iniciado');
+        void 0;
     }
 
     /**
@@ -47,7 +47,7 @@ class CoreWebVitalsOptimizer {
             this.initMonitoring();
 
             this.initialized = true;
-            console.log('✅ CoreWebVitalsOptimizer inicializado completamente');
+            void 0;
 
             // Reportar estado inicial
             setTimeout(() => this.generateReport(), 2000);
@@ -173,7 +173,7 @@ class CoreWebVitalsOptimizer {
         ];
 
         await Promise.allSettled(optimizations);
-        console.log('🔧 Optimizaciones básicas aplicadas');
+        void 0;
     }
 
     /**
@@ -323,13 +323,13 @@ class CoreWebVitalsOptimizer {
         if ('serviceWorker' in navigator) {
             try {
                 const registration = await navigator.serviceWorker.register('/sw.js');
-                console.log('🔧 Service Worker registrado para cache optimizado');
+                void 0;
 
                 // Precache recursos críticos
                 this.precacheResources();
 
             } catch (error) {
-                console.log('⚠️ Service Worker no disponible');
+                void 0;
             }
         }
 
@@ -359,7 +359,7 @@ class CoreWebVitalsOptimizer {
      * Optimizaciones específicas para LCP
      */
     applyLCPOptimizations() {
-        console.log('🎯 Aplicando optimizaciones LCP específicas');
+        void 0;
 
         // Optimizar imagen LCP
         const lcpElement = this.findLCPElement();
@@ -379,7 +379,7 @@ class CoreWebVitalsOptimizer {
      * Optimizaciones específicas para FID
      */
     applyFIDOptimizations() {
-        console.log('🎯 Aplicando optimizaciones FID específicas');
+        void 0;
 
         // Dividir tareas largas
         this.breakupLongTasks();
@@ -395,7 +395,7 @@ class CoreWebVitalsOptimizer {
      * Optimizaciones específicas para CLS
      */
     applyCLSOptimizations() {
-        console.log('🎯 Aplicando optimizaciones CLS específicas');
+        void 0;
 
         // Definir dimensiones de imágenes
         this.setImageDimensions();
@@ -518,7 +518,7 @@ class CoreWebVitalsOptimizer {
         const status = value <= thresholds.good ? '🟢' :
                       value <= thresholds.poor ? '🟡' : '🔴';
 
-        console.log(`${status} ${name}: ${Math.round(value)}ms`);
+        void 0;
     }
 
     addOptimization(description) {
@@ -537,14 +537,14 @@ class CoreWebVitalsOptimizer {
                 const threshold = this.thresholds[metric];
                 const status = value <= threshold.good ? '🟢 Excelente' :
                               value <= threshold.poor ? '🟡 Necesita mejora' : '🔴 Pobre';
-                console.log(`${metric.toUpperCase()}: ${Math.round(value)} - ${status}`);
+                void 0;
             }
         });
 
         // Optimizaciones aplicadas
-        console.log('\n🔧 Optimizaciones aplicadas:');
+        void 0;
         this.optimizations.forEach(opt => {
-            console.log(`- ${opt.description}`);
+            void 0;
         });
 
         console.groupEnd();

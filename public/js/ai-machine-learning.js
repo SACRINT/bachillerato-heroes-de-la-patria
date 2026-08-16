@@ -1496,12 +1496,12 @@ window.aiEducationalSystem = aiEducationalSystem;
 // Comando de consola para testing
 window.testAISystem = async () => {
     if (aiEducationalSystem) {
-        //console.log('🤖 Estado del Sistema IA:', aiEducationalSystem.getStatus());
-        //console.log('🤖 Analytics:', aiEducationalSystem.getAnalytics());
+        //void 0;
+        //void 0;
         
-        //console.log('🤖 Iniciando entrenamiento de modelos...');
+        //void 0;
         await aiEducationalSystem.trainModels();
     }
 };
 
-//console.log('🤖 AI Educational System inicializado correctamente');
+//void 0;

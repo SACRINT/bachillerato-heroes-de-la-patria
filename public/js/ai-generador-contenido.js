@@ -68,7 +68,7 @@ class BGEAIGeneradorContenido {
 
     async init() {
         try {
-            console.log('🎨 Inicializando BGE AI Generador de Contenido...');
+            void 0;
 
             await this.cargarBibliotecaContenidos();
             await this.inicializarGeneradores();
@@ -77,7 +77,7 @@ class BGEAIGeneradorContenido {
 
             this.configurarEventListeners();
 
-            console.log('✅ Generador de contenido inicializado exitosamente');
+            void 0;
 
         } catch (error) {
             console.error('❌ Error inicializando generador de contenido:', error);
@@ -545,14 +545,14 @@ class BGEAIGeneradorContenido {
     // ==========================================
 
     async cargarBibliotecaContenidos() {
-        console.log('📚 Cargando biblioteca de contenidos...');
+        void 0;
 
         this.bibliotecaContenidos.plantillas = await this.cargarPlantillasContenido();
         this.bibliotecaContenidos.fragmentos = await this.cargarFragmentosReutilizables();
         this.bibliotecaContenidos.recursos = await this.cargarRecursosMultimedia();
         this.bibliotecaContenidos.metadatos = await this.cargarMetadatosContenido();
 
-        console.log('✅ Biblioteca de contenidos cargada');
+        void 0;
     }
 
     generarIdUnidad(nombreTema) {
@@ -603,7 +603,7 @@ class BGEPlanEstudioGenerator {
 
     async generar(parametros) {
         // Implementación específica para generación de planes de estudio
-        console.log('📋 Generando plan de estudio personalizado...');
+        void 0;
         return await this.procesarGeneracionPlan(parametros);
     }
 }
@@ -615,7 +615,7 @@ class BGEExamenGenerator {
     }
 
     async generar(parametros) {
-        console.log('📝 Generando examen adaptativo...');
+        void 0;
         return await this.procesarGeneracionExamen(parametros);
     }
 }
@@ -627,7 +627,7 @@ class BGEActividadGenerator {
     }
 
     async generar(parametros) {
-        console.log('🎮 Generando actividad interactiva...');
+        void 0;
         return await this.procesarGeneracionActividad(parametros);
     }
 }

@@ -94,7 +94,7 @@
     async load(moduleName) {
       // Si ya está cargado, retornar
       if (this._loadedModules.has(moduleName)) {
-        console.log(`[ModuleLoader] Módulo '${moduleName}' ya cargado`);
+        void 0;
         return true;
       }
 
@@ -118,7 +118,7 @@
         await loadPromise;
         this._loadedModules.set(moduleName, true);
         this._loadingModules.delete(moduleName);
-        console.log(`[ModuleLoader] Módulo '${moduleName}' cargado exitosamente`);
+        void 0;
         return true;
       } catch (error) {
         this._loadingModules.delete(moduleName);
@@ -199,7 +199,7 @@
         }
       });
 
-      console.log(`[ModuleLoader] Prefetch configurado para ${moduleNames.length} módulos`);
+      void 0;
     },
 
     /**
@@ -253,7 +253,7 @@
      */
     register(name, config) {
       this._moduleConfig[name] = config;
-      console.log(`[ModuleLoader] Módulo '${name}' registrado`);
+      void 0;
     },
 
     /**
@@ -291,13 +291,13 @@
      */
     clearCache() {
       this._loadedModules.clear();
-      console.log('[ModuleLoader] Cache limpiado');
+      void 0;
     }
   };
 
   // Exponer globalmente
   window.ModuleLoader = ModuleLoader;
 
-  console.log('[ModuleLoader] Inicializado v' + ModuleLoader.version);
+  void 0;
 
 })(window);

@@ -31,21 +31,21 @@
             try {
                 const sessionData = JSON.parse(secureSession);
                 if (sessionData.isAuthenticated || sessionData.token) {
-                    console.log('✅ [DASHBOARD AUTH] Sistema secure_admin_session válido');
+                    void 0;
                     return true;
                 }
             } catch (e) {
-                console.warn('⚠️ [DASHBOARD AUTH] Error en secure session:', e);
+                void 0;
             }
         }
 
-        console.warn('❌ [DASHBOARD AUTH] NO SE ENCONTRÓ AUTENTICACIÓN EN NINGÚN SISTEMA');
+        void 0;
         return false;
     }
 
     // Verificación inmediata pero NO intrusiva
     if (!isAuthenticated()) {
-        console.log('❌ [DASHBOARD AUTH] No autenticado - Redirigiendo...');
+        void 0;
         // DEBUG MODE: Redirección Desactivada
         // setTimeout(() => {
         //     window.location.href = 'index.html';

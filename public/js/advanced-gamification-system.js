@@ -181,8 +181,8 @@ class AdvancedGamificationSystem {
         this.createGameActivationButton(); // ✅ RESTAURAR BOTÓN FLOTANTE
         this.setupNotificationSystem();
 
-        console.log('🎮 Advanced Gamification System inicializado');
-        console.log(`🏆 Nivel actual: ${this.playerProfile.level} | XP: ${this.playerProfile.xp}`);
+        void 0;
+        void 0;
     }
 
     setupGameMechanics() {
@@ -300,8 +300,8 @@ class AdvancedGamificationSystem {
         this.initializeGameTimers();
         this.setupEventListeners();
 
-        console.log('⚙️ Mecánicas de juego configuradas');
-        console.log(`🎯 Sistemas activos: ${Object.keys(this.gameMechanics).filter(key => this.gameMechanics[key].enabled).length}`);
+        void 0;
+        void 0;
     }
 
     initializeGameTimers() {
@@ -329,7 +329,7 @@ class AdvancedGamificationSystem {
             }, 86400000); // 24 horas
         }, timeToMidnight);
 
-        console.log('⏰ Timers de juego inicializados');
+        void 0;
     }
 
     setupEventListeners() {
@@ -354,7 +354,7 @@ class AdvancedGamificationSystem {
             this.handleCollaborationStarted(event.detail);
         });
 
-        console.log('👂 Event listeners configurados');
+        void 0;
     }
 
     // === SISTEMA DE NIVELES Y EXPERIENCIA ===
@@ -384,7 +384,7 @@ class AdvancedGamificationSystem {
         // Mostrar notificación
         this.showNotification(`+${boostedAmount} XP`, 'xp', source);
 
-        console.log(`⭐ XP otorgado: +${boostedAmount} (fuente: ${source})`);
+        void 0;
 
         return boostedAmount;
     }
@@ -398,7 +398,7 @@ class AdvancedGamificationSystem {
         this.recordStatistic('coins_earned', boostedAmount);
         this.showNotification(`+${boostedAmount} IA Coins`, 'coins', source);
 
-        console.log(`🪙 Monedas otorgadas: +${boostedAmount} (fuente: ${source})`);
+        void 0;
 
         return boostedAmount;
     }
@@ -424,7 +424,7 @@ class AdvancedGamificationSystem {
             // Verificar logros relacionados con niveles
             this.checkLevelAchievements();
 
-            console.log(`🎉 ¡Subida de nivel! Nuevo nivel: ${this.playerProfile.level}`);
+            void 0;
 
             // Verificar si hay más niveles que subir
             setTimeout(() => this.checkLevelUp(), 100);
@@ -466,7 +466,7 @@ class AdvancedGamificationSystem {
         // Logro especial de prestigio
         this.unlockAchievement('prestige_master');
 
-        console.log(`✨ Prestigio alcanzado! Nivel de prestigio: ${this.playerProfile.prestige}`);
+        void 0;
     }
 
     // === SISTEMA DE LOGROS ===
@@ -487,7 +487,7 @@ class AdvancedGamificationSystem {
     unlockAchievement(achievementId) {
         const achievement = this.findAchievementById(achievementId);
         if (!achievement) {
-            console.warn(`Logro no encontrado: ${achievementId}`);
+            void 0;
             return;
         }
 
@@ -507,7 +507,7 @@ class AdvancedGamificationSystem {
         // Verificar logros en cadena
         this.checkChainedAchievements(achievementId);
 
-        console.log(`🏆 Logro desbloqueados: ${achievement.name}`);
+        void 0;
     }
 
     findAchievementById(achievementId) {
@@ -537,7 +537,7 @@ class AdvancedGamificationSystem {
     awardBadge(badgeId, reason = '') {
         const badge = this.findBadgeById(badgeId);
         if (!badge) {
-            console.warn(`Insignia no encontrada: ${badgeId}`);
+            void 0;
             return;
         }
 
@@ -559,7 +559,7 @@ class AdvancedGamificationSystem {
 
         this.showBadgeNotification(awardedBadge);
 
-        console.log(`🎖️ Insignia otorgada: ${badge.name}`);
+        void 0;
     }
 
     findBadgeById(badgeId) {
@@ -618,7 +618,7 @@ class AdvancedGamificationSystem {
         this.gameElements.quests.daily = selectedQuests;
         this.saveQuests();
 
-        console.log(`📋 Misiones diarias generadas: ${selectedQuests.length}`);
+        void 0;
     }
 
     updateQuestProgress(questType, questId, progress) {
@@ -655,7 +655,7 @@ class AdvancedGamificationSystem {
         // Verificar si todas las misiones diarias están completadas
         this.checkDailyQuestCompletion();
 
-        console.log(`✅ Misión completada: ${quest.name}`);
+        void 0;
     }
 
     checkDailyQuestCompletion() {
@@ -707,7 +707,7 @@ class AdvancedGamificationSystem {
         // Recompensas por racha
         this.awardStreakRewards(streak.current);
 
-        console.log(`🔥 Racha diaria: ${streak.current} días`);
+        void 0;
     }
 
     awardStreakRewards(streakDays) {
@@ -754,7 +754,7 @@ class AdvancedGamificationSystem {
             });
 
             this.showNotification(`Te has unido a: ${competition.name}`, 'competition');
-            console.log(`🏆 Unido a competencia: ${competition.name}`);
+            void 0;
         }
     }
 
@@ -808,7 +808,7 @@ class AdvancedGamificationSystem {
         this.activatePowerUp(powerUpId);
 
         this.showNotification(`Power-up activado: ${powerUp.name}`, 'powerup');
-        console.log(`⚡ Power-up comprado y activado: ${powerUp.name}`);
+        void 0;
     }
 
     activatePowerUp(powerUpId) {
@@ -896,7 +896,7 @@ class AdvancedGamificationSystem {
         // Actualizar progreso de misiones
         this.updateQuestProgress('daily', 'daily_study', 1);
 
-        console.log(`📚 Lección completada: +${finalXP} XP (${subject}, puntuación: ${score}%)`);
+        void 0;
     }
 
     onExperimentCompleted(labType, experimentType, score, innovations) {
@@ -954,7 +954,7 @@ class AdvancedGamificationSystem {
         // Verificar logro de pionero AR
         this.checkAchievement('ar_pioneer', 1, 1);
 
-        console.log(`🥽 Experiencia AR completada: +${finalXP} XP`);
+        void 0;
     }
 
     onAIInteraction(interactionType, helpful) {
@@ -1308,7 +1308,7 @@ class AdvancedGamificationSystem {
                 const savedProfile = JSON.parse(saved);
                 this.playerProfile = { ...this.playerProfile, ...savedProfile };
             } catch (error) {
-                console.warn('Error loading player profile:', error);
+                void 0;
             }
         }
     }
@@ -1327,7 +1327,7 @@ class AdvancedGamificationSystem {
             try {
                 this.gameElements.quests = JSON.parse(saved);
             } catch (error) {
-                console.warn('Error loading quests:', error);
+                void 0;
             }
         }
     }
@@ -1407,7 +1407,7 @@ class AdvancedGamificationSystem {
     }
 
     populateDailyQuests() {
-        console.log('🎯 Cargando misiones diarias...');
+        void 0;
         const questsContainer = document.querySelector('.daily-quests-content');
         if (!questsContainer) return;
 
@@ -1500,7 +1500,7 @@ class AdvancedGamificationSystem {
                 // Romper racha si han pasado más de 2 días sin actividad
                 if (daysSinceLastActivity > 2) {
                     streak.current = 0;
-                    console.log(`⚠️ Racha de ${streakType.replace('_', ' ')} perdida por inactividad`);
+                    void 0;
                 }
             }
 
@@ -1515,11 +1515,11 @@ class AdvancedGamificationSystem {
         // Guardar cambios
         this.saveGameData();
 
-        console.log('📊 Rachas actualizadas:', this.playerProfile.streaks);
+        void 0;
     }
 
     checkPendingAchievements() {
-        console.log('🏆 Verificando logros pendientes...');
+        void 0;
 
         // Simular verificación de logros basados en el progreso del usuario
         const userStats = this.getUserStats();
@@ -1561,7 +1561,7 @@ class AdvancedGamificationSystem {
     }
 
     awardAchievement(achievement) {
-        console.log(`🎉 ¡Nuevo logro desbloqueados: ${achievement.title}!`);
+        void 0;
 
         // Guardar logro
         const achievements = JSON.parse(localStorage.getItem('bge_achievements') || '[]');
@@ -1632,11 +1632,11 @@ class AdvancedGamificationSystem {
             const userSession = JSON.parse(localStorage.getItem('userSession') || '{}');
             if (userSession.email) {
                 localStorage.setItem(`bge_game_data_${userSession.email}`, JSON.stringify(gameData));
-                console.log('💾 Datos del juego guardados correctamente');
+                void 0;
             } else {
                 // Fallback para usuarios sin sesión
                 localStorage.setItem('bge_game_data_guest', JSON.stringify(gameData));
-                console.log('💾 Datos del juego guardados para usuario invitado');
+                void 0;
             }
         } catch (error) {
             console.error('❌ Error guardando datos del juego:', error);
@@ -1656,7 +1656,7 @@ class AdvancedGamificationSystem {
                 const gameData = JSON.parse(saved);
                 if (gameData.playerProfile) {
                     this.playerProfile = { ...this.playerProfile, ...gameData.playerProfile };
-                    console.log('📥 Datos del juego cargados correctamente');
+                    void 0;
                     return true;
                 }
             }

@@ -7,13 +7,13 @@ class AttendanceModule {
         this.eventBus = eventBus;
         this.attendance = [];
         this.apiEndpoint = '/api/attendance';
-        console.log('[ATTENDANCE-MODULE] 📅 Attendance Module creado');
+        void 0;
     }
 
     async init() {
         this.subscribeToEvents();
         await this.loadAttendance();
-        console.log('[ATTENDANCE-MODULE] ✅ Inicializado');
+        void 0;
     }
 
     subscribeToEvents() {
@@ -28,7 +28,7 @@ class AttendanceModule {
             const data = await response.json();
             this.attendance = data.attendance || data || [];
             this.eventBus.emit('attendance.loaded', { attendance: this.attendance });
-            console.log(`[ATTENDANCE-MODULE] ✅ ${this.attendance.length} registros cargados`);
+            void 0;
         } catch (error) {
             console.error('[ATTENDANCE-MODULE] ❌ Error:', error);
             this.eventBus.emit('attendance.error', { operation: 'load', error: error.message });
@@ -69,6 +69,6 @@ class AttendanceModule {
         return headers;
     }
 
-    destroy() { this.attendance = []; console.log('[ATTENDANCE-MODULE] ✅ Destruido'); }
+    destroy() { this.attendance = []; void 0; }
 }
 window.AttendanceModule = AttendanceModule;

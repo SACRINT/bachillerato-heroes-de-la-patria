@@ -391,7 +391,7 @@ document.addEventListener('click', (e) => {
             return;
         }
 
-        console.warn('[CITAS-MANAGER] Unhandled data-action:', action);
+        void 0;
     } catch (error) {
         console.error('[CITAS-MANAGER] Error handling action:', action, error);
     }

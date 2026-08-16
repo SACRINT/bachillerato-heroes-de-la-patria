@@ -122,7 +122,7 @@
             });
 
             this.isInitialized = true;
-            console.log('[GOOGLE-AUTH] ✅ Google OAuth inicializado');
+            void 0;
         }
 
         async loadGoogleSDK() {
@@ -238,7 +238,7 @@
             });
 
             this.isInitialized = true;
-            console.log('[FACEBOOK-AUTH] ✅ Facebook OAuth inicializado');
+            void 0;
         }
 
         async loadFacebookSDK() {
@@ -400,7 +400,7 @@
                 throw new Error(`Provider no soportado: ${provider}`);
             }
 
-            console.log(`[UNIFIED-AUTH] 🔑 Autenticando con: ${provider}`);
+            void 0;
 
             try {
                 const result = await strategy.authenticate(credentials);
@@ -427,7 +427,7 @@
                     detail: { user: result.user, provider }
                 }));
 
-                console.log('[UNIFIED-AUTH] ✅ Login exitoso:', result.user.email || result.user.username);
+                void 0;
 
                 return result;
 
@@ -532,7 +532,7 @@
          * Logout
          */
         async logout() {
-            console.log('[UNIFIED-AUTH] 🚪 Cerrando sesión...');
+            void 0;
 
             // Intentar invalidar token en el servidor
             try {
@@ -547,7 +547,7 @@
                     });
                 }
             } catch (e) {
-                console.warn('[UNIFIED-AUTH] No se pudo invalidar token en servidor:', e);
+                void 0;
             }
 
             // Limpiar todo localmente
@@ -562,7 +562,7 @@
 
             window.dispatchEvent(new CustomEvent('auth:logout'));
 
-            console.log('[UNIFIED-AUTH] ✅ Sesión cerrada');
+            void 0;
         }
 
         /**
@@ -603,7 +603,7 @@
                 sessionStorage.getItem(this.refreshTokenKey);
 
             if (!refreshToken) {
-                console.log('[UNIFIED-AUTH] No hay refresh token disponible');
+                void 0;
                 return false;
             }
 
@@ -632,7 +632,7 @@
                 // Programar próximo refresh
                 this.scheduleTokenRefresh(data.tokens.accessTokenExpiry);
 
-                console.log('[UNIFIED-AUTH] 🔄 Token renovado exitosamente');
+                void 0;
                 return true;
 
             } catch (error) {
@@ -657,7 +657,7 @@
             const delay = refreshAt - Date.now();
 
             if (delay > 0) {
-                console.log(`[UNIFIED-AUTH] ⏰ Token se renovará en ${Math.round(delay / 1000 / 60)} minutos`);
+                void 0;
                 this.refreshTimer = setTimeout(() => this.refreshToken(), delay);
             }
         }
@@ -784,12 +784,12 @@
                 if (event.key === this.tokenKey || event.key === 'token') {
                     if (event.newValue === null) {
                         // Token eliminado en otra pestaña = logout
-                        console.log('[UNIFIED-AUTH] 🔄 Logout detectado en otra pestaña');
+                        void 0;
                         this.currentUser = null;
                         window.dispatchEvent(new CustomEvent('auth:logout'));
                     } else if (event.oldValue === null && event.newValue) {
                         // Nuevo login en otra pestaña
-                        console.log('[UNIFIED-AUTH] 🔄 Login detectado en otra pestaña');
+                        void 0;
                         this.getCurrentUser();
                         window.dispatchEvent(new CustomEvent('auth:login'));
                     }

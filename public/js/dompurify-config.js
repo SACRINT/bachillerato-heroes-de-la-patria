@@ -133,7 +133,7 @@
     window.sanitizeHTML = function(html, context) {
         if (!html || typeof html !== 'string') return '';
         if (!window.DOMPurify) {
-            console.warn('[DOMPURIFY] DOMPurify no disponible, retornando texto sin HTML');
+            void 0;
             return html;
         }
 
@@ -150,7 +150,7 @@
         } else if (result && typeof result.toString === 'function') {
             return result.toString();
         } else {
-            console.warn('[DOMPURIFY] Resultado de sanitización no es string ni tiene toString():', typeof result);
+            void 0;
             return String(result || '');
         }
     };

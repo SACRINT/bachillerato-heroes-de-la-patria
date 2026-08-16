@@ -61,7 +61,7 @@ class BGEMultiTenantSystem {
      */
     async init() {
         try {
-            console.log(`🌐 Iniciando BGE Multi-Tenant System v${this.version}`);
+            void 0;
 
             // Cargar configuración por defecto
             await this.loadConfiguration();
@@ -72,7 +72,7 @@ class BGEMultiTenantSystem {
             // Configurar eventos
             this.setupEventListeners();
 
-            console.log('✅ Sistema Multi-Tenant inicializado correctamente');
+            void 0;
 
             this.dispatchEvent(this.events.configLoaded, {
                 tenant: this.currentConfig?.tenantId,
@@ -123,7 +123,7 @@ class BGEMultiTenantSystem {
 
             this.currentConfig = config;
 
-            console.log(`✅ Configuración cargada para tenant: ${targetTenant}`);
+            void 0;
             return this.currentConfig;
 
         } catch (error) {
@@ -131,7 +131,7 @@ class BGEMultiTenantSystem {
 
             // Cargar configuración por defecto en caso de error
             if (tenantId !== this.defaultTenant) {
-                console.log('🔄 Intentando cargar configuración por defecto...');
+                void 0;
                 return await this.loadConfiguration(this.defaultTenant);
             }
 
@@ -148,7 +148,7 @@ class BGEMultiTenantSystem {
         }
 
         try {
-            console.log(`🎨 Aplicando configuración para: ${this.currentConfig.institution.name}`);
+            void 0;
 
             // Aplicar cambios en paralelo
             await Promise.all([
@@ -159,7 +159,7 @@ class BGEMultiTenantSystem {
                 this.applyLocalizationSettings()
             ]);
 
-            console.log('✅ Configuración aplicada exitosamente');
+            void 0;
 
             this.dispatchEvent(this.events.configChanged, {
                 tenant: this.currentConfig.tenantId,
@@ -194,7 +194,7 @@ class BGEMultiTenantSystem {
         // Actualizar imagen hero
         this.updateHeroImage(branding.heroImageUrl);
 
-        console.log('🎨 Branding actualizado');
+        void 0;
     }
 
     /**
@@ -222,7 +222,7 @@ class BGEMultiTenantSystem {
         // Actualizar contenido específico
         this.updateSpecificContent(config);
 
-        console.log('📝 Contenido actualizado');
+        void 0;
     }
 
     /**
@@ -245,7 +245,7 @@ class BGEMultiTenantSystem {
         this.updateMetaTag('og:description', metadata.ogDescription);
         this.updateMetaTag('og:url', window.location.href);
 
-        console.log('🔍 Metadata actualizada');
+        void 0;
     }
 
     /**
@@ -270,7 +270,7 @@ class BGEMultiTenantSystem {
             });
         });
 
-        console.log('⚡ Feature flags aplicados');
+        void 0;
     }
 
     /**
@@ -289,7 +289,7 @@ class BGEMultiTenantSystem {
             window.BGEConfig.dateFormat = localization.dateFormat;
         }
 
-        console.log('🌍 Configuración de localización aplicada');
+        void 0;
     }
 
     /**
@@ -298,7 +298,7 @@ class BGEMultiTenantSystem {
      */
     async switchTenant(newTenantId) {
         try {
-            console.log(`🔄 Cambiando a tenant: ${newTenantId}`);
+            void 0;
 
             // Mostrar indicador de carga
             this.showLoadingIndicator();
@@ -312,7 +312,7 @@ class BGEMultiTenantSystem {
             // Ocultar indicador de carga
             this.hideLoadingIndicator();
 
-            console.log(`✅ Cambio a tenant ${newTenantId} completado`);
+            void 0;
 
         } catch (error) {
             console.error(`❌ Error cambiando tenant:`, error);
@@ -369,7 +369,7 @@ class BGEMultiTenantSystem {
             }
         });
 
-        console.log('✅ Configuración validada correctamente');
+        void 0;
     }
 
     /**
@@ -615,7 +615,7 @@ class BGEMultiTenantSystem {
             const response = await fetch(`${this.config.apiEndpoint}/tenants`);
             return await response.json();
         } catch (error) {
-            console.warn('No se pudieron cargar los tenants disponibles:', error);
+            void 0;
             return [];
         }
     }
@@ -635,7 +635,7 @@ function initializeMultiTenant() {
     // Exponer API pública
     window.MultiTenantAPI = window.BGEMultiTenant.getPublicAPI();
 
-    console.log('🌐 BGE Multi-Tenant System activado globalmente');
+    void 0;
 }
 
 // Exportar para uso en módulos

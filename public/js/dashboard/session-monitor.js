@@ -40,10 +40,10 @@
                     const sessionData = JSON.parse(session);
                     if (sessionData.isAuthenticated && sessionData.expiresAt && Date.now() < sessionData.expiresAt) {
                         hasValidAuth = true;
-                        console.log('✅ [SECURITY] Sistema secure_admin_session detectado');
+                        void 0;
                     }
                 } catch (e) {
-                    console.warn('⚠️ [SECURITY] Error parsing secure_admin_session:', e);
+                    void 0;
                 }
             }
         }
@@ -53,13 +53,13 @@
             const sessionData = window.unifiedLogin.loadSession();
             if (sessionData && sessionData.token) {
                 hasValidAuth = true;
-                console.log('✅ [SECURITY] Sistema window.unifiedLogin detectado');
+                void 0;
             }
         }
 
         // Si no hay sesión válida, bloquear inmediatamente
         if (!hasValidAuth) {
-            console.log('🚨 [SECURITY] Acceso no autorizado detectado - Bloqueando página');
+            void 0;
             blockPageAndRedirect('Acceso no autorizado');
             return false;
         }
@@ -72,7 +72,7 @@
         if (isRedirecting) return;
         isRedirecting = true;
 
-        console.log(`🚨 [SECURITY ALERT] ${reason}. Bloqueando y redirigiendo...`);
+        void 0;
 
         // Bloquear toda la página inmediatamente
         const overlay = document.createElement('div');
@@ -108,7 +108,7 @@
 
         // Redirigir después de un breve delay
         setTimeout(() => {
-            console.warn('Redirect suppressed for debugging.');
+            void 0;
             // window.location.replace('index.html'); // replace evita volver con botón atrás
         }, 2000);
     }
@@ -156,13 +156,13 @@
 
             // Si DU no tiene autenticación válida y ANTES estaba autenticado, es un logout
             if (!hasAnyValidAuth && hasEverBeenAuthenticated) {
-                console.log('🔒 [SECURITY] Logout detectado - Ningún sistema de autenticación activo');
+                void 0;
                 isLoggedOut = true;
             }
 
             // Verificar notificación de cierre en ventana
             if (sessionStorage.getItem('admin_logout_redirect') === 'true') {
-                console.log('🔒 [SECURITY] Señal de logout detectada');
+                void 0;
                 sessionStorage.removeItem('admin_logout_redirect');
                 isLoggedOut = true;
             }
@@ -184,7 +184,7 @@
 
         // Interceptar evento de retroceso
         window.addEventListener('popstate', function (event) {
-            console.log('🔒 [SECURITY] Intento de retroceso detectado');
+            void 0;
 
             // ✅ FIX (16 Dec 2025): Verificar claves correctas
             // Verificar inmediatamente la sesión en claves correctas
@@ -206,7 +206,7 @@
             }
 
             if (!hasValidAuth) {
-                console.log('🚨 [SECURITY] Retroceso sin autenticación - Bloqueando');
+                void 0;
                 blockPageAndRedirect('Navegación no autorizada');
             } else {
                 // Si hay sesión válida, permitir pero mantener en la misma página

@@ -650,4 +650,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 1000);
 });
 
-console.log('✅ BGE Education System Coordinator cargado exitosamente');
+void 0;

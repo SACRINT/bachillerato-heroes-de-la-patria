@@ -85,7 +85,7 @@ class BGEAICoordinadorSistemas {
 
     async init() {
         try {
-            console.log('🧠 Inicializando BGE AI Coordinador de Sistemas...');
+            void 0;
 
             await this.inicializarModulosIA();
             await this.configurarEventBus();
@@ -96,7 +96,7 @@ class BGEAICoordinadorSistemas {
             this.configurarIntegracionesExternas();
             this.iniciarOptimizacionContinua();
 
-            console.log('✅ Coordinador AI inicializado exitosamente');
+            void 0;
 
             // Evento de sistema completamente inicializado
             this.eventBus.emit('SISTEMA_IA_LISTO', {
@@ -116,33 +116,33 @@ class BGEAICoordinadorSistemas {
     // ==========================================
 
     async inicializarModulosIA() {
-        console.log('🔧 Inicializando módulos IA...');
+        void 0;
 
         try {
             // Inicializar Tutor IA Personalizado
             if (typeof BGEAITutorPersonalizado !== 'undefined') {
                 this.modulosIA.tutor = new BGEAITutorPersonalizado();
                 await this.registrarModulo('tutor', this.modulosIA.tutor);
-                console.log('✅ Tutor IA inicializado');
+                void 0;
             }
 
             // Inicializar Análisis Predictivo
             if (typeof BGEAIAnalisisPredictivo !== 'undefined') {
                 this.modulosIA.predictivo = new BGEAIAnalisisPredictivo();
                 await this.registrarModulo('predictivo', this.modulosIA.predictivo);
-                console.log('✅ Análisis Predictivo inicializado');
+                void 0;
             }
 
             // Inicializar Generador de Contenido
             if (typeof BGEAIGeneradorContenido !== 'undefined') {
                 this.modulosIA.generadorContenido = new BGEAIGeneradorContenido();
                 await this.registrarModulo('generadorContenido', this.modulosIA.generadorContenido);
-                console.log('✅ Generador de Contenido inicializado');
+                void 0;
             }
 
             // Verificar estado de inicialización
             const modulosInicializados = Object.values(this.modulosIA).filter(m => m !== null).length;
-            console.log(`✅ ${modulosInicializados} módulos IA inicializados correctamente`);
+            void 0;
 
         } catch (error) {
             console.error('Error inicializando módulos IA:', error);
@@ -169,7 +169,7 @@ class BGEAICoordinadorSistemas {
         // Configurar interceptores para monitoreo
         this.configurarInterceptoresModulo(nombre, instancia);
 
-        console.log(`📝 Módulo '${nombre}' registrado exitosamente`);
+        void 0;
     }
 
     // ==========================================
@@ -319,7 +319,7 @@ class BGEAICoordinadorSistemas {
     // ==========================================
 
     async iniciarGestionRecursos() {
-        console.log('⚡ Iniciando gestión de recursos...');
+        void 0;
 
         // Configurar pool de conexiones
         this.gestionRecursos.pools.conexiones = new Map();
@@ -333,7 +333,7 @@ class BGEAICoordinadorSistemas {
         // Iniciar monitoreo de recursos
         this.iniciarMonitoreoRecursos();
 
-        console.log('✅ Gestión de recursos configurada');
+        void 0;
     }
 
     iniciarMonitoreoRecursos() {
@@ -377,7 +377,7 @@ class BGEAICoordinadorSistemas {
     // ==========================================
 
     async iniciarDashboard() {
-        console.log('📊 Inicializando dashboard ejecutivo...');
+        void 0;
 
         this.dashboard.metricas = await this.configurarMetricasKey();
         this.dashboard.alertas = await this.configurarSistemaAlertas();
@@ -388,7 +388,7 @@ class BGEAICoordinadorSistemas {
             await this.crearInterfazWebDashboard();
         }
 
-        console.log('✅ Dashboard ejecutivo configurado');
+        void 0;
     }
 
     async generarReporteEjecutivo() {
@@ -428,7 +428,7 @@ class BGEAICoordinadorSistemas {
     // ==========================================
 
     async configurarEventBus() {
-        console.log('🔄 Configurando sistema de eventos...');
+        void 0;
 
         // Configurar eventos críticos del sistema
         this.eventBus.on('MODULO_ERROR', this.manejarErrorModulo.bind(this));
@@ -443,7 +443,7 @@ class BGEAICoordinadorSistemas {
             retryAttempts: 3
         });
 
-        console.log('✅ Sistema de eventos configurado');
+        void 0;
     }
 
     async manejarErrorModulo(evento) {
@@ -468,7 +468,7 @@ class BGEAICoordinadorSistemas {
     // ==========================================
 
     iniciarOptimizacionContinua() {
-        console.log('🚀 Iniciando optimización continua...');
+        void 0;
 
         // Optimización cada 5 minutos
         setInterval(async () => {
@@ -487,7 +487,7 @@ class BGEAICoordinadorSistemas {
     }
 
     async ejecutarCicloOptimizacion() {
-        console.log('🔧 Ejecutando ciclo de optimización...');
+        void 0;
 
         const optimizaciones = {
             cache: await this.optimizarCache(),
@@ -496,11 +496,11 @@ class BGEAICoordinadorSistemas {
             modelos: await this.optimizarModelos()
         };
 
-        console.log('✅ Ciclo de optimización completado:', optimizaciones);
+        void 0;
     }
 
     async ejecutarAnalisisProfundo() {
-        console.log('🔍 Ejecutando análisis profundo del sistema...');
+        void 0;
 
         const analisis = {
             patrones: await this.analizarPatronesUso(),
@@ -511,7 +511,7 @@ class BGEAICoordinadorSistemas {
 
         await this.aplicarMejorasBasadasEnAnalisis(analisis);
 
-        console.log('✅ Análisis profundo completado');
+        void 0;
     }
 
     // ==========================================

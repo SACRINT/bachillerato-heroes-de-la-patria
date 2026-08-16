@@ -689,7 +689,7 @@
 
       // Si aún no hay valor, retornar la clave
       if (typeof value !== 'string') {
-        console.warn(`[i18n] Traducción no encontrada: ${key}`);
+        void 0;
         return key;
       }
 
@@ -703,7 +703,7 @@
      */
     setLocale(locale) {
       if (!translations[locale]) {
-        console.warn(`[i18n] Idioma no soportado: ${locale}`);
+        void 0;
         return;
       }
 
@@ -712,7 +712,7 @@
       this._updateDocumentLang(locale);
       this._notifyObservers();
 
-      console.log(`[i18n] Idioma cambiado a: ${locale}`);
+      void 0;
     }
 
     /**
@@ -831,7 +831,7 @@
       try {
         localStorage.setItem(STORAGE_KEY, locale);
       } catch (e) {
-        console.warn('[i18n] No se pudo guardar preferencia de idioma');
+        void 0;
       }
     }
 
@@ -907,5 +907,5 @@
     i18n.translateDOM();
   }
 
-  console.log(`[i18n] Servicio inicializado - Idioma: ${i18n.getLocale()}`);
+  void 0;
 })();

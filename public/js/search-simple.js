@@ -207,7 +207,7 @@
             return;
         }
         
-        //console.log('🔍 Inicializando búsqueda simple...');
+        //void 0;
         
         // Event listener para input
         input.addEventListener('input', function(e) {

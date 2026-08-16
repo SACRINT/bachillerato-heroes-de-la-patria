@@ -28,7 +28,7 @@ class AdvancedWebAPIs {
     }
 
     init() {
-        //console.log('🔮 Inicializando Advanced Web APIs...');
+        //void 0;
         
         this.setupBadging();
         this.setupFileSystemAccess();
@@ -37,8 +37,8 @@ class AdvancedWebAPIs {
         this.setupWebLocks();
         this.addAPIButtons();
         
-        //console.log('✅ Advanced Web APIs inicializadas');
-        //console.log('🔧 APIs soportadas:', this.getSupportedFeatures());
+        //void 0;
+        //void 0;
     }
 
     checkAPISupport() {
@@ -61,11 +61,11 @@ class AdvancedWebAPIs {
     // === BADGING API ===
     setupBadging() {
         if (!this.features.badging) {
-            console.warn('Badging API not supported');
+            void 0;
             return;
         }
 
-        //console.log('🔔 Badging API available');
+        //void 0;
         
         // Listen for notifications to update badge
         if (window.pwaNotifications) {
@@ -93,15 +93,15 @@ class AdvancedWebAPIs {
             if (count === null || count === 0) {
                 await navigator.clearAppBadge();
                 this.badgeCount = 0;
-                //console.log('🔔 Badge cleared');
+                //void 0;
             } else {
                 await navigator.setAppBadge(count);
                 this.badgeCount = count;
-                //console.log(`🔔 Badge set to: ${count}`);
+                //void 0;
             }
             return true;
         } catch (error) {
-            console.warn('Error setting badge:', error);
+            void 0;
             return false;
         }
     }
@@ -117,12 +117,12 @@ class AdvancedWebAPIs {
     // === FILE SYSTEM ACCESS API ===
     setupFileSystemAccess() {
         if (!this.features.fileSystemAccess) {
-            console.warn('File System Access API not supported');
+            void 0;
             this.setupFallbackFileHandling();
             return;
         }
 
-        //console.log('📁 File System Access API available');
+        //void 0;
         
         // Register file type handlers
         this.registerFileHandler('pdf', {
@@ -171,13 +171,13 @@ class AdvancedWebAPIs {
                 })
             );
 
-            //console.log('📁 Files opened:', files);
+            //void 0;
             this.processFiles(files);
             return files;
 
         } catch (error) {
             if (error.name !== 'AbortError') {
-                console.warn('Error opening files:', error);
+                void 0;
             }
             return null;
         }
@@ -201,12 +201,12 @@ class AdvancedWebAPIs {
             await writable.write(data);
             await writable.close();
 
-            //console.log('💾 File saved:', filename);
+            //void 0;
             return true;
 
         } catch (error) {
             if (error.name !== 'AbortError') {
-                console.warn('Error saving file:', error);
+                void 0;
             }
             return false;
         }
@@ -242,12 +242,12 @@ class AdvancedWebAPIs {
     }
 
     setupFallbackFileHandling() {
-        //console.log('📁 Using fallback file handling');
+        //void 0;
     }
 
     processFiles(files) {
         files.forEach(({ file, handle }) => {
-            //console.log(`📄 Processing file: ${file.name} (${file.size} bytes)`);
+            //void 0;
             
             // Dispatch custom event for file processing
             const event = new CustomEvent('file-opened', {
@@ -260,11 +260,11 @@ class AdvancedWebAPIs {
     // === CONTACT PICKER API ===
     setupContactPicker() {
         if (!this.features.contactPicker) {
-            console.warn('Contact Picker API not supported');
+            void 0;
             return;
         }
 
-        //console.log('📱 Contact Picker API available');
+        //void 0;
         this.contactManager = navigator.contacts;
     }
 
@@ -285,13 +285,13 @@ class AdvancedWebAPIs {
                 multiple: finalOptions.multiple
             });
 
-            //console.log('📱 Contacts selected:', contacts);
+            //void 0;
             this.processContacts(contacts);
             return contacts;
 
         } catch (error) {
             if (error.name !== 'AbortError') {
-                console.warn('Error selecting contacts:', error);
+                void 0;
             }
             return null;
         }
@@ -300,7 +300,7 @@ class AdvancedWebAPIs {
     processContacts(contacts) {
         // Process selected contacts
         contacts.forEach(contact => {
-            //console.log('👤 Contact:', contact.name, contact.email, contact.tel);
+            //void 0;
         });
 
         // Dispatch event for contact processing
@@ -337,11 +337,11 @@ class AdvancedWebAPIs {
     // === PAYMENT REQUEST API ===
     setupPaymentAPI() {
         if (!this.features.paymentRequest) {
-            console.warn('Payment Request API not supported');
+            void 0;
             return;
         }
 
-        //console.log('💳 Payment Request API available');
+        //void 0;
         
         this.paymentMethods = [
             {
@@ -397,7 +397,7 @@ class AdvancedWebAPIs {
             return response;
 
         } catch (error) {
-            console.warn('Payment error:', error);
+            void 0;
             return this.showPaymentFallback(details);
         }
     }
@@ -405,14 +405,14 @@ class AdvancedWebAPIs {
     async handlePaymentResponse(response, originalDetails) {
         try {
             // Simulate payment processing
-            //console.log('💳 Processing payment...');
+            //void 0;
             
             // In real implementation, send to payment processor
             const result = await this.sendPaymentToProcessor(response, originalDetails);
             
             if (result.success) {
                 await response.complete('success');
-                //console.log('✅ Payment successful');
+                //void 0;
                 
                 // Show success message
                 this.showPaymentSuccess(result);
@@ -491,11 +491,11 @@ class AdvancedWebAPIs {
     // === WEB LOCKS API ===
     setupWebLocks() {
         if (!this.features.webLocks) {
-            console.warn('Web Locks API not supported');
+            void 0;
             return;
         }
 
-        //console.log('🔒 Web Locks API available');
+        //void 0;
     }
 
     async acquireLock(name, callback, options = {}) {
@@ -507,7 +507,7 @@ class AdvancedWebAPIs {
         try {
             return await navigator.locks.request(name, options, callback);
         } catch (error) {
-            console.warn('Lock error:', error);
+            void 0;
             throw error;
         }
     }
@@ -517,10 +517,10 @@ class AdvancedWebAPIs {
 
         try {
             const lockInfo = await navigator.locks.query();
-            //console.log('🔒 Current locks:', lockInfo);
+            //void 0;
             return lockInfo;
         } catch (error) {
-            console.warn('Error querying locks:', error);
+            void 0;
             return null;
         }
     }
@@ -617,7 +617,7 @@ class AdvancedWebAPIs {
     async copyToClipboard(text) {
         try {
             await navigator.clipboard.writeText(text);
-            //console.log('📋 Copied to clipboard:', text);
+            //void 0;
             
             // Show feedback
             const feedback = document.createElement('div');
@@ -627,7 +627,7 @@ class AdvancedWebAPIs {
             
             setTimeout(() => feedback.remove(), 3000);
         } catch (error) {
-            console.warn('Error copying to clipboard:', error);
+            void 0;
         }
     }
 

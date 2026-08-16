@@ -116,7 +116,7 @@ function clearCanvas() {
 async function saveSnapshot() {
     // Save locally or to server
     const dataURL = canvas.toDataURL();
-    console.log('Snapshot data length:', dataURL.length);
+    void 0;
 
     // POST /api/collab/sessions/:id/snapshot
     // Real impl: fetch(...)

@@ -20,7 +20,7 @@ class DashboardCore {
         this.isInitialized = false;
         this.currentUser = null;
 
-        console.log('[DASHBOARD-CORE] 🏗️  Dashboard Core creado');
+        void 0;
     }
 
     /**
@@ -28,11 +28,11 @@ class DashboardCore {
      */
     async init() {
         if (this.isInitialized) {
-            console.warn('[DASHBOARD-CORE] ⚠️ Dashboard ya está inicializado');
+            void 0;
             return;
         }
 
-        console.log('[DASHBOARD-CORE] 🚀 Inicializando Dashboard Core...');
+        void 0;
 
         try {
             // 1. Verificar autenticación
@@ -59,7 +59,7 @@ class DashboardCore {
             });
 
             this.isInitialized = true;
-            console.log('[DASHBOARD-CORE] ✅ Dashboard Core inicializado exitosamente');
+            void 0;
 
         } catch (error) {
             console.error('[DASHBOARD-CORE] ❌ Error inicializando dashboard:', error);
@@ -71,12 +71,12 @@ class DashboardCore {
      * Verificar autenticación del usuario
      */
     async checkAuthentication() {
-        console.log('[DASHBOARD-CORE] 🔐 Verificando autenticación...');
+        void 0;
 
         // Prioridad 1: Sistema seguro (nuevo)
         if (window.secureAdminAuth && window.secureAdminAuth.isUserAuthenticated()) {
             this.currentUser = window.secureAdminAuth.getCurrentUser();
-            console.log('[DASHBOARD-CORE] ✅ Usuario autenticado:', this.currentUser.email || this.currentUser.username);
+            void 0;
             return;
         }
 
@@ -87,22 +87,22 @@ class DashboardCore {
                 const sessionData = JSON.parse(secureSession);
                 if (sessionData.token && sessionData.expiresAt && Date.now() < sessionData.expiresAt) {
                     this.currentUser = sessionData.user || { role: 'admin' };
-                    console.log('[DASHBOARD-CORE] ✅ Usuario autenticado via localStorage');
+                    void 0;
                     return;
                 }
             }
         } catch (error) {
-            console.warn('[DASHBOARD-CORE] ⚠️ Error verificando sesión:', error);
+            void 0;
         }
 
         // Fallback: Sistema viejo
         if (window.authInterface && window.authInterface.isAuthenticated()) {
             this.currentUser = window.authInterface.getCurrentUser();
-            console.log('[DASHBOARD-CORE] ✅ Usuario autenticado (sistema viejo)');
+            void 0;
             return;
         }
 
-        console.log('[DASHBOARD-CORE] ❌ Usuario NO autenticado');
+        void 0;
         this.currentUser = null;
     }
 
@@ -121,7 +121,7 @@ class DashboardCore {
      * Registrar módulos disponibles
      */
     registerModules() {
-        console.log('[DASHBOARD-CORE] 📦 Registrando módulos...');
+        void 0;
 
         // Módulo 1: Estudiantes
         if (window.StudentModule) {
@@ -153,19 +153,19 @@ class DashboardCore {
             this.modules.set('settings', new window.SettingsModule(eventBus));
         }
 
-        console.log(`[DASHBOARD-CORE] ✅ ${this.modules.size} módulos registrados`);
+        void 0;
     }
 
     /**
      * Inicializar todos los módulos
      */
     async initializeModules() {
-        console.log('[DASHBOARD-CORE] 🔧 Inicializando módulos...');
+        void 0;
 
         const initPromises = [];
 
         for (const [name, module] of this.modules.entries()) {
-            console.log(`[DASHBOARD-CORE] ⚙️  Inicializando módulo: ${name}`);
+            void 0;
 
             if (typeof module.init === 'function') {
                 initPromises.push(
@@ -177,7 +177,7 @@ class DashboardCore {
         }
 
         await Promise.all(initPromises);
-        console.log('[DASHBOARD-CORE] ✅ Todos los módulos inicializados');
+        void 0;
     }
 
     /**
@@ -186,14 +186,14 @@ class DashboardCore {
     setupEventListeners() {
         // Listener: Usuario hace logout
         eventBus.on('auth.logout', () => {
-            console.log('[DASHBOARD-CORE] 🚪 Logout detectado');
+            void 0;
             this.destroy();
             window.location.href = '/index.html';
         });
 
         // Listener: Sesión expirada
         eventBus.on('auth.sessionExpired', () => {
-            console.log('[DASHBOARD-CORE] ⏱️  Sesión expirada');
+            void 0;
             this.destroy();
             this.showLoginPrompt();
         });
@@ -204,14 +204,14 @@ class DashboardCore {
             this.showError(event.data.message || 'Ocurrió un error inesperado');
         });
 
-        console.log('[DASHBOARD-CORE] 🎧 Event listeners configurados');
+        void 0;
     }
 
     /**
      * Mostrar prompt de login
      */
     showLoginPrompt() {
-        console.log('[DASHBOARD-CORE] 🔐 Mostrando prompt de login');
+        void 0;
 
         const loginContainer = document.getElementById('login-container');
         const dashboardContainer = document.getElementById('dashboard-container');
@@ -254,14 +254,14 @@ class DashboardCore {
      * Destruir dashboard y limpiar recursos
      */
     destroy() {
-        console.log('[DASHBOARD-CORE] 🧹 Destruyendo dashboard...');
+        void 0;
 
         // Destruir todos los módulos
         for (const [name, module] of this.modules.entries()) {
             if (typeof module.destroy === 'function') {
                 try {
                     module.destroy();
-                    console.log(`[DASHBOARD-CORE] 🗑️  Módulo destruido: ${name}`);
+                    void 0;
                 } catch (error) {
                     console.error(`[DASHBOARD-CORE] ❌ Error destruyendo ${name}:`, error);
                 }
@@ -277,7 +277,7 @@ class DashboardCore {
         this.isInitialized = false;
         this.currentUser = null;
 
-        console.log('[DASHBOARD-CORE] ✅ Dashboard destruido');
+        void 0;
     }
 }
 

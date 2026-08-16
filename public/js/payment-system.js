@@ -80,15 +80,15 @@ class PaymentSystemManager {
     }
 
     async init() {
-        //console.log('💳 Initializing Advanced Payment System...');
+        //void 0;
         
         // Initialize payment providers
         for (const [name, provider] of Object.entries(this.providers)) {
             try {
                 await provider.init();
-                //console.log(`✅ ${name} payment provider initialized`);
+                //void 0;
             } catch (error) {
-                console.warn(`⚠️ ${name} provider failed:`, error);
+                void 0;
             }
         }
 
@@ -137,22 +137,22 @@ class PaymentSystemManager {
 
     // Método básico para manejar formularios (se extenderá más abajo)
     handlePaymentForm(form) {
-        //console.log('💳 Payment form submitted:', form);
+        //void 0;
     }
 
     // Método básico para cambio de método de pago (se extenderá más abajo)
     handlePaymentMethodChange(method) {
-        //console.log('💳 Payment method changed:', method);
+        //void 0;
     }
 
     // Método básico para pagos rápidos
     handleQuickPayment(element) {
-        //console.log('💳 Quick payment clicked:', element);
+        //void 0;
     }
 
     // Método de compatibilidad
     updatePaymentForm(method) {
-        //console.log('💳 Update payment form:', method);
+        //void 0;
     }
 
     initializeSystem() {
@@ -750,7 +750,7 @@ class StripeIntegration {
 
     async init() {
         // Mock initialization for demo
-        //console.log('💳 Stripe integration initialized');
+        //void 0;
     }
 
     async processCardPayment(paymentData) {
@@ -771,7 +771,7 @@ class PayPalIntegration {
     }
 
     async init() {
-        //console.log('🟡 PayPal integration initialized');
+        //void 0;
     }
 
     async processPayment(paymentData) {
@@ -787,7 +787,7 @@ class PayPalIntegration {
 
 class OXXOPayIntegration {
     async init() {
-        //console.log('🏪 OXXO Pay integration initialized');
+        //void 0;
     }
 
     async generatePaymentCode(paymentData) {
@@ -804,7 +804,7 @@ class OXXOPayIntegration {
 
 class SPEIIntegration {
     async init() {
-        //console.log('🏦 SPEI integration initialized');
+        //void 0;
     }
 
     async generateReference(paymentData) {

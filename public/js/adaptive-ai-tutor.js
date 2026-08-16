@@ -683,4 +683,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-console.log('🧠 Tutor IA Personalizado Adaptativo cargado correctamente');
+void 0;

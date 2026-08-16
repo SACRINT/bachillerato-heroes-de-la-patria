@@ -9,13 +9,13 @@
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         // SW registration deshabilitado - manejado centralmente por index.html
-        console.log('[SW] Registration skipped - handled by main app');
+        void 0;
         // navigator.serviceWorker.register('/sw-offline-first.js')
         //     .then(registration => {
-        //         console.log('SW registered: ', registration);
+        //         void 0;
         //     })
         //     .catch(registrationError => {
-        //         console.log('SW registration failed: ', registrationError);
+        //         void 0;
         //     });
     });
 }

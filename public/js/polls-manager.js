@@ -17,7 +17,7 @@ if (typeof sanitizeHTML === 'undefined') {
         if (typeof DOMPurify !== 'undefined') {
             return DOMPurify.sanitize(str);
         }
-        console.warn('DOMPurify not found, returning unsanitized HTML');
+        void 0;
         return str;
     };
 }

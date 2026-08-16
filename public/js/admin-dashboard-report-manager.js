@@ -199,7 +199,7 @@
 
     function generateReport(reportType) {
         const typeName = reportTypes[reportType] || reportType;
-        console.log(`[ADMIN-REPORT-MANAGER] Generando reporte de ${typeName}...`);
+        void 0;
         if (window.generateReport) {
             window.generateReport(reportType);
         }
@@ -207,7 +207,7 @@
 
     function generateAcademicReport(subtype) {
         const subtypeName = academicReportSubtypes[subtype] || subtype;
-        console.log(`[ADMIN-REPORT-MANAGER] Generando reporte académico de ${subtypeName}...`);
+        void 0;
         if (window.generateAcademicReport) {
             window.generateAcademicReport(subtype);
         }
@@ -215,7 +215,7 @@
 
     function downloadReport(reportType) {
         const typeName = reportTypes[reportType] || reportType;
-        console.log(`[ADMIN-REPORT-MANAGER] Descargando reporte de ${typeName}...`);
+        void 0;
         if (window.downloadReport) {
             window.downloadReport(reportType);
         }
@@ -223,21 +223,21 @@
 
     function exportReport(reportType) {
         const typeName = reportTypes[reportType] || reportType;
-        console.log(`[ADMIN-REPORT-MANAGER] Exportando reporte de ${typeName}...`);
+        void 0;
         if (window.exportReport) {
             window.exportReport(reportType);
         }
     }
 
     function exportAllContent() {
-        console.log('[ADMIN-REPORT-MANAGER] Exportando todo el contenido...');
+        void 0;
         if (window.exportAllContent) {
             window.exportAllContent();
         }
     }
 
     function showReportsManager() {
-        console.log('[ADMIN-REPORT-MANAGER] Abriendo administrador de reportes...');
+        void 0;
         if (window.showReportsManager) {
             window.showReportsManager();
         }

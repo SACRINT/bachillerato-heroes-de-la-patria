@@ -113,7 +113,7 @@ class BGEAnalyticsPredictivo {
      */
     async init() {
         try {
-            console.log('📊 [BGE-ANALYTICS] Inicializando Sistema de Analytics Predictivo v' + this.version);
+            void 0;
 
             await this.loadStudentData();
             await this.initializePredictiveModels();
@@ -124,7 +124,7 @@ class BGEAnalyticsPredictivo {
             this.startPeriodicTasks();
 
             this.isInitialized = true;
-            console.log('✅ [BGE-ANALYTICS] Sistema de Analytics Predictivo inicializado correctamente');
+            void 0;
 
             // Evento de inicialización
             this.dispatchEvent('analytics-system-ready', {
@@ -144,7 +144,7 @@ class BGEAnalyticsPredictivo {
      */
     async loadStudentData() {
         try {
-            console.log('📚 [BGE-ANALYTICS] Cargando datos de estudiantes...');
+            void 0;
 
             // En implementación real, cargar desde API
             const studentsData = await this.generateMockStudentData();
@@ -153,10 +153,10 @@ class BGEAnalyticsPredictivo {
                 this.dataStore.students.set(student.id, student);
             });
 
-            console.log(`👥 [BGE-ANALYTICS] Cargados ${studentsData.length} perfiles de estudiantes`);
+            void 0;
 
         } catch (error) {
-            console.warn('⚠️ [BGE-ANALYTICS] Error cargando datos de estudiantes:', error);
+            void 0;
             await this.loadFallbackStudentData();
         }
     }
@@ -166,7 +166,7 @@ class BGEAnalyticsPredictivo {
      */
     async initializePredictiveModels() {
         try {
-            console.log('🧠 [BGE-ANALYTICS] Inicializando modelos predictivos...');
+            void 0;
 
             // Modelo de Predicción de Riesgo
             if (this.config.models.riskPrediction.enabled) {
@@ -202,7 +202,7 @@ class BGEAnalyticsPredictivo {
                 }));
             }
 
-            console.log('🎯 [BGE-ANALYTICS] Modelos predictivos inicializados');
+            void 0;
 
         } catch (error) {
             console.error('❌ [BGE-ANALYTICS] Error inicializando modelos:', error);
@@ -230,7 +230,7 @@ class BGEAnalyticsPredictivo {
                 throw new Error(`Estudiante ${studentId} no encontrado`);
             }
 
-            console.log(`🎯 [BGE-ANALYTICS] Generando predicción de riesgo para estudiante ${studentId}`);
+            void 0;
 
             // Obtener modelo de predicción de riesgo
             const riskModel = this.dataStore.models.get('riskPrediction');
@@ -265,7 +265,7 @@ class BGEAnalyticsPredictivo {
             // Logging y analytics
             this.logPredictionGenerated('risk', studentId, result);
 
-            console.log(`✅ [BGE-ANALYTICS] Predicción de riesgo generada en ${processingTime}ms`);
+            void 0;
 
             return result;
 
@@ -340,7 +340,7 @@ class BGEAnalyticsPredictivo {
                 throw new Error(`Estudiante ${studentId} no encontrado`);
             }
 
-            console.log(`📈 [BGE-ANALYTICS] Generando análisis de tendencias para estudiante ${studentId}`);
+            void 0;
 
             const trendsModel = this.dataStore.models.get('performanceTrends');
             if (!trendsModel) {
@@ -367,7 +367,7 @@ class BGEAnalyticsPredictivo {
             this.setCachedResult(cacheKey, result);
             this.dataStore.trends.set(`${studentId}_performance`, result);
 
-            console.log(`✅ [BGE-ANALYTICS] Análisis de tendencias generado en ${processingTime}ms`);
+            void 0;
 
             return result;
 
@@ -440,7 +440,7 @@ class BGEAnalyticsPredictivo {
      */
     async generateRealTimeDashboard(filters = {}) {
         try {
-            console.log('📊 [BGE-ANALYTICS] Generando dashboard en tiempo real...');
+            void 0;
 
             const dashboard = {
                 timestamp: new Date().toISOString(),
@@ -529,7 +529,7 @@ class BGEAnalyticsPredictivo {
      */
     async processIntelligentAlerts() {
         try {
-            console.log('🚨 [BGE-ANALYTICS] Procesando alertas inteligentes...');
+            void 0;
 
             const newAlerts = [];
 
@@ -543,7 +543,7 @@ class BGEAnalyticsPredictivo {
                 await this.processAlert(alert);
             }
 
-            console.log(`🔔 [BGE-ANALYTICS] Procesadas ${newAlerts.length} alertas`);
+            void 0;
 
             return newAlerts;
 
@@ -845,7 +845,7 @@ class BGEAnalyticsPredictivo {
     }
 
     logPredictionGenerated(type, studentId, result) {
-        console.log(`📈 [BGE-ANALYTICS] Predicción ${type} generada para ${studentId}: confianza ${(result.metadata.confidence * 100).toFixed(1)}%`);
+        void 0;
     }
 
     cleanupCache() {
@@ -966,7 +966,7 @@ class GroupAnalyticsModel {
 document.addEventListener('DOMContentLoaded', () => {
     if (typeof window !== 'undefined') {
         window.bgeAnalyticsPredictivo = new BGEAnalyticsPredictivo();
-        console.log('🚀 [BGE-ANALYTICS] Sistema de Analytics Predictivo cargado globalmente');
+        void 0;
     }
 });
 

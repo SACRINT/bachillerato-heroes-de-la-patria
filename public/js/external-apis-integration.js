@@ -31,7 +31,7 @@ class ExternalAPIsIntegration {
             }
         };
 
-        console.log('🌐 External APIs Integration inicializando...');
+        void 0;
         this.init();
     }
 
@@ -57,7 +57,7 @@ class ExternalAPIsIntegration {
             this.setupUnifiedAPI();
 
             this.initialized = true;
-            console.log('✅ External APIs Integration completamente inicializado');
+            void 0;
 
             // Generar reporte inicial
             setTimeout(() => this.generateIntegrationReport(), 3000);
@@ -75,7 +75,7 @@ class ExternalAPIsIntegration {
             localStorage: typeof localStorage !== 'undefined'
         };
 
-        console.log('🔍 Verificando dependencias:', dependencies);
+        void 0;
         return dependencies;
     }
 
@@ -84,9 +84,9 @@ class ExternalAPIsIntegration {
             if (window.googleClassroom) {
                 this.integrations.set('googleClassroom', window.googleClassroom);
                 this.apiStatus.googleClassroom.connected = true;
-                console.log('🎓 Google Classroom conectado exitosamente');
+                void 0;
             } else {
-                console.warn('⚠️ Google Classroom no disponible');
+                void 0;
                 this.apiStatus.googleClassroom.error = 'Sistema no disponible';
             }
         } catch (error) {
@@ -100,9 +100,9 @@ class ExternalAPIsIntegration {
             if (window.sepConnectivitySystem) {
                 this.integrations.set('sepConnectivity', window.sepConnectivitySystem);
                 this.apiStatus.sepConnectivity.connected = true;
-                console.log('🏛️ SEP Connectivity conectado exitosamente');
+                void 0;
             } else {
-                console.warn('⚠️ SEP Connectivity no disponible');
+                void 0;
                 this.apiStatus.sepConnectivity.error = 'Sistema no disponible';
             }
         } catch (error) {
@@ -113,7 +113,7 @@ class ExternalAPIsIntegration {
 
     setupSynchronization() {
         if (!this.config.enableRealTimeSync) {
-            console.log('📴 Sincronización en tiempo real deshabilitada');
+            void 0;
             return;
         }
 
@@ -122,11 +122,11 @@ class ExternalAPIsIntegration {
             await this.performFullSync();
         }, this.config.syncInterval);
 
-        console.log('🔄 Sincronización automática configurada');
+        void 0;
     }
 
     async performFullSync() {
-        console.log('🔄 Iniciando sincronización completa...');
+        void 0;
 
         const syncResults = {
             timestamp: new Date().toISOString(),
@@ -145,7 +145,7 @@ class ExternalAPIsIntegration {
                 syncResults.sepConnectivity = await this.syncSEP();
             }
 
-            console.log('✅ Sincronización completa exitosa');
+            void 0;
             return syncResults;
 
         } catch (error) {
@@ -224,7 +224,7 @@ class ExternalAPIsIntegration {
             generateReport: () => this.generateIntegrationReport()
         };
 
-        console.log('🔌 API unificada configurada en window.bgeExternalAPIs');
+        void 0;
     }
 
     getIntegrationStatus() {
@@ -241,11 +241,11 @@ class ExternalAPIsIntegration {
         const status = this.getIntegrationStatus();
 
         console.group('🌐 REPORTE DE INTEGRACIONES EXTERNAS');
-        console.log('Versión:', status.version);
-        console.log('Estado:', status.initialized ? 'Inicializado' : 'No inicializado');
-        console.log('Integraciones activas:', status.integrations);
-        console.log('Estado Google Classroom:', status.apiStatus.googleClassroom);
-        console.log('Estado SEP:', status.apiStatus.sepConnectivity);
+        void 0;
+        void 0;
+        void 0;
+        void 0;
+        void 0;
         console.groupEnd();
 
         return status;

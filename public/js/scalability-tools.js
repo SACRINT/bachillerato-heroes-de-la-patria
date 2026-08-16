@@ -19,7 +19,7 @@ class ScalabilityTools {
             await this.setupAutoScaler();
             await this.setupConnectionPool();
 
-            console.log('⚡ Herramientas de Escalabilidad BGE Héroes iniciadas');
+            void 0;
         } catch (error) {
             console.error('❌ Error inicializando herramientas de escalabilidad:', error);
         }
@@ -70,7 +70,7 @@ class ScalabilityTools {
 
                 await this.startHealthCheck(serverId);
 
-                console.log(`🔗 Servidor agregado al load balancer: ${server.url}`);
+                void 0;
                 return serverConfig;
             },
 
@@ -122,7 +122,7 @@ class ScalabilityTools {
                         if (health.consecutiveFailures >= 3) {
                             health.isHealthy = false;
                             server.status = 'unhealthy';
-                            console.warn(`⚠️ Servidor marcado como no saludable: ${server.url}`);
+                            void 0;
                         }
                     }
 
@@ -426,7 +426,7 @@ class ScalabilityTools {
                     }
                 }
 
-                console.log(`🔄 Cache invalidado: ${invalidatedCount} entradas`);
+                void 0;
                 return invalidatedCount;
             },
 
@@ -590,7 +590,7 @@ class ScalabilityTools {
                 this.alerts.push(alert);
 
                 // Alertas deshabilitadas en desarrollo para evitar ruido en consola
-                // console.warn(`🚨 Alerta ${severity}: ${metricName} = ${value} (umbral: ${threshold[severity]})`);
+                // void 0;
 
                 if (severity === 'critical') {
                     // this.handleCriticalAlert(alert);
@@ -614,11 +614,11 @@ class ScalabilityTools {
             },
 
             async enableCircuitBreaker() {
-                console.log('🔌 Circuit breaker activado');
+                void 0;
             },
 
             async enableRateLimiting() {
-                console.log('🚦 Rate limiting activado');
+                void 0;
             },
 
             getMetricStats(metricName, timeWindow = 300000) {
@@ -950,7 +950,7 @@ class ScalabilityTools {
                 };
 
                 this.policies.set(name, policy);
-                console.log(`📈 Política de auto-escalado creada: ${name}`);
+                void 0;
 
                 return policy;
             },
@@ -965,7 +965,7 @@ class ScalabilityTools {
                 const cooldown = direction === 'up' ? policy.scaleUpCooldown : policy.scaleDownCooldown;
 
                 if (policy.lastAction && (now - policy.lastAction.timestamp) < (cooldown * 1000)) {
-                    console.log(`⏳ Esperando cooldown para ${policyName}`);
+                    void 0;
                     return;
                 }
 
@@ -996,12 +996,12 @@ class ScalabilityTools {
                 policy.lastAction = action;
                 this.history.push(action);
 
-                console.log(`🔄 Escalando ${direction}: ${policy.currentInstances} → ${newInstanceCount} instancias (${reason})`);
+                void 0;
 
                 setTimeout(() => {
                     policy.currentInstances = newInstanceCount;
                     action.status = 'completed';
-                    console.log(`✅ Escalado completado: ${newInstanceCount} instancias activas`);
+                    void 0;
                 }, 5000);
             },
 
@@ -1114,7 +1114,7 @@ class ScalabilityTools {
 
                 await this.initializePool(pool);
 
-                console.log(`🔗 Pool de conexiones creado: ${name} (${pool.minConnections}-${pool.maxConnections})`);
+                void 0;
                 return pool;
             },
 

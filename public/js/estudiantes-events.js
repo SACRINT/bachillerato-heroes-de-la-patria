@@ -28,7 +28,7 @@
     // ============================================
 
     function initializeEventHandlers() {
-        console.log('[ESTUDIANTES-EVENTS] Inicializando event handlers...');
+        void 0;
 
         // Registrar todos los handlers
         registerFilterButtons();
@@ -39,7 +39,7 @@
         registerChatbotHandlers();
         registerContactLinkHandlers(); // CSP-compliant dynamic contact links
 
-        console.log('[ESTUDIANTES-EVENTS] ✅ Event handlers inicializados correctamente');
+        void 0;
     }
 
     // ============================================
@@ -262,7 +262,7 @@
             }
         });
 
-        console.log('[ESTUDIANTES-EVENTS] ✅ Contact link handlers registrados (event delegation)');
+        void 0;
     }
 
     // ============================================

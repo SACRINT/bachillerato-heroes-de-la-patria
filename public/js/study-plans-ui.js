@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function loadStudyPlan() {
-    console.log('📅 Cargando Plan de Estudio...');
+    void 0;
     const container = document.getElementById('weekly-plan-container');
     const goalsContainer = document.getElementById('active-goals-list');
 

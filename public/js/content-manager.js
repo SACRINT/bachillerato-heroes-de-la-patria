@@ -11,7 +11,7 @@
 
 class ContentManager {
     constructor() {
-        console.log('🎯 [CMS] Inicializando Sistema de Gestión de Contenido...');
+        void 0;
         this.dynamicContent = null;
         this.apiEndpoint = 'data/dynamic-content.json';
         this.init();
@@ -20,7 +20,7 @@ class ContentManager {
     async init() {
         await this.loadContent();
         this.setupEventListeners();
-        console.log('✅ [CMS] Sistema de Gestión de Contenido inicializado');
+        void 0;
     }
 
     // ==========================================
@@ -29,13 +29,13 @@ class ContentManager {
 
     async loadContent() {
         try {
-            console.log('📄 [CMS] Cargando contenido dinámico...');
+            void 0;
 
             // Intentar cargar desde localStorage primero (cambios no guardados)
             const localContent = localStorage.getItem('dynamicContent');
             if (localContent) {
                 this.dynamicContent = JSON.parse(localContent);
-                console.log('💾 [CMS] Contenido cargado desde localStorage');
+                void 0;
                 return;
             }
 
@@ -46,7 +46,7 @@ class ContentManager {
             }
 
             this.dynamicContent = await response.json();
-            console.log('📁 [CMS] Contenido cargado desde archivo JSON:', this.dynamicContent);
+            void 0;
 
         } catch (error) {
             console.error('❌ [CMS] Error al cargar contenido:', error);
@@ -55,7 +55,7 @@ class ContentManager {
     }
 
     initializeEmptyContent() {
-        console.log('🔄 [CMS] Inicializando contenido vacío...');
+        void 0;
         this.dynamicContent = {
             noticias: [],
             eventos: [],
@@ -73,7 +73,7 @@ class ContentManager {
         try {
             this.dynamicContent.configuracion.ultimaActualizacion = new Date().toISOString();
             localStorage.setItem('dynamicContent', JSON.stringify(this.dynamicContent));
-            console.log('💾 [CMS] Contenido guardado en localStorage');
+            void 0;
             return true;
         } catch (error) {
             console.error('❌ [CMS] Error al guardar en localStorage:', error);
@@ -103,7 +103,7 @@ class ContentManager {
         this.updateTotalElementos();
         this.saveToLocalStorage();
 
-        console.log('📰 [CMS] Nueva noticia creada:', noticia.id);
+        void 0;
         return noticia;
     }
 
@@ -114,7 +114,7 @@ class ContentManager {
         this.dynamicContent.noticias[index] = { ...this.dynamicContent.noticias[index], ...data };
         this.saveToLocalStorage();
 
-        console.log('✏️ [CMS] Noticia actualizada:', id);
+        void 0;
         return true;
     }
 
@@ -126,7 +126,7 @@ class ContentManager {
         this.updateTotalElementos();
         this.saveToLocalStorage();
 
-        console.log('🗑️ [CMS] Noticia eliminada:', id);
+        void 0;
         return true;
     }
 
@@ -172,7 +172,7 @@ class ContentManager {
         this.updateTotalElementos();
         this.saveToLocalStorage();
 
-        console.log('📅 [CMS] Nuevo evento creado:', evento.id);
+        void 0;
         return evento;
     }
 
@@ -183,7 +183,7 @@ class ContentManager {
         this.dynamicContent.eventos[index] = { ...this.dynamicContent.eventos[index], ...data };
         this.saveToLocalStorage();
 
-        console.log('✏️ [CMS] Evento actualizado:', id);
+        void 0;
         return true;
     }
 
@@ -195,7 +195,7 @@ class ContentManager {
         this.updateTotalElementos();
         this.saveToLocalStorage();
 
-        console.log('🗑️ [CMS] Evento eliminado:', id);
+        void 0;
         return true;
     }
 
@@ -240,7 +240,7 @@ class ContentManager {
         this.updateTotalElementos();
         this.saveToLocalStorage();
 
-        console.log('📢 [CMS] Nuevo aviso creado:', aviso.id);
+        void 0;
         return aviso;
     }
 
@@ -251,7 +251,7 @@ class ContentManager {
         this.dynamicContent.avisos[index] = { ...this.dynamicContent.avisos[index], ...data };
         this.saveToLocalStorage();
 
-        console.log('✏️ [CMS] Aviso actualizado:', id);
+        void 0;
         return true;
     }
 
@@ -263,7 +263,7 @@ class ContentManager {
         this.updateTotalElementos();
         this.saveToLocalStorage();
 
-        console.log('🗑️ [CMS] Aviso eliminado:', id);
+        void 0;
         return true;
     }
 
@@ -314,7 +314,7 @@ class ContentManager {
         this.updateTotalElementos();
         this.saveToLocalStorage();
 
-        console.log('📋 [CMS] Nuevo comunicado creado:', comunicado.id);
+        void 0;
         return comunicado;
     }
 
@@ -325,7 +325,7 @@ class ContentManager {
         this.dynamicContent.comunicados[index] = { ...this.dynamicContent.comunicados[index], ...data };
         this.saveToLocalStorage();
 
-        console.log('✏️ [CMS] Comunicado actualizado:', id);
+        void 0;
         return true;
     }
 
@@ -337,7 +337,7 @@ class ContentManager {
         this.updateTotalElementos();
         this.saveToLocalStorage();
 
-        console.log('🗑️ [CMS] Comunicado eliminado:', id);
+        void 0;
         return true;
     }
 
@@ -390,12 +390,12 @@ class ContentManager {
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
 
-        console.log('📦 [CMS] Contenido exportado exitosamente');
+        void 0;
     }
 
     setupEventListeners() {
         // Aquí se configurarán los event listeners para los formularios
-        console.log('🎮 [CMS] Event listeners configurados');
+        void 0;
     }
 }
 
@@ -407,4 +407,4 @@ document.addEventListener('DOMContentLoaded', function() {
     contentManager = new ContentManager();
 });
 
-console.log('📝 [CMS] content-manager.js cargado exitosamente');
+void 0;

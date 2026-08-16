@@ -6,7 +6,7 @@
  *
  * Uso:
  *   eventBus.emit('student.created', { id: 1, name: 'Juan' });
- *   eventBus.on('student.created', (event) => console.log(event));
+ *   eventBus.on('student.created', (event) => void 0);
  *
  * Versión: 1.0.0
  * Fecha: 21 Noviembre 2025
@@ -125,11 +125,11 @@
                 const index = listeners.findIndex(l => l.id === listenerId);
                 if (index !== -1) {
                     listeners.splice(index, 1);
-                    console.log(`[EVENT-BUS] 🔕 Listener removido de: ${eventType}`);
+                    void 0;
                 }
             } else {
                 this.listeners.delete(eventType);
-                console.log(`[EVENT-BUS] 🔕 Todos los listeners removidos de: ${eventType}`);
+                void 0;
             }
 
             // Limpiar si no quedan listeners
@@ -172,7 +172,7 @@
          */
         clear() {
             this.listeners.clear();
-            console.log('[EVENT-BUS] 🧹 Todos los listeners limpiados');
+            void 0;
         }
 
         /**
@@ -218,7 +218,7 @@
                 channel.postMessage(event);
                 channel.close();
             } catch (error) {
-                console.warn('[EVENT-BUS] ⚠️ No se pudo broadcast a otros tabs:', error);
+                void 0;
             }
         }
 
@@ -257,7 +257,7 @@
         const channel = new BroadcastChannel('eventBus');
         channel.onmessage = (msg) => {
             const event = msg.data;
-            console.log(`[EVENT-BUS] 📥 Evento recibido de otro tab: ${event.type}`);
+            void 0;
             window.eventBus.emit(event.type, event.data);
         };
     }

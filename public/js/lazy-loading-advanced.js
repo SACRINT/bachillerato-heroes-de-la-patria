@@ -47,7 +47,7 @@ class AdvancedLazyLoader {
     }
 
     log(message) {
-        console.log(`[LazyLoader] ${message}`);
+        void 0;
     }
 
     // ==========================================
@@ -537,14 +537,14 @@ function initLazyLoader() {
         },
 
         onError: function(element, error) {
-            console.warn('[BGE] Error en lazy loading:', error);
+            void 0;
         }
     });
 
     // Exponer estadísticas en consola
     setTimeout(() => {
         const stats = window.lazyLoader.getStats();
-        console.log(`[BGE] Lazy Loading Stats:`, stats);
+        void 0;
     }, 5000);
 }
 

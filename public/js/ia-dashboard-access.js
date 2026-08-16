@@ -10,13 +10,13 @@ class IADashboardAccess {
         this.userSession = null;
         this.availableFeatures = new Map();
 
-        console.log('🎨 [DASHBOARD-ACCESS] Inicializando panel de acceso admin...');
+        void 0;
 
         this.initializeAccessPanel();
         this.loadUserSession();
         this.createAccessInterface();
 
-        console.log('✅ [DASHBOARD-ACCESS] Panel de acceso creado exitosamente');
+        void 0;
     }
 
     initializeAccessPanel() {
@@ -87,7 +87,7 @@ class IADashboardAccess {
         // Verificar si ya existe el botón
         const existingButton = document.getElementById('ia-access-button');
         if (existingButton) {
-            console.log('🎨 [DASHBOARD-ACCESS] Botón ya existe, actualizando...');
+            void 0;
             existingButton.remove();
         }
 
@@ -96,13 +96,13 @@ class IADashboardAccess {
         const conflictingButtons = document.querySelectorAll('[style*="position: fixed"][style*="bottom:"], .floating-button, .chat-button, .ai-button');
         conflictingButtons.forEach(btn => {
             if (btn.id !== 'ia-access-button' && btn.id !== 'chatbot-toggle') {
-                console.log('🧹 [DASHBOARD-ACCESS] Removiendo botón flotante conflictivo:', btn.id || btn.className);
+                void 0;
                 btn.remove();
             }
         });
         */
 
-        console.log('🎨 [DASHBOARD-ACCESS] Creando botón flotante admin...');
+        void 0;
 
         const floatingButton = document.createElement('div');
         floatingButton.id = 'ia-access-button';
@@ -121,7 +121,7 @@ class IADashboardAccess {
 
         document.body.appendChild(floatingButton);
 
-        console.log('✅ [DASHBOARD-ACCESS] Botón flotante 🧠 IA creado y añadido al DOM');
+        void 0;
     }
 
     createMainPanel() {
@@ -648,32 +648,32 @@ class IADashboardAccess {
     }
 
     showContentResult(content) {
-        console.log('Contenido generado:', content);
+        void 0;
         this.showSuccess('Contenido generado exitosamente');
     }
 
     showTutorSession(session) {
-        console.log('Sesión de tutoría:', session);
+        void 0;
         this.showSuccess('Sesión de tutoría iniciada');
     }
 
     showLabInterface(experiment) {
-        console.log('Experimento iniciado:', experiment);
+        void 0;
         this.showSuccess(`Experimento "${experiment.name}" iniciado`);
     }
 
     browseMarketplace() {
-        console.log('Explorando marketplace...');
+        void 0;
         this.showSuccess('Abriendo marketplace...');
     }
 
     createProduct() {
-        console.log('Creando producto...');
+        void 0;
         this.showSuccess('Abriendo creador de productos...');
     }
 
     viewMyPurchases() {
-        console.log('Viendo compras...');
+        void 0;
         this.showSuccess('Abriendo historial de compras...');
     }
 }
@@ -1069,7 +1069,7 @@ function handleLogout() {
 function initIADashboardAccess() {
     if (!window.iaDashboard) {
         window.iaDashboard = new IADashboardAccess();
-        console.log('🎯 Panel de Acceso a IA cargado correctamente');
+        void 0;
     }
 }
 

@@ -118,7 +118,7 @@
   function debug(prefix, ...args) {
     if (currentLevel <= LEVELS.DEBUG) {
       const sanitizedArgs = isProduction ? sanitizeArgs(args) : args;
-      console.log(`%c${prefix}`, 'color: #007bff; font-weight: bold;', ...sanitizedArgs);
+      void 0;
     }
   }
 
@@ -130,7 +130,7 @@
   function info(prefix, ...args) {
     if (currentLevel <= LEVELS.INFO) {
       const sanitizedArgs = isProduction ? sanitizeArgs(args) : args;
-      console.info(`%c${prefix}`, 'color: #28a745; font-weight: bold;', ...sanitizedArgs);
+      void 0;
     }
   }
 
@@ -142,7 +142,7 @@
   function warn(prefix, ...args) {
     if (currentLevel <= LEVELS.WARN) {
       const sanitizedArgs = sanitizeArgs(args); // Siempre sanitizar warnings
-      console.warn(`%c${prefix}`, 'color: #ff9800; font-weight: bold;', ...sanitizedArgs);
+      void 0;
     }
   }
 
@@ -255,7 +255,7 @@
    */
   function table(prefix, data) {
     if (currentLevel <= LEVELS.DEBUG) {
-      console.log(`%c${prefix}`, 'color: #007bff; font-weight: bold;');
+      void 0;
       console.table(data);
     }
   }

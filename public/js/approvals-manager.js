@@ -310,7 +310,7 @@ function filterApprovals() {
         return true;
     });
 
-    console.log(`📋 Filtradas ${filteredApprovals.length} de ${pendingApprovals.length} solicitudes`);
+    void 0;
     renderApprovalsList();
 }
 
@@ -328,7 +328,7 @@ async function approveSubmission(eventOrId) {
             return;
         }
         id = parseInt(card.getAttribute('data-approval-id'), 10);
-        console.log(`🔍 [APROBAR] ID extraído del elemento HTML: ${id}`);
+        void 0;
     } else {
         // Es un ID directo (compatibilidad hacia atrás)
         id = eventOrId;
@@ -352,9 +352,9 @@ async function approveSubmission(eventOrId) {
         return;
     }
 
-    console.log(`✅ [APROBAR] Iniciando aprobación de solicitud ${id}`);
-    console.log(`   Tipo de solicitud: ${approval.form_type}`);
-    console.log(`   Email: ${approval.verification_email}`);
+    void 0;
+    void 0;
+    void 0;
 
     try {
         const requestBody = {
@@ -362,8 +362,8 @@ async function approveSubmission(eventOrId) {
             admin_notas: 'Aprobado desde el panel administrativo'
         };
 
-        console.log(`📤 [APROBAR] Enviando POST a /api/pendientes-aprobacion/aprobar/${id}`);
-        console.log(`   Body:`, JSON.stringify(requestBody));
+        void 0;
+        void 0;
 
         const response = await fetch(`/api/pendientes-aprobacion/aprobar/${id}`, {
             method: 'POST',
@@ -373,21 +373,21 @@ async function approveSubmission(eventOrId) {
             body: JSON.stringify(requestBody)
         });
 
-        console.log(`📥 [APROBAR] Respuesta HTTP recibida`);
-        console.log(`   Status: ${response.status} ${response.statusText}`);
-        console.log(`   OK: ${response.ok}`);
+        void 0;
+        void 0;
+        void 0;
 
         // Verificar si la respuesta HTTP es correcta
         if (!response.ok) {
-            console.warn(`⚠️ [APROBAR] Status HTTP no es OK (${response.status})`);
+            void 0;
         }
 
         const result = await response.json();
-        console.log(`📊 [APROBAR] JSON parseado:`, result);
+        void 0;
 
         if (result && result.success) {
-            console.log('✅ [APROBAR] Solicitud aprobada exitosamente en el servidor');
-            console.log(`   Respuesta del servidor:`, result.message);
+            void 0;
+            void 0;
 
             // Mostrar notificación
             showNotification('✅ Solicitud aprobada exitosamente. Se movió a la tabla definitiva.', 'success');
@@ -397,7 +397,7 @@ async function approveSubmission(eventOrId) {
             pendingApprovals = pendingApprovals.filter(a => a.id !== id);
             filteredApprovals = filteredApprovals.filter(a => a.id !== id);
 
-            console.log(`✅ [APROBAR] Eliminado del array local: ${initialLength} → ${pendingApprovals.length} solicitudes`);
+            void 0;
 
             // Actualizar badge y lista
             updateApprovalsBadge(pendingApprovals.length);
@@ -433,7 +433,7 @@ async function rejectSubmission(eventOrId) {
             return;
         }
         id = parseInt(card.getAttribute('data-approval-id'), 10);
-        console.log(`🔍 [RECHAZAR] ID extraído del elemento HTML: ${id}`);
+        void 0;
     } else {
         // Es un ID directo (compatibilidad hacia atrás)
         id = eventOrId;
@@ -445,8 +445,8 @@ async function rejectSubmission(eventOrId) {
         return; // Usuario canceló
     }
 
-    console.log(`❌ [RECHAZAR] Rechazando solicitud ${id}...`);
-    console.log(`   Razón: ${reason}`);
+    void 0;
+    void 0;
 
     try {
         const response = await fetch(`/api/pendientes-aprobacion/rechazar/${id}`, {
@@ -460,13 +460,13 @@ async function rejectSubmission(eventOrId) {
             })
         });
 
-        console.log(`📥 [RECHAZAR] Respuesta HTTP recibida: ${response.status}`);
+        void 0;
 
         const result = await response.json();
-        console.log(`📊 [RECHAZAR] Respuesta del servidor:`, result);
+        void 0;
 
         if (result.success) {
-            console.log('✅ [RECHAZAR] Solicitud rechazada exitosamente');
+            void 0;
 
             // Mostrar notificación
             showNotification('❌ Solicitud rechazada y eliminada de la base de datos.', 'warning');
@@ -476,7 +476,7 @@ async function rejectSubmission(eventOrId) {
             pendingApprovals = pendingApprovals.filter(a => a.id !== id);
             filteredApprovals = filteredApprovals.filter(a => a.id !== id);
 
-            console.log(`✅ [RECHAZAR] Eliminado del array local: ${initialLength} → ${pendingApprovals.length} solicitudes`);
+            void 0;
 
             // Actualizar badge y lista
             updateApprovalsBadge(pendingApprovals.length);

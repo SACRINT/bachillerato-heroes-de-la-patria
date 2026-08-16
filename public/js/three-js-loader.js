@@ -64,7 +64,7 @@
                 capabilities.webgl = !!(canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
                 capabilities.webgl2 = !!canvas.getContext('webgl2');
             } catch (e) {
-                console.warn('[THREE-LOADER] WebGL detection failed:', e);
+                void 0;
             }
 
             // Test WebXR
@@ -107,7 +107,7 @@
 
             this.loadPromise = new Promise(async (resolve, reject) => {
                 try {
-                    console.log('[THREE-LOADER] Cargando Three.js...');
+                    void 0;
 
                     // Cargar Three.js core
                     const threeModule = await import(SCRIPTS.core);
@@ -118,7 +118,7 @@
                         const controlsModule = await import(SCRIPTS.orbitControls);
                         this.OrbitControls = controlsModule.OrbitControls;
                     } catch (e) {
-                        console.warn('[THREE-LOADER] OrbitControls no disponible:', e);
+                        void 0;
                     }
 
                     // Cargar GLTFLoader
@@ -126,13 +126,13 @@
                         const gltfModule = await import(SCRIPTS.gltfLoader);
                         this.GLTFLoader = gltfModule.GLTFLoader;
                     } catch (e) {
-                        console.warn('[THREE-LOADER] GLTFLoader no disponible:', e);
+                        void 0;
                     }
 
                     this.loaded = true;
                     this.loading = false;
 
-                    console.log('[THREE-LOADER] ✅ Three.js cargado correctamente');
+                    void 0;
 
                     resolve({
                         THREE: this.THREE,
@@ -437,6 +437,6 @@
     window.ThreeJSLoader = ThreeJSLoader;
     window.threeLoader = new ThreeJSLoader();
 
-    console.log('🎮 Three.js Loader inicializado');
+    void 0;
 
 })();

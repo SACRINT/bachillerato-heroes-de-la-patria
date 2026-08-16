@@ -152,7 +152,7 @@ class BGEDeteccionRiesgos {
 
     async init() {
         try {
-            console.log('🚨 Iniciando BGE Sistema de Detección de Riesgos...');
+            void 0;
 
             // Cargar configuración del sistema
             await this.loadSystemConfiguration();
@@ -173,7 +173,7 @@ class BGEDeteccionRiesgos {
             this.state.isActive = true;
             this.state.monitoringActive = true;
 
-            console.log('✅ Sistema de Detección de Riesgos iniciado exitosamente');
+            void 0;
 
             // Comenzar análisis inicial
             await this.performInitialRiskAnalysis();
@@ -202,10 +202,10 @@ class BGEDeteccionRiesgos {
                 this.applyInstitutionalConfiguration(institutionalConfig);
             }
 
-            console.log('📋 Configuración de detección de riesgos cargada');
+            void 0;
 
         } catch (error) {
-            console.warn('⚠️ Error cargando configuración, usando valores por defecto');
+            void 0;
         }
     }
 
@@ -222,10 +222,10 @@ class BGEDeteccionRiesgos {
 
             // Verificar salud de los modelos
             const modelsHealth = await this.verifyModelsHealth();
-            console.log('🧠 Modelos de detección de riesgos inicializados:', modelsHealth);
+            void 0;
 
         } catch (error) {
-            console.warn('⚠️ Algunos modelos no están disponibles, usando algoritmos alternativos');
+            void 0;
             await this.initializeFallbackModels();
         }
     }
@@ -242,7 +242,7 @@ class BGEDeteccionRiesgos {
         // Configurar listeners para eventos del sistema
         this.setupEventListeners();
 
-        console.log('⏰ Monitoreo continuo configurado');
+        void 0;
     }
 
     async connectToDataSources() {
@@ -259,10 +259,10 @@ class BGEDeteccionRiesgos {
             // Conectar con sistema de comunicación
             this.communicationSystem = await this.connectToCommunicationSystem();
 
-            console.log('🔗 Conexiones con fuentes de datos establecidas');
+            void 0;
 
         } catch (error) {
-            console.warn('⚠️ Algunas fuentes de datos no están disponibles, usando datos locales');
+            void 0;
             this.setupLocalDataSources();
         }
     }
@@ -733,7 +733,7 @@ class BGEDeteccionRiesgos {
 
     async performInitialRiskAnalysis() {
         try {
-            console.log('📊 Realizando análisis inicial de riesgos...');
+            void 0;
 
             // Obtener datos de estudiantes
             const studentsData = await this.fetchStudentsData();
@@ -755,7 +755,7 @@ class BGEDeteccionRiesgos {
             // Actualizar dashboard
             this.updateRiskDashboard();
 
-            console.log(`✅ Análisis inicial completado: ${studentsData.length} estudiantes monitoreados`);
+            void 0;
 
         } catch (error) {
             console.error('❌ Error en análisis inicial de riesgos:', error);
@@ -1027,7 +1027,7 @@ class BGEDeteccionRiesgos {
 
     async notifyStakeholders(alert) {
         // En implementación real, enviaría notificaciones reales
-        console.log(`🔔 ALERTA GENERADA: ${alert.message} - Estudiante: ${alert.studentName}`);
+        void 0;
 
         // Simular notificación
         const notification = {
@@ -1047,7 +1047,7 @@ class BGEDeteccionRiesgos {
     }
 
     startRealTimeMonitoring() {
-        console.log('⏰ Iniciando monitoreo en tiempo real...');
+        void 0;
 
         // El monitoreo ya está configurado en setupContinuousMonitoring()
         // Aquí podríamos añadir lógica adicional de monitoreo específica
@@ -1078,19 +1078,19 @@ class BGEDeteccionRiesgos {
     }
 
     async performHourlyAnalysis() {
-        console.log('📊 Realizando análisis horario...');
+        void 0;
         // Análisis más profundo cada hora
         // Implementar lógica específica según necesidades
     }
 
     async performDailyAnalysis() {
-        console.log('📅 Realizando análisis diario completo...');
+        void 0;
         // Análisis completo diario
         await this.performInitialRiskAnalysis();
     }
 
     async performWeeklyAnalysis() {
-        console.log('📈 Realizando análisis semanal...');
+        void 0;
         // Análisis de tendencias semanales
         // Generar reportes de progreso
     }
@@ -1322,7 +1322,7 @@ class BGEDeteccionRiesgos {
             localStorage.setItem('bge_risk_events', JSON.stringify(events.slice(-100)));
 
         } catch (error) {
-            console.warn('⚠️ Error en tracking:', error);
+            void 0;
         }
     }
 
@@ -1341,7 +1341,7 @@ class BGEDeteccionRiesgos {
     }
 
     async forceRiskAnalysis() {
-        console.log('🔄 Forzando análisis de riesgos...');
+        void 0;
         await this.performInitialRiskAnalysis();
     }
 
@@ -1364,7 +1364,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         window.bgeDeteccionRiesgos = new BGEDeteccionRiesgos();
-        console.log('🚨 Sistema de Detección de Riesgos BGE inicializado');
+        void 0;
 
         // Exponer métodos globales
         window.estadoSistemaRiesgos = () => window.bgeDeteccionRiesgos.getSystemStatus();

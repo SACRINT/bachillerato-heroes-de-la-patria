@@ -14,7 +14,7 @@ class BGEIntelligentCacheSystem {
         this.analytics = this.loadAnalytics();
         this.config = this.loadConfig();
 
-        console.log('🧠 [INTELLIGENT-CACHE] Sistema iniciado');
+        void 0;
         this.init();
     }
 
@@ -129,7 +129,7 @@ class BGEIntelligentCacheSystem {
         }
         this.analytics.timeBasedAccess[hour].push(url);
 
-        console.log(`📊 [INTELLIGENT-CACHE] Registrado acceso: ${url} (${type})`);
+        void 0;
     }
 
     async predictNextResources(currentUrl) {
@@ -144,7 +144,7 @@ class BGEIntelligentCacheSystem {
                 }
             }
         } catch (error) {
-            console.warn('⚠️ [INTELLIGENT-CACHE] Error en predicción:', error);
+            void 0;
         }
     }
 
@@ -204,7 +204,7 @@ class BGEIntelligentCacheSystem {
                 await this.optimizeCache();
             }
 
-            console.log(`🔄 [INTELLIGENT-CACHE] Precargando: ${url} (${priority})`);
+            void 0;
 
             const options = {
                 priority: priority === 'high' ? 'high' : 'low',
@@ -219,7 +219,7 @@ class BGEIntelligentCacheSystem {
             }
 
         } catch (error) {
-            console.warn(`⚠️ [INTELLIGENT-CACHE] Error precargando ${url}:`, error);
+            void 0;
             this.analytics.cachePerformance.misses++;
         }
 
@@ -255,7 +255,7 @@ class BGEIntelligentCacheSystem {
             });
 
             await cache.put(url, cachedResponse);
-            console.log(`💾 [INTELLIGENT-CACHE] Almacenado: ${url} (${priority})`);
+            void 0;
 
         } catch (error) {
             console.error('❌ [INTELLIGENT-CACHE] Error almacenando:', error);
@@ -290,7 +290,7 @@ class BGEIntelligentCacheSystem {
     }
 
     async optimizeCache() {
-        console.log('🧹 [INTELLIGENT-CACHE] Iniciando optimización de caché');
+        void 0;
 
         try {
             const cacheNames = await caches.keys();
@@ -300,7 +300,7 @@ class BGEIntelligentCacheSystem {
                 await this.optimizeSingleCache(cacheName);
             }
 
-            console.log('✅ [INTELLIGENT-CACHE] Optimización completada');
+            void 0;
         } catch (error) {
             console.error('❌ [INTELLIGENT-CACHE] Error en optimización:', error);
         }
@@ -338,7 +338,7 @@ class BGEIntelligentCacheSystem {
             const toRemove = Math.floor(entries.length * 0.25);
             for (let i = 0; i < toRemove; i++) {
                 await cache.delete(entries[i].request);
-                console.log(`🗑️ [INTELLIGENT-CACHE] Eliminado: ${entries[i].request.url}`);
+                void 0;
             }
 
         } catch (error) {
@@ -384,7 +384,7 @@ class BGEIntelligentCacheSystem {
             this.config.preloadImages = true;
         }
 
-        console.log(`⚙️ [INTELLIGENT-CACHE] Estrategia adaptada para ${connection}, memoria: ${memory}GB`);
+        void 0;
         this.saveConfig();
     }
 
@@ -399,7 +399,7 @@ class BGEIntelligentCacheSystem {
             '/partials/footer.html'
         ];
 
-        console.log('🚀 [INTELLIGENT-CACHE] Precargando recursos críticos');
+        void 0;
 
         for (const resource of criticalResources) {
             await this.preloadResource(resource, 'high');
@@ -474,11 +474,11 @@ class BGEIntelligentCacheSystem {
             this.saveAnalytics();
         }, 5 * 60 * 1000);
 
-        console.log('⏰ [INTELLIGENT-CACHE] Tareas periódicas programadas');
+        void 0;
     }
 
     async performMaintenanceTasks() {
-        console.log('🔧 [INTELLIGENT-CACHE] Ejecutando mantenimiento');
+        void 0;
 
         try {
             // Verificar si necesita optimización
@@ -535,7 +535,7 @@ class BGEIntelligentCacheSystem {
         try {
             localStorage.setItem(this.analyticsKey, JSON.stringify(this.analytics));
         } catch (error) {
-            console.warn('⚠️ [INTELLIGENT-CACHE] Error guardando analytics:', error);
+            void 0;
         }
     }
 
@@ -543,7 +543,7 @@ class BGEIntelligentCacheSystem {
         try {
             localStorage.setItem(this.configKey, JSON.stringify(this.config));
         } catch (error) {
-            console.warn('⚠️ [INTELLIGENT-CACHE] Error guardando config:', error);
+            void 0;
         }
     }
 
@@ -552,7 +552,7 @@ class BGEIntelligentCacheSystem {
         this.config = { ...this.config, ...newConfig };
         this.saveConfig();
         this.adaptCacheStrategy();
-        console.log('⚙️ [INTELLIGENT-CACHE] Configuración actualizada:', newConfig);
+        void 0;
     }
 
     getAnalytics() {
@@ -602,4 +602,4 @@ document.addEventListener('DOMContentLoaded', () => {
     window.bgeIntelligentCache = bgeIntelligentCache;
 });
 
-console.log('✅ [COMPLETE] intelligent-cache-system.js cargado - Sistema de caché inteligente BGE v1.0');
+void 0;

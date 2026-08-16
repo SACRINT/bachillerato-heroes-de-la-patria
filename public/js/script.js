@@ -54,7 +54,7 @@ class HeroesPatriaApp {
             // 3. Set current year
             this.setCurrentYear();
 
-            //console.log('✅ Heroes Patria App initialized successfully');
+            //void 0;
 
         } catch (error) {
             console.error('❌ Error initializing app:', error);
@@ -79,37 +79,37 @@ class HeroesPatriaApp {
             // Initialize simple search functionality after header loads
             setTimeout(() => {
                 if (typeof window.initSimpleSearch === 'function') {
-                    //console.log('🔍 Initializing simple search...');
+                    //void 0;
                     window.initSimpleSearch();
                 }
             }, 200);
 
             // Re-initialize dark mode after header is loaded
             setTimeout(() => {
-                //console.log('🌙 Initializing dark mode...');
+                //void 0;
                 this.initDarkMode(); // REACTIVADO - sistema global centralizado
             }, 500);
 
             // Initialize admin authentication after partials are loaded
             setTimeout(() => {
-                //console.log('🔐 Verificando inicialización de admin auth desde script.js...');
+                //void 0;
                 if (typeof window.initSecureAuthSystem === 'function') {
                     // Solo llamar si no está ya inicializado
                     if (!window.secureAdminAuth) {
-                        //console.log('🚀 Inicializando sistema de auth seguro desde script.js...');
+                        //void 0;
                         window.initSecureAuthSystem();
                     } else {
-                        //console.log('✅ Sistema de auth seguro ya inicializado...');
+                        //void 0;
                     }
                 } else {
-                    //console.log('⏳ Sistema de auth seguro no disponible aún, reintentando...');
+                    //void 0;
                     setTimeout(() => {
                         if (typeof window.initSecureAuthSystem === 'function') {
                             if (!window.secureAdminAuth) {
                                 window.initSecureAuthSystem();
                             }
                         } else {
-                            //console.log('ℹ️ Sistema de auth no requerido en esta página');
+                            //void 0;
                         }
                     }, 1000);
                 }
@@ -131,10 +131,10 @@ class HeroesPatriaApp {
             const html = await response.text();
             element.innerHTML = DOMPurify.sanitize(html);
 
-            //console.log(`✅ Loaded partial: ${path}`);
+            //void 0;
 
         } catch (error) {
-            console.warn(`⚠️ Could not load ${path}:`, error);
+            void 0;
             // Fallback content
             if (selector === APP_CONFIG.selectors.header) {
                 element.innerHTML = DOMPurify.sanitize('<nav class="navbar navbar-light bg-light"><div class="container"><a class="navbar-brand" href="index.html">BGE Héroes de la Patria</a></div></nav>');
@@ -356,23 +356,23 @@ class HeroesPatriaApp {
 
     // === DARK MODE ===
     initDarkMode() {
-        //console.log('🔍 Looking for dark mode toggle...');
+        //void 0;
         let toggle = document.querySelector(APP_CONFIG.selectors.darkModeToggle);
-        //console.log('Toggle found:', toggle);
+        //void 0;
 
         // If toggle doesn't exist, check for floating button or create navbar toggle
         if (!toggle) {
-            //console.log('❌ No #darkModeToggle found, checking for floating button...');
+            //void 0;
             const floatingToggle = document.querySelector('.dark-mode-toggle');
             if (floatingToggle) {
-                //console.log('✅ Found floating dark mode button, using it as toggle');
+                //void 0;
                 toggle = floatingToggle;
             } else {
-                //console.log('❌ No floating button found, creating navbar toggle...');
+                //void 0;
                 toggle = this.createDarkModeToggle();
-                //console.log('✅ Toggle created:', toggle);
+                //void 0;
                 if (!toggle) {
-                    //console.log('❌ Failed to create toggle');
+                    //void 0;
                     return; // If creation failed, abort
                 }
             }
@@ -380,7 +380,7 @@ class HeroesPatriaApp {
 
         // Load saved preference and apply dark mode
         const isDarkMode = localStorage.getItem(APP_CONFIG.storage.darkMode) === 'true';
-        //console.log('Dark mode preference:', isDarkMode);
+        //void 0;
 
         if (isDarkMode) {
             document.body.classList.add(APP_CONFIG.classes.darkMode);
@@ -401,7 +401,7 @@ class HeroesPatriaApp {
             const isCurrentlyDark = document.body.classList.contains(APP_CONFIG.classes.darkMode);
             const newDarkState = !isCurrentlyDark;
 
-            //console.log('Toggling dark mode from', isCurrentlyDark, 'to', newDarkState);
+            //void 0;
 
             document.body.classList.toggle(APP_CONFIG.classes.darkMode, newDarkState);
             localStorage.setItem(APP_CONFIG.storage.darkMode, newDarkState.toString());
@@ -414,7 +414,7 @@ class HeroesPatriaApp {
             }, 300);
         });
 
-        //console.log('✅ Dark mode initialized successfully');
+        //void 0;
     }
 
     createDarkModeToggle() {
@@ -511,7 +511,7 @@ class HeroesPatriaApp {
                 const { outcome } = await this.deferredPrompt.userChoice;
 
                 if (outcome === 'accepted') {
-                    //console.log('PWA installed successfully');
+                    //void 0;
                 }
 
                 this.deferredPrompt = null;
@@ -530,7 +530,7 @@ class HeroesPatriaApp {
         // Hide after successful installation
         window.addEventListener('appinstalled', () => {
             banner.classList.add('d-none');
-            //console.log('PWA installed successfully');
+            //void 0;
         });
     }
 
@@ -542,7 +542,7 @@ class HeroesPatriaApp {
             window.addEventListener('load', async () => {
                 try {
                     const registration = await navigator.serviceWorker.register('./sw-offline-first.js');
-                    //console.log('ServiceWorker registered successfully:', registration.scope);
+                    //void 0;
 
                     // Listen for updates
                     registration.addEventListener('updatefound', () => {
@@ -557,7 +557,7 @@ class HeroesPatriaApp {
                     });
 
                 } catch (error) {
-                    console.warn('ServiceWorker registration failed:', error);
+                    void 0;
                 }
             });
         }
@@ -843,10 +843,10 @@ class AdminPanelAuth {
         const authForm = document.getElementById('adminPanelAuthForm');
         if (authForm) {
             authForm.addEventListener('submit', (e) => this.handleAuthSubmit(e));
-            //console.log('Admin panel form event listener attached');
+            //void 0;
         } else {
             // Si el formulario aún no existe, reintentarlo después de un delay
-            console.warn('Admin panel form not found, retrying...');
+            void 0;
             setTimeout(() => this.setupEventListeners(), 500);
         }
 
@@ -1140,21 +1140,21 @@ class AdminPanelAuth {
 //     if (!adminPanelAuth) {
 //         adminPanelAuth = new AdminPanelAuth();
 //         window.adminPanelAuth = adminPanelAuth;
-//         //console.log('✅ Admin Panel Auth initialized');
+//         //void 0;
 //     }
 // }
 
 // REMOVIDO - La función showAdminPanelAuth() se define en admin-auth.js
 // function showAdminPanelAuth() {
 //     // Sistema unificado - solo usar admin-auth.js
-//     //console.log('🔐 Llamando a sistema de autenticación unificado...');
+//     //void 0;
 //     const modal = new bootstrap.Modal(document.getElementById('adminPanelAuthModal'));
 //     modal.show();
 // }
 
 // REMOVIDO - La función logoutAdminPanel() se define en admin-auth.js
 // function logoutAdminPanel() {
-//     //console.log('🚪 Logout solicitado desde header...');
+//     //void 0;
 //     if (window.adminAuth && window.adminAuth.logout) {
 //         window.adminAuth.logout();
 //     } else {

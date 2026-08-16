@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         const firstCounter = document.querySelector('.counter');
         if (firstCounter && (firstCounter.textContent === '0' || firstCounter.textContent.trim() === '0')) {
-            console.log('[INDEX] Activating counters fallback');
+            void 0;
             animateCounters();
         }
     }, 2000);

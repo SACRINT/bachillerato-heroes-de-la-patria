@@ -31,7 +31,7 @@ class AIEducationalSystem {
         this.setupConversationEngine();
         this.loadPersonalizationData();
 
-        console.log('🧠 AI Educational System inicializado');
+        void 0;
     }
 
     async initializeKnowledgeBase() {
@@ -119,10 +119,10 @@ class AIEducationalSystem {
 
             this.knowledgeBase.get('fisica').formulas = new Map(Object.entries(physicsFormulas));
 
-            console.log('📚 Contenido académico cargado exitosamente');
+            void 0;
 
         } catch (error) {
-            console.warn('⚠️ Error cargando contenido:', error);
+            void 0;
         }
     }
 
@@ -571,7 +571,7 @@ ${concept.examples.map(ex => `• ${ex}`).join('\n')}
                 }
             }
         } catch (error) {
-            console.warn('Error cargando datos de personalización:', error);
+            void 0;
         }
     }
 
@@ -584,7 +584,7 @@ ${concept.examples.map(ex => `• ${ex}`).join('\n')}
             };
             localStorage.setItem('aiEducationalData', JSON.stringify(data));
         } catch (error) {
-            console.warn('Error guardando datos de personalización:', error);
+            void 0;
         }
     }
 

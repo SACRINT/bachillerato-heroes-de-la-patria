@@ -12,7 +12,7 @@
 
 class MobileUXManager {
     constructor() {
-        console.log('📱 [MOBILE-UX] Inicializando Mobile UX Manager...');
+        void 0;
 
         // Configuración
         this.isMobile = this.detectMobile();
@@ -78,9 +78,9 @@ class MobileUXManager {
                 // Optimizar formularios
                 this.optimizeForms();
 
-                console.log('✅ [MOBILE-UX] Mobile UX Manager inicializado correctamente');
+                void 0;
             } else {
-                console.log('📱 [MOBILE-UX] Dispositivo no móvil, aplicando mejoras básicas');
+                void 0;
                 // Aplicar mejoras básicas para desktop
                 this.enhanceDesktopBehavior();
             }
@@ -98,11 +98,7 @@ class MobileUXManager {
         this.navbarToggler = document.querySelector('.navbar-toggler');
         this.navbarCollapse = document.querySelector('.navbar-collapse');
 
-        console.log('🔍 [MOBILE-UX] Referencias DOM obtenidas:', {
-            navbar: !!this.navbar,
-            toggler: !!this.navbarToggler,
-            collapse: !!this.navbarCollapse
-        });
+        void 0;
     }
 
     /**
@@ -113,7 +109,7 @@ class MobileUXManager {
             return; // Salir silenciosamente si no hay navbar
         }
 
-        console.log('🍔 [MOBILE-UX] Mejorando menú hamburguesa...');
+        void 0;
 
         // Mejorar el icono hamburguesa
         this.enhanceHamburgerIcon();
@@ -296,7 +292,7 @@ class MobileUXManager {
         `;
 
         document.head.appendChild(styles);
-        console.log('🎨 [MOBILE-UX] Estilos del hamburger aplicados');
+        void 0;
     }
 
     /**
@@ -355,7 +351,7 @@ class MobileUXManager {
      * Acciones al abrir el menú
      */
     onMenuOpen() {
-        console.log('📱 [MOBILE-UX] Menú abierto');
+        void 0;
 
         document.body.classList.add('menu-open');
         if (this.menuOverlay) {
@@ -370,7 +366,7 @@ class MobileUXManager {
      * Acciones al cerrar el menú
      */
     onMenuClose() {
-        console.log('📱 [MOBILE-UX] Menú cerrado');
+        void 0;
 
         document.body.classList.remove('menu-open');
         if (this.menuOverlay) {
@@ -431,7 +427,7 @@ class MobileUXManager {
         }, { passive: true });
 
         this.menuState.hasGestures = true;
-        console.log('👆 [MOBILE-UX] Gestos del menú configurados');
+        void 0;
     }
 
     /**
@@ -440,7 +436,7 @@ class MobileUXManager {
     createBottomNavigation() {
         if (!this.isMobile) return;
 
-        console.log('📍 [MOBILE-UX] Creando bottom navigation...');
+        void 0;
 
         const bottomNav = document.createElement('nav');
         bottomNav.className = 'bottom-nav';
@@ -511,7 +507,7 @@ class MobileUXManager {
             });
         });
 
-        console.log('📱 [MOBILE-UX] Bottom navigation configurada');
+        void 0;
     }
 
     /**
@@ -520,7 +516,7 @@ class MobileUXManager {
     setupHapticFeedback() {
         if (!this.isTouch) return;
 
-        console.log('📳 [MOBILE-UX] Configurando haptic feedback...');
+        void 0;
 
         // Añadir haptic feedback a elementos interactivos
         const interactiveElements = document.querySelectorAll(
@@ -561,7 +557,7 @@ class MobileUXManager {
     enhanceScrollBehavior() {
         if (!this.isMobile) return;
 
-        console.log('📜 [MOBILE-UX] Mejorando scroll behavior...');
+        void 0;
 
         const isScrolling = false;
         let lastScrollY = window.pageYOffset;
@@ -617,7 +613,7 @@ class MobileUXManager {
             });
         });
 
-        console.log('📝 [MOBILE-UX] Formularios optimizados para móvil');
+        void 0;
     }
 
     /**
@@ -670,7 +666,7 @@ class MobileUXManager {
             attributeFilter: ['aria-expanded']
         });
 
-        console.log('♿ [MOBILE-UX] Accesibilidad mejorada');
+        void 0;
     }
 
     /**
@@ -682,7 +678,7 @@ class MobileUXManager {
             this.setupHapticFeedback();
         }
 
-        console.log('🖥️ [MOBILE-UX] Mejoras de desktop aplicadas');
+        void 0;
     }
 
     /**
@@ -718,13 +714,8 @@ class MobileUXManager {
      */
     debug() {
         console.group('🐛 [MOBILE-UX] Debug Info');
-        console.log('Device info:', this.getDeviceInfo());
-        console.log('DOM references:', {
-            navbar: !!this.navbar,
-            toggler: !!this.navbarToggler,
-            collapse: !!this.navbarCollapse,
-            bottomNav: !!this.bottomNav
-        });
+        void 0;
+        void 0;
         console.groupEnd();
     }
 }
@@ -737,7 +728,7 @@ class MobileUXManager {
 function initMobileUXManager() {
     if (!window.mobileUXManager) {
         window.mobileUXManager = new MobileUXManager();
-        console.log('📱 [MOBILE-UX] Mobile UX Manager disponible globalmente');
+        void 0;
     }
 }
 
@@ -761,4 +752,4 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = MobileUXManager;
 }
 
-console.log('📁 [MOBILE-UX] mobile-ux-manager.js cargado exitosamente');
+void 0;

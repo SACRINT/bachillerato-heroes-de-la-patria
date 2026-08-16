@@ -105,7 +105,7 @@ function verifyDependencies() {
 
     if (missing.length > 0) {
         debugLog.warn('APP', '⚠️ Funciones faltantes:', missing);
-        console.info('ℹ️ Estas funciones deberían estar definidas en otros archivos JS');
+        void 0;
     } else {
         debugLog.log('APP', '✅ Todas las dependencias encontradas');
     }

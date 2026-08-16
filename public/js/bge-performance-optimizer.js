@@ -121,7 +121,7 @@ class BGEPerformanceOptimizer {
 
     async init() {
         try {
-            console.log('⚡ Iniciando BGE Sistema de Optimización de Rendimiento...');
+            void 0;
 
             // Crear interfaz de optimización
             this.createOptimizerInterface();
@@ -138,7 +138,7 @@ class BGEPerformanceOptimizer {
             // Activar sistema
             this.state.isActive = true;
 
-            console.log('✅ Sistema de Optimización iniciado exitosamente');
+            void 0;
 
             // Comenzar análisis inicial
             await this.performInitialAnalysis();
@@ -1404,7 +1404,7 @@ class BGEPerformanceOptimizer {
         logContainer.appendChild(logEntry);
         logContainer.scrollTop = logContainer.scrollHeight;
 
-        console.log(`[BGE Optimizer] ${message}`);
+        void 0;
     }
 
     // Método público para obtener estado
@@ -1452,7 +1452,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Esperar a que se carguen otros sistemas
         setTimeout(() => {
             window.bgePerformanceOptimizer = new BGEPerformanceOptimizer();
-            console.log('⚡ Sistema de Optimización de Rendimiento BGE inicializado');
+            void 0;
 
             // Exponer métodos globales
             window.optimizeBGESystems = () => window.bgePerformanceOptimizer.optimizeAllSystems();

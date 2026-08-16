@@ -136,7 +136,7 @@ class AdvancedPersonalizationSystem {
         this.setupEventListeners();
         this.initializeCustomizations();
 
-        console.log('🎨 [PERSONALIZACIÓN] Sistema inicializado con preferencias:', this.preferences);
+        void 0;
     }
 
     loadUserPreferences() {
@@ -147,7 +147,7 @@ class AdvancedPersonalizationSystem {
                 const savedPrefs = JSON.parse(saved);
                 this.preferences = { ...this.preferences, ...savedPrefs };
             } catch (error) {
-                console.warn('Error cargando preferencias:', error);
+                void 0;
             }
         }
 
@@ -177,7 +177,7 @@ class AdvancedPersonalizationSystem {
 
     savePreferences() {
         localStorage.setItem('bge_personalization_preferences', JSON.stringify(this.preferences));
-        console.log('💾 [PERSONALIZACIÓN] Preferencias guardadas');
+        void 0;
     }
 
     createPersonalizationUI() {
@@ -453,7 +453,7 @@ class AdvancedPersonalizationSystem {
 
         // Escuchar eventos de personalización
         window.addEventListener('personalizationChange', (e) => {
-            console.log('🎨 [PERSONALIZACIÓN] Cambio detectado:', e.detail);
+            void 0;
         });
     }
 
@@ -765,7 +765,7 @@ class AdvancedPersonalizationSystem {
                 this.createPersonalizationPanel();
             }, 500);
 
-            console.log('🔄 [PERSONALIZACIÓN] Preferencias restablecidas');
+            void 0;
         }
     }
 
@@ -784,7 +784,7 @@ class AdvancedPersonalizationSystem {
         a.click();
         URL.revokeObjectURL(url);
 
-        console.log('📤 [PERSONALIZACIÓN] Configuración exportada');
+        void 0;
     }
 
     importSettings(settingsFile) {
@@ -796,7 +796,7 @@ class AdvancedPersonalizationSystem {
                     this.preferences = { ...this.preferences, ...settings.preferences };
                     this.applyCurrentPreferences();
                     this.savePreferences();
-                    console.log('📥 [PERSONALIZACIÓN] Configuración importada');
+                    void 0;
                 }
             } catch (error) {
                 console.error('Error importando configuración:', error);

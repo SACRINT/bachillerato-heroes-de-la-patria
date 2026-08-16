@@ -40,13 +40,13 @@ class AITutorInterface {
         this.initializeVoiceRecognition();
         this.startEmotionalAnalysis();
 
-        console.log('🤖 AI Tutor Interface inicializado');
+        void 0;
     }
 
     initializeFallbackMode() {
         // Este modo ya no es necesario, pero lo dejamos por si se requiere en el futuro
         this.fallbackMode = true;
-        console.log('🔄 Modo fallback del tutor AI activado');
+        void 0;
     }
 
     setupInterface() {
@@ -75,7 +75,7 @@ class AITutorInterface {
             }
         });
 
-        console.log('🚀 Acciones rápidas del tutor AI inicializadas');
+        void 0;
     }
 
     openSubjectHelper(subject) {
@@ -305,7 +305,7 @@ class AITutorInterface {
         const result = await response.json();
         this.currentSessionId = result.data.id;
         this.sessionActive = true;
-        console.log(`Nueva sesión de tutoría iniciada con ID: ${this.currentSessionId}`);
+        void 0;
     }
 
     extractSubjectFromMessage(message) {
@@ -488,7 +488,7 @@ class AITutorInterface {
             };
 
             this.speechRecognition.onerror = (error) => {
-                console.warn('Error en reconocimiento de voz:', error);
+                void 0;
                 this.stopVoiceRecording();
             };
         }
@@ -550,7 +550,7 @@ class AITutorInterface {
             }
         };
 
-        console.log('🧠 Sistema de análisis emocional iniciado');
+        void 0;
     }
 
     showTypingIndicator() {
@@ -596,7 +596,7 @@ class AITutorInterface {
             if (this.aiRecommendationEngine && typeof this.aiRecommendationEngine.recordInteraction === 'function') {
                 this.aiRecommendationEngine.recordInteraction(this.userProfile.userId, interactionData);
             } else {
-                console.log('📝 Registrando interacción:', interactionData);
+                void 0;
             }
         }
     }
@@ -709,7 +709,7 @@ class AITutorInterface {
 
     updateTutorPersonality(personality) {
         this.tutorPersonality = personality;
-        console.log(`🤖 Personalidad del tutor cambiada a: ${personality}`);
+        void 0;
     }
 }
 

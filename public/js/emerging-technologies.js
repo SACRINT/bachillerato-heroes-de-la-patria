@@ -25,7 +25,7 @@ class EmergingTechnologies {
             await this.initializeWebAssembly();
             await this.setupEdgeComputing();
 
-            console.log('🚀 Tecnologías Emergentes BGE Héroes iniciadas');
+            void 0;
         } catch (error) {
             console.error('❌ Error inicializando tecnologías emergentes:', error);
         }
@@ -73,7 +73,7 @@ class EmergingTechnologies {
     destroy() {
         this.isDestroyed = true;
         this.clearAllIntervals();
-        console.log('🔥 [EMERGING-TECH] Instancia destruida y recursos liberados');
+        void 0;
     }
 
     async setupBlockchain() {
@@ -104,7 +104,7 @@ class EmergingTechnologies {
                     }
                 };
 
-                console.log('⛓️ Red blockchain educativa inicializada');
+                void 0;
             },
 
             async createDigitalCertificate(studentData, achievementData) {
@@ -151,7 +151,7 @@ class EmergingTechnologies {
                     hash: certificate.metadata.verificationHash
                 });
 
-                console.log(`🎓 Certificado digital emitido: ${certificate.achievement.title}`);
+                void 0;
                 return certificate;
             },
 
@@ -255,7 +255,7 @@ class EmergingTechnologies {
                     state: new Map()
                 };
 
-                console.log(`📜 Smart contract desplegado: ${contract.name} en ${contract.address}`);
+                void 0;
                 return contract;
             }
         };
@@ -309,7 +309,7 @@ class EmergingTechnologies {
 
                 await this.setupDeviceTelemetry(deviceId);
 
-                console.log(`📡 Dispositivo IoT registrado: ${device.name} (${device.type})`);
+                void 0;
                 return device;
             },
 
@@ -444,15 +444,15 @@ class EmergingTechnologies {
             },
 
             async adjustClassroomEnvironment(location, metrics) {
-                console.log(`🏫 Ajustando ambiente del aula ${location} - Ocupancia: ${metrics.count} personas`);
+                void 0;
             },
 
             async activateVentilation(location) {
-                console.log(`💨 Activando ventilación en ${location} - CO2 elevado`);
+                void 0;
             },
 
             async adjustAirConditioning(location, temperature) {
-                console.log(`❄️ Ajustando climatización en ${location} - Temperatura: ${temperature}°C`);
+                void 0;
             },
 
             async createAlert(alertData) {
@@ -465,7 +465,7 @@ class EmergingTechnologies {
 
                 // Silenciar alertas IoT para reducir spam (solo mostrar 20% de las veces)
                 if (Math.random() < 0.2) {
-                    console.warn(`⚠️ Alerta IoT: ${alert.type} en dispositivo ${alert.deviceId}`);
+                    void 0;
                 }
                 return alert;
             },
@@ -548,7 +548,7 @@ class EmergingTechnologies {
 
                 this.simulator.state[0] = 1;
 
-                console.log('⚛️ Simulador cuántico inicializado (8 qubits)');
+                void 0;
             },
 
             async createQuantumCircuit(name, qubits) {
@@ -664,7 +664,7 @@ class EmergingTechnologies {
                     throw new Error(`Algoritmo cuántico no encontrado: ${algorithmName}`);
                 }
 
-                console.log(`⚛️ Ejecutando algoritmo cuántico: ${algorithmName}`);
+                void 0;
                 return await algorithm(parameters);
             },
 
@@ -757,7 +757,7 @@ class EmergingTechnologies {
                     channels: 64
                 };
 
-                console.log('🧠 Interfaz cognitiva neural inicializada');
+                void 0;
             },
 
             async createInterface(studentId, config = {}) {
@@ -790,7 +790,7 @@ class EmergingTechnologies {
                 this.interfaces.set(interfaceId, neuralInterface);
                 await this.calibrateInterface(interfaceId);
 
-                console.log(`🧠 Interfaz neural creada para estudiante ${studentId}`);
+                void 0;
                 return neuralInterface;
             },
 
@@ -798,7 +798,7 @@ class EmergingTechnologies {
                 const neuralInterface = this.interfaces.get(interfaceId);
                 if (!neuralInterface) return;
 
-                console.log(`🎯 Calibrando interfaz neural ${interfaceId}...`);
+                void 0;
 
                 await new Promise(resolve => setTimeout(resolve, 3000));
 
@@ -818,7 +818,7 @@ class EmergingTechnologies {
                     }
                 };
 
-                console.log(`✅ Interfaz neural ${interfaceId} calibrada`);
+                void 0;
             },
 
             async startSession(interfaceId, activityType) {
@@ -836,7 +836,7 @@ class EmergingTechnologies {
 
                 this.startDataCollection(interfaceId);
 
-                console.log(`🎮 Sesión neural iniciada: ${activityType}`);
+                void 0;
                 return neuralInterface.session;
             },
 
@@ -963,7 +963,7 @@ class EmergingTechnologies {
 
                 neuralInterface.adaptations.push(adaptation);
 
-                console.log(`🧠 Adaptación aplicada: ${adaptation.action} (${adaptation.priority})`);
+                void 0;
 
                 return adaptation;
             },
@@ -977,7 +977,7 @@ class EmergingTechnologies {
 
                 const analysis = await this.analyzeSession(interfaceId);
 
-                console.log(`🏁 Sesión neural finalizada: ${neuralInterface.session.id}`);
+                void 0;
                 return analysis;
             },
 
@@ -1124,7 +1124,7 @@ class EmergingTechnologies {
 
                 await this.populateWorld(worldId, worldData.content || []);
 
-                console.log(`🌐 Mundo virtual creado: ${world.name}`);
+                void 0;
                 return world;
             },
 
@@ -1195,7 +1195,7 @@ class EmergingTechnologies {
 
                 this.avatars.set(avatarId, avatar);
 
-                console.log(`👤 Avatar creado para usuario ${userId}`);
+                void 0;
                 return avatar;
             },
 
@@ -1222,7 +1222,7 @@ class EmergingTechnologies {
                     timestamp: Date.now()
                 });
 
-                console.log(`🚪 Usuario ${avatar.userId} ingresó al mundo ${world.name}`);
+                void 0;
                 return true;
             },
 
@@ -1251,7 +1251,7 @@ class EmergingTechnologies {
 
                 world.activities.push(activity);
 
-                console.log(`📚 Actividad educativa creada: ${activity.title}`);
+                void 0;
                 return activity;
             },
 
@@ -1273,7 +1273,7 @@ class EmergingTechnologies {
                     participants: activity.participants.length
                 });
 
-                console.log(`🎯 Actividad iniciada: ${activity.title}`);
+                void 0;
                 return true;
             },
 
@@ -1312,7 +1312,7 @@ class EmergingTechnologies {
             async sendEventToAvatar(avatarId, event) {
                 const avatar = this.avatars.get(avatarId);
                 if (avatar) {
-                    console.log(`📡 Evento enviado a ${avatar.userId}: ${event.type}`);
+                    void 0;
                 }
             },
 
@@ -1416,7 +1416,7 @@ class EmergingTechnologies {
 
                     this.modules.set(moduleId, module);
 
-                    console.log(`⚡ Módulo WebAssembly cargado: ${name} (${module.loadTime.toFixed(2)}ms)`);
+                    void 0;
                     return module;
                 } catch (error) {
                     console.error(`❌ Error cargando módulo WebAssembly ${name}:`, error);
@@ -1640,7 +1640,7 @@ class EmergingTechnologies {
                     }
                 };
 
-                console.log('🌐 Red de Edge Computing inicializada');
+                void 0;
             },
 
             async deployEdgeNode(nodeData) {
@@ -1672,7 +1672,7 @@ class EmergingTechnologies {
                 this.nodes.set(nodeId, node);
                 this.orchestrator.nodes.push(nodeId);
 
-                console.log(`📍 Nodo Edge desplegado: ${node.location} (${nodeId})`);
+                void 0;
                 return node;
             },
 
@@ -1700,7 +1700,7 @@ class EmergingTechnologies {
                 const selectedNodes = await this.selectOptimalNodes(service);
                 await this.deployServiceToNodes(serviceId, selectedNodes);
 
-                console.log(`🚀 Servicio desplegado: ${service.name} en ${selectedNodes.length} nodos`);
+                void 0;
                 return service;
             },
 
@@ -1839,7 +1839,7 @@ class EmergingTechnologies {
                         await this.handleNodeFailure(nodeId);
                     } else if (isHealthy && node.status === 'unhealthy') {
                         node.status = 'online';
-                        console.log(`✅ Nodo ${node.location} recuperado`);
+                        void 0;
                     }
 
                     node.lastHeartbeat = Date.now();
@@ -1854,7 +1854,7 @@ class EmergingTechnologies {
                 const node = this.nodes.get(nodeId);
                 // Silenciar log para reducir spam de consola
                 if (Math.random() < 0.1) { // Solo mostrar 10% de las veces
-                    console.warn(`⚠️ Nodo ${node.location} falló - Reubicando servicios...`);
+                    void 0;
                 }
 
                 for (const serviceId of node.services) {
@@ -1876,7 +1876,7 @@ class EmergingTechnologies {
                     }
 
                     replacementNode.services.push(serviceId);
-                    console.log(`🔄 Servicio ${service.name} reubicado a ${replacementNode.location}`);
+                    void 0;
                 }
             },
 
@@ -2001,7 +2001,7 @@ class EmergingTechnologies {
 function initEmergingTechnologies() {
     if (!window.emergingTechnologies) {
         window.emergingTechnologies = new EmergingTechnologies();
-        console.log('🚀 [EMERGING-TECH] Tecnologías Emergentes disponibles globalmente');
+        void 0;
     }
 }
 

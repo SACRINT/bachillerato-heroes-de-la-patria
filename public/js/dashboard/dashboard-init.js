@@ -14,20 +14,20 @@
 
     // Función para refrescar estadísticas del dashboard
     window.refreshStats = function () {
-        console.log('🔄 [STATS] Actualizando estadísticas del dashboard...');
+        void 0;
 
         if (window.adminDashboard && typeof window.adminDashboard.refreshStats === 'function') {
             window.adminDashboard.refreshStats();
             alert('✅ Estadísticas actualizadas correctamente');
         } else {
-            console.warn('⚠️ [STATS] AdminDashboard no está inicializado o refreshStats no existe');
+            void 0;
             alert('⚠️ Error al actualizar estadísticas. Verifica que el dashboard esté cargado.');
         }
     }
 
     // Función para ver contenido por tipo (noticias, eventos, avisos, comunicados)
     window.viewContentType = function (type) {
-        console.log(`👁️ [VIEW] Visualizando contenido tipo: ${type}`);
+        void 0;
         displayContentByType(type);
     }
 
@@ -53,7 +53,7 @@
 
     // Función para editar contenido
     window.editContent = function (type, id) {
-        console.log(`✏️ [EDIT] Editando ${type} con ID: ${id}`);
+        void 0;
         alert(`✏️ Editar ${type.charAt(0).toUpperCase() + type.slice(1)}\n\n` +
             `ID: ${id}\n\n` +
             `Esta función cargaría el editor con el contenido existente para permitir modificaciones.\n\n` +
@@ -67,7 +67,7 @@
 
     // Función para eliminar contenido
     window.deleteContent = function (type, id) {
-        console.log(`🗑️ [DELETE] Eliminando ${type} con ID: ${id}`);
+        void 0;
 
         if (confirm(`¿Estás seguro de eliminar este ${type}?\n\nEsta acción no se puede deshacer.`)) {
             alert(`✅ ${type.charAt(0).toUpperCase() + type.slice(1)} eliminado correctamente.\n\n` +
@@ -77,22 +77,22 @@
 
     // Funciones para crear contenido nuevo
     window.showCreateNoticiaModal = function () {
-        console.log('📰 [CREATE] Abriendo modal de crear noticia...');
+        void 0;
         alert('📰 Crear Nueva Noticia\n\nModal de creación con editor TinyMCE (en desarrollo)');
     }
 
     window.showCreateEventoModal = function () {
-        console.log('📅 [CREATE] Abriendo modal de crear evento...');
+        void 0;
         alert('📅 Crear Nuevo Evento\n\nModal de creación con calendario (en desarrollo)');
     }
 
     window.showCreateAvisoModal = function () {
-        console.log('⚠️ [CREATE] Abriendo modal de crear aviso...');
+        void 0;
         alert('⚠️ Crear Nuevo Aviso\n\nModal de creación con prioridades (en desarrollo)');
     }
 
     window.showCreateComunicadoModal = function () {
-        console.log('📋 [CREATE] Abriendo modal de crear comunicado...');
+        void 0;
         alert('📋 Crear Nuevo Comunicado\n\nModal de creación formal (en desarrollo)');
     }
 
@@ -101,7 +101,7 @@
     // ================================================================
 
     window.generateReport = function (type) {
-        console.log(`📊 [REPORT] Generando reporte tipo: ${type}`);
+        void 0;
 
         const reports = {
             estudiantes: {
@@ -142,7 +142,7 @@
     }
 
     window.downloadReport = function (type) {
-        console.log(`📥 [DOWNLOAD] Descargando reporte "${type}" en formato PDF...`);
+        void 0;
         alert(`📥 Descargando Reporte "${type}"\n\n` +
             `Formato: PDF\n` +
             `Incluye: Gráficas, tablas y análisis detallado\n\n` +
@@ -150,7 +150,7 @@
     }
 
     window.exportReport = function (type) {
-        console.log(`📊 [EXPORT] Exportando reporte "${type}" en formato Excel...`);
+        void 0;
         alert(`📊 Exportando reporte "${type}" en formato Excel...\n\n` +
             `En la versión completa, esto generaría un archivo Excel real con los datos actuales del sistema.`);
     }
@@ -362,7 +362,7 @@
 
     // Función para panel de gestión de notificaciones
     window.openNotificationPanel = function () {
-        console.log('🔔 [NOTIFICATIONS] Abriendo panel de gestión de notificaciones...');
+        void 0;
 
         const notificationModal = document.createElement('div');
         notificationModal.className = 'modal fade';
@@ -452,7 +452,7 @@
             return;
         }
 
-        console.log('📤 [NOTIFICATION] Enviando notificación:', { title, message, targets });
+        void 0;
 
         // Simular envío exitoso
         alert(`✅ Notificación enviada exitosamente!\n\nTítulo: ${title}\nDestinatarios: ${targets}\n\nEn la versión completa, esto enviaría una notificación push real a los dispositivos de los usuarios.`);
@@ -472,7 +472,7 @@
 
     // Función para configurar estadísticas (botón "Configurar Estadísticas")
     window.openStatsConfiguration = function () {
-        console.log('⚙️ [STATS] Abriendo configuración de estadísticas...');
+        void 0;
 
         // Buscar el modal existente y abrirlo
         const existingModal = document.getElementById('statisticsConfigModal');
@@ -486,19 +486,19 @@
 
     // Función para abrir sistema de pagos
     window.openPaymentSystem = function () {
-        console.log('💰 [PAYMENTS] Abriendo sistema de pagos...');
+        void 0;
         alert('💳 Sistema de Pagos\n\nEsta funcionalidad conectaría con:\n• Registro de pagos\n• Control de vencimientos\n• Alertas automáticas\n• Comunicados a padres\n• Reportes financieros\n\nEn desarrollo para la próxima versión.');
     }
 
     // Función para calendario académico
     window.openAcademicCalendar = function () {
-        console.log('📅 [CALENDAR] Abriendo calendario académico...');
+        void 0;
         alert('📅 Calendario Académico\n\nFuncionalidades incluidas:\n• Planificación de eventos\n• Fechas de exámenes\n• Períodos vacacionales\n• Notificaciones automáticas\n• Eventos importantes\n\nSistema en desarrollo.');
     }
 
     // Función para configuración del sistema
     window.openSystemConfiguration = function () {
-        console.log('⚙️ [CONFIG] Abriendo configuración del sistema...');
+        void 0;
         alert('🔧 Configuración del Sistema\n\nOpciones disponibles:\n• Configuración institucional\n• Personalización de reportes\n• Gestión de usuarios\n• Respaldos automáticos\n\nPanel de administración avanzado en construcción.');
     }
 
@@ -508,23 +508,23 @@
 
     // Función para hacer login de admin
     window.loginAdmin = function () {
-        console.log('🔐 [LOGIN] Iniciando proceso de login...');
+        void 0;
         // Esta función debe delegar al sistema de autenticación existente
         if (typeof handleAdminLogin === 'function') {
             handleAdminLogin();
         } else {
-            console.warn('⚠️ handleAdminLogin no está disponible');
+            void 0;
         }
     }
 
     // Función para logout del admin
     window.logoutAdmin = function () {
-        console.log('👋 [LOGOUT] Cerrando sesión...');
+        void 0;
         if (typeof window.secureAdminAuth !== 'undefined' && typeof window.secureAdminAuth.logout === 'function') {
             window.secureAdminAuth.logout();
             window.location.href = 'index.html';
         } else {
-            console.warn('⚠️ Sistema de autenticación no disponible');
+            void 0;
         }
     }
 
@@ -534,13 +534,13 @@
 
     // Función para refrescar el dashboard
     window.refreshDashboard = function () {
-        console.log('🔄 [REFRESH] Refrescando dashboard...');
+        void 0;
         location.reload();
     }
 
     // Función para recargar estudiantes
     window.reloadStudents = function () {
-        console.log('👨‍🎓 [STUDENTS] Recargando lista de estudiantes...');
+        void 0;
         if (typeof window.dynamicStudentLoader !== 'undefined' && typeof window.dynamicStudentLoader.loadStudents === 'function') {
             window.dynamicStudentLoader.loadStudents();
         } else {
@@ -550,7 +550,7 @@
 
     // Función para recargar docentes
     window.reloadTeachers = function () {
-        console.log('👨‍🏫 [TEACHERS] Recargando lista de docentes...');
+        void 0;
         if (typeof window.dynamicTeacherLoader !== 'undefined' && typeof window.dynamicTeacherLoader.loadTeachers === 'function') {
             window.dynamicTeacherLoader.loadTeachers();
         } else {
@@ -563,54 +563,54 @@
     // ================================================================
 
     window.exportAllContent = function () {
-        console.log('📥 Exportar contenido');
+        void 0;
         alert('Exportando contenido (en desarrollo)');
     }
 
     window.refreshContentStats = function () {
-        console.log('🔄 Refrescar stats');
+        void 0;
         alert('Refrescando estadísticas (en desarrollo)');
     }
 
     window.showContentPreview = function () {
-        console.log('👁️ Vista previa');
+        void 0;
         alert('Vista previa de contenido (en desarrollo)');
     }
 
     window.clearNoticiaForm = function () {
-        console.log('🗑️ Limpiar formulario noticia');
+        void 0;
     }
 
     window.refreshNoticiasList = function () {
-        console.log('🔄 Refrescar noticias');
+        void 0;
     }
 
     window.clearEventoForm = function () {
-        console.log('🗑️ Limpiar formulario evento');
+        void 0;
     }
 
     window.refreshEventosList = function () {
-        console.log('🔄 Refrescar eventos');
+        void 0;
     }
 
     window.clearAvisoForm = function () {
-        console.log('🗑️ Limpiar formulario aviso');
+        void 0;
     }
 
     window.refreshAvisosList = function () {
-        console.log('🔄 Refrescar avisos');
+        void 0;
     }
 
     window.clearComunicadoForm = function () {
-        console.log('🗑️ Limpiar formulario comunicado');
+        void 0;
     }
 
     window.refreshComunicadosList = function () {
-        console.log('🔄 Refrescar comunicados');
+        void 0;
     }
 
     window.showReportsManager = function () {
-        console.log('📊 Gestor de reportes');
+        void 0;
         alert('Gestor de reportes (en desarrollo)');
     }
 
@@ -620,7 +620,7 @@
 
     // Función para cambiar contraseña
     window.showChangePasswordModal = function () {
-        console.log('🔑 [PASSWORD] Abriendo modal de cambio de contraseña...');
+        void 0;
 
         const passwordModal = document.createElement('div');
         passwordModal.className = 'modal fade';
@@ -698,7 +698,7 @@
             return;
         }
 
-        console.log('🔑 [PASSWORD] Cambiando contraseña...');
+        void 0;
 
         // Aquí iría la lógica real de cambio de contraseña
         alert('✅ Contraseña cambiada exitosamente!\n\nEn la versión completa, esto actualizaría tu contraseña en el servidor.');

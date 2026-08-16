@@ -67,7 +67,7 @@ class BGEAIAnalisisPredictivo {
 
     async init() {
         try {
-            console.log('🧠 Inicializando BGE AI Análisis Predictivo...');
+            void 0;
 
             await this.cargarDatosHistoricos();
             await this.entrenarModelos();
@@ -76,7 +76,7 @@ class BGEAIAnalisisPredictivo {
 
             this.iniciarMonitoreoContinuo();
 
-            console.log('✅ Sistema de análisis predictivo inicializado');
+            void 0;
 
         } catch (error) {
             console.error('❌ Error inicializando análisis predictivo:', error);
@@ -257,7 +257,7 @@ class BGEAIAnalisisPredictivo {
     // ==========================================
 
     async entrenarModelos() {
-        console.log('🎯 Entrenando modelos de Machine Learning...');
+        void 0;
 
         const resultadosEntrenamiento = {};
 
@@ -276,7 +276,7 @@ class BGEAIAnalisisPredictivo {
         // Actualizar precisión general
         this.config.precision.actual = this.calcularPrecisionPromedio(resultadosEntrenamiento);
 
-        console.log(`✅ Modelos entrenados con precisión promedio: ${this.config.precision.actual.toFixed(3)}`);
+        void 0;
 
         return resultadosEntrenamiento;
     }
@@ -292,7 +292,7 @@ class BGEAIAnalisisPredictivo {
             .filter(([_, validacion]) => validacion.esValido)
             .length;
 
-        console.log(`✅ ${modelosValidos}/${Object.keys(this.modelosML).length} modelos validados exitosamente`);
+        void 0;
 
         return validaciones;
     }
@@ -301,13 +301,13 @@ class BGEAIAnalisisPredictivo {
         const optimizaciones = {};
 
         for (const [nombre, modelo] of Object.entries(this.modelosML)) {
-            console.log(`🔧 Optimizando modelo: ${nombre}...`);
+            void 0;
 
             optimizaciones[nombre] = await this.optimizarHiperparametros(modelo);
 
             if (optimizaciones[nombre].mejoraObtenida > 0.01) {
                 await this.aplicarOptimizacion(modelo, optimizaciones[nombre]);
-                console.log(`✅ Modelo ${nombre} optimizado: +${(optimizaciones[nombre].mejoraObtenida * 100).toFixed(1)}% precisión`);
+                void 0;
             }
         }
 
@@ -432,7 +432,7 @@ class BGEAIAnalisisPredictivo {
     // ==========================================
 
     async cargarDatosHistoricos() {
-        console.log('📚 Cargando datos históricos para entrenamiento...');
+        void 0;
 
         // Cargar datos académicos históricos
         this.datosEntrenamiento.academicos = await this.cargarDatosAcademicosHistoricos();
@@ -446,7 +446,7 @@ class BGEAIAnalisisPredictivo {
         // Cargar datos contextuales
         this.datosEntrenamiento.contextuales = await this.cargarDatosContextuales();
 
-        console.log('✅ Datos históricos cargados exitosamente');
+        void 0;
     }
 
     iniciarMonitoreoContinuo() {
@@ -499,7 +499,7 @@ class BGERendimientoPredictor {
 
     async entrenar(datosEntrenamiento) {
         // Implementación de entrenamiento de modelo de rendimiento
-        console.log('🎯 Entrenando modelo de predicción de rendimiento...');
+        void 0;
 
         const caracteristicas = this.extraerCaracteristicasRendimiento(datosEntrenamiento);
         const etiquetas = this.extraerEtiquetasRendimiento(datosEntrenamiento);
@@ -528,7 +528,7 @@ class BGERiesgoDesercionPredictor {
     }
 
     async entrenar(datosEntrenamiento) {
-        console.log('🎯 Entrenando modelo de predicción de deserción...');
+        void 0;
 
         const caracteristicas = this.extraerCaracteristicasDesercion(datosEntrenamiento);
         const etiquetas = this.extraerEtiquetasDesercion(datosEntrenamiento);
@@ -549,7 +549,7 @@ class BGEDificultadesPredictor {
     }
 
     async entrenar(datosEntrenamiento) {
-        console.log('🎯 Entrenando modelo de detección de dificultades...');
+        void 0;
 
         const caracteristicas = this.extraerCaracteristicasDificultades(datosEntrenamiento);
         const etiquetas = this.extraerEtiquetasDificultades(datosEntrenamiento);

@@ -9,21 +9,21 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Esperar un momento para que se carguen otros sistemas
     setTimeout(() => {
-        console.log('🚀 [PWA OPTIMIZER] Inicializando optimizador PWA...');
+        void 0;
 
         try {
             // Verificar que la clase esté disponible
             if (typeof PWAOptimizer !== 'undefined') {
                 // Inicializar el optimizador PWA
                 window.pwaOptimizer = new PWAOptimizer();
-                console.log('✅ [PWA OPTIMIZER] PWA Optimizer inicializado correctamente');
+                void 0;
             } else {
-                console.warn('⚠️ [PWA OPTIMIZER] Clase PWAOptimizer no disponible, reintentando...');
+                void 0;
                 // Reintentar después de 1 segundo
                 setTimeout(() => {
                     if (typeof PWAOptimizer !== 'undefined') {
                         window.pwaOptimizer = new PWAOptimizer();
-                        console.log('✅ [PWA OPTIMIZER] PWA Optimizer inicializado en segundo intento');
+                        void 0;
                     } else {
                         console.error('❌ [PWA OPTIMIZER] No se pudo cargar PWAOptimizer');
                     }

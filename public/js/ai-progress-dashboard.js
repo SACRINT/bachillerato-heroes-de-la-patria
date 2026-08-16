@@ -43,7 +43,7 @@ class AIProgressDashboard {
         this.loadProgressData();
         this.startRealTimeUpdates();
 
-        console.log('📊 AI Progress Dashboard inicializado');
+        void 0;
     }
 
     async loadDependencies() {
@@ -97,7 +97,7 @@ class AIProgressDashboard {
                 const user = JSON.parse(userData);
                 return user.id || user.google_id || user.email;
             } catch (error) {
-                console.warn('Error parsing user data:', error);
+                void 0;
             }
         }
 
@@ -117,7 +117,7 @@ class AIProgressDashboard {
             try {
                 this.progressData = JSON.parse(savedData);
             } catch (error) {
-                console.warn('Error loading saved progress data:', error);
+                void 0;
                 this.progressData = this.createDefaultProgressData();
             }
         } else {
@@ -176,7 +176,7 @@ class AIProgressDashboard {
                     this.mergeAcademicData(academicData.data);
                 }
             } catch (error) {
-                console.warn('Error loading academic data:', error);
+                void 0;
             }
         }
     }
@@ -190,7 +190,7 @@ class AIProgressDashboard {
                     this.mergeBehaviorData(behaviorData);
                 }
             } catch (error) {
-                console.warn('Error loading behavior data:', error);
+                void 0;
             }
         }
     }
@@ -430,7 +430,7 @@ class AIProgressDashboard {
 
     async updateAcademicChart(period) {
         // Actualizar datos según el período seleccionado
-        console.log('Actualizando chart para período:', period);
+        void 0;
 
         // Aquí puedes cargar datos específicos del período
         // Por ahora simplemente re-renderizamos el chart
@@ -588,7 +588,7 @@ class AIProgressDashboard {
             try {
                 recommendations = await window.aiRecommendationEngine.generateRecommendations(this.userId);
             } catch (error) {
-                console.warn('Error generating AI recommendations:', error);
+                void 0;
             }
         }
 
@@ -822,11 +822,11 @@ class AIProgressDashboard {
     // Funciones de utilidad
     showLoadingIndicator() {
         // Implementar indicador de carga
-        console.log('🔄 Cargando datos del dashboard...');
+        void 0;
     }
 
     hideLoadingIndicator() {
-        console.log('✅ Datos del dashboard cargados');
+        void 0;
     }
 
     showNotification(message, type = 'info') {

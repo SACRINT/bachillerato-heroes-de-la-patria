@@ -68,7 +68,7 @@ class BGEDashboardEjecutivo {
 
     async init() {
         try {
-            console.log('📊 Inicializando BGE Dashboard Ejecutivo...');
+            void 0;
 
             await this.conectarSistemaMaestro();
             await this.crearEstructuraHTML();
@@ -77,7 +77,7 @@ class BGEDashboardEjecutivo {
             await this.iniciarActualizacionesAutomaticas();
 
             this.estado.inicializado = true;
-            console.log('✅ Dashboard Ejecutivo inicializado exitosamente');
+            void 0;
 
         } catch (error) {
             console.error('❌ Error inicializando Dashboard Ejecutivo:', error);
@@ -536,7 +536,7 @@ class BGEDashboardEjecutivo {
     // ==========================================
 
     async inicializarComponentes() {
-        console.log('🎨 Inicializando componentes del dashboard...');
+        void 0;
 
         await this.crearKPICards();
         await this.inicializarCharts();
@@ -544,7 +544,7 @@ class BGEDashboardEjecutivo {
         await this.configurarAlertas();
         await this.configurarEstadisticasRapidas();
 
-        console.log('✅ Componentes del dashboard inicializados');
+        void 0;
     }
 
     async crearKPICards() {
@@ -655,9 +655,9 @@ class BGEDashboardEjecutivo {
         // Intentar conectar con el sistema maestro
         if (typeof window !== 'undefined' && window.bgeMasterSystem) {
             this.masterSystem = window.bgeMasterSystem;
-            console.log('✅ Conectado al Sistema Maestro BGE');
+            void 0;
         } else {
-            console.log('⚠️ Sistema Maestro no disponible, usando datos simulados');
+            void 0;
             this.masterSystem = this.crearSistemaMaestroSimulado();
         }
     }
@@ -895,7 +895,7 @@ if (typeof window !== 'undefined') {
             window.location.pathname.includes('admin-dashboard') ||
             document.getElementById('dashboard-container')) {
 
-            console.log('🎯 Inicializando Dashboard Ejecutivo BGE...');
+            void 0;
             window.bgeDashboard = new BGEDashboardEjecutivo();
         }
     });

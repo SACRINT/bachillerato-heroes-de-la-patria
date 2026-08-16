@@ -44,7 +44,7 @@ class AcademicReportsManager {
     }
 
     async init() {
-        console.log('🚀 Inicializando Sistema de Reportes Académicos...');
+        void 0;
 
         try {
             await this.loadUserAuth();
@@ -52,7 +52,7 @@ class AcademicReportsManager {
             await this.loadAvailableReports();
             await this.bindEvents();
 
-            console.log('✅ Sistema de Reportes Académicos inicializado correctamente');
+            void 0;
         } catch (error) {
             console.error('❌ Error inicializando Sistema de Reportes:', error);
             this.showError('Error al inicializar el sistema de reportes');
@@ -1067,7 +1067,7 @@ class AcademicReportsManager {
         if (!canvas) return;
 
         // Aquí integrarías Chart.js o similar
-        console.log(`Renderizando gráfico ${canvasId} con datos:`, data);
+        void 0;
     }
 
     showSuccess(message) {
@@ -1099,7 +1099,7 @@ class AcademicReportsManager {
 
     destroy() {
         // Limpiar recursos si es necesario
-        console.log('🧹 Limpiando Sistema de Reportes Académicos...');
+        void 0;
     }
 }
 
@@ -1139,7 +1139,7 @@ document.addEventListener('click', (e) => {
             return;
         }
 
-        console.warn('[ACADEMIC-REPORTS] Unhandled data-action:', action);
+        void 0;
     } catch (error) {
         console.error('[ACADEMIC-REPORTS] Error handling action:', action, error);
     }

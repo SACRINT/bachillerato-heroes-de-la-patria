@@ -175,7 +175,7 @@ class BGEDashboardMonitor {
      */
     async init() {
         try {
-            console.log(`📊 Inicializando ${this.sistema} v${this.version}`);
+            void 0;
 
             await this.discoverSystems();
             await this.initializeMetricsCollection();
@@ -185,7 +185,7 @@ class BGEDashboardMonitor {
             this.startMonitoring();
 
             this.state.active = true;
-            console.log('✅ Dashboard de Monitoreo inicializado correctamente');
+            void 0;
             this.logDashboardEvent('info', 'Dashboard BGE inicializado exitosamente');
 
         } catch (error) {
@@ -308,7 +308,7 @@ class BGEDashboardMonitor {
                 const audio = new Audio(data);
                 this.alertSystem.sounds.set(name, audio);
             } catch (error) {
-                console.warn(`No se pudo cargar sonido ${name}:`, error);
+                void 0;
             }
         }
     }
@@ -729,7 +729,7 @@ class BGEDashboardMonitor {
         if (soundConfig && soundConfig.sound) {
             const audio = this.alertSystem.sounds.get(soundConfig.sound);
             if (audio) {
-                audio.play().catch(e => console.warn('No se pudo reproducir sonido:', e));
+                audio.play().catch(e => void 0);
             }
         }
     }
@@ -1487,7 +1487,7 @@ class BGEDashboardMonitor {
             system: 'dashboard'
         };
 
-        console.log(`[BGE Dashboard ${level.toUpperCase()}] ${message}`);
+        void 0;
     }
 
     // Método para obtener métricas del dashboard
@@ -1521,7 +1521,7 @@ class BGEDashboardMonitor {
         }
 
         this.state.active = false;
-        console.log('🧹 Dashboard BGE destruido correctamente');
+        void 0;
     }
 }
 
@@ -1532,9 +1532,9 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => {
             window.bgeDashboardMonitor = new BGEDashboardMonitor();
 
-            console.log('📊 Dashboard de Monitoreo BGE inicializado');
-            console.log('📈 Acceso: window.bgeDashboardMonitor');
-            console.log('🎯 Comando rápido: window.bgeDashboardMonitor.collectAllMetrics()');
+            void 0;
+            void 0;
+            void 0;
         }, 2000);
     }
 });

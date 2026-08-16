@@ -15,75 +15,75 @@
    * Captura el estado completo del sistema de autenticación
    */
   window.debugLoginState = function() {
-    console.log('%c========================================', 'color: cyan; font-weight: bold');
-    console.log('%c🔍 DEBUG LOGIN STATE - ' + new Date().toISOString(), 'color: cyan; font-weight: bold');
-    console.log('%c========================================', 'color: cyan; font-weight: bold');
+    void 0;
+    void 0;
+    void 0;
 
     // 1. URL y Contexto
-    console.log('\n%c📍 CONTEXTO', 'color: yellow; font-weight: bold');
-    console.log('URL Actual:', window.location.href);
-    console.log('Protocolo:', window.location.protocol);
-    console.log('Host:', window.location.host);
-    console.log('Pathname:', window.location.pathname);
-    console.log('User Agent:', navigator.userAgent);
+    void 0;
+    void 0;
+    void 0;
+    void 0;
+    void 0;
+    void 0;
 
     // 2. SessionStorage
-    console.log('\n%c💾 SESSION STORAGE', 'color: yellow; font-weight: bold');
+    void 0;
     const sessionKeys = Object.keys(sessionStorage);
-    console.log('Total Keys:', sessionKeys.length);
-    console.log('Keys:', sessionKeys);
+    void 0;
+    void 0;
 
     sessionKeys.forEach(key => {
       const value = sessionStorage.getItem(key);
       try {
         const parsed = JSON.parse(value);
-        console.log(`  ✅ ${key}:`, parsed);
+        void 0;
       } catch (e) {
-        console.log(`  📝 ${key}:`, value);
+        void 0;
       }
     });
 
     // 3. LocalStorage
-    console.log('\n%c💿 LOCAL STORAGE', 'color: yellow; font-weight: bold');
+    void 0;
     const localKeys = Object.keys(localStorage).filter(k => !k.startsWith('_'));
-    console.log('Total Keys:', localKeys.length);
-    console.log('Keys:', localKeys);
+    void 0;
+    void 0;
 
     localKeys.forEach(key => {
       const value = localStorage.getItem(key);
       try {
         const parsed = JSON.parse(value);
-        console.log(`  ✅ ${key}:`, parsed);
+        void 0;
       } catch (e) {
-        console.log(`  📝 ${key}:`, value);
+        void 0;
       }
     });
 
     // 4. Variables Globales
-    console.log('\n%c🌐 VARIABLES GLOBALES', 'color: yellow; font-weight: bold');
-    console.log('window.unifiedAuth:', window.unifiedAuth);
-    console.log('window.TENANT_CONFIG:', window.TENANT_CONFIG);
-    console.log('window.CONFIG:', window.CONFIG);
-    console.log('window.getTenantConfigValue:', typeof window.getTenantConfigValue);
+    void 0;
+    void 0;
+    void 0;
+    void 0;
+    void 0;
 
     // 5. DOM Elements Críticos
-    console.log('\n%c🎨 ELEMENTOS DOM', 'color: yellow; font-weight: bold');
+    void 0;
     const btnLogin = document.querySelector('#btnLogin, [data-action="openLoginModal"]');
     const btnLogout = document.querySelector('#btnLogout, [data-action="logout"]');
     const userMenu = document.querySelector('.user-menu, #userMenu');
     const loginModal = document.querySelector('#loginModal, .login-modal');
 
-    console.log('Botón Login:', btnLogin ? '✅ Existe' : '❌ No existe');
-    console.log('Botón Logout:', btnLogout ? '✅ Existe' : '❌ No existe');
-    console.log('User Menu:', userMenu ? '✅ Existe' : '❌ No existe');
-    console.log('Login Modal:', loginModal ? '✅ Existe' : '❌ No existe');
+    void 0;
+    void 0;
+    void 0;
+    void 0;
 
     if (userMenu) {
-      console.log('  → User Menu HTML:', userMenu.outerHTML.substring(0, 200));
+      void 0;
     }
 
     // 6. Scripts Cargados
-    console.log('\n%c📜 SCRIPTS CARGADOS', 'color: yellow; font-weight: bold');
+    void 0;
     const scripts = Array.from(document.querySelectorAll('script[src]'));
     const relevantScripts = scripts.filter(s =>
       s.src.includes('auth') ||
@@ -92,14 +92,14 @@
       s.src.includes('main.js')
     );
 
-    console.log('Scripts Relevantes:', relevantScripts.length);
+    void 0;
     relevantScripts.forEach(script => {
       const url = new URL(script.src);
-      console.log(`  📦 ${url.pathname}`);
+      void 0;
     });
 
     // 7. Network Requests (si están disponibles)
-    console.log('\n%c🌐 NETWORK', 'color: yellow; font-weight: bold');
+    void 0;
     if (window.performance && window.performance.getEntriesByType) {
       const resources = window.performance.getEntriesByType('resource');
       const authRequests = resources.filter(r =>
@@ -107,15 +107,15 @@
         r.name.includes('/api/config')
       );
 
-      console.log('Auth API Requests:', authRequests.length);
+      void 0;
       authRequests.forEach(req => {
-        console.log(`  🔗 ${req.name}`);
-        console.log(`     Duration: ${req.duration.toFixed(2)}ms`);
+        void 0;
+        void 0;
       });
     }
 
     // 8. Estado de Autenticación Inferido
-    console.log('\n%c🔐 ESTADO DE AUTENTICACIÓN', 'color: yellow; font-weight: bold');
+    void 0;
     const authToken = sessionStorage.getItem('auth_token') || localStorage.getItem('auth_token');
     const userDataStr = sessionStorage.getItem('user_data') || localStorage.getItem('user_data');
     let userData = null;
@@ -129,31 +129,31 @@
     }
 
     if (authToken && userData) {
-      console.log('✅ AUTENTICADO');
-      console.log('  Token:', authToken.substring(0, 20) + '...');
-      console.log('  Usuario:', userData.nombre || userData.email);
-      console.log('  Role:', userData.role);
-      console.log('  Email:', userData.email);
+      void 0;
+      void 0;
+      void 0;
+      void 0;
+      void 0;
     } else {
-      console.log('❌ NO AUTENTICADO');
-      console.log('  Token:', authToken ? 'Existe pero sin user_data' : 'No existe');
-      console.log('  User Data:', userData ? 'Existe pero sin token' : 'No existe');
+      void 0;
+      void 0;
+      void 0;
     }
 
     // 9. Errores en Console
-    console.log('\n%c⚠️ ERRORES', 'color: yellow; font-weight: bold');
-    console.log('(Revisar arriba en console si hay errores rojos)');
+    void 0;
+    void 0;
 
-    console.log('\n%c========================================', 'color: cyan; font-weight: bold');
-    console.log('%c✅ DEBUG COMPLETO', 'color: green; font-weight: bold');
-    console.log('%c========================================', 'color: cyan; font-weight: bold');
+    void 0;
+    void 0;
+    void 0;
   };
 
   /**
    * Test rápido de fetch al backend
    */
   window.testBackendAuth = async function(email = 'docente@test.com', password = 'Test123!') {
-    console.log('%c🧪 TESTING BACKEND AUTH...', 'color: blue; font-weight: bold');
+    void 0;
 
     try {
       const response = await fetch('/api/auth/login', {
@@ -164,22 +164,22 @@
         body: JSON.stringify({ email, password })
       });
 
-      console.log('Status:', response.status, response.statusText);
-      console.log('Headers:', Object.fromEntries(response.headers.entries()));
+      void 0;
+      void 0;
 
       if (response.ok) {
         const data = await response.json();
-        console.log('%c✅ LOGIN EXITOSO', 'color: green; font-weight: bold');
-        console.log('Response:', data);
+        void 0;
+        void 0;
         return data;
       } else {
         const error = await response.text();
-        console.log('%c❌ LOGIN FALLIDO', 'color: red; font-weight: bold');
-        console.log('Error:', error);
+        void 0;
+        void 0;
         return null;
       }
     } catch (error) {
-      console.log('%c❌ ERROR DE RED', 'color: red; font-weight: bold');
+      void 0;
       console.error(error);
       return null;
     }
@@ -189,7 +189,7 @@
    * Limpia toda la autenticación
    */
   window.clearAuth = function() {
-    console.log('%c🧹 LIMPIANDO AUTENTICACIÓN...', 'color: orange; font-weight: bold');
+    void 0;
 
     sessionStorage.removeItem('auth_token');
     sessionStorage.removeItem('user_data');
@@ -199,8 +199,8 @@
     localStorage.removeItem('user_data');
     localStorage.removeItem('remember_me');
 
-    console.log('✅ Autenticación limpiada');
-    console.log('Recargar página para aplicar cambios: location.reload()');
+    void 0;
+    void 0;
   };
 
   /**
@@ -213,7 +213,7 @@
     apellido_paterno: 'Test',
     role: 'docente'
   }) {
-    console.log('%c🔧 FORZANDO LOGIN...', 'color: purple; font-weight: bold');
+    void 0;
 
     const fakeToken = 'test-token-' + Date.now();
 
@@ -221,17 +221,17 @@
     sessionStorage.setItem('user_data', JSON.stringify(userData));
     sessionStorage.setItem('user_role', userData.role);
 
-    console.log('✅ Login forzado exitoso');
-    console.log('Token:', fakeToken);
-    console.log('User:', userData);
-    console.log('Recargar página: location.reload()');
+    void 0;
+    void 0;
+    void 0;
+    void 0;
   };
 
   // Auto-ejecutar al cargar
-  console.log('%c🛠️ DEBUG HELPER CARGADO', 'color: green; font-weight: bold');
-  console.log('%cComandos disponibles:', 'color: cyan');
-  console.log('  • debugLoginState() - Captura estado completo');
-  console.log('  • testBackendAuth() - Test de login al backend');
-  console.log('  • clearAuth() - Limpia autenticación');
-  console.log('  • forceLogin() - Fuerza login para testing');
+  void 0;
+  void 0;
+  void 0;
+  void 0;
+  void 0;
+  void 0;
 })();

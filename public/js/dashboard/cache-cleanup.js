@@ -5,14 +5,14 @@
  */
 
 (async function() {
-    console.log('🧹 [CACHE CLEANUP] Iniciando limpieza de cache...');
+    void 0;
 
     // 1. Limpiar Service Workers
     if ('serviceWorker' in navigator) {
         const registrations = await navigator.serviceWorker.getRegistrations();
         for (let registration of registrations) {
             await registration.unregister();
-            console.log('✅ Service Worker desregistrado:', registration.scope);
+            void 0;
         }
     }
 
@@ -21,7 +21,7 @@
         const cacheNames = await caches.keys();
         for (let cacheName of cacheNames) {
             await caches.delete(cacheName);
-            console.log('✅ Cache eliminado:', cacheName);
+            void 0;
         }
     }
 
@@ -35,5 +35,5 @@
     }
     keysToRemove.forEach(key => localStorage.removeItem(key));
 
-    console.log('✅ [CACHE CLEANUP] Limpieza completada - Scripts frescos se cargarán');
+    void 0;
 })();

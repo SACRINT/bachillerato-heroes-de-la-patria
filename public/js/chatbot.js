@@ -39,7 +39,7 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
 
     // Verificar si ya está cargado para evitar declaraciones duplicadas
     if (typeof KNOWLEDGE_DATABASE !== 'undefined') {
-        console.warn('⚠️ Chatbot ya está cargado, evitando carga duplicada');
+        void 0;
     } else {
 
         // 📚 BASE DE CONOCIMIENTO EXPANDIDA Y COMPLETA
@@ -807,7 +807,7 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
             if (window.apiClient) {
                 window.apiClient.checkConnection().then(connected => {
                     isAPIConnected = connected;
-                    //console.log(isAPIConnected ? '🟢 Chatbot conectado a API' : '🟡 Chatbot en modo offline');
+                    //void 0;
                 });
             }
         }
@@ -837,11 +837,11 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
                 }
 
                 const data = await response.json();
-                console.log(`🔍 API Search: "${query}" - ${data.total} resultados`);
+                void 0;
 
                 return data;
             } catch (error) {
-                console.warn('⚠️ Error en búsqueda API:', error.message);
+                void 0;
                 return null;
             }
         }
@@ -868,10 +868,10 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
 
                 if (response.ok) {
                     CHAT_SESSION.messageCount++;
-                    console.log(`📝 Mensaje registrado: ${senderType}`);
+                    void 0;
                 }
             } catch (error) {
-                console.warn('⚠️ Error registrando mensaje:', error.message);
+                void 0;
             }
         }
 
@@ -943,7 +943,7 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
             logMessageToAPI(message, 'user').catch(console.warn);
 
             // FASE 1: Intentar buscar a través del Orquestador de IA (Estandarizado Ene 2026)
-            console.log('🔍 [Orquestador] Consultando Cerebro IA (GENERAL_CHAT)...');
+            void 0;
             try {
                 let data;
 
@@ -979,7 +979,7 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
                     const aiContent = data.data ? data.data.response : (data.response || null);
 
                     if (aiContent) {
-                        console.log('✅ Respuesta IA Recibida vía Orquestador');
+                        void 0;
 
                         // Formatear respuesta Markdown/Texto a HTML bonito
                         let formattedContent = aiContent
@@ -1000,16 +1000,16 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
                         });
                     }
                 } else if (data && data.success === false) {
-                    console.warn('⚠️ Orchestrator respondió error:', data.error);
+                    void 0;
                 } else {
-                    console.warn('⚠️ Orchestrator respondió sin éxito:', data?.message);
+                    void 0;
                 }
             } catch (error) {
-                console.warn('⚠️ Falló conexión con Orquestador IA:', error.message);
+                void 0;
             }
 
             // FASE 2: Fallback a base de conocimiento local (Si falla la IA o no hay internet)
-            console.log('📚 Usando base de conocimiento local como fallback');
+            void 0;
             const localResponse = processMessageLocal(message);
 
             // Registrar respuesta del bot
@@ -1039,7 +1039,7 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
             </div>
         `;
             } catch (error) {
-                console.warn('Error formateando respuesta DB:', error);
+                void 0;
                 return `
             <div class="response-container">
                 <div class="response-header">
@@ -1180,7 +1180,7 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
             const toggle = document.getElementById('chatbotToggle');
 
             if (!container || !toggle) {
-                //console.log('Elementos del chatbot no encontrados');
+                //void 0;
                 return;
             }
 
@@ -1347,7 +1347,7 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
                     const user = JSON.parse(userData);
                     return user.id || user.google_id || user.email;
                 } catch (error) {
-                    console.warn('Error parsing user data:', error);
+                    void 0;
                 }
             }
 
@@ -1457,7 +1457,7 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
                     }
 
                 } catch (error) {
-                    console.warn('Error enviando feedback:', error.message);
+                    void 0;
                 }
             }
         }
@@ -1528,9 +1528,9 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
             const chatToggle = document.getElementById('chatbotToggle');
             if (chatToggle) {
                 chatToggle.addEventListener('click', toggleChatbot);
-                //console.log('✅ Botón chatbot conectado');
+                //void 0;
             } else {
-                //console.log('❌ Botón chatbot no encontrado');
+                //void 0;
             }
 
             // Event listener para Enter en el input
@@ -1542,16 +1542,16 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
                         sendMessage();
                     }
                 });
-                //console.log('✅ Input chatbot conectado');
+                //void 0;
             } else {
-                //console.log('❌ Input chatbot no encontrado');
+                //void 0;
             }
 
             // Asegurar que el contenedor esté oculto inicialmente
             const container = document.getElementById('chatbotContainer');
             if (container) {
                 container.style.display = 'none';
-                //console.log('✅ Contenedor chatbot oculto inicialmente');
+                //void 0;
             }
 
             // Event listeners para botones externos con data-action

@@ -124,12 +124,12 @@ class StudentDashboard {
             // Validate Token Expiration (Prevent Zombie Sessions)
             try {
                 if (payload.role === 'admin' || payload.role === 'director' || payload.role === 'administrativo') {
-                    console.log('Redirecting admin from student dashboard...');
+                    void 0;
                     window.location.replace('/admin-dashboard.html');
                     return false;
                 }
                 if (payload.role === 'teacher' || payload.role === 'docente') {
-                    console.log('Redirecting teacher from student dashboard...');
+                    void 0;
                     window.location.replace('/docentes.html');
                     return false;
                 }

@@ -14,7 +14,7 @@ async function loadAiWidgets() {
             headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
         });
         // Note: Endpoint /me for privacy, needs implementation or reuse existing
-    } catch (e) { console.warn('Risk widget failed', e); }
+    } catch (e) { void 0; }
 
     // 2. Recommendations
     try {
@@ -25,7 +25,7 @@ async function loadAiWidgets() {
         if (recData.success) {
             renderRecommendations(recData.data);
         }
-    } catch (e) { console.warn('Recs widget failed', e); }
+    } catch (e) { void 0; }
 
     // 3. AI Tutor Status
     renderTutorStatus();

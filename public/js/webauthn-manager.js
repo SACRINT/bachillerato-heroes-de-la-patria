@@ -86,7 +86,7 @@ class WebAuthnManager {
      */
     async registerDevice(deviceName = 'Dispositivo Biométrico') {
         try {
-            console.log('[WEBAUTHN] Iniciando registro de dispositivo:', deviceName);
+            void 0;
 
             if (!this.isAvailable) {
                 throw new Error('WebAuthn no está disponible en este navegador');
@@ -103,12 +103,12 @@ class WebAuthnManager {
 
             const options = optionsResponse.options;
 
-            console.log('[WEBAUTHN] Opciones de registro recibidas');
+            void 0;
 
             // Step 2: Trigger WebAuthn registration ceremony
             const attestationResponse = await this.SimpleWebAuthnBrowser.startRegistration(options);
 
-            console.log('[WEBAUTHN] Usuario completó registro biométrico');
+            void 0;
 
             // Step 3: Send response to server for verification
             const verificationResponse = await this.fetchWithAuth('/auth/webauthn/register/verify', {
@@ -124,7 +124,7 @@ class WebAuthnManager {
                 throw new Error(verificationResponse.error || 'Error al verificar registro');
             }
 
-            console.log('[WEBAUTHN] ✅ Dispositivo registrado exitosamente');
+            void 0;
 
             if (this.config.onSuccess) {
                 this.config.onSuccess({ type: 'registration', deviceName });
@@ -152,7 +152,7 @@ class WebAuthnManager {
      */
     async authenticate(userId = null, rememberMe = false) {
         try {
-            console.log('[WEBAUTHN] Iniciando autenticación biométrica');
+            void 0;
 
             if (!this.isAvailable) {
                 throw new Error('WebAuthn no está disponible en este navegador');
@@ -173,12 +173,12 @@ class WebAuthnManager {
 
             const options = optionsData.options;
 
-            console.log('[WEBAUTHN] Opciones de autenticación recibidas');
+            void 0;
 
             // Step 2: Trigger WebAuthn authentication ceremony
             const assertionResponse = await this.SimpleWebAuthnBrowser.startAuthentication(options);
 
-            console.log('[WEBAUTHN] Usuario completó autenticación biométrica');
+            void 0;
 
             // Step 3: Send response to server for verification and token generation
             const verificationResponse = await fetch(`${this.config.apiBaseUrl}/auth/webauthn/authenticate/verify`, {
@@ -197,7 +197,7 @@ class WebAuthnManager {
                 throw new Error(verificationData.error || 'Error al verificar autenticación');
             }
 
-            console.log('[WEBAUTHN] ✅ Autenticación biométrica exitosa');
+            void 0;
 
             if (this.config.onSuccess) {
                 this.config.onSuccess({ type: 'authentication', user: verificationData.user });

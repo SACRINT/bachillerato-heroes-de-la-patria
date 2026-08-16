@@ -59,16 +59,16 @@ class PaymentSystemAdvanced {
     }
 
     async init() {
-        //console.log('💳 Iniciando Payment System Advanced...');
+        //void 0;
         
         // Inicializar proveedores de pago
         for (const [name, provider] of Object.entries(this.providers)) {
             if (this.config.enabledProviders.includes(name)) {
                 try {
                     await provider.init();
-                    //console.log(`✅ ${name} provider inicializado`);
+                    //void 0;
                 } catch (error) {
-                    console.warn(`⚠️ Error inicializando ${name}:`, error);
+                    void 0;
                 }
             }
         }
@@ -78,7 +78,7 @@ class PaymentSystemAdvanced {
         this.setupEventListeners();
         this.loadSavedTransactions();
         
-        //console.log('✅ Payment System Advanced inicializado');
+        //void 0;
     }
 
     setupPaymentUI() {
@@ -838,7 +838,7 @@ class StripeProvider {
 
     async init() {
         // En producción, cargar Stripe.js dinámicamente
-        //console.log('💳 Stripe Provider inicializado (simulado)');
+        //void 0;
     }
 
     async createPaymentForm(amount) {
@@ -895,7 +895,7 @@ class PayPalProvider {
     }
 
     async init() {
-        //console.log('🅿️ PayPal Provider inicializado (simulado)');
+        //void 0;
     }
 
     async createPaymentForm(amount) {
@@ -938,7 +938,7 @@ class PayPalProvider {
 
 class OXXOProvider {
     async init() {
-        //console.log('🏪 OXXO Provider inicializado');
+        //void 0;
     }
 
     async createPaymentForm(amount) {
@@ -986,7 +986,7 @@ class OXXOProvider {
 
 class SPEIProvider {
     async init() {
-        //console.log('🏦 SPEI Provider inicializado');
+        //void 0;
     }
 
     async createPaymentForm(amount) {
@@ -1034,7 +1034,7 @@ class SPEIProvider {
 
 class MercadoPagoProvider {
     async init() {
-        //console.log('💰 MercadoPago Provider inicializado (simulado)');
+        //void 0;
     }
 
     async createPaymentForm(amount) {
@@ -1263,4 +1263,4 @@ document.head.appendChild(paymentStyles);
 // Exponer la clase
 window.PaymentSystemAdvanced = PaymentSystemAdvanced;
 
-//console.log('💳 Payment System Advanced cargado. Usa window.paymentSystemAdvanced para acceso directo.');
+//void 0;

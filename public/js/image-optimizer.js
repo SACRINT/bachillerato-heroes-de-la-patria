@@ -45,7 +45,7 @@ class ImageOptimizer {
     }
 
     init() {
-        //console.log('🖼️ Iniciando Image Optimizer...');
+        //void 0;
         
         this.setupLazyLoading();
         this.optimizeExistingImages();
@@ -55,8 +55,8 @@ class ImageOptimizer {
         // DESHABILITADO - CSP bloquea Web Workers (evita violaciones CSP)
         // this.setupWebWorkers();
         
-        //console.log('✅ Image Optimizer inicializado');
-        //console.log('📊 Formatos soportados:', this.supportedFormats);
+        //void 0;
+        //void 0;
     }
 
     // ============================================
@@ -179,7 +179,7 @@ class ImageOptimizer {
             preloadImg.src = optimizedSrc;
             
         } catch (error) {
-            console.warn('Error cargando imagen:', error);
+            void 0;
             img.src = dataSrc;
             img.classList.remove('loading');
             img.classList.add('error');
@@ -249,7 +249,7 @@ class ImageOptimizer {
         // this.wrapWithPictureElement(img);
         // this.applyAdaptiveCompression(img);
         
-        //console.log('🖼️ Image optimized (lite mode):', img.src);
+        //void 0;
         this.metrics.imagesOptimized++;
     }
 
@@ -509,7 +509,7 @@ class ImageOptimizer {
                 this.compressionWorkers.push(worker);
             }
         } catch (error) {
-            console.warn('No se pudieron crear Web Workers para compresión:', error);
+            void 0;
         }
     }
 
@@ -519,7 +519,7 @@ class ImageOptimizer {
         // Actualizar métricas
         this.metrics.bytesReduced += originalSize - compressedSize;
         
-        //console.log(`🗜️ Imagen comprimida: ${originalSize} → ${compressedSize} bytes`);
+        //void 0;
     }
 
     // ============================================
@@ -551,7 +551,7 @@ class ImageOptimizer {
         try {
             observer.observe({ entryTypes: ['resource'] });
         } catch (error) {
-            console.warn('Performance Observer no soportado');
+            void 0;
         }
     }
 
@@ -561,7 +561,7 @@ class ImageOptimizer {
         // Actualizar métricas de performance
         this.metrics.loadTimeImproved += loadTime < 200 ? 50 : 0; // Bonus por carga rápida
         
-        //console.log(`📈 Imagen cargada en ${loadTime.toFixed(2)}ms: ${entry.name}`);
+        //void 0;
     }
 
     monitorMemoryUsage() {
@@ -571,7 +571,7 @@ class ImageOptimizer {
                 const usage = (memory.usedJSHeapSize / memory.jsHeapSizeLimit) * 100;
                 
                 if (usage > 80) {
-                    console.warn('⚠️ Alto uso de memoria, liberando caché de imágenes');
+                    void 0;
                     this.clearImageCache();
                 }
             }, 30000);
@@ -752,5 +752,5 @@ document.head.appendChild(imageOptimizerStyles);
 // Exponer la clase
 window.ImageOptimizer = ImageOptimizer;
 
-//console.log('🖼️ Image Optimizer cargado. Usa window.imageOptimizer para acceso directo.');
+//void 0;
 }

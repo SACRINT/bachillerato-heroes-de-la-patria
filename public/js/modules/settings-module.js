@@ -7,13 +7,13 @@ class SettingsModule {
         this.eventBus = eventBus;
         this.settings = {};
         this.apiEndpoint = '/api/settings';
-        console.log('[SETTINGS-MODULE] ⚙️  Settings Module creado');
+        void 0;
     }
 
     async init() {
         this.subscribeToEvents();
         await this.loadSettings();
-        console.log('[SETTINGS-MODULE] ✅ Inicializado');
+        void 0;
     }
 
     subscribeToEvents() {
@@ -28,7 +28,7 @@ class SettingsModule {
             const data = await response.json();
             this.settings = data.settings || data || {};
             this.eventBus.emit('settings.loaded', { settings: this.settings });
-            console.log('[SETTINGS-MODULE] ✅ Configuración cargada');
+            void 0;
         } catch (error) {
             console.error('[SETTINGS-MODULE] ❌ Error:', error);
             this.eventBus.emit('settings.error', { operation: 'load', error: error.message });
@@ -45,7 +45,7 @@ class SettingsModule {
             const updated = await response.json();
             this.settings = { ...this.settings, ...updated };
             this.eventBus.emit('settings.updated', { settings: this.settings });
-            console.log('[SETTINGS-MODULE] ✅ Configuración actualizada');
+            void 0;
             return this.settings;
         } catch (error) {
             console.error('[SETTINGS-MODULE] ❌ Error:', error);
@@ -75,6 +75,6 @@ class SettingsModule {
         return headers;
     }
 
-    destroy() { this.settings = {}; console.log('[SETTINGS-MODULE] ✅ Destruido'); }
+    destroy() { this.settings = {}; void 0; }
 }
 window.SettingsModule = SettingsModule;

@@ -946,4 +946,4 @@ if (window.BGEContext) {
     window.BGEContext.registerModule('assignment-management', window.BGEAssignmentManagement, ['logger']);
 }
 
-console.log('✅ BGE Assignment Management System cargado exitosamente');
+void 0;

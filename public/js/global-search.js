@@ -357,7 +357,7 @@ class GlobalSearch {
      * Navegar a resultado
      */
     navigateToResult(url) {
-        console.log('📍 Navegando a:', url);
+        void 0;
         // Aquí puedes implementar la navegación según tu arquitectura
         // Por ejemplo: window.location.href = url;
         // O activar un modal específico, etc.

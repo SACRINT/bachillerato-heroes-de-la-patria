@@ -46,7 +46,7 @@ class RecommendationsWidget {
     try {
       // Verificar cache
       if (this.isCacheValid(type)) {
-        console.log(`[RECOMMENDATIONS] Using cached ${type}`);
+        void 0;
         return this.cache[type];
       }
 
@@ -68,7 +68,7 @@ class RecommendationsWidget {
       this.cache[type] = data.recommendations;
       this.cacheTimestamps[type] = Date.now();
 
-      console.log(`[RECOMMENDATIONS] Loaded ${data.recommendations.length} ${type} (algorithm: ${data.algorithm})`);
+      void 0;
 
       return data.recommendations;
 
@@ -99,7 +99,7 @@ class RecommendationsWidget {
       }
 
       const data = await response.json();
-      console.log(`[RECOMMENDATIONS] Fallback to popular ${type}: ${data.popular.length} items`);
+      void 0;
 
       return data.popular;
 
@@ -177,7 +177,7 @@ class RecommendationsWidget {
         throw new Error(`HTTP ${response.status}`);
       }
 
-      console.log(`[RECOMMENDATIONS] Tracked: ${interactionType} on ${type} #${itemId}`);
+      void 0;
 
       // Invalidar cache para forzar recarga
       this.invalidateCache(type);
@@ -537,7 +537,7 @@ class RecommendationsWidget {
     // 2. Abrir modal con más información
     // 3. Iniciar proceso de inscripción
 
-    console.log(`[RECOMMENDATIONS] Enroll clicked: ${type} #${itemId}`);
+    void 0;
 
     // Ejemplo: Redirigir a página específica
     const urls = {
@@ -726,7 +726,7 @@ class RecommendationsWidget {
   invalidateCache(type) {
     this.cache[type] = null;
     this.cacheTimestamps[type] = null;
-    console.log(`[RECOMMENDATIONS] Cache invalidated for ${type}`);
+    void 0;
   }
 
   /**
@@ -740,7 +740,7 @@ class RecommendationsWidget {
       resources: null
     };
     this.cacheTimestamps = {};
-    console.log('[RECOMMENDATIONS] All cache invalidated');
+    void 0;
   }
 }
 
@@ -754,4 +754,4 @@ window.RecommendationsWidget = RecommendationsWidget;
 // Crear instancia global
 window.recommendationsWidget = new RecommendationsWidget();
 
-console.log('[RECOMMENDATIONS] Widget loaded successfully');
+void 0;

@@ -29,7 +29,7 @@ class AIRecommendationEngine {
         this.initializePersonalityTypes();
         this.loadUserData();
 
-        console.log('🎯 AI Recommendation Engine inicializado');
+        void 0;
     }
 
     async initializeContentLibrary() {
@@ -1023,7 +1023,7 @@ class AIRecommendationEngine {
                 }
             }
         } catch (error) {
-            console.warn('Error cargando datos de recomendación:', error);
+            void 0;
         }
     }
 
@@ -1036,7 +1036,7 @@ class AIRecommendationEngine {
             };
             localStorage.setItem('aiRecommendationData', JSON.stringify(data));
         } catch (error) {
-            console.warn('Error guardando datos de recomendación:', error);
+            void 0;
         }
     }
 

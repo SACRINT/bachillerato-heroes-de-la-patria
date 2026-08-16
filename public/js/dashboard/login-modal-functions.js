@@ -6,10 +6,10 @@
 
 // Funciones requeridas por onclick events para evitar errores
 function showLoginModal() {
-    console.log('🔐 Intentando mostrar modal de login...');
+    void 0;
     const modal = document.getElementById('loginModal');
     if (modal) {
-        console.log('✅ Modal encontrado, mostrando...');
+        void 0;
         const modalInstance = new bootstrap.Modal(modal);
         modalInstance.show();
     } else {
@@ -20,10 +20,10 @@ function showLoginModal() {
 }
 
 window.showInfoModal = function() {
-    console.log('🔧 Abriendo modal de información del sistema...');
+    void 0;
     const modal = document.getElementById('infoModal');
     if (modal) {
-        console.log('✅ Modal encontrado, actualizando datos y mostrando...');
+        void 0;
 
         // Actualizar estadísticas con datos actuales (localStorage o configurados)
         updateSystemInfoModal();
@@ -87,7 +87,7 @@ function updateSystemInfoModal() {
             lastUpdateElement.textContent = new Date().toLocaleTimeString();
         }
 
-        console.log('✅ Modal de información actualizado con datos en tiempo real');
+        void 0;
     } catch (error) {
         console.error('❌ Error actualizando modal de información:', error);
     }
@@ -116,7 +116,7 @@ function scrollToSection(sectionId) {
 
 // ✅ FUNCIONES DE CAMBIO DE CONTRASEÑA
 window.showChangePasswordModal = function() {
-    console.log('🔑 Abriendo modal de cambio de contraseña...');
+    void 0;
     const modal = document.getElementById('changePasswordModal');
     if (modal) {
         // Limpiar formulario
@@ -259,7 +259,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // ✅ FUNCIONES DE CONFIGURACIÓN DE ESTADÍSTICAS
 window.showStatisticsConfigModal = function() {
-    console.log('📊 Abriendo modal de configuración de estadísticas...');
+    void 0;
     const modal = document.getElementById('statisticsConfigModal');
     if (modal) {
         // Cargar valores actuales desde localStorage o defaults
@@ -392,7 +392,7 @@ function updateAllStatisticsDisplays(students, teachers, subjects, average) {
         }
     }
 
-    console.log('📊 Estadísticas actualizadas:', { students, teachers, subjects, average });
+    void 0;
 }
 
 // ✅ FUNCIONES DEL CHATBOT (Eliminadas)

@@ -34,7 +34,7 @@ class InscriptionsClient {
                 additionalInfo: activityData.additionalInfo || ''
             };
 
-            console.log('📝 Enviando inscripción:', inscriptionData);
+            void 0;
 
             const response = await fetch(`${this.baseURL}/register`, {
                 method: 'POST',
@@ -48,7 +48,7 @@ class InscriptionsClient {
             const data = await response.json();
 
             if (data.success) {
-                console.log('✅ Inscripción exitosa:', data.inscription.inscriptionId);
+                void 0;
                 return {
                     success: true,
                     inscription: data.inscription,
@@ -173,7 +173,7 @@ const inscriptionsClient = new InscriptionsClient();
  * Integrada con autenticación y backend real
  */
 async function showActivityRegistration(activityName) {
-    console.log(`🎯 Mostrando modal de inscripción para: ${activityName}`);
+    void 0;
 
     // 1. Verificar si el estudiante está logueado
     if (!window.studentAuth || !window.studentAuth.isLoggedIn()) {
@@ -307,7 +307,7 @@ async function showActivityRegistration(activityName) {
  * ✅ Enviar inscripción a actividad (conectado a backend real)
  */
 async function submitActivityRegistration(activityName) {
-    console.log(`📤 Enviando inscripción a: ${activityName}`);
+    void 0;
 
     // Obtener datos del formulario
     const studentEmail = document.getElementById('studentEmail').value.trim();

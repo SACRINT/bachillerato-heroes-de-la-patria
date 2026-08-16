@@ -32,7 +32,7 @@ class BGEAdvancedAnalytics {
     }
 
     async init() {
-        console.log('🚀 [BGE-ANALYTICS] Inicializando sistema avanzado de analíticas');
+        void 0;
 
         // Cargar configuración
         await this.loadConfiguration();
@@ -48,7 +48,7 @@ class BGEAdvancedAnalytics {
             this.startRealtimeUpdates();
         }
 
-        console.log('✅ [BGE-ANALYTICS] Sistema inicializado correctamente');
+        void 0;
     }
 
     async loadConfiguration() {
@@ -58,7 +58,7 @@ class BGEAdvancedAnalytics {
                 Object.assign(this.analyticsConfig, config.data);
             }
         } catch (error) {
-            console.warn('⚠️ [BGE-ANALYTICS] Usando configuración por defecto:', error);
+            void 0;
         }
     }
 
@@ -368,7 +368,7 @@ class BGEAdvancedAnalytics {
                 body: JSON.stringify({ events: eventsToSend })
             });
 
-            console.log(`📊 [BGE-ANALYTICS] Enviados ${eventsToSend.length} eventos`);
+            void 0;
         } catch (error) {
             console.error('❌ [BGE-ANALYTICS] Error enviando eventos:', error);
             // Reencolar eventos fallidos
@@ -459,7 +459,7 @@ class BGEAdvancedAnalytics {
     // =====================================================
 
     async generateReport(type, dateRange = { start: null, end: null }) {
-        console.log(`📈 [BGE-ANALYTICS] Generando reporte: ${type}`);
+        void 0;
 
         try {
             const reportData = await this.fetchWithRetry(`/reports/${type}`, {
@@ -513,7 +513,7 @@ class BGEAdvancedAnalytics {
     startRealtimeUpdates() {
         if (this.realtimeUpdates) return;
 
-        console.log('🔄 [BGE-ANALYTICS] Iniciando actualizaciones en tiempo real');
+        void 0;
 
         this.realtimeUpdates = setInterval(() => {
             this.updateRealtimeMetrics();
@@ -543,7 +543,7 @@ class BGEAdvancedAnalytics {
                 }
             }
         } catch (error) {
-            console.warn('⚠️ [BGE-ANALYTICS] Error en actualización en tiempo real:', error);
+            void 0;
         }
     }
 
@@ -560,11 +560,11 @@ class BGEAdvancedAnalytics {
             };
 
             this.ws.onclose = () => {
-                console.log('🔌 [BGE-ANALYTICS] WebSocket desconectado, reintentando...');
+                void 0;
                 setTimeout(() => this.initializeWebSocket(), 5000);
             };
         } catch (error) {
-            console.warn('⚠️ [BGE-ANALYTICS] WebSocket no disponible:', error);
+            void 0;
         }
     }
 
@@ -722,12 +722,12 @@ class BGEAdvancedAnalytics {
     // Actualizar configuración
     updateConfiguration(newConfig) {
         Object.assign(this.analyticsConfig, newConfig);
-        console.log('⚙️ [BGE-ANALYTICS] Configuración actualizada:', this.analyticsConfig);
+        void 0;
     }
 
     // Exportar datos
     async exportData(format = 'json', dateRange = {}) {
-        console.log(`💾 [BGE-ANALYTICS] Exportando datos en formato: ${format}`);
+        void 0;
 
         try {
             const exportData = await this.fetchWithRetry('/export', {
@@ -763,7 +763,7 @@ class BGEAdvancedAnalytics {
         this.eventQueue = [];
         this.metricsCache.clear();
         sessionStorage.removeItem('bge_analytics_session');
-        console.log('🧹 [BGE-ANALYTICS] Datos limpiados');
+        void 0;
     }
 
     // Destructor
@@ -773,7 +773,7 @@ class BGEAdvancedAnalytics {
             this.ws.close();
         }
         this.clearData();
-        console.log('💀 [BGE-ANALYTICS] Sistema destruido');
+        void 0;
     }
 }
 
@@ -964,7 +964,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Hacer disponible globalmente para otras partes de la aplicación
         window.trackEvent = (type, data) => window.bgeAnalytics.track(type, data);
 
-        console.log('🚀 [BGE-ANALYTICS] Sistema disponible globalmente');
+        void 0;
     }
 });
 

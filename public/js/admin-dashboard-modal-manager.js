@@ -166,84 +166,84 @@
     // ============================================
 
     function showInfoModal() {
-        console.log('[ADMIN-MODAL-MANAGER] Abriendo modal de información...');
+        void 0;
         if (window.showInfoModal) {
             window.showInfoModal();
         }
     }
 
     function openNotificationPanel() {
-        console.log('[ADMIN-MODAL-MANAGER] Abriendo panel de notificaciones...');
+        void 0;
         if (window.openNotificationPanel) {
             window.openNotificationPanel();
         }
     }
 
     function showCreateParentModal() {
-        console.log('[ADMIN-MODAL-MANAGER] Abriendo modal de crear padre...');
+        void 0;
         if (window.showCreateParentModal) {
             window.showCreateParentModal();
         }
     }
 
     function showCreateNoticiaModal() {
-        console.log('[ADMIN-MODAL-MANAGER] Abriendo modal de crear noticia...');
+        void 0;
         if (window.showCreateNoticiaModal) {
             window.showCreateNoticiaModal();
         }
     }
 
     function showCreateEventoModal() {
-        console.log('[ADMIN-MODAL-MANAGER] Abriendo modal de crear evento...');
+        void 0;
         if (window.showCreateEventoModal) {
             window.showCreateEventoModal();
         }
     }
 
     function showCreateAvisoModal() {
-        console.log('[ADMIN-MODAL-MANAGER] Abriendo modal de crear aviso...');
+        void 0;
         if (window.showCreateAvisoModal) {
             window.showCreateAvisoModal();
         }
     }
 
     function showCreateComunicadoModal() {
-        console.log('[ADMIN-MODAL-MANAGER] Abriendo modal de crear comunicado...');
+        void 0;
         if (window.showCreateComunicadoModal) {
             window.showCreateComunicadoModal();
         }
     }
 
     function showChangePasswordModal() {
-        console.log('[ADMIN-MODAL-MANAGER] Abriendo modal de cambiar contraseña...');
+        void 0;
         if (window.showChangePasswordModal) {
             window.showChangePasswordModal();
         }
     }
 
     function showStatisticsConfigModal() {
-        console.log('[ADMIN-MODAL-MANAGER] Abriendo modal de configurar estadísticas...');
+        void 0;
         if (window.showStatisticsConfigModal) {
             window.showStatisticsConfigModal();
         }
     }
 
     function showContentPreview() {
-        console.log('[ADMIN-MODAL-MANAGER] Abriendo modal de vista previa...');
+        void 0;
         if (window.showContentPreview) {
             window.showContentPreview();
         }
     }
 
     function showReportsManager() {
-        console.log('[ADMIN-MODAL-MANAGER] Abriendo administrador de reportes...');
+        void 0;
         if (window.showReportsManager) {
             window.showReportsManager();
         }
     }
 
     function sendNotification() {
-        console.log('[ADMIN-MODAL-MANAGER] Enviando notificación...');
+        void 0;
         if (window.sendNotification) {
             window.sendNotification();
         }

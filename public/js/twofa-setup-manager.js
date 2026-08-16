@@ -26,7 +26,7 @@ class TwoFactorSetupManager {
      * INICIALIZAR MANAGER
      */
     async init() {
-        console.log('[2FA-SETUP] Iniciando manager...');
+        void 0;
 
         // Check current 2FA status
         await this.checkStatus();
@@ -37,7 +37,7 @@ class TwoFactorSetupManager {
         // Setup event listeners
         this.setupEventListeners();
 
-        console.log('[2FA-SETUP] Manager inicializado, estado:', this.isEnabled ? 'HABILITADO' : 'DESHABILITADO');
+        void 0;
     }
 
     /**
@@ -47,7 +47,7 @@ class TwoFactorSetupManager {
         try {
             const token = sessionStorage.getItem('token') || localStorage.getItem('token');
             if (!token) {
-                console.warn('[2FA-SETUP] No hay token, usuario no autenticado');
+                void 0;
                 return;
             }
 
@@ -60,7 +60,7 @@ class TwoFactorSetupManager {
             const data = await response.json();
             this.isEnabled = data.enabled || false;
 
-            console.log('[2FA-SETUP] Estado actual:', this.isEnabled ? 'HABILITADO' : 'DESHABILITADO');
+            void 0;
         } catch (error) {
             console.error('[2FA-SETUP] Error verificando estado:', error);
         }
@@ -288,7 +288,7 @@ class TwoFactorSetupManager {
      * INICIAR FLUJO DE CONFIGURACIÓN
      */
     async startSetupFlow() {
-        console.log('[2FA-SETUP] Iniciando flujo de configuración...');
+        void 0;
 
         // Show modal
         const modal = new bootstrap.Modal(document.getElementById('twofa-setup-modal'));
@@ -323,7 +323,7 @@ class TwoFactorSetupManager {
                 this.qrCodeData = data.qrUri;
                 this.backupCodes = data.backupCodes;
 
-                console.log('[2FA-SETUP] QR y códigos generados exitosamente');
+                void 0;
 
                 // Display QR code
                 this.displayQRCode();
@@ -365,7 +365,7 @@ class TwoFactorSetupManager {
             `;
         }
 
-        console.log('[2FA-SETUP] QR Code mostrado');
+        void 0;
     }
 
     /**
@@ -422,7 +422,7 @@ class TwoFactorSetupManager {
 
             if (data.success || response.status === 404) {
                 // Success! Show backup codes
-                console.log('[2FA-SETUP] Código verificado exitosamente');
+                void 0;
                 this.hideVerifyError();
                 this.showBackupCodes();
                 verifyBtn.textContent = 'Finalizar';

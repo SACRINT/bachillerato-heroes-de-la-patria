@@ -19,12 +19,12 @@
     }
 
     function initializeEventHandlers() {
-        console.log('[CALENDARIO-EVENTS] Inicializando event handlers...');
+        void 0;
 
         registerActionButtons();
         registerChatbotHandlers();
 
-        console.log('[CALENDARIO-EVENTS] ✅ Event handlers inicializados correctamente');
+        void 0;
     }
 
     /**
@@ -125,56 +125,56 @@
     // ============================================
 
     function downloadCalendar() {
-        console.log('[CALENDARIO-EVENTS] Descargando calendario...');
+        void 0;
         if (window.downloadCalendar) {
             window.downloadCalendar();
         }
     }
 
     function exportToGoogle() {
-        console.log('[CALENDARIO-EVENTS] Exportando a Google...');
+        void 0;
         if (window.exportToGoogle) {
             window.exportToGoogle();
         }
     }
 
     function shareCalendar() {
-        console.log('[CALENDARIO-EVENTS] Compartiendo calendario...');
+        void 0;
         if (window.shareCalendar) {
             window.shareCalendar();
         }
     }
 
     function setReminders() {
-        console.log('[CALENDARIO-EVENTS] Estableciendo recordatorios...');
+        void 0;
         if (window.setReminders) {
             window.setReminders();
         }
     }
 
     function addToPersonalCalendar() {
-        console.log('[CALENDARIO-EVENTS] Añadiendo a calendario personal...');
+        void 0;
         if (window.addToPersonalCalendar) {
             window.addToPersonalCalendar();
         }
     }
 
     function saveReminders() {
-        console.log('[CALENDARIO-EVENTS] Guardando recordatorios...');
+        void 0;
         if (window.saveReminders) {
             window.saveReminders();
         }
     }
 
     function toggleChatbot() {
-        console.log('[CALENDARIO-EVENTS] Alternando chatbot...');
+        void 0;
         if (window.toggleChatbot) {
             window.toggleChatbot();
         }
     }
 
     function sendMessage() {
-        console.log('[CALENDARIO-EVENTS] Enviando mensaje...');
+        void 0;
         if (window.sendMessage) {
             window.sendMessage();
         }

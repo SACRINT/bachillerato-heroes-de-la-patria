@@ -30,14 +30,14 @@ class StudentModule {
         this.isLoading = false;
         this.apiEndpoint = '/api/students';
 
-        console.log('[STUDENT-MODULE] 📚 Student Module creado');
+        void 0;
     }
 
     /**
      * Inicializar módulo
      */
     async init() {
-        console.log('[STUDENT-MODULE] 🚀 Inicializando...');
+        void 0;
 
         // Suscribirse a eventos
         this.subscribeToEvents();
@@ -45,7 +45,7 @@ class StudentModule {
         // Cargar estudiantes inicialmente
         await this.loadStudents();
 
-        console.log('[STUDENT-MODULE] ✅ Inicializado');
+        void 0;
     }
 
     /**
@@ -54,7 +54,7 @@ class StudentModule {
     subscribeToEvents() {
         // Dashboard inicializado → Cargar estudiantes
         this.eventBus.on('dashboard.initialized', () => {
-            console.log('[STUDENT-MODULE] 🔔 Dashboard inicializado, cargando estudiantes...');
+            void 0;
             this.loadStudents();
         });
 
@@ -78,7 +78,7 @@ class StudentModule {
             await this.deleteStudent(event.data.id);
         });
 
-        console.log('[STUDENT-MODULE] 🎧 Event listeners configurados');
+        void 0;
     }
 
     /**
@@ -86,14 +86,14 @@ class StudentModule {
      */
     async loadStudents() {
         if (this.isLoading) {
-            console.warn('[STUDENT-MODULE] ⚠️ Ya hay una carga en progreso');
+            void 0;
             return;
         }
 
         this.isLoading = true;
 
         try {
-            console.log('[STUDENT-MODULE] 📥 Cargando estudiantes...');
+            void 0;
 
             const response = await fetch(this.apiEndpoint, {
                 method: 'GET',
@@ -107,7 +107,7 @@ class StudentModule {
             const data = await response.json();
             this.students = data.students || data || [];
 
-            console.log(`[STUDENT-MODULE] ✅ ${this.students.length} estudiantes cargados`);
+            void 0;
 
             // Emit evento de éxito
             this.eventBus.emit('students.loaded', {
@@ -134,7 +134,7 @@ class StudentModule {
      */
     async createStudent(studentData) {
         try {
-            console.log('[STUDENT-MODULE] 📝 Creando estudiante:', studentData.nombre);
+            void 0;
 
             const response = await fetch(this.apiEndpoint, {
                 method: 'POST',
@@ -151,7 +151,7 @@ class StudentModule {
             // Agregar a lista local
             this.students.push(newStudent);
 
-            console.log('[STUDENT-MODULE] ✅ Estudiante creado:', newStudent.id);
+            void 0;
 
             // Emit evento de éxito
             this.eventBus.emit('students.created', {
@@ -177,7 +177,7 @@ class StudentModule {
      */
     async updateStudent(studentId, updates) {
         try {
-            console.log('[STUDENT-MODULE] 📝 Actualizando estudiante:', studentId);
+            void 0;
 
             const response = await fetch(`${this.apiEndpoint}/${studentId}`, {
                 method: 'PUT',
@@ -197,7 +197,7 @@ class StudentModule {
                 this.students[index] = updatedStudent;
             }
 
-            console.log('[STUDENT-MODULE] ✅ Estudiante actualizado:', studentId);
+            void 0;
 
             // Emit evento de éxito
             this.eventBus.emit('students.updated', {
@@ -223,7 +223,7 @@ class StudentModule {
      */
     async deleteStudent(studentId) {
         try {
-            console.log('[STUDENT-MODULE] 🗑️  Eliminando estudiante:', studentId);
+            void 0;
 
             const response = await fetch(`${this.apiEndpoint}/${studentId}`, {
                 method: 'DELETE',
@@ -237,7 +237,7 @@ class StudentModule {
             // Remover de lista local
             this.students = this.students.filter(s => s.id !== studentId);
 
-            console.log('[STUDENT-MODULE] ✅ Estudiante eliminado:', studentId);
+            void 0;
 
             // Emit evento de éxito
             this.eventBus.emit('students.deleted', {
@@ -316,12 +316,12 @@ class StudentModule {
      * Destruir módulo y limpiar recursos
      */
     destroy() {
-        console.log('[STUDENT-MODULE] 🧹 Destruyendo módulo...');
+        void 0;
 
         // Limpiar datos
         this.students = [];
 
-        console.log('[STUDENT-MODULE] ✅ Módulo destruido');
+        void 0;
     }
 }
 

@@ -19,12 +19,12 @@
     }
 
     function initializeEventHandlers() {
-        console.log('[CONTACTO-EVENTS] Inicializando event handlers...');
+        void 0;
 
         registerContactHandlers();
         registerFormHandler();
 
-        console.log('[CONTACTO-EVENTS] ✅ Event handlers inicializados correctamente');
+        void 0;
     }
 
     /**
@@ -39,7 +39,7 @@
 
                 // Procesar handlers genéricos que puedan existir
                 if (onclick) {
-                    console.log('[CONTACTO-EVENTS] Evento capturado:', onclick);
+                    void 0;
                     // e.preventDefault(); // Comentado para no romper enlaces legítimos
                 }
             }
@@ -53,7 +53,7 @@
         const contactForm = document.getElementById('contactForm');
 
         if (contactForm) {
-            console.log('[CONTACTO-EVENTS] Formulario de contacto encontrado. Registrando handler...');
+            void 0;
 
             contactForm.addEventListener('submit', async function (e) {
                 e.preventDefault();
@@ -139,7 +139,7 @@
 
     // Placeholder para funciones que puedan ser llamadas desde contacto.html
     function handleContactSubmit(event) {
-        console.log('[CONTACTO-EVENTS] Procesando envío del formulario de contacto...');
+        void 0;
         if (window.handleContactSubmit) {
             window.handleContactSubmit(event);
         }

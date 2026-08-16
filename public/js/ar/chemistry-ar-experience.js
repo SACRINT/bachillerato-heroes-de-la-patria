@@ -25,7 +25,7 @@
          * Inicializar la experiencia de química
          */
         async initialize(containerId) {
-            console.log('[CHEMISTRY-AR] Inicializando experiencia...');
+            void 0;
 
             if (!window.threeLoader) {
                 throw new Error('ThreeJSLoader no disponible');
@@ -58,7 +58,7 @@
             this.createInfoPanel();
 
             this.isInitialized = true;
-            console.log('[CHEMISTRY-AR] ✅ Experiencia inicializada');
+            void 0;
 
             return this;
         }
@@ -122,7 +122,7 @@
          * Mostrar molécula
          */
         async showMolecule(moleculeName) {
-            console.log(`[CHEMISTRY-AR] Mostrando molécula: ${moleculeName}`);
+            void 0;
 
             // Limpiar molécula anterior
             if (this.currentMolecule) {
@@ -132,7 +132,7 @@
             // Obtener datos de la molécula
             const moleculeData = window.threeLoader.getMoleculeData(moleculeName);
             if (!moleculeData) {
-                console.warn(`[CHEMISTRY-AR] Molécula ${moleculeName} no encontrada`);
+                void 0;
                 return;
             }
 
@@ -282,7 +282,7 @@
          * Simular reacción química
          */
         async simulateReaction(reactionType) {
-            console.log(`[CHEMISTRY-AR] Simulando reacción: ${reactionType}`);
+            void 0;
 
             const reactions = {
                 'combustion': {
@@ -299,7 +299,7 @@
 
             const reaction = reactions[reactionType];
             if (!reaction) {
-                console.warn(`[CHEMISTRY-AR] Reacción ${reactionType} no definida`);
+                void 0;
                 return;
             }
 
@@ -330,7 +330,7 @@
             if (list) list.remove();
 
             this.isInitialized = false;
-            console.log('[CHEMISTRY-AR] Experiencia terminada');
+            void 0;
         }
     }
 
@@ -341,6 +341,6 @@
     window.ChemistryARExperience = ChemistryARExperience;
     window.chemistryAR = new ChemistryARExperience();
 
-    console.log('🧪 Chemistry AR Experience cargado');
+    void 0;
 
 })();

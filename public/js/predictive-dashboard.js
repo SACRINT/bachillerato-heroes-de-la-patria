@@ -678,4 +678,4 @@ window.PredictiveDashboard = PredictiveDashboard;
 // Crear instancia global
 window.predictiveDashboard = new PredictiveDashboard();
 
-console.log('[PREDICTIVE-DASHBOARD] Dashboard loaded successfully');
+void 0;

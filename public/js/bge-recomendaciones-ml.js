@@ -88,7 +88,7 @@ class BGERecomendacionesML {
      */
     async init() {
         try {
-            console.log('🤖 [BGE-ML] Inicializando Sistema de Recomendaciones ML v' + this.version);
+            void 0;
 
             await this.loadUserProfiles();
             await this.loadItemFeatures();
@@ -99,7 +99,7 @@ class BGERecomendacionesML {
             this.startPeriodicTasks();
 
             this.isInitialized = true;
-            console.log('✅ [BGE-ML] Sistema de Recomendaciones ML inicializado correctamente');
+            void 0;
 
             // Evento de inicialización
             this.dispatchEvent('ml-system-ready', {
@@ -126,10 +126,10 @@ class BGERecomendacionesML {
                 this.userProfiles.set(profile.userId, profile);
             });
 
-            console.log(`📊 [BGE-ML] Cargados ${mockUserProfiles.length} perfiles de usuario`);
+            void 0;
 
         } catch (error) {
-            console.warn('⚠️ [BGE-ML] Error cargando perfiles de usuario:', error);
+            void 0;
             // Usar datos de respaldo
             await this.loadFallbackUserData();
         }
@@ -146,10 +146,10 @@ class BGERecomendacionesML {
                 this.itemFeatures.set(item.id, item);
             });
 
-            console.log(`📚 [BGE-ML] Cargadas características de ${academicItems.length} items académicos`);
+            void 0;
 
         } catch (error) {
-            console.warn('⚠️ [BGE-ML] Error cargando características de items:', error);
+            void 0;
             await this.loadFallbackItemData();
         }
     }
@@ -178,7 +178,7 @@ class BGERecomendacionesML {
                 contentBasedWeight: 0.4
             });
 
-            console.log('🧠 [BGE-ML] Modelos ML inicializados');
+            void 0;
 
         } catch (error) {
             console.error('❌ [BGE-ML] Error inicializando modelos:', error);
@@ -206,7 +206,7 @@ class BGERecomendacionesML {
                 throw new Error(`Perfil de usuario ${userId} no encontrado`);
             }
 
-            console.log(`🎯 [BGE-ML] Generando recomendaciones para usuario ${userId}`);
+            void 0;
 
             // Generar recomendaciones con diferentes algoritmos
             const recommendations = await this.processRecommendations(userProfile, options);
@@ -238,7 +238,7 @@ class BGERecomendacionesML {
             this.logRecommendationGenerated(userId, result);
             this.updateSystemStats();
 
-            console.log(`✅ [BGE-ML] Recomendaciones generadas en ${processingTime}ms`);
+            void 0;
 
             return result;
 
@@ -579,7 +579,7 @@ class BGERecomendacionesML {
      * RECOMENDACIONES DE RESPALDO
      */
     async generateFallbackRecommendations(userId, options) {
-        console.log('🔄 [BGE-ML] Generando recomendaciones de respaldo');
+        void 0;
 
         const fallbackRecs = [
             {
@@ -631,13 +631,13 @@ class BGERecomendacionesML {
      */
     async trainModels() {
         if (this.systemState.isTraining) {
-            console.log('⚠️ [BGE-ML] Entrenamiento ya en progreso');
+            void 0;
             return;
         }
 
         try {
             this.systemState.isTraining = true;
-            console.log('🎓 [BGE-ML] Iniciando entrenamiento de modelos ML');
+            void 0;
 
             const startTime = Date.now();
 
@@ -654,7 +654,7 @@ class BGERecomendacionesML {
             this.systemState.lastTraining = new Date().toISOString();
             this.systemState.isTraining = false;
 
-            console.log(`✅ [BGE-ML] Modelos entrenados exitosamente en ${trainingTime}ms`);
+            void 0;
 
             // Validar modelos
             await this.validateModels();
@@ -677,7 +677,7 @@ class BGERecomendacionesML {
      */
     async validateModels() {
         try {
-            console.log('🧪 [BGE-ML] Validando modelos ML');
+            void 0;
 
             // Usar conjunto de validación (20% de los datos)
             const validationUsers = Array.from(this.userProfiles.keys()).slice(0, 10);
@@ -691,7 +691,7 @@ class BGERecomendacionesML {
 
             this.systemState.accuracy = totalAccuracy / validationUsers.length;
 
-            console.log(`📊 [BGE-ML] Precisión promedio de modelos: ${(this.systemState.accuracy * 100).toFixed(1)}%`);
+            void 0;
 
         } catch (error) {
             console.error('❌ [BGE-ML] Error validando modelos:', error);
@@ -805,7 +805,7 @@ class BGERecomendacionesML {
                 this.cache.delete(key);
             }
         }
-        console.log(`🧹 [BGE-ML] Cache limpiado, ${this.cache.size} entradas restantes`);
+        void 0;
     }
 
     /**
@@ -937,7 +937,7 @@ class BGERecomendacionesML {
     }
 
     logRecommendationGenerated(userId, result) {
-        console.log(`📈 [BGE-ML] Recomendación generada para ${userId}: ${result.recommendations.length} items (confianza: ${(result.metadata.confidence * 100).toFixed(1)}%)`);
+        void 0;
     }
 }
 
@@ -952,7 +952,7 @@ class CollaborativeFilteringModel {
 
     async train(interactionData) {
         // Implementación simplificada de Matrix Factorization
-        console.log('🔄 [BGE-ML] Entrenando modelo colaborativo...');
+        void 0;
         // En implementación real: Gradient descent, alternating least squares, etc.
         return true;
     }
@@ -965,7 +965,7 @@ class ContentBasedModel {
     }
 
     async train(userData, itemData) {
-        console.log('🔄 [BGE-ML] Entrenando modelo basado en contenido...');
+        void 0;
         // En implementación real: Feature extraction, TF-IDF, cosine similarity, etc.
         return true;
     }
@@ -992,7 +992,7 @@ class HybridModel {
 document.addEventListener('DOMContentLoaded', () => {
     if (typeof window !== 'undefined') {
         window.bgeRecomendacionesML = new BGERecomendacionesML();
-        console.log('🚀 [BGE-ML] Sistema de Recomendaciones ML cargado globalmente');
+        void 0;
     }
 });
 

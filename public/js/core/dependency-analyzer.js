@@ -401,4 +401,4 @@ window.addEventListener('load', () => {
     }, 2000);
 });
 
-console.log('✅ BGE Dependency Analyzer cargado exitosamente');
+void 0;

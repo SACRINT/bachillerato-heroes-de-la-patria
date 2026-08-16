@@ -287,4 +287,4 @@ window.addEventListener('load', () => {
     }, 1000);
 });
 
-console.log('✅ BGE Bundle Optimizer cargado exitosamente');
+void 0;

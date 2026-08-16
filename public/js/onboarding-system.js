@@ -174,7 +174,7 @@ class OnboardingSystem {
             setTimeout(() => this.start(), 1500);
         }
 
-        console.log('🎯 [ONBOARDING] Sistema inicializado para usuario tipo:', this.userType);
+        void 0;
     }
 
     detectUserType() {
@@ -338,7 +338,7 @@ class OnboardingSystem {
         this.showOverlay();
         this.showStep(this.currentStep);
 
-        console.log('🎯 [ONBOARDING] Iniciado para usuario:', this.userType);
+        void 0;
     }
 
     restart() {
@@ -616,7 +616,7 @@ class OnboardingSystem {
             }
         }, 5000);
 
-        console.log('🎉 [ONBOARDING] Tutorial completado para usuario:', this.userType);
+        void 0;
     }
 
     finish() {
@@ -642,7 +642,7 @@ class OnboardingSystem {
         // Limpiar progreso temporal
         localStorage.removeItem(`bge_onboarding_progress_${this.userType}`);
 
-        console.log('✅ [ONBOARDING] Sistema finalizado');
+        void 0;
     }
 
     // API pública para otros scripts

@@ -741,4 +741,4 @@ if (window.BGEContext) {
     window.BGEContext.registerModule('government-reports', window.BGEGovernmentReportsModule, ['logger']);
 }
 
-console.log('✅ BGE Government Reports Module cargado exitosamente');
+void 0;

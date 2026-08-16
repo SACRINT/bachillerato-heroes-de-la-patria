@@ -27,7 +27,7 @@ class BuildOptimizer {
     }
 
     init() {
-        //console.log('🔧 Inicializando Build Optimizer...');
+        //void 0;
         
         // Analizar recursos actuales
         this.analyzeCurrentResources();
@@ -41,7 +41,7 @@ class BuildOptimizer {
         // Optimizar carga de scripts
         this.optimizeScriptLoading();
         
-        //console.log('✅ Build Optimizer inicializado');
+        //void 0;
     }
 
     analyzeCurrentResources() {
@@ -71,7 +71,7 @@ class BuildOptimizer {
             }
         });
 
-        //console.log('📊 Recursos analizados:', this.bundles);
+        //void 0;
     }
 
     categorizeScript(src) {
@@ -122,14 +122,14 @@ class BuildOptimizer {
 
     createDynamicChunk(chunkName, scriptPaths) {
         window[`load${chunkName.replace(/-/g, '')}`] = async () => {
-            //console.log(`📦 Cargando chunk dinámico: ${chunkName}`);
+            //void 0;
             
             try {
                 // Cargar scripts en paralelo
                 const loadPromises = scriptPaths.map(path => this.loadScriptOptimized(path));
                 await Promise.all(loadPromises);
                 
-                //console.log(`✅ Chunk ${chunkName} cargado exitosamente`);
+                //void 0;
                 return true;
             } catch (error) {
                 console.error(`❌ Error cargando chunk ${chunkName}:`, error);
@@ -199,7 +199,7 @@ class BuildOptimizer {
                 this.inlineCriticalCSS(criticalCSS);
             }
         } catch (error) {
-            console.warn('Error extrayendo CSS crítico:', error);
+            void 0;
         }
     }
 
@@ -224,7 +224,7 @@ class BuildOptimizer {
         // Insertar al inicio del head
         document.head.insertBefore(criticalStyle, document.head.firstChild);
         
-        //console.log('🎨 CSS crítico optimizado e inline aplicado');
+        //void 0;
     }
 
     optimizeScriptLoading() {
@@ -284,7 +284,7 @@ class BuildOptimizer {
 
     // Bundling inteligente
     async createOptimizedBundle(bundleName, resources) {
-        //console.log(`📦 Creando bundle optimizado: ${bundleName}`);
+        //void 0;
         
         let bundledContent = '';
         let totalSize = 0;
@@ -299,7 +299,7 @@ class BuildOptimizer {
                 bundledContent += `/* ${resource.src} */\n${minified}\n`;
                 totalSize += content.length;
             } catch (error) {
-                console.warn(`Error bundling ${resource.src}:`, error);
+                void 0;
             }
         }
 
@@ -321,7 +321,7 @@ class BuildOptimizer {
             const response = await fetch(url);
             return await response.text();
         } catch (error) {
-            console.warn(`No se pudo cargar recurso: ${url}`);
+            void 0;
             return '';
         }
     }
@@ -357,7 +357,7 @@ class BuildOptimizer {
 
     // Método público para ejecutar optimización completa
     async optimizeAll() {
-        //console.log('🚀 Ejecutando optimización completa...');
+        //void 0;
         
         try {
             // Crear bundles optimizados
@@ -369,7 +369,7 @@ class BuildOptimizer {
             
             // Reportar resultados
             const report = this.getOptimizationReport();
-            //console.log('📊 Reporte de optimización:', report);
+            //void 0;
             
             return report;
         } catch (error) {

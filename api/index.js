@@ -2702,6 +2702,94 @@ app.get(['/api/gamification-ext/xp/profile/:user', '/api/iacoins/gamification-ex
     });
 });
 
+// Leaderboard Endpoints
+app.get(['/api/gamification-ext/leaderboard/global', '/api/gamification-ext/leaderboard/streaks'], (req, res) => {
+    res.json({
+        success: true,
+        data: [
+            { rank: 1, username: 'samuelci6377', total_xp: 2500, current_streak: 7, level: 8 },
+            { rank: 2, username: 'valeria_h', total_xp: 1850, current_streak: 5, level: 6 },
+            { rank: 3, username: 'carlos_m', total_xp: 1420, current_streak: 4, level: 5 }
+        ],
+        isDemoData: true
+    });
+});
+
+// Avatar Shop & Tournaments
+app.get(['/api/gamification-ext/avatar/shop', '/avatar/shop'], (req, res) => {
+    res.json({
+        success: true,
+        data: [
+            { id: 1, name: 'Avatar Académico', item_type: 'avatar_base', price_coins: 0, image_url: 'https://api.dicebear.com/7.x/bottts/svg?seed=Academia', owned: true },
+            { id: 2, name: 'Marco de Honor', item_type: 'frame', price_coins: 100, image_url: 'https://api.dicebear.com/7.x/bottts/svg?seed=Marco', owned: false },
+            { id: 3, name: 'Fondo Biblioteca', item_type: 'background', price_coins: 150, image_url: 'https://api.dicebear.com/7.x/bottts/svg?seed=Fondo', owned: false }
+        ],
+        isDemoData: true
+    });
+});
+
+app.get(['/api/gamification-ext/avatar/my-avatar', '/avatar/my-avatar'], (req, res) => {
+    res.json({
+        success: true,
+        data: { base: 'avatar_base_1', frame: 'frame_1', background: 'bg_1' },
+        isDemoData: true
+    });
+});
+
+app.get('/api/gamification-ext/tournaments', (req, res) => {
+    res.json({
+        success: true,
+        data: [
+            { id: 1, title: 'Torneo de Conocimiento General', description: 'Participa y gana IA Coins.', start_date: '2026-08-20', end_date: '2026-08-27', is_participant: true, my_score: 150 }
+        ],
+        isDemoData: true
+    });
+});
+
+// Wallet & Challenges
+app.get(['/api/wallet', '/api/wallet/stats'], (req, res) => {
+    res.json({
+        success: true,
+        balance: 500,
+        stats: { total_earned: 1200, total_spent: 700 },
+        isDemoData: true
+    });
+});
+
+app.get(['/api/challenges', '/api/challenges/list'], (req, res) => {
+    res.json({
+        success: true,
+        data: [
+            { id: 1, title: 'Revisa tus Calificaciones', description: 'Accede al módulo de calificaciones', points: 50, completed: false },
+            { id: 2, title: 'Consulta el Calendario', description: 'Revisa las fechas del semestre', points: 30, completed: false }
+        ],
+        isDemoData: true
+    });
+});
+
+// Adaptive Content Endpoints
+app.get('/api/adaptive-content/:nodeId', (req, res) => {
+    res.json({
+        success: true,
+        data: {
+            content: {
+                id: req.params.nodeId || 1,
+                content_type: 'interactive',
+                content_body: '<div class="p-3 bg-white rounded shadow-sm"><h4>El Porfiriato (1876-1911)</h4><p>Periodo histórico en México con desarrollo ferroviario y tensiones sociales que detonaron la Revolución de 1910.</p><ul><li><strong>Desarrollo:</strong> Crecimiento industrial y red de ferrocarril.</li><li><strong>Cuestión Social:</strong> Desigualdad agraria y concentración de tierras.</li></ul></div>'
+            },
+            context: {
+                adaptationReason: 'Contenido seleccionado automáticamente para tu estilo de aprendizaje.',
+                userStyle: 'visual'
+            }
+        },
+        isDemoData: true
+    });
+});
+
+app.post('/api/adaptive-content/log', (req, res) => {
+    res.json({ success: true, logged: true, isDemoData: true });
+});
+
 // Competitions & Teams
 app.get(['/api/competitions/competitions', '/api/competitions'], (req, res) => {
     res.json({ success: true, data: [], competitions: [], total: 0, isDemoData: true });
@@ -2766,9 +2854,9 @@ app.get(['/socket.io/socket.io.js', '/socket.io/'], (req, res) => {
 });
 
 // Images fallbacks
-app.get(['/images/empty-team.svg', '/images/project-placeholder.jpg', '/images/project-placeholder.png'], (req, res) => {
+app.get(['/images/empty-team.svg', '/images/project-placeholder.jpg', '/images/project-placeholder.png', '/assets/ui/tournament-bg-pattern.png'], (req, res) => {
     res.setHeader('Content-Type', 'image/svg+xml');
-    res.send('<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="#e2e8f0"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#64748b">BGE Imagen</text></svg>');
+    res.send('<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="#1e293b"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#64748b">BGE Torneo</text></svg>');
 });
 
 // ============================================

@@ -156,12 +156,7 @@ class AdminDashboard {
             <button onclick="window.location.href='index.html'" class="btn btn-danger">Ir a Inicio</button>
         `;
         document.body.appendChild(debugOverlay);
-        console.warn('Redirect suppressed. Auth State:', {
-            isLoggedIn: this.isLoggedIn,
-            currentUser: this.currentUser,
-            tokenLS: localStorage.getItem('bge_auth_token'),
-            tokenSS: sessionStorage.getItem('bge_auth_token')
-        });
+        void 0;
     }
 
     showDashboard() {

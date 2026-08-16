@@ -13,11 +13,11 @@
             const script = document.createElement('script');
             script.src = 'https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js';
             script.onload = () => {
-                console.log('✅ [DOMPURIFY-LOADER] DOMPurify cargado exitosamente desde CDN');
+                void 0;
                 resolve(window.DOMPurify);
             };
             script.onerror = () => {
-                console.warn('⚠️ [DOMPURIFY-LOADER] Error cargando DOMPurify desde CDN');
+                void 0;
                 resolve(null);
             };
             document.head.appendChild(script);
@@ -36,12 +36,12 @@
         }
 
         if (window.DOMPurify) {
-            console.log('✅ [DOMPURIFY-LOADER] DOMPurify ya estaba disponible');
+            void 0;
             return window.DOMPurify;
         }
 
         // Si no está disponible, cargar desde CDN
-        console.log('⚠️ [DOMPURIFY-LOADER] DOMPurify no disponible, cargando desde CDN...');
+        void 0;
         return await loadDOMPurifyFromCDN();
     }
 

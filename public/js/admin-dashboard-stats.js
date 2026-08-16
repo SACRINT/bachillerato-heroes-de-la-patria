@@ -94,7 +94,7 @@ class AdminDashboardStats {
         }
 
         // Log discreto
-        // console.log('✨ [STATS] UI actualizada');
+        // void 0;
     }
 
     getValueByPath(obj, path) {

@@ -16,22 +16,18 @@ class BGEAutoUpdateSystem {
         this.isDevelopment = this.detectDevelopmentEnvironment();
         this.devToolsOpen = this.detectDevTools();
 
-        console.log('🔄 [AUTO-UPDATE] Sistema iniciado', {
-            version: this.currentVersion,
-            isDevelopment: this.isDevelopment,
-            devToolsOpen: this.devToolsOpen
-        });
+        void 0;
 
         this.init();
     }
 
     init() {
         // ✅ [PRODUCCIÓN] Sistema de auto-actualización habilitado
-        console.log('🚀 [AUTO-UPDATE] Sistema HABILITADO para producción');
+        void 0;
 
         // Solo deshabilitar si está explícitamente en localhost para desarrollo
         if (this.isDevelopment && window.location.hostname === 'localhost') {
-            console.log('🚫 [AUTO-UPDATE] Deshabilitado solo en localhost de desarrollo');
+            void 0;
             return;
         }
 
@@ -66,12 +62,7 @@ class BGEAutoUpdateSystem {
 
         // Logging detallado para debugging
         if (isDev) {
-            console.log('🔍 [AUTO-UPDATE] Entorno de desarrollo detectado:', {
-                hostname: window.location.hostname,
-                port: window.location.port,
-                protocol: window.location.protocol,
-                href: window.location.href
-            });
+            void 0;
         }
 
         return isDev;
@@ -102,18 +93,18 @@ class BGEAutoUpdateSystem {
     shouldSkipAutoUpdate() {
         // Saltar auto-actualización en desarrollo o con DevTools abierto
         if (this.isDevelopment) {
-            console.log('ℹ️ [AUTO-UPDATE] Saltando auto-actualización - Entorno de desarrollo');
+            void 0;
             return true;
         }
 
         if (this.devToolsOpen) {
-            console.log('ℹ️ [AUTO-UPDATE] Saltando auto-actualización - DevTools detectado');
+            void 0;
             return true;
         }
 
         // Verificar si "Update on reload" está activo
         if (this.detectUpdateOnReload()) {
-            console.log('ℹ️ [AUTO-UPDATE] Saltando auto-actualización - Update on reload activo');
+            void 0;
             return true;
         }
 
@@ -145,7 +136,7 @@ class BGEAutoUpdateSystem {
                 this.serviceWorker = registration;
 
                 registration.addEventListener('updatefound', () => {
-                    console.log('🔄 [AUTO-UPDATE] Nueva versión detectada');
+                    void 0;
                     this.handleUpdateFound(registration);
                 });
 
@@ -154,7 +145,7 @@ class BGEAutoUpdateSystem {
                     this.showUpdateNotification();
                 }
 
-                console.log('✅ [AUTO-UPDATE] Service Worker registrado');
+                void 0;
             } catch (error) {
                 console.error('❌ [AUTO-UPDATE] Error registrando Service Worker:', error);
             }
@@ -172,7 +163,7 @@ class BGEAutoUpdateSystem {
                     this.showUpdateNotification();
                 } else {
                     // Primera instalación
-                    console.log('✅ [AUTO-UPDATE] Primera instalación completada');
+                    void 0;
                 }
             }
         });
@@ -187,7 +178,7 @@ class BGEAutoUpdateSystem {
         }
 
         try {
-            console.log('🔍 [AUTO-UPDATE] Verificando actualizaciones...');
+            void 0;
 
             // Verificar versión del manifiesto
             const manifestResponse = await fetch('/manifest.json?' + Date.now());
@@ -209,13 +200,13 @@ class BGEAutoUpdateSystem {
     async safeUpdateServiceWorker() {
         try {
             if (!navigator.serviceWorker || !this.serviceWorker) {
-                console.log('ℹ️ [AUTO-UPDATE] Service Worker no disponible');
+                void 0;
                 return;
             }
 
             // Verificar estado del service worker
             if (this.serviceWorker.state === 'redundant') {
-                console.log('⚠️ [AUTO-UPDATE] Service Worker obsoleto, re-registrando...');
+                void 0;
                 await this.registerServiceWorker();
                 return;
             }
@@ -223,13 +214,13 @@ class BGEAutoUpdateSystem {
             // Solo actualizar si está en estado válido
             if (this.serviceWorker.state === 'activated' || this.serviceWorker.state === 'installed') {
                 await this.serviceWorker.update();
-                console.log('✅ [AUTO-UPDATE] Service Worker actualizado exitosamente');
+                void 0;
             } else {
-                console.log(`ℹ️ [AUTO-UPDATE] Service Worker en estado ${this.serviceWorker.state}, saltando actualización`);
+                void 0;
             }
 
         } catch (error) {
-            console.warn('⚠️ [AUTO-UPDATE] Error actualizando Service Worker:', error.message);
+            void 0;
             // Intentar re-registro si falla la actualización
             try {
                 await this.registerServiceWorker();
@@ -263,14 +254,14 @@ class BGEAutoUpdateSystem {
                     const storedModified = localStorage.getItem(`file_modified_${file}`);
 
                     if (storedModified && lastModified !== storedModified) {
-                        console.log(`🔄 [AUTO-UPDATE] Archivo actualizado: ${file}`);
+                        void 0;
                         this.triggerUpdate();
                     }
 
                     localStorage.setItem(`file_modified_${file}`, lastModified || '');
                 }
             } catch (error) {
-                console.warn(`⚠️ [AUTO-UPDATE] No se pudo verificar: ${file}`);
+                void 0;
             }
         }
     }
@@ -325,7 +316,7 @@ class BGEAutoUpdateSystem {
         this.updateInProgress = true;
 
         try {
-            console.log('🔄 [AUTO-UPDATE] Aplicando actualización...');
+            void 0;
 
             // Mostrar loader
             this.showUpdateLoader();
@@ -361,7 +352,7 @@ class BGEAutoUpdateSystem {
 
             for (const cacheName of cacheNames) {
                 if (cacheName.includes('bge-') && !cacheName.includes(this.currentVersion)) {
-                    console.log(`🗑️ [AUTO-UPDATE] Eliminando cache antiguo: ${cacheName}`);
+                    void 0;
                     await caches.delete(cacheName);
                 }
             }
@@ -406,11 +397,7 @@ class BGEAutoUpdateSystem {
     }
 
     showUpdateStatus() {
-        console.log(`📊 [AUTO-UPDATE] Estado del sistema:
-        - Versión actual: ${this.currentVersion}
-        - Verificaciones automáticas: ${this.updateCheckInterval / 1000 / 60} min
-        - Service Worker: ${this.serviceWorker ? 'Registrado' : 'No disponible'}
-        - Última verificación: ${localStorage.getItem('last_update_check') || 'Nunca'}`);
+        void 0;
     }
 
     startPeriodicChecks() {
@@ -424,7 +411,7 @@ class BGEAutoUpdateSystem {
             this.checkForUpdates();
         }, this.updateCheckInterval);
 
-        console.log(`⏰ [AUTO-UPDATE] Verificaciones cada ${this.updateCheckInterval / 1000 / 60} minutos`);
+        void 0;
     }
 
     setupEventListeners() {
@@ -443,7 +430,7 @@ class BGEAutoUpdateSystem {
 
         // Detectar cambios en la conectividad
         window.addEventListener('online', () => {
-            console.log('🌐 [AUTO-UPDATE] Conexión restaurada, verificando actualizaciones...');
+            void 0;
             setTimeout(() => {
                 this.checkForUpdates();
             }, 3000);
@@ -455,14 +442,14 @@ class BGEAutoUpdateSystem {
     }
 
     triggerUpdate() {
-        console.log('🔄 [AUTO-UPDATE] Actualizaciones disponibles detectadas');
+        void 0;
         this.updateAvailable = true;
         this.showUpdateNotification();
     }
 
     // Método público para verificación manual
     async manualCheck() {
-        console.log('🔍 [AUTO-UPDATE] Verificación manual iniciada');
+        void 0;
         await this.checkForUpdates();
 
         if (!this.updateAvailable) {
@@ -627,12 +614,12 @@ let bgeAutoUpdate;
 
 function initAutoUpdateSystem() {
     // ✅ [PRODUCCIÓN] Inicialización habilitada para producción
-    console.log('🚀 [AUTO-UPDATE] Inicializando sistema para producción');
+    void 0;
 
     // Solo bloquear en localhost de desarrollo
     if (window.location.hostname === 'localhost' && window.location.port === '3000') {
-        console.log('🚫 [AUTO-UPDATE] Bloqueado solo en localhost:3000 de desarrollo');
-        console.log('💡 [AUTO-UPDATE] Para testing manual: window.bgeAutoUpdate = new BGEAutoUpdateSystem()');
+        void 0;
+        void 0;
         return;
     }
 
@@ -652,4 +639,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-console.log('✅ [COMPLETE] auto-update-system.js cargado - Sistema de actualizaciones automáticas BGE v1.0');
+void 0;

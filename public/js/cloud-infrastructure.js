@@ -21,7 +21,7 @@ class CloudInfrastructure {
             await this.setupDatabase();
             await this.setupMessageQueue();
 
-            console.log('☁️ Infraestructura en la Nube BGE Héroes iniciada');
+            void 0;
         } catch (error) {
             console.error('❌ Error inicializando infraestructura en la nube:', error);
         }
@@ -217,10 +217,10 @@ class CloudInfrastructure {
                 if (action === 'up' && currentInstances < service.scaling.max) {
                     const newEndpoint = await this.createEndpoint(serviceId, currentInstances);
                     service.endpoints.push(newEndpoint);
-                    console.log(`✅ Escalado hacia arriba: ${service.name} ahora tiene ${currentInstances + 1} instancias`);
+                    void 0;
                 } else if (action === 'down' && currentInstances > service.scaling.min) {
                     service.endpoints.pop();
-                    console.log(`⬇️ Escalado hacia abajo: ${service.name} ahora tiene ${currentInstances - 1} instancias`);
+                    void 0;
                 }
             }
         };
@@ -346,9 +346,9 @@ class CloudInfrastructure {
 
                 // Solo mostrar alertas críticas en la consola para reducir ruido
                 if (rule.severity === 'critical') {
-                    console.warn(`🚨 Alerta ${rule.severity}: ${rule.metric} en servicio ${serviceId}: ${value}`);
+                    void 0;
                 } else {
-                    console.log(`⚠️ Alerta ${rule.severity}: ${rule.metric} en servicio ${serviceId}: ${value.toFixed(2)}%`);
+                    void 0;
                 }
             },
 
@@ -377,7 +377,7 @@ class CloudInfrastructure {
                         service.health.lastCheck = new Date().toISOString();
                     }, 30000);
 
-                    console.log(`🔄 Reiniciando servicio ${serviceId}`);
+                    void 0;
                 }
             }
         };
@@ -461,7 +461,7 @@ class CloudInfrastructure {
                 }
 
                 backup.status = 'completed';
-                console.log(`💾 Backup completado: ${backupId} para servicio ${schedule.serviceId}`);
+                void 0;
 
                 await this.cleanupOldBackups(schedule.serviceId, schedule.retention);
             },
@@ -500,7 +500,7 @@ class CloudInfrastructure {
                 }
 
                 if (oldBackups.length > 0) {
-                    console.log(`🗑️ Limpieza: ${oldBackups.length} backups antiguos eliminados para ${serviceId}`);
+                    void 0;
                 }
             },
 
@@ -512,7 +512,7 @@ class CloudInfrastructure {
 
                 const restoreId = `restore_${Date.now()}`;
 
-                console.log(`🔄 Iniciando restauración ${restoreId} desde backup ${backupId}`);
+                void 0;
 
                 const service = cloudInfrastructure.services.get(targetServiceId);
                 if (service) {
@@ -524,7 +524,7 @@ class CloudInfrastructure {
                         service.health.status = 'healthy';
                         service.health.lastCheck = new Date().toISOString();
                     }
-                    console.log(`✅ Restauración ${restoreId} completada`);
+                    void 0;
                 }, 60000);
 
                 return restoreId;
@@ -583,7 +583,7 @@ class CloudInfrastructure {
 
                 setTimeout(() => {
                     distribution.status = 'Deployed';
-                    console.log(`🌐 CDN Distribution deployed: ${distribution.customDomain}`);
+                    void 0;
                 }, 10000);
 
                 return distribution;
@@ -625,10 +625,10 @@ class CloudInfrastructure {
             async invalidateCache(paths) {
                 const invalidationId = `inv_${Date.now()}`;
 
-                console.log(`🔄 Invalidando cache CDN: ${paths.join(', ')}`);
+                void 0;
 
                 setTimeout(() => {
-                    console.log(`✅ Invalidación de cache completada: ${invalidationId}`);
+                    void 0;
                 }, 5000);
 
                 return invalidationId;
@@ -680,7 +680,7 @@ class CloudInfrastructure {
 
                 setTimeout(() => {
                     cluster.status = 'available';
-                    console.log(`🗄️ Database cluster ${clusterId} disponible`);
+                    void 0;
                 }, 30000);
 
                 await this.createReadReplicas(clusterId, 2);
@@ -704,7 +704,7 @@ class CloudInfrastructure {
 
                     setTimeout(() => {
                         replica.status = 'available';
-                        console.log(`📖 Read replica ${replicaId} disponible`);
+                        void 0;
                     }, 20000);
                 }
             },
@@ -726,7 +726,7 @@ class CloudInfrastructure {
                     this.shards.set(shardId, shard);
                 }
 
-                console.log(`🔀 Sharding configurado para ${clusterId}: ${shardCount} shards`);
+                void 0;
             }
         };
 
@@ -763,7 +763,7 @@ class CloudInfrastructure {
                 };
 
                 this.queues.set(queueId, queue);
-                console.log(`📬 Queue creada: ${name} (${queueId})`);
+                void 0;
 
                 return queue;
             },
@@ -787,7 +787,7 @@ class CloudInfrastructure {
                 };
 
                 this.topics.set(topicId, topic);
-                console.log(`📢 Topic creado: ${name} (${topicId})`);
+                void 0;
 
                 return topic;
             },
@@ -820,7 +820,7 @@ class CloudInfrastructure {
 
                 setTimeout(() => {
                     subscription.status = 'Confirmed';
-                    console.log(`✅ Suscripción confirmada: ${subscriptionId}`);
+                    void 0;
                 }, 5000);
 
                 return subscription;
@@ -836,7 +836,7 @@ class CloudInfrastructure {
 
                 queue.metrics.messagesVisible++;
 
-                console.log(`📨 Mensaje enviado a ${queue.name}: ${messageId}`);
+                void 0;
 
                 return { messageId, queue: queue.name };
             },
@@ -858,7 +858,7 @@ class CloudInfrastructure {
                     }
                 }
 
-                console.log(`📡 Mensaje publicado en ${topic.name}: ${messageId}`);
+                void 0;
 
                 return { messageId, topic: topic.name };
             },
@@ -868,7 +868,7 @@ class CloudInfrastructure {
                     const topic = this.topics.get(subscription.topicId);
                     topic.metrics.delivered++;
 
-                    console.log(`📬 Mensaje entregado a ${subscription.endpoint}`);
+                    void 0;
                 } catch (error) {
                     const topic = this.topics.get(subscription.topicId);
                     topic.metrics.failed++;

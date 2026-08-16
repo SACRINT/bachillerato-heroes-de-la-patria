@@ -41,15 +41,15 @@ class ExternalIntegrationsManager {
     }
 
     async init() {
-        //console.log('🔗 Initializing External Integrations...');
+        //void 0;
         
         // Initialize all integrations
         for (const [name, integration] of Object.entries(this.integrations)) {
             try {
                 await integration.init();
-                //console.log(`✅ ${name} integration initialized`);
+                //void 0;
             } catch (error) {
-                console.warn(`⚠️ ${name} integration failed:`, error);
+                void 0;
             }
         }
 
@@ -152,7 +152,7 @@ class SEPIntegration {
 
     async init() {
         // Initialize SEP integration
-        //console.log('🏛️ Initializing SEP integration...');
+        //void 0;
         // In production, this would handle OAuth flow with SEP
     }
 
@@ -197,7 +197,7 @@ class CURPValidator {
     }
 
     async init() {
-        //console.log('🆔 Initializing CURP validator...');
+        //void 0;
     }
 
     validate(curp) {
@@ -261,11 +261,11 @@ class GoogleWorkspaceIntegration {
     }
 
     async init() {
-        //console.log('📧 Initializing Google Workspace integration...');
+        //void 0;
         
         // Only load if API keys are configured
         if (!this.clientId || !this.apiKey) {
-            //console.log('⚠️ Google API keys not configured, skipping initialization');
+            //void 0;
             return;
         }
         
@@ -279,7 +279,7 @@ class GoogleWorkspaceIntegration {
                 this.initializeGoogleClient();
             });
         } catch (error) {
-            console.warn('⚠️ Google API not available:', error);
+            void 0;
         }
     }
 
@@ -303,7 +303,7 @@ class GoogleWorkspaceIntegration {
             });
             
             this.initialized = true;
-            //console.log('✅ Google client initialized');
+            //void 0;
         } catch (error) {
             console.error('❌ Google client initialization failed:', error);
         }
@@ -346,7 +346,7 @@ class GoogleWorkspaceIntegration {
             });
 
             const response = await request.execute();
-            //console.log('✅ Event added to calendar:', response);
+            //void 0;
             
             this.showAlert('✅ Evento agregado al calendario de Google', 'success');
         } catch (error) {
@@ -394,13 +394,13 @@ class MicrosoftEducationIntegration {
     }
 
     async init() {
-        //console.log('🏢 Initializing Microsoft Education integration...');
+        //void 0;
         // Initialize Microsoft Graph integration
     }
 
     async addToOutlookCalendar(eventData) {
         // Microsoft Graph API integration for Outlook calendar
-        //console.log('📅 Adding event to Outlook calendar:', eventData);
+        //void 0;
         
         // Fallback to Outlook web URL
         const params = new URLSearchParams({
@@ -428,7 +428,7 @@ class SocialMediaIntegration {
     }
 
     async init() {
-        //console.log('📱 Initializing Social Media integration...');
+        //void 0;
     }
 
     share(platform, content) {
@@ -490,8 +490,8 @@ class SocialMediaIntegration {
         //         content_title: content.title,
         //         timestamp: Date.now()
         //     })
-        // }).catch(e => console.warn('Analytics failed:', e));
-        //console.log('📊 Social share tracked (offline mode):', platform, content.title);
+        // }).catch(e => void 0);
+        //void 0;
     }
 }
 
@@ -507,7 +507,7 @@ class AdvancedAnalytics {
     }
 
     async init() {
-        //console.log('📊 Initializing Advanced Analytics...');
+        //void 0;
         
         this.setupTracking();
         this.trackPageView();

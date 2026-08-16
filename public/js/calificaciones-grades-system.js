@@ -277,7 +277,7 @@ function showAdvancedGradesSystem() {
         // Inicializar el sistema de calificaciones de Fase B
         if (typeof GradesManager !== 'undefined') {
             gradesManagerInstance = new GradesManager();
-            console.log('[GRADES] ✅ Sistema avanzado de calificaciones inicializado');
+            void 0;
         } else {
             console.error('[GRADES] ❌ GradesManager no disponible, cargando sistema básico');
             showGradesPanel(); // Fallback al sistema básico

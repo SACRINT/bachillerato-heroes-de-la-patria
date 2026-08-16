@@ -76,8 +76,8 @@ class GovernmentReportsModule {
         this.scheduleAutomaticReports();
         this.initializeComplianceChecker();
 
-        console.log('📊 Government Reports Module inicializado');
-        console.log(`📋 Plantillas disponibles: ${Object.keys(this.reportTemplates).length}`);
+        void 0;
+        void 0;
     }
 
     // === GENERACIÓN DE REPORTES ===
@@ -90,7 +90,7 @@ class GovernmentReportsModule {
         const template = this.reportTemplates[reportType];
         const reportId = this.generateReportId(reportType, period);
 
-        console.log(`📄 Generando reporte: ${template.name}`);
+        void 0;
 
         try {
             // Preparar datos del reporte
@@ -148,7 +148,7 @@ class GovernmentReportsModule {
             // Registrar en historial
             this.addToHistory(finalReport);
 
-            console.log(`✅ Reporte generado exitosamente: ${reportId}`);
+            void 0;
             return finalReport;
 
         } catch (error) {
@@ -657,7 +657,7 @@ class GovernmentReportsModule {
             signedContent = content + `\n<!-- Digital Signature: ${signature} -->`;
         }
 
-        console.log(`🔐 Firma digital aplicada: ${signature.substring(0, 16)}...`);
+        void 0;
         return signedContent;
     }
 
@@ -732,7 +732,7 @@ class GovernmentReportsModule {
 
         setInterval(async () => {
             try {
-                console.log(`🤖 Generando reporte automático: ${template.name}`);
+                void 0;
                 await this.generateReport(reportType);
             } catch (error) {
                 console.error(`Error en generación automática de ${reportType}:`, error);
@@ -776,9 +776,9 @@ class GovernmentReportsModule {
     }
 
     notifyUpcomingDeadlines(alerts) {
-        console.log('⏰ Alertas de fechas límite:');
+        void 0;
         alerts.forEach(alert => {
-            console.log(`📋 ${alert.template}: ${alert.daysRemaining} días restantes`);
+            void 0;
         });
 
         // En producción, enviar notificaciones por email o sistema de alertas
@@ -856,11 +856,11 @@ class GovernmentReportsModule {
             localStorage.setItem(reportKey, JSON.stringify(report));
 
             // Simular guardado en sistema de archivos
-            console.log(`💾 Reporte guardado: ${this.config.outputDirectory}${report.id}.${report.format.toLowerCase()}`);
+            void 0;
 
         } catch (error) {
             if (error.name === 'QuotaExceededError') {
-                console.warn('⚠️ Storage lleno, limpiando reportes antiguos...');
+                void 0;
                 this.cleanupOldReports(true);
 
                 // Intentar guardar nuevamente después de la limpieza
@@ -872,9 +872,9 @@ class GovernmentReportsModule {
                         status: 'Generado (Storage optimizado)',
                         summary: 'Reporte generado exitosamente'
                     }));
-                    console.log(`💾 Reporte guardado (versión optimizada): ${report.id}`);
+                    void 0;
                 } catch (secondError) {
-                    console.warn(`⚠️ No se pudo guardar el reporte ${report.id} en localStorage`);
+                    void 0;
                 }
             } else {
                 console.error('❌ Error guardando reporte:', error);
@@ -888,7 +888,7 @@ class GovernmentReportsModule {
             try {
                 this.reportHistory = JSON.parse(stored);
             } catch (error) {
-                console.warn('Error loading report history:', error);
+                void 0;
                 this.reportHistory = [];
             }
         }
@@ -968,9 +968,9 @@ class GovernmentReportsModule {
         };
 
         if (overdue.length > 0) {
-            console.warn(`⚠️ Reportes vencidos: ${overdue.length}`);
+            void 0;
             overdue.forEach(report => {
-                console.warn(`📋 ${report.name}: ${report.daysOverdue} días de retraso`);
+                void 0;
             });
         }
     }
@@ -1033,7 +1033,7 @@ class GovernmentReportsModule {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
 
-        console.log(`📥 Reporte descargado: ${report.id}`);
+        void 0;
     }
 
     cleanupOldReports(aggressive = false) {
@@ -1067,10 +1067,10 @@ class GovernmentReportsModule {
                 localStorage.removeItem(reportsWithDates[i].key);
             }
 
-            console.log(`🧹 Limpieza de reportes: ${toDelete} reportes antiguos eliminados`);
+            void 0;
 
         } catch (error) {
-            console.warn('⚠️ Error durante limpieza de reportes:', error);
+            void 0;
         }
     }
 }

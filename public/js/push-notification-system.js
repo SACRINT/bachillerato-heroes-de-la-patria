@@ -21,15 +21,15 @@ class BGEPushNotificationSystem {
         this.scheduledNotifications = [];
         this.preferences = this.getEducationalPreferences();
 
-        console.log('🔔 Iniciando BGE Push Notification System');
+        void 0;
         this.init();
     }
 
     async init() {
-        console.log('🚀 Inicializando sistema de notificaciones BGE...');
+        void 0;
 
         if (!this.isSupported) {
-            console.warn('⚠️ Push notifications no soportadas en este navegador');
+            void 0;
             this.showUnsupportedNotice();
             return;
         }
@@ -42,7 +42,7 @@ class BGEPushNotificationSystem {
         this.setupEventListeners();
         await this.scheduleEducationalNotifications();
 
-        console.log('✅ Sistema de notificaciones BGE inicializado correctamente');
+        void 0;
     }
 
     async setupServiceWorker() {
@@ -59,7 +59,7 @@ class BGEPushNotificationSystem {
                 // Escuchar mensajes del service worker
                 navigator.serviceWorker.addEventListener('message', this.handleServiceWorkerMessage.bind(this));
 
-                console.log('🔧 Service Worker de notificaciones registrado');
+                void 0;
             }
         } catch (error) {
             console.error('❌ Error registrando Service Worker:', error);
@@ -73,7 +73,7 @@ class BGEPushNotificationSystem {
             const subscription = await this.swRegistration.pushManager.getSubscription();
             if (subscription) {
                 this.subscription = subscription;
-                console.log('✅ Suscripción existente encontrada');
+                void 0;
             }
         } catch (error) {
             console.error('❌ Error verificando suscripción:', error);
@@ -191,7 +191,7 @@ class BGEPushNotificationSystem {
 
         try {
             const registration = await navigator.serviceWorker.register('/sw.js');
-            console.log('📱 Service Worker registrado:', registration);
+            void 0;
             return registration;
         } catch (error) {
             console.error('❌ Error registrando Service Worker:', error);

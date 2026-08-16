@@ -54,7 +54,7 @@ class BGEAdvancedPWA {
     }
 
     async init() {
-        console.log('📱 [BGE-PWA] Inicializando sistema PWA avanzado');
+        void 0;
 
         try {
             // Registrar Service Worker
@@ -78,7 +78,7 @@ class BGEAdvancedPWA {
             // Configurar actualizaciones automáticas
             this.setupAutoUpdate();
 
-            console.log('✅ [BGE-PWA] Sistema PWA inicializado correctamente');
+            void 0;
 
         } catch (error) {
             console.error('❌ [BGE-PWA] Error inicializando PWA:', error);
@@ -101,7 +101,7 @@ class BGEAdvancedPWA {
                 updateViaCache: 'none'
             });
 
-            console.log('📄 [BGE-PWA] Service Worker registrado:', this.swRegistration.scope);
+            void 0;
 
             // Configurar listeners del SW
             this.setupServiceWorkerListeners();
@@ -120,7 +120,7 @@ class BGEAdvancedPWA {
     setupServiceWorkerListeners() {
         // Listener para actualizaciones del SW
         this.swRegistration.addEventListener('updatefound', () => {
-            console.log('🔄 [BGE-PWA] Actualización del Service Worker encontrada');
+            void 0;
             this.handleServiceWorkerUpdate();
         });
 
@@ -131,7 +131,7 @@ class BGEAdvancedPWA {
 
         // Listener para cambios en el estado del SW
         navigator.serviceWorker.addEventListener('controllerchange', () => {
-            console.log('🔄 [BGE-PWA] Service Worker actualizado');
+            void 0;
             window.location.reload();
         });
     }
@@ -153,7 +153,7 @@ class BGEAdvancedPWA {
                 this.handleBackgroundSync(data);
                 break;
             default:
-                console.log('📨 [BGE-PWA] Mensaje del SW:', type, data);
+                void 0;
         }
     }
 
@@ -176,7 +176,7 @@ class BGEAdvancedPWA {
     }
 
     handleOnline() {
-        console.log('🌐 [BGE-PWA] Conexión restaurada');
+        void 0;
         this.isOnline = true;
 
         // Ocultar indicador offline
@@ -193,7 +193,7 @@ class BGEAdvancedPWA {
     }
 
     handleOffline() {
-        console.log('📡 [BGE-PWA] Sin conexión - Modo offline activado');
+        void 0;
         this.isOnline = false;
 
         // Mostrar indicador offline
@@ -242,7 +242,7 @@ class BGEAdvancedPWA {
             event.preventDefault();
             this.installPrompt = event;
             this.showInstallPrompt();
-            console.log('📲 [BGE-PWA] App puede ser instalada');
+            void 0;
         });
 
         // Detectar instalación exitosa
@@ -251,7 +251,7 @@ class BGEAdvancedPWA {
             this.installPrompt = null;
             this.hideInstallPrompt();
             this.showToast('¡App instalada exitosamente!', 'success');
-            console.log('✅ [BGE-PWA] App instalada');
+            void 0;
 
             // Analytics
             this.trackInstallation();
@@ -260,7 +260,7 @@ class BGEAdvancedPWA {
 
     async installApp() {
         if (!this.installPrompt) {
-            console.warn('⚠️ [BGE-PWA] No hay prompt de instalación disponible');
+            void 0;
             return false;
         }
 
@@ -272,10 +272,10 @@ class BGEAdvancedPWA {
             const result = await this.installPrompt.userChoice;
 
             if (result.outcome === 'accepted') {
-                console.log('✅ [BGE-PWA] Usuario aceptó instalación');
+                void 0;
                 return true;
             } else {
-                console.log('❌ [BGE-PWA] Usuario rechazó instalación');
+                void 0;
                 return false;
             }
         } catch (error) {
@@ -291,7 +291,7 @@ class BGEAdvancedPWA {
         if (window.matchMedia('(display-mode: standalone)').matches ||
             window.navigator.standalone === true) {
             this.isInstalled = true;
-            console.log('📱 [BGE-PWA] App ejecutándose en modo instalado');
+            void 0;
         }
     }
 
@@ -309,7 +309,7 @@ class BGEAdvancedPWA {
         // Iniciar sincronización periódica
         this.startPeriodicSync();
 
-        console.log('🔄 [BGE-PWA] Sincronización offline inicializada');
+        void 0;
     }
 
     interceptForms() {
@@ -339,13 +339,13 @@ class BGEAdvancedPWA {
         this.syncQueue.push(data);
         this.saveOfflineData();
 
-        console.log('💾 [BGE-PWA] Datos de formulario guardados para sync:', data);
+        void 0;
     }
 
     async syncPendingData() {
         if (this.syncQueue.length === 0) return;
 
-        console.log(`🔄 [BGE-PWA] Sincronizando ${this.syncQueue.length} elementos pendientes`);
+        void 0;
 
         const processed = [];
         const failed = [];
@@ -354,7 +354,7 @@ class BGEAdvancedPWA {
             try {
                 await this.syncItem(item);
                 processed.push(item);
-                console.log('✅ [BGE-PWA] Item sincronizado:', item.id);
+                void 0;
             } catch (error) {
                 item.retries = (item.retries || 0) + 1;
 
@@ -362,7 +362,7 @@ class BGEAdvancedPWA {
                     failed.push(item);
                     console.error('❌ [BGE-PWA] Item falló definitivamente:', item.id, error);
                 } else {
-                    console.warn(`⚠️ [BGE-PWA] Reintentando item (${item.retries}/${this.config.syncRetries}):`, item.id);
+                    void 0;
                 }
             }
         }
@@ -445,7 +445,7 @@ class BGEAdvancedPWA {
     async precacheResources() {
         if (!this.swRegistration) return;
 
-        console.log('📦 [BGE-PWA] Precargando recursos críticos');
+        void 0;
 
         try {
             // Enviar lista de recursos críticos al SW
@@ -459,7 +459,7 @@ class BGEAdvancedPWA {
             // Precargar en paralelo algunos recursos críticos
             await this.preloadCriticalResources();
 
-            console.log('✅ [BGE-PWA] Recursos críticos precargados');
+            void 0;
 
         } catch (error) {
             console.error('❌ [BGE-PWA] Error precargando recursos:', error);
@@ -715,7 +715,7 @@ class BGEAdvancedPWA {
     async updateApp() {
         if (!this.swRegistration || !this.swRegistration.waiting) return;
 
-        console.log('🔄 [BGE-PWA] Aplicando actualización...');
+        void 0;
 
         // Enviar mensaje al SW para skipWaiting
         this.swRegistration.waiting.postMessage({ type: 'SKIP_WAITING' });
@@ -791,12 +791,12 @@ class BGEAdvancedPWA {
     }
 
     handleSyncComplete(data) {
-        console.log('✅ [BGE-PWA] Sincronización completada:', data);
+        void 0;
         this.updateOfflineQueueCount();
     }
 
     handleBackgroundSync(data) {
-        console.log('🔄 [BGE-PWA] Sincronización en background:', data);
+        void 0;
     }
 
     trackInstallation() {
@@ -877,7 +877,7 @@ class BGEAdvancedPWA {
         this.saveOfflineData();
         this.updateOfflineQueueCount();
 
-        console.log('💾 [BGE-PWA] Item agregado a cola de sync:', item.id);
+        void 0;
         return item.id;
     }
 
@@ -909,7 +909,7 @@ class BGEAdvancedPWA {
 
         if (cleaned > 0) {
             this.saveOfflineData();
-            console.log(`🧹 [BGE-PWA] Limpiados ${cleaned} elementos offline antiguos`);
+            void 0;
         }
     }
 
@@ -948,7 +948,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Hacer disponible globalmente
         window.installBGEApp = () => window.bgePWA.requestInstall();
 
-        console.log('📱 [BGE-PWA] Sistema PWA disponible globalmente');
+        void 0;
     }
 });
 

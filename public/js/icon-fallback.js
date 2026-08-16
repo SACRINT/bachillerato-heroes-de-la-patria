@@ -45,10 +45,10 @@ class IconFallback {
             document.body.removeChild(testElement);
             
             if (!this.fontAwesomeLoaded) {
-                console.warn('⚠️ Font Awesome no detectado, activando sistema de respaldo');
+                void 0;
                 this.activateFallbacks();
             } else {
-                //console.log('✅ Font Awesome cargado correctamente');
+                //void 0;
             }
             
         } catch (error) {

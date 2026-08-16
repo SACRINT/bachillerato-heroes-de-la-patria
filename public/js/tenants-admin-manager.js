@@ -22,13 +22,13 @@ class TenantsAdminManager {
     }
 
     init() {
-        console.log('[TENANTS-ADMIN] 🚀 Inicializando Tenants Admin Manager...');
+        void 0;
         this.setupEventListeners();
         this.loadTenants();
     }
 
     setupEventListeners() {
-        console.log('[TENANTS-ADMIN] 📋 Configurando event listeners...');
+        void 0;
 
         // Botones de acción
         document.getElementById('btnNuevoTenant').addEventListener('click', () => this.showCreateForm());
@@ -47,14 +47,14 @@ class TenantsAdminManager {
             document.getElementById('primaryColor').value = e.target.value;
         });
 
-        console.log('[TENANTS-ADMIN] ✅ Event listeners configurados');
+        void 0;
     }
 
     /**
      * Cargar lista de tenants desde API
      */
     async loadTenants() {
-        console.log('[TENANTS-ADMIN] 🔄 Cargando tenants...');
+        void 0;
 
         const loadingEl = document.getElementById('loadingTenants');
         const listEl = document.getElementById('tenantsList');
@@ -77,7 +77,7 @@ class TenantsAdminManager {
             if (!response.ok) {
                 if (response.status === 404) {
                     // Endpoint no existe aún, usar datos vacíos
-                    console.warn('[TENANTS-ADMIN] ⚠️ Endpoint no disponible, usando datos de demostración');
+                    void 0;
                     this.tenants = [];
                 } else {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -85,7 +85,7 @@ class TenantsAdminManager {
             } else {
                 const data = await response.json();
                 this.tenants = data.data || data.tenants || [];
-                console.log('[TENANTS-ADMIN] ✅ Tenants cargados:', this.tenants.length);
+                void 0;
             }
 
             this.renderTenantsTable();
@@ -104,7 +104,7 @@ class TenantsAdminManager {
      * Renderizar tabla de tenants
      */
     renderTenantsTable() {
-        console.log('[TENANTS-ADMIN] 📊 Renderizando tabla de tenants...');
+        void 0;
 
         const tbody = document.getElementById('tenantTableBody');
         const listEl = document.getElementById('tenantsList');
@@ -115,7 +115,7 @@ class TenantsAdminManager {
         if (this.tenants.length === 0) {
             listEl.classList.add('d-none');
             emptyEl.classList.remove('d-none');
-            console.log('[TENANTS-ADMIN] ℹ️ No hay tenants para mostrar');
+            void 0;
             return;
         }
 
@@ -132,7 +132,7 @@ class TenantsAdminManager {
                     const config = JSON.parse(tenant.config_json);
                     schoolName = config.school?.name || schoolName;
                 } catch (e) {
-                    console.warn('[TENANTS-ADMIN] ⚠️ Error parseando config_json:', e);
+                    void 0;
                 }
             }
 
@@ -161,14 +161,14 @@ class TenantsAdminManager {
             tbody.appendChild(row);
         });
 
-        console.log('[TENANTS-ADMIN] ✅ Tabla renderizada con', this.tenants.length, 'tenants');
+        void 0;
     }
 
     /**
      * Mostrar formulario para crear nuevo tenant
      */
     showCreateForm() {
-        console.log('[TENANTS-ADMIN] 📝 Mostrando formulario de crear tenant');
+        void 0;
 
         this.currentEditingId = null;
         document.getElementById('tenantId').value = '';
@@ -184,11 +184,11 @@ class TenantsAdminManager {
      * Editar tenant existente
      */
     editTenant(tenantId) {
-        console.log('[TENANTS-ADMIN] ✏️ Editando tenant:', tenantId);
+        void 0;
 
         const tenant = this.tenants.find(t => t.id === tenantId);
         if (!tenant) {
-            console.warn('[TENANTS-ADMIN] ⚠️ Tenant no encontrado:', tenantId);
+            void 0;
             return;
         }
 
@@ -202,7 +202,7 @@ class TenantsAdminManager {
                     ? JSON.parse(tenant.config_json)
                     : tenant.config_json;
             } catch (e) {
-                console.warn('[TENANTS-ADMIN] ⚠️ Error parseando config:', e);
+                void 0;
             }
         }
 
@@ -223,7 +223,7 @@ class TenantsAdminManager {
         // Scroll al formulario
         document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
 
-        console.log('[TENANTS-ADMIN] ✅ Formulario cargado para edición');
+        void 0;
     }
 
     /**
@@ -231,11 +231,11 @@ class TenantsAdminManager {
      */
     async handleFormSubmit(e) {
         e.preventDefault();
-        console.log('[TENANTS-ADMIN] 📤 Procesando submit del formulario...');
+        void 0;
 
         // Validar formulario
         if (!document.getElementById('tenantForm').checkValidity()) {
-            console.warn('[TENANTS-ADMIN] ⚠️ Formulario inválido');
+            void 0;
             document.getElementById('tenantForm').classList.add('was-validated');
             return;
         }
@@ -279,7 +279,7 @@ class TenantsAdminManager {
             }
         };
 
-        console.log('[TENANTS-ADMIN] 📋 Datos a enviar:', tenantData);
+        void 0;
 
         try {
             const method = isCreating ? 'POST' : 'PUT';
@@ -300,7 +300,7 @@ class TenantsAdminManager {
 
             const result = await response.json();
 
-            console.log('[TENANTS-ADMIN] ✅ Operación exitosa:', result);
+            void 0;
 
             const successMsg = isCreating
                 ? 'Tenant creado exitosamente'
@@ -322,14 +322,14 @@ class TenantsAdminManager {
      * Eliminar tenant
      */
     async deleteTenant(tenantId) {
-        console.log('[TENANTS-ADMIN] 🗑️ Eliminando tenant:', tenantId);
+        void 0;
 
         const tenant = this.tenants.find(t => t.id === tenantId);
         if (!tenant) return;
 
         // Confirmación
         if (!confirm(`¿Estás seguro de que deseas eliminar "${tenant.school_name}"? Esta acción no se puede deshacer.`)) {
-            console.log('[TENANTS-ADMIN] ℹ️ Eliminación cancelada por usuario');
+            void 0;
             return;
         }
 
@@ -345,7 +345,7 @@ class TenantsAdminManager {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
 
-            console.log('[TENANTS-ADMIN] ✅ Tenant eliminado');
+            void 0;
             this.showAlert('Tenant eliminado exitosamente', 'success');
 
             // Recargar
@@ -362,7 +362,7 @@ class TenantsAdminManager {
      * Limpiar formulario
      */
     clearForm() {
-        console.log('[TENANTS-ADMIN] 🧹 Limpiando formulario...');
+        void 0;
 
         this.currentEditingId = null;
         document.getElementById('tenantForm').reset();
@@ -378,7 +378,7 @@ class TenantsAdminManager {
      * Mostrar alert
      */
     showAlert(message, type = 'info') {
-        console.log(`[TENANTS-ADMIN] 📢 Alert [${type}]:`, message);
+        void 0;
 
         const alertContainer = document.getElementById('alertContainer');
         const alertId = `alert-${Date.now()}`;
@@ -406,8 +406,8 @@ class TenantsAdminManager {
 
 // Inicializar cuando DOM esté listo
 document.addEventListener('DOMContentLoaded', function () {
-    console.log('[TENANTS-ADMIN] 🎯 DOM cargado, iniciando TenantsAdminManager...');
+    void 0;
     window.tenantsAdminManager = new TenantsAdminManager();
 });
 
-console.log('[TENANTS-ADMIN] 📦 Módulo tenants-admin-manager.js cargado');
+void 0;

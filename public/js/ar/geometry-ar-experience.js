@@ -24,7 +24,7 @@
          * Inicializar la experiencia de geometría
          */
         async initialize(containerId) {
-            console.log('[GEOMETRY-AR] Inicializando experiencia...');
+            void 0;
 
             if (!window.threeLoader) {
                 throw new Error('ThreeJSLoader no disponible');
@@ -59,7 +59,7 @@
             this.addAxesHelper();
 
             this.isInitialized = true;
-            console.log('[GEOMETRY-AR] ✅ Experiencia inicializada');
+            void 0;
 
             return this;
         }
@@ -293,11 +293,11 @@
          * Mostrar figura geométrica
          */
         async showShape(shapeId) {
-            console.log(`[GEOMETRY-AR] Mostrando: ${shapeId}`);
+            void 0;
 
             const shapeData = this.shapes.get(shapeId);
             if (!shapeData) {
-                console.warn(`[GEOMETRY-AR] Figura ${shapeId} no encontrada`);
+                void 0;
                 return;
             }
 
@@ -505,7 +505,7 @@
             });
 
             this.isInitialized = false;
-            console.log('[GEOMETRY-AR] Experiencia terminada');
+            void 0;
         }
     }
 
@@ -516,6 +516,6 @@
     window.GeometryARExperience = GeometryARExperience;
     window.geometryAR = new GeometryARExperience();
 
-    console.log('📐 Geometry AR Experience cargado');
+    void 0;
 
 })();

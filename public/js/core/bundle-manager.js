@@ -15,7 +15,7 @@ class BGEBundleManager {
             'performance-monitor'
         ];
 
-        console.log('📦 BGE Bundle Manager inicializado');
+        void 0;
     }
 
     // Registrar módulo para bundling inteligente
@@ -286,4 +286,4 @@ document.addEventListener('DOMContentLoaded', () => {
     window.BGEBundleManager.optimize();
 });
 
-console.log('✅ BGE Bundle Manager cargado exitosamente');
+void 0;

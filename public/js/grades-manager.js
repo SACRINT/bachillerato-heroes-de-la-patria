@@ -30,7 +30,7 @@ class GradesManager {
             await this.setupEventListeners();
             await this.renderInterface();
 
-            console.log('📊 Sistema de Calificaciones inicializado');
+            void 0;
         } catch (error) {
             console.error('❌ Error inicializando calificaciones:', error);
             this.showError('Error inicializando sistema de calificaciones');
@@ -59,7 +59,7 @@ class GradesManager {
         try {
             // ✅ SAFEGUARD: Verificar que window.apiClient esté disponible
             if (!window.apiClient || typeof window.apiClient.request !== 'function') {
-                console.warn('⚠️ [GRADES] window.apiClient no disponible, usando datos demo');
+                void 0;
                 this.students = this.getDemoStudents();
                 return;
             }
@@ -71,7 +71,7 @@ class GradesManager {
             if (response.success && response.data && Array.isArray(response.data.students)) {
                 this.students = response.data.students;
             } else {
-                console.warn('⚠️ [GRADES] No se pudieron cargar los estudiantes de la API, usando array vacío o datos demo.');
+                void 0;
                 this.students = this.getDemoStudents(); // Fallback to demo students
             }
         } catch (error) {
@@ -95,7 +95,7 @@ class GradesManager {
         try {
             // ✅ SAFEGUARD: Verificar que window.apiClient esté disponible
             if (!window.apiClient || typeof window.apiClient.request !== 'function') {
-                console.warn('⚠️ [GRADES] window.apiClient no disponible para materias, usando datos demo');
+                void 0;
                 this.subjects = this.getDemoSubjects();
                 return;
             }
@@ -112,11 +112,11 @@ class GradesManager {
                 } else if (response.data.subjects && Array.isArray(response.data.subjects)) {
                     this.subjects = response.data.subjects;
                 } else {
-                    console.warn('⚠️ [GRADES] Formato de respuesta inesperado para materias');
+                    void 0;
                     this.subjects = this.getDemoSubjects();
                 }
             } else {
-                console.warn('⚠️ [GRADES] No se pudieron cargar materias de la API, usando datos demo');
+                void 0;
                 this.subjects = this.getDemoSubjects();
             }
         } catch (error) {
@@ -126,7 +126,7 @@ class GradesManager {
 
         // ✅ SAFEGUARD FINAL: Garantizar que subjects sea SIEMPRE un array
         if (!Array.isArray(this.subjects)) {
-            console.warn('⚠️ [GRADES] this.subjects no es array, forzando a datos demo');
+            void 0;
             this.subjects = this.getDemoSubjects();
         }
     }
@@ -325,8 +325,8 @@ class GradesManager {
     renderCaptureForm() {
         // --- DEBUG + SAFEGUARD: Garantizar que this.students sea un array ---
         console.groupCollapsed('DEBUG GradesManager - students check');
-        console.log('typeof this.students:', typeof this.students);
-        console.log('this.students (shallow):', this.students && (Array.isArray(this.students) ? '[Array]' : Object.prototype.toString.call(this.students)));
+        void 0;
+        void 0;
         try {
           // show small preview safely
           if (this.students && typeof this.students === 'object') {
@@ -334,9 +334,9 @@ class GradesManager {
             const preview = Array.isArray(this.students)
               ? this.students.slice(0,5)
               : (this.students.data && Array.isArray(this.students.data.students) ? this.students.data.students.slice(0,5) : this.students);
-            console.log('preview:', preview);
+            void 0;
           }
-        } catch(e) { console.warn('error previewing this.students', e); }
+        } catch(e) { void 0; }
         console.groupEnd();
 
         // Normalize to an array in the most likely shapes we expect

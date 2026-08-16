@@ -60,8 +60,8 @@ class VirtualLabsSystem {
         this.createLabInterface();
         this.initializeSafetyProtocols();
 
-        console.log('🧪 Virtual Labs System inicializado');
-        console.log(`⚗️ Laboratorios disponibles: ${Object.keys(this.laboratories).length}`);
+        void 0;
+        void 0;
     }
 
     loadUserProgress() {
@@ -90,7 +90,7 @@ class VirtualLabsSystem {
                 };
             }
 
-            console.log('📊 Progreso de usuario cargado:', this.userProgress);
+            void 0;
         } catch (error) {
             console.error('Error loading user progress:', error);
             // Inicializar progreso por defecto en caso de error
@@ -116,7 +116,7 @@ class VirtualLabsSystem {
     saveUserProgress() {
         try {
             localStorage.setItem('virtualLabsProgress', JSON.stringify(this.userProgress));
-            console.log('💾 Progreso de usuario guardado');
+            void 0;
         } catch (error) {
             console.error('Error saving user progress:', error);
         }
@@ -139,7 +139,7 @@ class VirtualLabsSystem {
                 // Aumentar nivel de habilidad
                 this.userProgress.skillLevels[this.activeSession.labType] += 10;
 
-                console.log(`🎯 Experimento completado: ${experimentId}`);
+                void 0;
             }
         }
 
@@ -166,7 +166,7 @@ class VirtualLabsSystem {
             }
         };
 
-        console.log('🎮 Motor de simulación inicializado');
+        void 0;
     }
 
     setupPhysicsEngine() {
@@ -182,7 +182,7 @@ class VirtualLabsSystem {
             constraints: true
         };
 
-        console.log('⚙️ Motor de física configurado');
+        void 0;
     }
 
     // === EXPERIMENTOS ESPECÍFICOS ===
@@ -197,7 +197,7 @@ class VirtualLabsSystem {
             throw new Error(`Experimento no disponible: ${experimentType}`);
         }
 
-        console.log(`🔬 Iniciando experimento: ${experimentType} en ${lab.name}`);
+        void 0;
 
         // Verificar protocolos de seguridad
         if (this.config.enforceSafety) {
@@ -540,7 +540,7 @@ class VirtualLabsSystem {
         this.activeSession.measurements.push(measurement);
         this.updateExperimentProgress();
 
-        console.log(`📏 Medición registrada: ${type} = ${value} ${unit}`);
+        void 0;
     }
 
     recordObservation(description, category = 'general') {
@@ -555,7 +555,7 @@ class VirtualLabsSystem {
         };
 
         this.activeSession.observations.push(observation);
-        console.log(`👁️ Observación registrada: ${description}`);
+        void 0;
     }
 
     calculateResults() {
@@ -654,9 +654,9 @@ class VirtualLabsSystem {
     }
 
     showSafetyWarnings(protocol) {
-        console.log('⚠️ Advertencias de seguridad:');
+        void 0;
         protocol.prohibited_actions.forEach(action => {
-            console.log(`❌ Prohibido: ${action}`);
+            void 0;
         });
     }
 
@@ -670,7 +670,7 @@ class VirtualLabsSystem {
         });
 
         this.activeSession.safety.score -= 10; // Penalización
-        console.warn(`⚠️ Violación de seguridad: ${violation}`);
+        void 0;
     }
 
     // === INTERFAZ DE USUARIO ===
@@ -899,7 +899,7 @@ class VirtualLabsSystem {
             try {
                 return JSON.parse(userData);
             } catch (error) {
-                console.warn('Error parsing user data:', error);
+                void 0;
             }
         }
         return { id: 'anonymous', name: 'Usuario Anónimo' };

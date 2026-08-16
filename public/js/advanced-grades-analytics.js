@@ -5,7 +5,7 @@
 
 class AdvancedGradesAnalytics {
     constructor() {
-        console.log('📊 [GRADES ANALYTICS] Inicializando sistema avanzado...');
+        void 0;
         this.apiBase = '/api/grades-analytics/';
         this.studentApiBase = '/api/students/';
         this.authToken = localStorage.getItem('bge_auth_token') || localStorage.getItem('student_auth_token') || localStorage.getItem('auth_token');
@@ -46,11 +46,11 @@ class AdvancedGradesAnalytics {
     async loadAnalyticsData() {
         try {
             if (!this.currentStudent) {
-                console.log('📊 No hay estudiante autenticado');
+                void 0;
                 return;
             }
 
-            console.log('📊 Cargando datos de análisis para estudiante:', this.currentStudent.id);
+            void 0;
 
             // Cargar análisis individual del estudiante
             const response = await this.apiCall(`student/${this.currentStudent.id}`);
@@ -613,7 +613,7 @@ class AdvancedGradesAnalytics {
     }
 
     handleAnalyticsAction(action) {
-        console.log('📊 Ejecutando acción:', action);
+        void 0;
 
         const actions = {
             'export': () => this.exportReport(),
@@ -625,13 +625,13 @@ class AdvancedGradesAnalytics {
         if (actions[action]) {
             actions[action]();
         } else {
-            console.log('📊 Acción no implementada:', action);
+            void 0;
             this.showInfo('Esta funcionalidad estará disponible próximamente');
         }
     }
 
     exportReport() {
-        console.log('📊 Exportando reporte académico...');
+        void 0;
         this.showSuccess('Reporte académico generado exitosamente');
 
         // Simular descarga de reporte

@@ -13,7 +13,7 @@ const SuperAdminDashboard = {
      * Inicializar dashboard
      */
     async init() {
-        console.log('[SUPER-ADMIN] 🎛️ Inicializando dashboard...');
+        void 0;
 
         // Verificar autenticación
         const token = localStorage.getItem('token');
@@ -30,7 +30,7 @@ const SuperAdminDashboard = {
         // Event listeners
         this.setupEventListeners();
 
-        console.log('[SUPER-ADMIN] ✅ Dashboard inicializado');
+        void 0;
     },
 
     /**
@@ -318,7 +318,7 @@ const SuperAdminDashboard = {
         try {
             const result = await this.fetchAPI(`/tenants/${tenantId}`);
             if (result.success) {
-                console.log('Tenant details:', result.data);
+                void 0;
                 // TODO: Mostrar modal con detalles
                 alert(`Detalles de: ${result.data.tenant.school_name}\n\nEstudiantes: ${result.data.userStats.find(u => u.role === 'estudiante')?.count || 0}\nDocentes: ${result.data.userStats.find(u => u.role === 'docente')?.count || 0}`);
             }
@@ -357,7 +357,7 @@ const SuperAdminDashboard = {
             item.classList.toggle('active', item.dataset.section === section);
         });
         // TODO: Implementar cambio de secciones
-        console.log('Cambiar a sección:', section);
+        void 0;
     },
 
     // ==================== UTILIDADES ====================

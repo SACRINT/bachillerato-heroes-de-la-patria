@@ -39,7 +39,7 @@ class MobileOptimizer {
         this.setupMobileNavigation();
         this.enableMobileOptimizations();
 
-        console.log(`📱 Mobile Optimizer inicializado - Móvil: ${this.isMobile}, Touch: ${this.touchEnabled}`);
+        void 0;
     }
 
     detectDeviceType() {
@@ -487,15 +487,15 @@ class MobileOptimizer {
 
     // Métodos específicos de la aplicación
     nextPage() {
-        console.log('📱 Navegando a siguiente página');
+        void 0;
     }
 
     previousPage() {
-        console.log('📱 Navegando a página anterior');
+        void 0;
     }
 
     showQuickActions() {
-        console.log('📱 Mostrando acciones rápidas');
+        void 0;
     }
 
     toggleFullscreen() {
@@ -507,12 +507,12 @@ class MobileOptimizer {
     }
 
     showContextMenu() {
-        console.log('📱 Mostrando menú contextual');
+        void 0;
     }
 
     handleSmartZoom() {
         // Implementar zoom inteligente para contenido educativo
-        console.log('📱 Aplicando zoom inteligente');
+        void 0;
     }
 
     reoptimizeLayout() {
@@ -543,7 +543,7 @@ class MobileOptimizer {
         // Modo ahorro de datos
         if ('connection' in navigator && navigator.connection.saveData) {
             document.documentElement.classList.add('save-data');
-            console.log('📱 Modo ahorro de datos activado');
+            void 0;
         }
     }
 
@@ -569,12 +569,12 @@ class MobileOptimizer {
 
     enablePowerSaveMode() {
         // Reducir animaciones y efectos para ahorrar batería
-        console.log('🔋 Modo ahorro de energía activado');
+        void 0;
     }
 
     enableLowMemoryMode() {
         // Optimizaciones para dispositivos con poca memoria
-        console.log('💾 Modo memoria baja activado');
+        void 0;
     }
 
     // API pública
