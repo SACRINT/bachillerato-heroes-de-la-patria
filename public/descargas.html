@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -791,6 +791,83 @@
                         <i class="fas fa-envelope me-2"></i>
                         Contactar Soporte
                     </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preview Modal -->
+    <div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header bg-primary text-white border-0 py-3">
+                    <h5 class="modal-title" id="previewModalLabel">
+                        <i class="fas fa-file-pdf me-2"></i>Vista Previa del Documento
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body p-4" id="previewModalBody">
+                    <!-- Dynamic preview content injected by download-center.js -->
+                </div>
+                <div class="modal-footer bg-light border-0 py-3">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" id="downloadFromPreview">
+                        <i class="fas fa-download me-1"></i> Descargar Documento
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Request Document Modal -->
+    <div class="modal fade" id="requestModal" tabindex="-1" aria-labelledby="requestModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header bg-success text-white border-0 py-3">
+                    <h5 class="modal-title" id="requestModalLabel">
+                        <i class="fas fa-file-import me-2"></i>Solicitar Documento No Encontrado
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="documentRequestForm">
+                        <div class="mb-3">
+                            <label for="requesterName" class="form-label fw-semibold">Nombre Completo</label>
+                            <input type="text" class="form-control" id="requesterName" name="requesterName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="requesterEmail" class="form-label fw-semibold">Correo Electrónico</label>
+                            <input type="email" class="form-control" id="requesterEmail" name="requesterEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="requesterType" class="form-label fw-semibold">Tipo de Usuario</label>
+                            <select class="form-select" id="requesterType" name="requesterType" required>
+                                <option value="estudiante">Estudiante</option>
+                                <option value="padre">Padre de Familia / Tutor</option>
+                                <option value="docente">Docente</option>
+                                <option value="externo">Público General</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="documentName" class="form-label fw-semibold">Nombre del Documento Solicitado</label>
+                            <input type="text" class="form-control" id="documentName" name="documentName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="requestReason" class="form-label fw-semibold">Motivo de la Solicitud</label>
+                            <textarea class="form-control" id="requestReason" name="requestReason" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="urgencyLevel" class="form-label fw-semibold">Urgencia</label>
+                            <select class="form-select" id="urgencyLevel" name="urgencyLevel">
+                                <option value="normal">Normal (3-5 días hábiles)</option>
+                                <option value="alta">Alta (24-48 horas)</option>
+                                <option value="urgente">Urgente</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100 py-2 fw-semibold">
+                            <i class="fas fa-paper-plane me-2"></i>Enviar Solicitud
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

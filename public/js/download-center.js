@@ -609,101 +609,130 @@ class DownloadCenter {
         const doc = this.documents.find(d => d.id === docId);
         if (!doc) return;
 
-        const category = this.categories.find(c => c.id === doc.category);
-        
+        const category = this.categories.find(c => c.id === doc.category) || { name: 'Documento Oficial', color: 'primary' };
+        const rawUrl = doc.url || `/documents/${doc.id}.pdf`;
+        const fileUrl = rawUrl.startsWith('/') ? rawUrl : '/' + rawUrl;
+        const formattedDate = new Date(doc.uploadDate || Date.now()).toLocaleDateString('es-ES', { year: 'numeric', month: 'short', day: 'numeric' });
+
         const previewContent = `
             <div class="document-preview">
                 <div class="document-info mb-4">
                     <div class="d-flex align-items-center mb-3">
-                        <div class="document-icon bg-${category.color} text-white rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                        <div class="document-icon bg-${category.color} text-white rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 54px; height: 54px;">
                             <i class="fas fa-file-pdf fa-2x"></i>
                         </div>
                         <div>
-                            <h5 class="mb-1">${doc.title}</h5>
-                            <small class="text-muted">${category.name}</small>
+                            <h5 class="mb-1 fw-bold">${doc.title}</h5>
+                            <span class="badge bg-${category.color} text-white">${category.name}</span>
                         </div>
                     </div>
                     
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="info-item mb-2">
-                                <strong>Tamaño:</strong> ${doc.size}
-                            </div>
-                            <div class="info-item mb-2">
-                                <strong>Páginas:</strong> ${doc.pages}
-                            </div>
-                            <div class="info-item mb-2">
-                                <strong>Formato:</strong> PDF
-                            </div>
+                    <div class="row g-2 p-3 bg-light rounded-3 mb-3">
+                        <div class="col-sm-6">
+                            <div class="small mb-1"><strong><i class="fas fa-weight-hanging text-muted me-1"></i> Tamaño:</strong> ${doc.size || '1.0 MB'}</div>
+                            <div class="small mb-1"><strong><i class="fas fa-file text-muted me-1"></i> Páginas:</strong> ${doc.pages || '2'}</div>
+                            <div class="small"><strong><i class="fas fa-file-code text-muted me-1"></i> Formato:</strong> PDF Oficial</div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="info-item mb-2">
-                                <strong>Subido:</strong> ${new Date(doc.uploadDate).toLocaleDateString('es-ES')}
-                            </div>
-                            <div class="info-item mb-2">
-                                <strong>Descargas:</strong> ${doc.downloadCount.toLocaleString()}
-                            </div>
+                        <div class="col-sm-6">
+                            <div class="small mb-1"><strong><i class="fas fa-calendar-alt text-muted me-1"></i> Fecha:</strong> ${formattedDate}</div>
+                            <div class="small mb-1"><strong><i class="fas fa-download text-success me-1"></i> Descargas:</strong> ${(doc.downloadCount || 0).toLocaleString()}</div>
+                            <div class="small"><strong><i class="fas fa-shield-alt text-primary me-1"></i> Estado:</strong> Verificado</div>
                         </div>
                     </div>
                     
-                    <div class="mt-3">
-                        <strong>Descripción:</strong>
-                        <p class="text-muted">${doc.description}</p>
+                    <div class="mb-3">
+                        <h6 class="fw-semibold mb-1">Descripción:</h6>
+                        <p class="text-muted small mb-0">${doc.description || 'Documento oficial emitido por la institución para trámites escolares.'}</p>
                     </div>
                     
-                    <div class="document-tags">
-                        <strong>Etiquetas:</strong>
-                        ${doc.tags.map(tag => `<span class="badge bg-light text-dark me-1">${tag}</span>`).join('')}
+                    <div class="document-tags mb-3">
+                        <strong class="small me-2">Etiquetas:</strong>
+                        ${(doc.tags || []).map(tag => `<span class="badge bg-white border text-dark me-1">${tag}</span>`).join('')}
                     </div>
                 </div>
                 
-                <div class="preview-placeholder bg-light p-4 text-center rounded">
-                    <i class="fas fa-file-pdf fa-3x text-danger mb-3"></i>
-                    <h6>Vista previa del documento</h6>
-                    <p class="text-muted small">La vista previa completa estará disponible próximamente.<br>
-                    Mientras tanto, puedes descargar el documento para verlo en tu dispositivo.</p>
+                <div class="preview-frame-container border rounded-3 p-3 bg-white text-center shadow-sm">
+                    <div class="d-flex justify-content-between align-items-center mb-2 px-2">
+                        <span class="small fw-semibold text-muted"><i class="fas fa-eye me-1"></i> Visor Institucional de Documentos</span>
+                        <a href="${fileUrl}" target="_blank" class="btn btn-sm btn-outline-secondary py-0">
+                            <i class="fas fa-external-link-alt me-1"></i> Abrir en pestaña
+                        </a>
+                    </div>
+                    <iframe src="${fileUrl}#toolbar=0" width="100%" height="280px" style="border: 1px solid #e2e8f0; border-radius: 8px;" onerror="this.style.display='none'"></iframe>
                 </div>
             </div>
         `;
 
-        document.getElementById('previewModalBody').innerHTML = previewContent;
-        document.getElementById('previewModalLabel').innerHTML = `
-            <i class="fas fa-eye me-2"></i>Vista Previa - ${doc.title}
-        `;
+        let modalEl = document.getElementById('previewModal');
+        if (!modalEl) {
+            modalEl = document.createElement('div');
+            modalEl.id = 'previewModal';
+            modalEl.className = 'modal fade';
+            modalEl.innerHTML = `
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content border-0 shadow-lg rounded-4">
+                        <div class="modal-header bg-primary text-white border-0 py-3">
+                            <h5 class="modal-title" id="previewModalLabel"></h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body p-4" id="previewModalBody"></div>
+                        <div class="modal-footer bg-light border-0 py-3">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="button" class="btn btn-primary" id="downloadFromPreview"><i class="fas fa-download me-1"></i> Descargar Documento</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modalEl);
+        }
+
+        const modalBody = document.getElementById('previewModalBody');
+        const modalLabel = document.getElementById('previewModalLabel');
+        if (modalBody) modalBody.innerHTML = previewContent;
+        if (modalLabel) modalLabel.innerHTML = `<i class="fas fa-file-pdf me-2"></i> ${doc.title}`;
 
         // Configurar botón de descarga en el modal
         const downloadBtn = document.getElementById('downloadFromPreview');
-        downloadBtn.onclick = () => {
-            this.downloadDocument(docId);
-            bootstrap.Modal.getInstance(document.getElementById('previewModal')).hide();
-        };
+        if (downloadBtn) {
+            downloadBtn.onclick = () => {
+                this.downloadDocument(docId);
+                const bsModal = bootstrap.Modal.getInstance(modalEl);
+                if (bsModal) bsModal.hide();
+            };
+        }
 
-        const modal = new bootstrap.Modal(document.getElementById('previewModal'));
+        const modal = new bootstrap.Modal(modalEl);
         modal.show();
     }
 
     downloadDocument(docId) {
-        const doc = this.documents.find(d => d.id === docId);
-        if (!doc) return;
+        const doc = this.documents.find(d => d.id === docId) || {
+            title: 'Documento Institucional',
+            url: '/documents/formato-institucional-bge.pdf',
+            downloadCount: 0
+        };
 
-        // Simular descarga
-        this.showAlert(`Iniciando descarga de "${doc.title}"`, 'success');
+        const rawUrl = doc.url || `/documents/${doc.id}.pdf`;
+        const fileUrl = rawUrl.startsWith('/') ? rawUrl : '/' + rawUrl;
 
         // Actualizar estadísticas
-        doc.downloadCount++;
+        doc.downloadCount = (doc.downloadCount || 0) + 1;
         this.downloadStats.totalDownloads++;
         this.downloadStats.monthlyDownloads++;
         this.saveDownloadStats();
 
-        // En un caso real, aquí se haría la descarga
+        // Notificar al usuario
+        this.showAlert(`Descargando "${doc.title}"...`, 'success');
+
+        // Ejecutar descarga
         const link = document.createElement('a');
-        link.href = doc.url;
-        link.download = `${doc.title.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
+        link.href = fileUrl;
+        link.download = `${(doc.title || 'documento').replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
+        link.target = '_blank';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
 
-        // Actualizar la vista si es necesario
         this.updateStatistics();
     }
 

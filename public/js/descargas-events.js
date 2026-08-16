@@ -199,14 +199,17 @@
      * 📥 Descarga un documento por su ID
      */
     function downloadDocument(docId) {
-        
-
         // Llamar a downloadCenter si está disponible
         if (window.downloadCenter && typeof window.downloadCenter.downloadDocument === 'function') {
             window.downloadCenter.downloadDocument(docId);
         } else {
-            // Fallback
-            alert(`Descargando documento: ${docId}`);
+            const link = document.createElement('a');
+            link.href = `/documents/${docId}.pdf`;
+            link.download = `${docId}.pdf`;
+            link.target = '_blank';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
     }
 
