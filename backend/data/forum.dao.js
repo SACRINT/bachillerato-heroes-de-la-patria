@@ -205,8 +205,11 @@ class ForumDAO {
         await (0, database_1.executeQuery)(`INSERT INTO forum_reactions (user_id, post_id, reaction_type) VALUES ($1, $2, $3)`, [userId, postId, reactionType]);
     }
     static async updateLikeCount(type, id, delta) {
-        const table = type === 'topic' ? 'forum_topics' : 'forum_posts';
-        await (0, database_1.executeQuery)(`UPDATE ${table} SET like_count = GREATEST(0, like_count + $1) WHERE id = $2`, [delta, id]);
+        if (type === 'topic') {
+            await (0, database_1.executeQuery)('UPDATE forum_topics SET like_count = GREATEST(0, like_count + $1) WHERE id = $2', [delta, id]);
+        } else {
+            await (0, database_1.executeQuery)('UPDATE forum_posts SET like_count = GREATEST(0, like_count + $1) WHERE id = $2', [delta, id]);
+        }
     }
     // ==========================================
     // SUSCRIPCIONES
@@ -224,11 +227,12 @@ class ForumDAO {
     }
     static async getUserSubscriptions(userId, limit = 50) {
         const query = `
-            SELECT s.*, t.title, t.slug, t.reply_count, t.last_reply_at
-            FROM forum_subscriptions s
-            JOIN forum_topics t ON s.topic_id = t.id
-            WHERE s.user_id = $1 AND s.is_muted = false
-            ORDER BY t.last_reply_at DESC NULLS LAST LIMIT $2
+            SELECT fs.*, t.title as topic_title, t.slug as topic_slug
+            FROM forum_subscriptions fs
+            JOIN forum_topics t ON fs.topic_id = t.id
+            WHERE fs.user_id = $1 AND NOT fs.is_muted
+            ORDER BY fs.created_at DESC
+            LIMIT $2
         `;
         return (0, database_1.executeQuery)(query, [userId, limit]);
     }
@@ -317,9 +321,15 @@ class ForumDAO {
         await (0, database_1.executeQuery)(`INSERT INTO forum_user_stats (user_id) VALUES ($1) ON CONFLICT (user_id) DO NOTHING`, [userId]);
     }
     static async updateUserStats(userId, field, increment = 1) {
-        // Warning: Direct string interpolation for field name. Ensure field name is safe.
-        // In this context, field comes from controlled source in service.
-        await (0, database_1.executeQuery)(`UPDATE forum_user_stats SET ${field} = ${field} + $1, last_activity_at = NOW(), updated_at = NOW() WHERE user_id = $2`, [increment, userId]);
+        const allowedFields = {
+            topic_count: 'topic_count',
+            post_count: 'post_count',
+            like_count: 'like_count',
+            best_answer_count: 'best_answer_count',
+            reputation_points: 'reputation_points'
+        };
+        const safeField = allowedFields[field] || 'reputation_points';
+        await (0, database_1.executeQuery)(`UPDATE forum_user_stats SET ${safeField} = ${safeField} + $1, last_activity_at = NOW(), updated_at = NOW() WHERE user_id = $2`, [increment, userId]);
     }
     static async getUserStats(userId) {
         const results = await (0, database_1.executeQuery)(`SELECT * FROM forum_user_stats WHERE user_id = $1`, [userId]);

@@ -7,7 +7,7 @@
 
 const express = require('express');
 const router = express.Router();
-const searchService = require('../services/search-service.js');
+const searchService = require('../services/search.service');
 const { authenticateToken } = require('../middleware/auth.js');
 
 /**

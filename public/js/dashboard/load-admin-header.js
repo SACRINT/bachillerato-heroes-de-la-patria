@@ -11,7 +11,7 @@
         if (!response.ok) throw new Error('Error al cargar header');
 
         const headerHTML = await response.text();
-        document.getElementById('main-header').innerHTML = headerHTML;
+        document.getElementById('main-header').innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(headerHTML) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(headerHTML) : headerHTML));
 
         // INICIALIZAR DROPDOWNS DE BOOTSTRAP DINÁMICAMENTE
         var dropdownElementList = [].slice.call(document.querySelectorAll('[data-bs-toggle="dropdown"]'));

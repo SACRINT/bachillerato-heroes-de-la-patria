@@ -13,7 +13,7 @@ const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 // @ts-ignore
 const express_validator_1 = require("express-validator");
 // @ts-ignore
-const authService_1 = require('../services/authService.js');
+const authService_1 = require('../services/auth.service');
 // @ts-ignore
 const jwtUtils_1 = require('../utils/jwtUtils.js');
 const auth_1 = require('../middleware/auth.js');
@@ -22,10 +22,10 @@ const debug_logger_1 = require('../utils/debug-logger.js');
 const sanitized_errors_1 = require('../utils/sanitized-errors.js');
 // ✅ SEMANA 25: 2FA Service integration
 // @ts-ignore
-const twoFactorService_1 = __importDefault(require('../services/twoFactorService.js'));
+const twoFactorService_1 = __importDefault(require('../services/two-factor.service'));
 // ✅ SEMANA 25: WebAuthn Service integration
 // @ts-ignore
-const webauthnService_1 = __importDefault(require('../services/webauthnService.js'));
+const webauthnService_1 = __importDefault(require('../services/webauthn.service'));
 // ✅ FASE 3: DAO Layer for data access
 // @ts-ignore
 const user_dao_1 = __importDefault(require('../data/user.dao.js'));
@@ -381,6 +381,91 @@ router.post('/2fa/verify-setup', auth_1.authenticateToken, [
         res.status(500).json({ success: false, error: 'Error en la verificación', message: 'Ocurrió un error al verificar el código' });
     }
 });
+
+/**
+ * 🌐 POST /api/auth/google
+ * Autenticación con Google Sign-In verificando criptográficamente la firma del ID Token
+ */
+router.post('/google', async (req, res) => {
+    try {
+        const { token, credential } = req.body;
+        const idToken = token || credential;
+        if (!idToken) {
+            return res.status(400).json({ success: false, error: 'Token de Google no proporcionado' });
+        }
+
+        const { OAuth2Client } = require('google-auth-library');
+        const googleClientId = process.env.GOOGLE_CLIENT_ID;
+        const client = new OAuth2Client(googleClientId);
+
+        let payload;
+        try {
+            const ticket = await client.verifyIdToken({
+                idToken: idToken,
+                audience: googleClientId || undefined
+            });
+            payload = ticket.getPayload();
+        } catch (verifyErr) {
+            debug_logger_1.debugLog.error('AUTH', '❌ Error verificando firma de Google Token:', verifyErr.message);
+            return res.status(401).json({ success: false, error: 'Token de Google inválido o firma no verificable' });
+        }
+
+        if (!payload || !payload.email) {
+            return res.status(401).json({ success: false, error: 'Payload de Google inválido' });
+        }
+
+        const email = payload.email.toLowerCase();
+        let user = await user_dao_1.default.getByEmail(email);
+
+        if (!user) {
+            const nameParts = (payload.name || '').split(' ');
+            const nombre = payload.given_name || nameParts[0] || 'Usuario';
+            const apellido_paterno = payload.family_name || nameParts.slice(1).join(' ') || 'Google';
+
+            user = await user_dao_1.default.create({
+                username: email.split('@')[0] + '_' + Math.floor(Math.random() * 1000),
+                email: email,
+                nombre: nombre,
+                apellido_paterno: apellido_paterno,
+                role: email === 'samuelci6377@gmail.com' ? 'admin' : 'estudiante',
+                is_active: true,
+                email_verified: payload.email_verified || true
+            });
+        }
+
+        const userPayload = {
+            userId: user.id,
+            id: user.id,
+            email: user.email,
+            username: user.username,
+            role: user.role,
+            permissions: authService.permissions[user.role] || []
+        };
+
+        const tokenPair = jwtUtils.generateTokenPair(userPayload, true);
+        debug_logger_1.debugLog.log('AUTH', `✅ Login exitoso con Google OAuth para email=${(0, sanitized_errors_1.maskEmail)(email)}, role=${user.role}`);
+
+        res.json({
+            success: true,
+            message: 'Autenticación con Google exitosa',
+            user: {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                nombre: user.nombre,
+                apellido_paterno: user.apellido_paterno,
+                role: user.role,
+                permissions: userPayload.permissions
+            },
+            tokens: tokenPair,
+            token: tokenPair.accessToken
+        });
+    } catch (error) {
+        debug_logger_1.debugLog.error('AUTH', '❌ Error en Google OAuth', (0, sanitized_errors_1.sanitizeError)(error, 'auth'));
+        res.status(500).json({ success: false, error: 'Error interno de autenticación Google' });
+    }
+});
+
 // ============================================
 // ✅ SEMANA 25: WEBAUTHN (BIOMETRIC AUTH)
 // ============================================

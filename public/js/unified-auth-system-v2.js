@@ -373,7 +373,7 @@ class UnifiedAuthSystem {
 
         } finally {
             biometricBtn.disabled = false;
-            biometricBtn.innerHTML = originalHTML;
+            biometricBtn.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(originalHTML) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(originalHTML) : originalHTML));
         }
     }
 
@@ -1734,7 +1734,7 @@ class ManualLoginManager {
 
         if (submitBtn) {
             submitBtn.disabled = isLoading;
-            submitBtn.innerHTML = isLoading
+            submitBtn.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(isLoading) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(isLoading) : isLoading))
                 ? '<span class="spinner-border spinner-border-sm me-2"></span>Registrando...'
                 : '<i class="fas fa-user-plus me-2"></i>Crear Cuenta';
         }
@@ -1755,7 +1755,7 @@ class ManualLoginManager {
 
         if (submitBtn) {
             submitBtn.disabled = isLoading;
-            submitBtn.innerHTML = isLoading
+            submitBtn.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(isLoading) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(isLoading) : isLoading))
                 ? '<span class="spinner-border spinner-border-sm me-2"></span>Verificando...'
                 : '<i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión';
         }

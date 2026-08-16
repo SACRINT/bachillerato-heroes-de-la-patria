@@ -28,19 +28,35 @@ const router = express_1.default.Router();
 router.get('/auth/check', (req, res) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
-    if (token) {
+    if (!token) {
+        return res.status(401).json({ success: false, isAuthenticated: false, message: 'Token no proporcionado' });
+    }
+
+    const jwt = require('jsonwebtoken');
+    const jwtSecret = process.env.JWT_SECRET || 'bge-heroes-secret-key-2026';
+
+    try {
+        const decoded = jwt.verify(token, jwtSecret);
+        if (!decoded || !decoded.id) {
+            return res.status(401).json({ success: false, isAuthenticated: false, message: 'Token inválido' });
+        }
         return res.json({
             success: true,
             isAuthenticated: true,
             user: {
-                id: 1,
-                role: 'padre',
-                name: 'Tutor / Padre de Familia',
-                email: 'padre@bge.edu.mx'
+                id: decoded.id,
+                role: decoded.role || 'padre',
+                name: decoded.nombre || decoded.name || 'Tutor / Padre de Familia',
+                email: decoded.email || 'padre@bge.edu.mx'
             }
         });
+    } catch (err) {
+        return res.status(401).json({
+            success: false,
+            isAuthenticated: false,
+            message: 'Token inválido o expirado'
+        });
     }
-    return res.json({ success: false, isAuthenticated: false });
 });
 
 /**
@@ -77,7 +93,7 @@ const handleParentLogin = async (req, res) => {
             const match = await bcrypt.compare(password, user.password);
             if (match) {
                 const token = jwt.sign(
-                    { id: user.id, email: user.email, role: user.role },
+                    { id: user.id, email: user.email, role: user.role, nombre: user.nombre },
                     jwtSecret,
                     { expiresIn: '24h' }
                 );
@@ -111,7 +127,7 @@ const handleParentLogin = async (req, res) => {
                 const match = await bcrypt.compare(password, parent.password);
                 if (match) {
                     const token = jwt.sign(
-                        { id: parent.id, email: parent.email, role: 'padre' },
+                        { id: parent.id, email: parent.email, role: 'padre', nombre: parent.nombre },
                         jwtSecret,
                         { expiresIn: '24h' }
                     );
@@ -135,27 +151,6 @@ const handleParentLogin = async (req, res) => {
         console.warn('[PARENTS AUTH] DB error:', dbErr.message);
     } finally {
         if (client) client.release();
-    }
-
-    // Fallback inteligente para acceso de supervisión/demo
-    if (cleanEmail.includes('admin') || cleanEmail === 'samuelci6377@gmail.com' || cleanEmail.includes('@')) {
-        const token = jwt.sign(
-            { id: 999, email: cleanEmail, role: 'admin' },
-            jwtSecret,
-            { expiresIn: '24h' }
-        );
-        return res.json({
-            success: true,
-            token,
-            parent: {
-                id: 999,
-                nombre: cleanEmail === 'samuelci6377@gmail.com' ? 'Samuel (Administrador)' : 'Tutor / Padre de Familia',
-                email: cleanEmail,
-                role: 'admin',
-                student_id: 'EST-2026-001'
-            },
-            message: 'Acceso concedido al Portal de Padres'
-        });
     }
 
     return res.status(401).json({

@@ -88,7 +88,7 @@ function setupEventListeners() {
                 showAlert(`Error al descargar la boleta: ${error.message}`, 'danger');
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = originalText;
+                btn.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(originalText) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(originalText) : originalText));
             }
         });
     });
@@ -174,7 +174,7 @@ function setupEventListeners() {
             showAlert(`Error al descargar la boleta: ${error.message}`, 'danger');
         } finally {
             btn.disabled = false;
-            btn.innerHTML = originalText;
+            btn.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(originalText) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(originalText) : originalText));
         }
     }
 }

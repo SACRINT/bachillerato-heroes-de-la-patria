@@ -115,17 +115,27 @@ class AuditDAO {
     }
 
     static async cleanup(daysToKeep: number): Promise<number> {
-        const result = await pool.query(`DELETE FROM audit_logs WHERE created_at < NOW() - INTERVAL '${daysToKeep} days'`);
+        const days = Number(daysToKeep) || 90;
+        const result = await pool.query(`DELETE FROM audit_logs WHERE created_at < NOW() - make_interval(days => $1)`, [days]);
         return result.rowCount || 0;
     }
 
     static async cleanupTable(tableName: string): Promise<number> {
-        const result = await pool.query(`DELETE FROM ${tableName} WHERE created_at < NOW() - INTERVAL '24 hours'`);
-        return result.rowCount || 0;
+        if (tableName === 'logs_sistema') {
+            const result = await pool.query("DELETE FROM logs_sistema WHERE created_at < NOW() - INTERVAL '24 hours'");
+            return result.rowCount || 0;
+        } else if (tableName === 'temp_logs') {
+            const result = await pool.query("DELETE FROM temp_logs WHERE created_at < NOW() - INTERVAL '24 hours'");
+            return result.rowCount || 0;
+        } else {
+            const result = await pool.query("DELETE FROM audit_logs WHERE created_at < NOW() - INTERVAL '24 hours'");
+            return result.rowCount || 0;
+        }
     }
 
     static async cleanupSystemLogs(retentionDays: number): Promise<number> {
-        const result = await pool.query(`DELETE FROM logs_sistema WHERE created_at < NOW() - INTERVAL '${retentionDays} days'`);
+        const days = Number(retentionDays) || 30;
+        const result = await pool.query(`DELETE FROM logs_sistema WHERE created_at < NOW() - make_interval(days => $1)`, [days]);
         return result.rowCount || 0;
     }
 }

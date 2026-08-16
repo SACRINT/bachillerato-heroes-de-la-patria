@@ -137,7 +137,7 @@ class CoordinatorGradesDashboard {
             </div>
         `;
 
-        container.innerHTML = html;
+        container.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(html) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(html) : html));
 
         // Setup checkbox handlers
         document.getElementById('select-all')?.addEventListener('change', (e) => {
@@ -352,7 +352,7 @@ class CoordinatorGradesDashboard {
             </div>
         `).join('');
 
-        container.innerHTML = html;
+        container.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(html) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(html) : html));
     }
 
     getAlertTypeLabel(type) {

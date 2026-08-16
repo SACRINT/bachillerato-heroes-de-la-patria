@@ -5,14 +5,14 @@
 
 const StudentService = require('../../services/student.service');
 const StudentDAO = require('../../data/student.dao');
-const EventBus = require('../../services/eventBus.service');
+const EventBus = require('../../services/event-bus.service');
 
 // Mock del DAO
 jest.mock('../../data/student.dao');
 
 // Mock de EventBus con instancia persistente
 const mockEventBusInstance = { emit: jest.fn() };
-jest.mock('../../services/eventBus.service', () => ({
+jest.mock('../../services/event-bus.service', () => ({
     getInstance: () => mockEventBusInstance
 }));
 

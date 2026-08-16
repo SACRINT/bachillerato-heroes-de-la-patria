@@ -28,7 +28,7 @@ const handleValidationErrors = (req, res, next) => {
 // Intentar cargar el servicio
 let tournamentsService;
 try {
-    tournamentsService = require('../services/TournamentsService.js');
+    tournamentsService = require('../services/tournaments.service');
 } catch (error) {
     console.log('[TOURNAMENTS] Servicio no disponible, usando mock');
     tournamentsService = null;

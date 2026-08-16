@@ -9,7 +9,7 @@ import rateLimit from 'express-rate-limit';
 // @ts-ignore
 import { body, validationResult } from 'express-validator';
 // @ts-ignore
-import { getAuthService } from '../services/authService';
+import { getAuthService } from '../services/auth.service';
 // @ts-ignore
 import { getJWTUtils } from '../utils/jwtUtils';
 import { authenticateToken, requireAdmin, requireRole } from '../middleware/auth';
@@ -20,11 +20,11 @@ import { sanitizeError, maskEmail, maskToken } from '../utils/sanitized-errors';
 
 // ✅ SEMANA 25: 2FA Service integration
 // @ts-ignore
-import twoFactorService from '../services/twoFactorService';
+import twoFactorService from '../services/two-factor.service';
 
 // ✅ SEMANA 25: WebAuthn Service integration
 // @ts-ignore
-import webauthnService from '../services/webauthnService';
+import webauthnService from '../services/webauthn.service';
 
 // ✅ FASE 3: DAO Layer for data access
 // @ts-ignore

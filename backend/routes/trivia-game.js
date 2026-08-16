@@ -8,6 +8,7 @@
 const express = require('express');
 const router = express.Router();
 const { authenticateToken } = require('../middleware/auth.js');
+const GamificationDAO = require('../data/gamification.dao.js');
 const { pool } = require('../config/database.js');
 
 // =============================================
@@ -437,49 +438,25 @@ function getAchievements(game) {
 
 // =============================================
 // GET /api/games/trivia/leaderboard
+// =============================================
+// GET /api/games/trivia/leaderboard
 // Tabla de líderes
 // =============================================
 router.get('/leaderboard', async (req, res) => {
     try {
         const { period = 'weekly', limit = 10 } = req.query;
-
-        let dateFilter = '';
-        if (period === 'daily') {
-            dateFilter = "AND created_at >= NOW() - INTERVAL '1 day'";
-        } else if (period === 'weekly') {
-            dateFilter = "AND created_at >= NOW() - INTERVAL '7 days'";
-        } else if (period === 'monthly') {
-            dateFilter = "AND created_at >= NOW() - INTERVAL '30 days'";
-        }
-
         let leaderboard = [];
 
         try {
-            const result = await pool.query(
-                `SELECT 
-                    u.id,
-                    u.nombre || ' ' || COALESCE(LEFT(u.apellido_paterno, 1) || '.', '') as display_name,
-                    COALESCE(SUM(gs.score), 0) as total_score,
-                    COALESCE(SUM(gs.coins_earned), 0) as total_coins,
-                    COUNT(gs.id) as games_played
-                 FROM usuarios u
-                 LEFT JOIN game_sessions gs ON u.id = gs.user_id AND gs.game_type = 'trivia' ${dateFilter}
-                 GROUP BY u.id, u.nombre, u.apellido_paterno
-                 HAVING COUNT(gs.id) > 0
-                 ORDER BY total_score DESC
-                 LIMIT $1`,
-                [parseInt(limit)]
-            );
-            leaderboard = result.rows;
+            leaderboard = await GamificationDAO.getTriviaLeaderboard(period, parseInt(limit));
         } catch (e) {
-            // Tabla puede no existir
             console.log('[TRIVIA] No se pudo obtener leaderboard:', e.message);
         }
 
         res.json({
             success: true,
             period,
-            leaderboard,
+            leaderboard: leaderboard || [],
             updated_at: new Date().toISOString()
         });
 
@@ -507,27 +484,16 @@ router.get('/stats', authenticateToken, async (req, res) => {
         };
 
         try {
-            const result = await pool.query(
-                `SELECT 
-                    COUNT(*) as games_played,
-                    COALESCE(SUM(score), 0) as total_score,
-                    COALESCE(SUM(coins_earned), 0) as total_coins,
-                    COALESCE(AVG((metadata->>'correct')::int * 100.0 / NULLIF((metadata->>'total')::int, 0)), 0) as avg_accuracy,
-                    COALESCE(MAX((metadata->>'max_streak')::int), 0) as best_streak
-                 FROM game_sessions
-                 WHERE user_id = $1 AND game_type = 'trivia'`,
-                [userId]
-            );
-
-            if (result.rows[0]) {
-                stats.gamesPlayed = parseInt(result.rows[0].games_played) || 0;
-                stats.totalScore = parseInt(result.rows[0].total_score) || 0;
-                stats.totalCoins = parseInt(result.rows[0].total_coins) || 0;
-                stats.averageAccuracy = Math.round(parseFloat(result.rows[0].avg_accuracy) || 0);
-                stats.bestStreak = parseInt(result.rows[0].best_streak) || 0;
+            const row = await GamificationDAO.getTriviaStats(userId);
+            if (row) {
+                stats.gamesPlayed = parseInt(row.games_played) || 0;
+                stats.totalScore = parseInt(row.total_score) || 0;
+                stats.totalCoins = parseInt(row.total_coins) || 0;
+                stats.averageAccuracy = Math.round(parseFloat(row.avg_accuracy) || 0);
+                stats.bestStreak = parseInt(row.best_streak) || 0;
             }
         } catch (e) {
-            // Tabla puede no existir
+            // Error controlado
         }
 
         res.json({

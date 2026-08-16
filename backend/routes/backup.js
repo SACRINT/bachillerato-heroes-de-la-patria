@@ -8,7 +8,7 @@ const express = require('express');
 const { debugLog } = require('../utils/debug-logger.js');
 const { sanitizeError, maskEmail } = require('../utils/sanitized-errors.js');
 const { requireAdmin } = require('../middleware/auth.js');
-const { getBackupService } = require('../services/backupService.js');
+const { getBackupService } = require('../services/backup.service');
 const router = express.Router();
 
 // Aplicar autenticación de admin a todas las rutas de backup

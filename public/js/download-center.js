@@ -688,7 +688,7 @@ class DownloadCenter {
 
         const modalBody = document.getElementById('previewModalBody');
         const modalLabel = document.getElementById('previewModalLabel');
-        if (modalBody) modalBody.innerHTML = previewContent;
+        if (modalBody) modalBody.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(previewContent) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(previewContent) : previewContent));
         if (modalLabel) modalLabel.innerHTML = `<i class="fas fa-file-pdf me-2"></i> ${doc.title}`;
 
         // Configurar botón de descarga en el modal

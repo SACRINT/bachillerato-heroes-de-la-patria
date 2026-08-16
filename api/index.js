@@ -196,8 +196,6 @@ try { mountRouteSafe('/api/notifications', require('../backend/routes/notificati
 try { mountRouteSafe('/api/settings', require('../backend/routes/settings.js')); } catch (e) { console.warn('[ROUTER] settings:', e.message); }
 try { mountRouteSafe('/api/reports', require('../backend/routes/reports.js')); } catch (e) { console.warn('[ROUTER] reports:', e.message); }
 try { mountRouteSafe('/api/analytics', require('../backend/routes/analytics.js')); } catch (e) { console.warn('[ROUTER] analytics:', e.message); }
-try { mountRouteSafe('/api/iacoins', require('../backend/routes/iacoins.js')); } catch (e) { console.warn('[ROUTER] iacoins:', e.message); }
-try { mountRouteSafe('/api/citas', require('../backend/routes/citas.js')); } catch (e) { console.warn('[ROUTER] citas:', e.message); }
 try { mountRouteSafe('/api/pendientes-aprobacion', require('../backend/routes/pendientes-aprobacion.js')); } catch (e) { console.warn('[ROUTER] pendientes-aprobacion:', e.message); }
 try { mountRouteSafe('/api/polls', require('../backend/routes/polls.js')); } catch (e) { console.warn('[ROUTER] polls:', e.message); }
 try { mountRouteSafe('/api/quejas', require('../backend/routes/quejas.js')); } catch (e) { console.warn('[ROUTER] quejas:', e.message); }
@@ -206,95 +204,28 @@ try { mountRouteSafe('/api/mentorship', require('../backend/routes/mentorship.js
 try { mountRouteSafe('/api/support-tickets', require('../backend/routes/support-tickets.js')); } catch (e) { console.warn('[ROUTER] support-tickets:', e.message); }
 try { mountRouteSafe('/api/messaging', require('../backend/routes/messaging.js')); } catch (e) { console.warn('[ROUTER] messaging:', e.message); }
 try { mountRouteSafe('/api/digital-library', require('../backend/routes/digital-library.js')); } catch (e) { console.warn('[ROUTER] digital-library:', e.message); }
-try { mountRouteSafe('/api/store', require('../backend/routes/store.js')); } catch (e) { console.warn('[ROUTER] store:', e.message); }
-try { mountRouteSafe('/api/challenges', require('../backend/routes/challenges.js')); } catch (e) { console.warn('[ROUTER] challenges:', e.message); }
 try { mountRouteSafe('/api/groups', require('../backend/routes/study-plans.js')); } catch (e) { console.warn('[ROUTER] groups:', e.message); }
 try { mountRouteSafe('/api/study-groups', require('../backend/routes/study-groups.js')); } catch (e) { console.warn('[ROUTER] study-groups:', e.message); }
 try { mountRouteSafe('/api/competitions', require('../backend/routes/team-competitions.js')); } catch (e) { console.warn('[ROUTER] competitions:', e.message); }
 try { mountRouteSafe('/api/community', require('../backend/routes/community-forums.js')); } catch (e) { console.warn('[ROUTER] community:', e.message); }
+
+// 6. Gamificación, Retos, Juegos y Economía (Paridad Vercel ↔ Local)
+try { mountRouteSafe('/api/store', require('../backend/routes/store.js')); } catch (e) { console.warn('[ROUTER] store:', e.message); }
+try { mountRouteSafe('/api/challenges', require('../backend/routes/challenges.js')); } catch (e) { console.warn('[ROUTER] challenges:', e.message); }
 try { mountRouteSafe('/api/wallet', require('../backend/routes/wallet.js')); } catch (e) { console.warn('[ROUTER] wallet:', e.message); }
+try { mountRouteSafe('/api/iacoins', require('../backend/routes/iacoins.js')); } catch (e) { console.warn('[ROUTER] iacoins:', e.message); }
+try { mountRouteSafe('/api/gamification', require('../backend/routes/gamification.js')); } catch (e) { console.warn('[ROUTER] gamification:', e.message); }
+try { mountRouteSafe('/api/gamification-ext', require('../backend/routes/gamification-extended.js')); } catch (e) { console.warn('[ROUTER] gamification-ext:', e.message); }
 try { mountRouteSafe('/api/games/trivia', require('../backend/routes/trivia-game.js')); } catch (e) { console.warn('[ROUTER] games/trivia:', e.message); }
 try { mountRouteSafe('/api/trivia', require('../backend/routes/trivia-game.js')); } catch (e) { console.warn('[ROUTER] trivia:', e.message); }
-try { mountRouteSafe('/api/parents', require('../backend/routes/parents.js')); } catch (e) { console.warn('[ROUTER] parents:', e.message); }
+try { mountRouteSafe('/api/games/concepts', require('../backend/routes/concept-builder.js')); } catch (e) { console.warn('[ROUTER] games/concepts:', e.message); }
+try { mountRouteSafe('/api/ar', require('../backend/routes/ar-experiences.js')); } catch (e) { console.warn('[ROUTER] ar:', e.message); }
+try { mountRouteSafe('/api/labs', require('../backend/routes/virtual-labs.js')); } catch (e) { console.warn('[ROUTER] labs:', e.message); }
 
 // Logout universal
 app.post('/api/auth/logout', (req, res) => {
     res.json({ success: true, message: 'Sesión cerrada correctamente' });
 });
-
-// Parents auth check universal
-app.get('/api/parents/auth/check', (req, res) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-    if (token) {
-        return res.json({ success: true, isAuthenticated: true, user: { role: 'padre', name: 'Tutor / Padre de Familia' } });
-    }
-    return res.json({ success: false, isAuthenticated: false });
-});
-
-// Parents login endpoint universal
-const handleVercelParentLogin = async (req, res) => {
-    const { email, password } = req.body;
-    if (!email || !password) {
-        return res.status(400).json({ success: false, message: 'Email y contraseña requeridos' });
-    }
-
-    const cleanEmail = email.trim().toLowerCase();
-    const jwt = require('jsonwebtoken');
-    const jwtSecret = process.env.JWT_SECRET || 'bge-heroes-secret-key-2026';
-
-    try {
-        const { Pool } = require('pg');
-        const pool = new Pool({
-            connectionString: process.env.DATABASE_URL,
-            ssl: { rejectUnauthorized: false }
-        });
-        const client = await pool.connect();
-        try {
-            const userRes = await client.query('SELECT id, email, password, nombre, role FROM users WHERE LOWER(email) = $1 LIMIT 1', [cleanEmail]);
-            if (userRes.rows.length > 0) {
-                const user = userRes.rows[0];
-                const bcrypt = require('bcryptjs');
-                const match = await bcrypt.compare(password, user.password);
-                if (match) {
-                    const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, jwtSecret, { expiresIn: '24h' });
-                    return res.json({
-                        success: true,
-                        token,
-                        parent: {
-                            id: user.id,
-                            nombre: user.nombre || 'Usuario Autorizado',
-                            email: user.email,
-                            role: user.role,
-                            student_id: 'EST-2026-001'
-                        },
-                        message: 'Inicio de sesión exitoso'
-                    });
-                }
-            }
-        } finally {
-            client.release();
-        }
-    } catch (e) {}
-
-    // Fallback inteligente para acceso admin / demo
-    const token = jwt.sign({ id: 999, email: cleanEmail, role: 'admin' }, jwtSecret, { expiresIn: '24h' });
-    return res.json({
-        success: true,
-        token,
-        parent: {
-            id: 999,
-            nombre: cleanEmail === 'samuelci6377@gmail.com' ? 'Samuel (Administrador)' : 'Tutor / Padre de Familia',
-            email: cleanEmail,
-            role: 'admin',
-            student_id: 'EST-2026-001'
-        },
-        message: 'Acceso concedido al Portal de Padres'
-    });
-};
-
-app.post('/api/parents/auth/login', handleVercelParentLogin);
-app.post('/api/parents/login', handleVercelParentLogin);
 
 // Parents my-students endpoint
 app.get('/api/parents/my-students', (req, res) => {

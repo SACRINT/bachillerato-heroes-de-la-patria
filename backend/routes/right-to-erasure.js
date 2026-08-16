@@ -14,7 +14,7 @@
 
 const express = require('express');
 const router = express.Router();
-const erasureService = require('../services/right-to-erasure-service.js');
+const erasureService = require('../services/gdpr.service');
 const { authenticateJWT, requireRole } = require('../middleware/auth.js');
 const rateLimit = require('express-rate-limit');
 const devLogger = require('../utils/devLogger.js');

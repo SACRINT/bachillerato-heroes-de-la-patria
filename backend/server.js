@@ -258,7 +258,7 @@ const schedulerService = require('./services/schedulerService'); // Tareas progr
 const dataRetentionService = require('./services/dataRetentionService'); // Lógica de retención de datos (GDPR)
 
 // ✨ NUEVA ARQUITECTURA - Event-Driven Services (SEMANAS 1-12 REFACTORIZACIÓN)
-const eventBusService = require('./services/eventBus.service');
+const eventBusService = require('./services/event-bus.service');
 const NotificationSubscriber = require('./subscribers/notification-subscriber');
 const AnalyticsSubscriber = require('./subscribers/analytics-subscriber');
 
@@ -386,13 +386,24 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
 
-// Session Configuration - SESSION_SECRET con fallback para Vercel
+// Security Environment Check: JWT_SECRET & SESSION_SECRET
+if (process.env.NODE_ENV === 'production') {
+    if (!process.env.JWT_SECRET) {
+        devLogger.error('❌ FATAL: JWT_SECRET no configurada en entorno de producción. Abortando inicio por seguridad.');
+        process.exit(1);
+    }
+    if (!process.env.SESSION_SECRET) {
+        devLogger.error('❌ FATAL: SESSION_SECRET no configurada en entorno de producción. Abortando inicio por seguridad.');
+        process.exit(1);
+    }
+}
+
+// Session Configuration
 let SESSION_SECRET = process.env.SESSION_SECRET;
 if (!SESSION_SECRET) {
-    devLogger.warn('⚠️ WARNING: SESSION_SECRET no configurada. Usando fallback temporal para Vercel.');
-    // Generar fallback seguro para development/Vercel
-    SESSION_SECRET = process.env.JWT_SECRET ||
-        'fallback-session-secret-' + Date.now() + '-change-in-production';
+    devLogger.warn('⚠️ WARNING: SESSION_SECRET no configurada. Generando secreto seguro para desarrollo.');
+    const crypto = require('crypto');
+    SESSION_SECRET = process.env.JWT_SECRET || crypto.randomBytes(32).toString('hex');
 }
 
 // Configurar store de sesiones con PostgreSQL

@@ -18,7 +18,7 @@ const BACKEND_FILES = [
   'backend/routes/approvals.js',
   'backend/middleware/auth.js',
   'backend/routes/uploads.js',
-  'backend/services/notificationService.js'
+  'backend/services/notification.service'
 ];
 
 function containsSensitiveData(line) {

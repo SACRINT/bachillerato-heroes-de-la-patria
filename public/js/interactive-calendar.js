@@ -447,7 +447,7 @@ class InteractiveCalendar {
 
         calendarHTML += '</div></div>';
         // El contenido del calendario es generado internamente y es seguro
-        calendarContainer.innerHTML = calendarHTML;
+        calendarContainer.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(calendarHTML) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(calendarHTML) : calendarHTML));
     }
 
     renderEventsList() {
@@ -537,7 +537,7 @@ class InteractiveCalendar {
         }
 
         // El contenido de la lista es generado internamente y es seguro
-        listContainer.innerHTML = listHTML;
+        listContainer.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(listHTML) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(listHTML) : listHTML));
     }
 
     getEventsForDate(date) {

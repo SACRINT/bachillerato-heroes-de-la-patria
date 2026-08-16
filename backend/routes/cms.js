@@ -13,7 +13,7 @@ const { authenticateToken, requireRole } = require('../middleware/auth.js');
 
 // Importar servicios
 const cmsService = require('../services/cmsService.js');
-const uploadService = require('../services/uploadService.js');
+const uploadService = require('../services/upload.service');
 
 // ============================================
 // MIDDLEWARE DE CMS

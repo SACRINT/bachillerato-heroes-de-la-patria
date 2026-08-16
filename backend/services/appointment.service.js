@@ -7,7 +7,7 @@
  */
 
 const AppointmentDAO = require('../data/appointment.dao.js');
-const EventBus = require('./eventBus.service.js').getInstance();
+const EventBus = require('./event-bus.service').getInstance();
 const NotificationService = require('./notification.service.js');
 const devLogger = require('../utils/devLogger.js');
 const crypto = require('crypto');

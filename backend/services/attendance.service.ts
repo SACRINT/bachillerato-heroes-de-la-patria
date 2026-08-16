@@ -11,7 +11,7 @@ import { AttendanceRow, AttendanceFilters, AttendanceRate, BulkAttendanceRecord 
 import devLogger from '../utils/devLogger';
 
 // EventBus import - using dynamic require for JS module compatibility
-const EventBus = require('./eventBus.service').getInstance();
+const EventBus = require('./event-bus.service').getInstance();
 
 // =====================================================
 // INTERFACES

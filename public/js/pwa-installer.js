@@ -719,7 +719,7 @@ class PWAInstaller {
         // Mostrar modal con instrucciones
         const modal = this.installModal;
         if (modal) {
-            modal.querySelector('.pwa-modal-body').innerHTML = instructions;
+            modal.querySelector('.pwa-modal-body').innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(instructions) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(instructions) : instructions));
             modal.querySelector('.pwa-btn-primary').style.display = 'none';
             modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';

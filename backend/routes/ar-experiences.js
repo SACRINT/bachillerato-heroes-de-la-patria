@@ -41,6 +41,7 @@
 const express = require('express');
 const router = express.Router();
 const { authenticateToken } = require('../middleware/auth.js');
+const GamificationDAO = require('../data/gamification.dao.js');
 const { pool } = require('../config/database.js');
 
 // Configuración de experiencias AR
@@ -349,7 +350,7 @@ router.get('/user-progress', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id;
 
-        // Intentar obtener stats de la base de datos
+        // Intentar obtener stats usando DAO
         let stats = {
             total_sessions: 0,
             completed_sessions: 0,
@@ -359,20 +360,11 @@ router.get('/user-progress', authenticateToken, async (req, res) => {
         };
 
         try {
-            const result = await pool.query(
-                `SELECT 
-                    COUNT(*) as total_sessions,
-                    COUNT(CASE WHEN status = 'completed' THEN 1 END) as completed,
-                    COALESCE(SUM(reward), 0) as total_rewards
-                 FROM ar_experience_sessions
-                 WHERE user_id = $1`,
-                [userId]
-            );
-
-            if (result.rows[0]) {
-                stats.total_sessions = parseInt(result.rows[0].total_sessions) || 0;
-                stats.completed_sessions = parseInt(result.rows[0].completed) || 0;
-                stats.total_rewards = parseInt(result.rows[0].total_rewards) || 0;
+            const row = await GamificationDAO.getARProgress(userId);
+            if (row) {
+                stats.total_sessions = parseInt(row.total_sessions) || 0;
+                stats.completed_sessions = parseInt(row.completed) || 0;
+                stats.total_rewards = parseInt(row.total_rewards) || 0;
             }
         } catch (e) {
             // Tabla puede no existir
@@ -404,33 +396,17 @@ router.get('/user-progress', authenticateToken, async (req, res) => {
 router.get('/leaderboard', async (req, res) => {
     try {
         const { limit = 10 } = req.query;
-
         let leaderboard = [];
 
         try {
-            const result = await pool.query(
-                `SELECT 
-                    u.id,
-                    u.nombre || ' ' || COALESCE(LEFT(u.apellidos, 1) || '.', '') as display_name,
-                    COUNT(s.id) as total_experiences,
-                    COALESCE(SUM(s.reward), 0) as total_earned,
-                    MAX(s.score) as best_score
-                 FROM users u
-                 JOIN ar_experience_sessions s ON u.id = s.user_id
-                 WHERE s.status = 'completed'
-                 GROUP BY u.id, u.nombre, u.apellidos
-                 ORDER BY total_earned DESC
-                 LIMIT $1`,
-                [limit]
-            );
-            leaderboard = result.rows;
+            leaderboard = await GamificationDAO.getARLeaderboard(parseInt(limit));
         } catch (e) {
             console.log('[AR-API] No se pudo obtener leaderboard');
         }
 
         res.json({
             success: true,
-            leaderboard,
+            leaderboard: leaderboard || [],
             updated_at: new Date().toISOString()
         });
 

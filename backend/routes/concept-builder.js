@@ -8,6 +8,7 @@
 const express = require('express');
 const router = express.Router();
 const { authenticateToken } = require('../middleware/auth.js');
+const GamificationDAO = require('../data/gamification.dao.js');
 const { pool } = require('../config/database.js');
 
 // =============================================
@@ -508,20 +509,11 @@ router.get('/stats', authenticateToken, async (req, res) => {
         };
 
         try {
-            const result = await pool.query(
-                `SELECT 
-                    COUNT(*) as maps_completed,
-                    COALESCE(SUM(coins_earned), 0) as total_coins,
-                    COALESCE(AVG((metadata->>'attempts')::int), 0) as avg_attempts
-                 FROM game_sessions
-                 WHERE user_id = $1 AND game_type = 'concept_builder'`,
-                [userId]
-            );
-
-            if (result.rows[0]) {
-                stats.mapsCompleted = parseInt(result.rows[0].maps_completed) || 0;
-                stats.totalCoins = parseInt(result.rows[0].total_coins) || 0;
-                stats.averageAttempts = Math.round(parseFloat(result.rows[0].avg_attempts) || 0);
+            const row = await GamificationDAO.getConceptBuilderStats(userId);
+            if (row) {
+                stats.mapsCompleted = parseInt(row.maps_completed) || 0;
+                stats.totalCoins = parseInt(row.total_coins) || 0;
+                stats.averageAttempts = Math.round(parseFloat(row.avg_attempts) || 0);
             }
         } catch (e) {
             console.log('[CONCEPTS] No se pudo obtener stats:', e.message);

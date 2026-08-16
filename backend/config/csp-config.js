@@ -20,7 +20,6 @@ const cspConfig = {
         // TODO: Refactorizar a nonces o módulos dinámicos en futuro
         scriptSrc: [
             "'self'",                          // Scripts locales
-            "'unsafe-inline'",                 // ⚠️ NECESARIO: Scripts dinámicos desde JS (element.innerHTML += '<script>')
             "https://cdn.jsdelivr.net",        // Bootstrap, jQuery, librerías
             "https://cdnjs.cloudflare.com",    // Font Awesome, Chart.js
             "https://unpkg.com",               // Librerías npm

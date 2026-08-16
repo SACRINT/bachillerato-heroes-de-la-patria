@@ -4,7 +4,7 @@
  */
 
 const { getJWTUtils } = require('../utils/jwtUtils.js');
-const { getAuthService } = require('../services/authService.js');
+const { getAuthService } = require('../services/auth.service');
 const devLogger = require('../utils/devLogger.js'); // 🔐 Logging seguro
 
 // GDPR Logging - Debug condicional y sanitización

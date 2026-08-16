@@ -43,7 +43,7 @@ class PredictiveDashboard {
   async renderGradesForecast(studentId, container, forecastMonths = 3) {
     try {
       // Mostrar loading
-      container.innerHTML = this.getLoadingHTML('Generando predicción de calificaciones...');
+      container.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(this.getLoadingHTML('Generando predicción de calificaciones...')) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(this.getLoadingHTML('Generando predicción de calificaciones...')) : this.getLoadingHTML('Generando predicción de calificaciones...')));
 
       // Llamar API
       const response = await fetch(`${this.apiBaseUrl}/grades/${studentId}`, {
@@ -63,7 +63,7 @@ class PredictiveDashboard {
       const data = await response.json();
 
       if (!data.success) {
-        container.innerHTML = this.getErrorHTML(data.message || 'Error en predicción');
+        container.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(this.getErrorHTML(data.message || 'Error en predicción')) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(this.getErrorHTML(data.message || 'Error en predicción')) : this.getErrorHTML(data.message || 'Error en predicción')));
         return;
       }
 
@@ -72,7 +72,7 @@ class PredictiveDashboard {
 
     } catch (error) {
       console.error('[PREDICTIVE-DASHBOARD] Error loading grades forecast:', error);
-      container.innerHTML = this.getErrorHTML(error.message);
+      container.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(this.getErrorHTML(error.message)) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(this.getErrorHTML(error.message)) : this.getErrorHTML(error.message)));
     }
   }
 
@@ -193,7 +193,7 @@ class PredictiveDashboard {
       </div>
     `;
 
-    container.innerHTML = html;
+    container.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(html) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(html) : html));
 
     // Crear gráfica con Chart.js
     const canvasId = container.querySelector('canvas').id;
@@ -209,7 +209,7 @@ class PredictiveDashboard {
    */
   async renderEnrollmentsForecast(container, forecastMonths = 6) {
     try {
-      container.innerHTML = this.getLoadingHTML('Generando predicción de inscripciones...');
+      container.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(this.getLoadingHTML('Generando predicción de inscripciones...')) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(this.getLoadingHTML('Generando predicción de inscripciones...')) : this.getLoadingHTML('Generando predicción de inscripciones...')));
 
       const response = await fetch(`${this.apiBaseUrl}/enrollments`, {
         method: 'POST',
@@ -228,7 +228,7 @@ class PredictiveDashboard {
       const data = await response.json();
 
       if (!data.success) {
-        container.innerHTML = this.getErrorHTML(data.message || 'Error en predicción');
+        container.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(this.getErrorHTML(data.message || 'Error en predicción')) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(this.getErrorHTML(data.message || 'Error en predicción')) : this.getErrorHTML(data.message || 'Error en predicción')));
         return;
       }
 
@@ -236,7 +236,7 @@ class PredictiveDashboard {
 
     } catch (error) {
       console.error('[PREDICTIVE-DASHBOARD] Error loading enrollments forecast:', error);
-      container.innerHTML = this.getErrorHTML(error.message);
+      container.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(this.getErrorHTML(error.message)) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(this.getErrorHTML(error.message)) : this.getErrorHTML(error.message)));
     }
   }
 
@@ -307,7 +307,7 @@ class PredictiveDashboard {
       </div>
     `;
 
-    container.innerHTML = html;
+    container.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(html) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(html) : html));
 
     const canvasId = container.querySelector('canvas').id;
     this.createForecastChart(canvasId, arima, prophet, 'Predicción de Inscripciones');
@@ -322,7 +322,7 @@ class PredictiveDashboard {
    */
   async renderDropoutForecast(container, forecastMonths = 6) {
     try {
-      container.innerHTML = this.getLoadingHTML('Analizando tendencia de deserción...');
+      container.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(this.getLoadingHTML('Analizando tendencia de deserción...')) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(this.getLoadingHTML('Analizando tendencia de deserción...')) : this.getLoadingHTML('Analizando tendencia de deserción...')));
 
       const response = await fetch(`${this.apiBaseUrl}/dropout`, {
         method: 'POST',
@@ -341,7 +341,7 @@ class PredictiveDashboard {
       const data = await response.json();
 
       if (!data.success) {
-        container.innerHTML = this.getErrorHTML(data.message || 'Error en predicción');
+        container.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(this.getErrorHTML(data.message || 'Error en predicción')) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(this.getErrorHTML(data.message || 'Error en predicción')) : this.getErrorHTML(data.message || 'Error en predicción')));
         return;
       }
 
@@ -349,7 +349,7 @@ class PredictiveDashboard {
 
     } catch (error) {
       console.error('[PREDICTIVE-DASHBOARD] Error loading dropout forecast:', error);
-      container.innerHTML = this.getErrorHTML(error.message);
+      container.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(this.getErrorHTML(error.message)) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(this.getErrorHTML(error.message)) : this.getErrorHTML(error.message)));
     }
   }
 
@@ -405,7 +405,7 @@ class PredictiveDashboard {
       </div>
     `;
 
-    container.innerHTML = html;
+    container.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(html) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(html) : html));
 
     const canvasId = container.querySelector('canvas').id;
     this.createForecastChart(canvasId, arima, prophet, 'Tendencia de Deserción');

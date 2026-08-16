@@ -466,8 +466,11 @@ class ForumDAO {
     }
 
     static async updateLikeCount(type: 'topic' | 'post', id: number | string, delta: number): Promise<void> {
-        const table = type === 'topic' ? 'forum_topics' : 'forum_posts';
-        await executeQuery(`UPDATE ${table} SET like_count = GREATEST(0, like_count + $1) WHERE id = $2`, [delta, id]);
+        if (type === 'topic') {
+            await executeQuery('UPDATE forum_topics SET like_count = GREATEST(0, like_count + $1) WHERE id = $2', [delta, id]);
+        } else {
+            await executeQuery('UPDATE forum_posts SET like_count = GREATEST(0, like_count + $1) WHERE id = $2', [delta, id]);
+        }
     }
 
     // ==========================================
@@ -614,10 +617,16 @@ class ForumDAO {
     }
 
     static async updateUserStats(userId: number, field: string, increment: number = 1): Promise<void> {
-        // Warning: Direct string interpolation for field name. Ensure field name is safe.
-        // In this context, field comes from controlled source in service.
+        const allowedFields: Record<string, string> = {
+            topic_count: 'topic_count',
+            post_count: 'post_count',
+            like_count: 'like_count',
+            best_answer_count: 'best_answer_count',
+            reputation_points: 'reputation_points'
+        };
+        const safeField = allowedFields[field] || 'reputation_points';
         await executeQuery(
-            `UPDATE forum_user_stats SET ${field} = ${field} + $1, last_activity_at = NOW(), updated_at = NOW() WHERE user_id = $2`,
+            `UPDATE forum_user_stats SET ${safeField} = ${safeField} + $1, last_activity_at = NOW(), updated_at = NOW() WHERE user_id = $2`,
             [increment, userId]
         );
     }

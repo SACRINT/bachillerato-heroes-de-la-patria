@@ -12,7 +12,7 @@ import NotificationDAO from '../data/notifications.dao';
 import devLogger from '../utils/devLogger';
 
 // Dynamic imports for JS modules
-const EventBus = require('./eventBus.service').getInstance();
+const EventBus = require('./event-bus.service').getInstance();
 const RealtimeChannel = require('./channels/RealtimeChannel');
 
 // =====================================================

@@ -50,7 +50,7 @@ const mockHandlebars = {
 const emailServiceModule = require('../../services/emailService');
 const EmailServiceClass = emailServiceModule.EmailService || emailServiceModule.default?.EmailService;
 
-const { AuthService } = require('../../services/authService');
+const { AuthService } = require('../../services/auth.service');
 const { executeQuery } = require('../../config/database');
 
 // GLOBAL VARIABLE

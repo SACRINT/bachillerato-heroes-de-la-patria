@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Error de conexión al activar cuenta');
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = originalText;
+                submitBtn.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(originalText) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(originalText) : originalText));
             }
         });
     }

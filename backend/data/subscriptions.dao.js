@@ -215,14 +215,16 @@ class SubscriptionsDAO {
         return result.rows[0];
     }
     static async getTenantMetrics(tenantId, days = 30) {
+        const numDays = parseInt(days) || 30;
         const result = await database_1.pool.query(`
             SELECT * FROM tenant_usage_metrics 
-            WHERE tenant_id = $1 AND metric_date >= CURRENT_DATE - INTERVAL '${days} days'
+            WHERE tenant_id = $1 AND metric_date >= CURRENT_DATE - make_interval(days => $2)
             ORDER BY metric_date DESC
-        `, [tenantId]);
+        `, [tenantId, numDays]);
         return result.rows;
     }
     static async getGlobalMetrics(days = 30) {
+        const numDays = parseInt(days) || 30;
         const result = await database_1.pool.query(`
             SELECT 
                 SUM(active_users) as total_active_users,
@@ -233,8 +235,8 @@ class SubscriptionsDAO {
                 SUM(iacoins_spent) as total_iacoins_spent,
                 SUM(iacoins_earned) as total_iacoins_earned
             FROM tenant_usage_metrics
-            WHERE metric_date >= CURRENT_DATE - INTERVAL '${days} days'
-        `);
+            WHERE metric_date >= CURRENT_DATE - make_interval(days => $1)
+        `, [numDays]);
         return result.rows[0];
     }
     // ==================== ESTADÍSTICAS PARA DASHBOARD ====================
@@ -254,6 +256,7 @@ class SubscriptionsDAO {
         return result.rows;
     }
     static async getRevenueStats(months = 12) {
+        const numMonths = parseInt(months) || 12;
         const result = await database_1.pool.query(`
             SELECT 
                 DATE_TRUNC('month', paid_at) as month,
@@ -261,22 +264,23 @@ class SubscriptionsDAO {
                 COUNT(*) as payment_count
             FROM subscription_payments
             WHERE status = 'completed' 
-            AND paid_at >= CURRENT_DATE - INTERVAL '${months} months'
+            AND paid_at >= CURRENT_DATE - make_interval(months => $1)
             GROUP BY DATE_TRUNC('month', paid_at)
             ORDER BY month DESC
-        `);
+        `, [numMonths]);
         return result.rows;
     }
     static async getTenantsGrowth(months = 12) {
+        const numMonths = parseInt(months) || 12;
         const result = await database_1.pool.query(`
             SELECT 
                 DATE_TRUNC('month', created_at) as month,
                 COUNT(*) as new_tenants
             FROM tenants
-            WHERE created_at >= CURRENT_DATE - INTERVAL '${months} months'
+            WHERE created_at >= CURRENT_DATE - make_interval(months => $1)
             GROUP BY DATE_TRUNC('month', created_at)
             ORDER BY month DESC
-        `);
+        `, [numMonths]);
         return result.rows;
     }
 }

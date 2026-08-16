@@ -214,7 +214,7 @@ function renderRecursos(categorias) {
         `;
     }
 
-    container.innerHTML = html;
+    container.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(html) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(html) : html));
 
     // Agregar efectos hover a las tarjetas
     document.querySelectorAll('.recurso-card').forEach(card => {
@@ -348,7 +348,7 @@ function renderScheduleTable() {
         html += '</tr>';
     });
 
-    tbody.innerHTML = html;
+    tbody.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(html) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(html) : html));
 }
 
 function addNewClass() {

@@ -82,11 +82,12 @@ class ReportGeneratorDAO {
     // REPORTES DE TENDENCIAS
     // ==========================================
     static async getMonthlyGradeTrend(periodos) {
+        const months = parseInt(periodos) || 6;
         const result = await database_1.pool.query(`
             SELECT DATE_TRUNC('month', created_at) as mes, AVG(calificacion) as promedio, COUNT(*) as total
-            FROM calificaciones WHERE created_at > NOW() - INTERVAL '${periodos} months'
+            FROM calificaciones WHERE created_at > NOW() - make_interval(months => $1)
             GROUP BY DATE_TRUNC('month', created_at) ORDER BY mes
-        `);
+        `, [months]);
         return result.rows.map((row) => ({
             mes: row.mes,
             promedio: parseFloat(row.promedio),
@@ -94,22 +95,24 @@ class ReportGeneratorDAO {
         }));
     }
     static async getEnrollmentTrend(periodos) {
+        const months = parseInt(periodos) || 6;
         const result = await database_1.pool.query(`
             SELECT DATE_TRUNC('month', created_at) as mes, COUNT(*) as total
-            FROM estudiantes WHERE created_at > NOW() - INTERVAL '${periodos} months'
+            FROM estudiantes WHERE created_at > NOW() - make_interval(months => $1)
             GROUP BY DATE_TRUNC('month', created_at) ORDER BY mes
-        `);
+        `, [months]);
         return result.rows.map((row) => ({
             mes: row.mes,
             total: parseInt(row.total)
         }));
     }
     static async getGradeDistribution(periodos) {
+        const months = parseInt(periodos) || 6;
         const result = await database_1.pool.query(`
             SELECT CASE WHEN calificacion >= 9 THEN '9-10' WHEN calificacion >= 8 THEN '8-9'
                 WHEN calificacion >= 7 THEN '7-8' WHEN calificacion >= 6 THEN '6-7' ELSE '0-6' END as rango, COUNT(*) as total
-            FROM calificaciones WHERE created_at > NOW() - INTERVAL '${periodos} months' GROUP BY rango ORDER BY rango DESC
-        `);
+            FROM calificaciones WHERE created_at > NOW() - make_interval(months => $1) GROUP BY rango ORDER BY rango DESC
+        `, [months]);
         return result.rows.map((row) => ({
             rango: row.rango,
             total: parseInt(row.total)

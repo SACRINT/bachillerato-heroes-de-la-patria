@@ -22,7 +22,7 @@ const router = express_1.default.Router();
 // ============================================
 function getStudentService() {
     try {
-        const { getStudentService } = require('../services/studentService.js');
+        const { getStudentService } = require('../services/student.service');
         return getStudentService();
     }
     catch (error) {

@@ -125,7 +125,7 @@ const jobHandlers = {
         await new Promise(resolve => setTimeout(resolve, 5000));
 
         // En producción, llamar a servicio de reportes
-        // const reportingService = require('../services/reporting-service.js');
+        // const reportingService = require('../services/reporting.service');
         // const report = await reportingService.generate(reportType, params);
 
         return { success: true, reportType, recordCount: 1000 };

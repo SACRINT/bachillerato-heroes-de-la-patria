@@ -307,7 +307,7 @@ class VirtualTable {
       `);
     }
 
-    this.tbodyEl.innerHTML = rows.join('');
+    this.tbodyEl.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(rows.join('')) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(rows.join('')) : rows.join('')));
 
     // Bind checkbox events
     if (selectable) {

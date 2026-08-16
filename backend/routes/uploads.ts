@@ -11,7 +11,7 @@ import path from 'path';
 import fs from 'fs';
 import { authenticateToken, requireRole } from '../middleware/auth';
 // @ts-ignore
-import uploadService from '../services/uploadService';
+import uploadService from '../services/upload.service';
 
 // GDPR Logging
 import { debugLog } from '../utils/debug-logger';

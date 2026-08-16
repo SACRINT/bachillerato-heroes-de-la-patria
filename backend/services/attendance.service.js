@@ -14,7 +14,7 @@ exports.ServiceError = void 0;
 const attendance_dao_1 = __importDefault(require('../data/attendance.dao.js'));
 const devLogger_1 = __importDefault(require('../utils/devLogger.js'));
 // EventBus import - using dynamic require for JS module compatibility
-const EventBus = require('./eventBus.service.js').getInstance();
+const EventBus = require('./event-bus.service').getInstance();
 // =====================================================
 // INTERFACES
 // =====================================================

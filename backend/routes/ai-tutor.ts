@@ -10,7 +10,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import { body, query, param, validationResult } from 'express-validator';
 // @ts-ignore
-import aiTutorService from '../services/AITutorService';
+import aiTutorService from '../services/ai-tutor.service';
 // @ts-ignore
 import { authenticateToken } from '../middleware/auth';
 

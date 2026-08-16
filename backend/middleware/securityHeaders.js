@@ -39,9 +39,7 @@ class SecurityHeaders {
                     "https://cdn.tiny.cloud",
                     "https://*.tiny.cloud",
                     "https://www.googletagmanager.com",
-                    "https:",  // Wildcard para CDNs
-                    "'unsafe-inline'",  // Temporal - remover en producción
-                    "'unsafe-eval'"     // Temporal - remover en producción
+                    "https:"
                 ],
                 styleSrc: [
                     "'self'",

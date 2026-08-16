@@ -8,7 +8,7 @@
 
 import crypto from 'crypto';
 const AppointmentDAO = require('../data/appointment.dao');
-const EventBus = require('./eventBus.service').getInstance();
+const EventBus = require('./event-bus.service').getInstance();
 const NotificationService = require('./notification.service');
 const devLogger = require('../utils/devLogger');
 

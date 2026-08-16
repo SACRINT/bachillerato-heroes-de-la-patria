@@ -196,7 +196,8 @@ class GDPRDAO {
 
     static async applyRetentionPolicy(daysToKeep: number): Promise<number> {
         let deleted = 0;
-        const result1 = await pool.query(`DELETE FROM audit_logs WHERE created_at < NOW() - INTERVAL '${daysToKeep} days'`);
+        const days = Number(daysToKeep) || 90;
+        const result1 = await pool.query(`DELETE FROM audit_logs WHERE created_at < NOW() - make_interval(days => $1)`, [days]);
         deleted += result1.rowCount || 0;
         const result2 = await pool.query("DELETE FROM notificaciones WHERE leida = true AND created_at < NOW() - INTERVAL '90 days'");
         deleted += result2.rowCount || 0;

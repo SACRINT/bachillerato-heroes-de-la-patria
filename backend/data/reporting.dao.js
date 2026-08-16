@@ -104,7 +104,19 @@ class ReportingDAO {
     }
     static async scheduleReport(reportType, frequency, recipients, filters) {
         try {
-            const result = await database_1.pool.query(`INSERT INTO scheduled_reports (report_type, frequency, recipients, filters, next_run, active, created_at) VALUES ($1, $2, $3, $4, NOW() + INTERVAL '1 ${frequency}', true, NOW()) RETURNING *`, [reportType, frequency, JSON.stringify(recipients), JSON.stringify(filters)]);
+            const validFrequencies = {
+                daily: '1 day',
+                weekly: '1 week',
+                monthly: '1 month',
+                day: '1 day',
+                week: '1 week',
+                month: '1 month'
+            };
+            const intervalStr = validFrequencies[frequency] || '1 week';
+            const result = await database_1.pool.query(
+                `INSERT INTO scheduled_reports (report_type, frequency, recipients, filters, next_run, active, created_at) VALUES ($1, $2, $3, $4, NOW() + ($5::text)::INTERVAL, true, NOW()) RETURNING *`,
+                [reportType, frequency, JSON.stringify(recipients), JSON.stringify(filters), intervalStr]
+            );
             return result.rows[0];
         }
         catch {

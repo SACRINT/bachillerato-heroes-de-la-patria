@@ -9,7 +9,7 @@ import express, { Request, Response, NextFunction, Router } from 'express';
 import { body, validationResult } from 'express-validator';
 import { authenticateToken, requireAdmin } from '../middleware/auth';
 // @ts-ignore
-import { getAuthService } from '../services/authService';
+import { getAuthService } from '../services/auth.service';
 // @ts-ignore
 import { getPasswordGenerator } from '../utils/passwordGenerator';
 // @ts-ignore

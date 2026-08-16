@@ -28,7 +28,7 @@ const handleValidationErrors = (req, res, next) => {
 // Intentar cargar el servicio
 let marketplaceService;
 try {
-    marketplaceService = require('../services/MarketplaceService.js');
+    marketplaceService = require('../services/marketplace.service');
 } catch (error) {
     console.log('[MARKETPLACE] Servicio no disponible, usando mock');
     marketplaceService = null;

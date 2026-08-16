@@ -25,4 +25,7 @@ const debugLog = {
   }
 };
 
-module.exports = { debugLog };
+module.exports = debugLog;
+module.exports.debugLog = debugLog;
+module.exports.default = debugLog;
+

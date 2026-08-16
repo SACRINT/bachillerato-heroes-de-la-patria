@@ -43,10 +43,15 @@ class WalletDAO {
             total: parseInt(countResult.rows[0].total)
         };
     }
+    static async getPurchaseHistory(userId, limit = 20) {
+        const result = await database_1.pool.query(`SELECT * FROM wallet_history 
+             WHERE user_id = $1 AND transaction_type = 'purchase'
+             ORDER BY created_at DESC LIMIT $2`, [userId, limit]);
+        return result.rows || [];
+    }
     static async getConnection() {
         return database_1.pool.connect();
     }
 }
 exports.default = WalletDAO;
 module.exports = WalletDAO;
-//# sourceMappingURL=wallet.dao.js.map

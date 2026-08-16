@@ -1337,7 +1337,7 @@ class BGEDashboardMonitor {
             return;
         }
 
-        alertsList.innerHTML = this.alertSystem.queue
+        alertsList.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(this.alertSystem.queue) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(this.alertSystem.queue) : this.alertSystem.queue))
             .slice(-10)
             .reverse()
             .map(alert => `

@@ -10,8 +10,8 @@ import express, { Request, Response, NextFunction } from 'express';
 // @ts-ignore
 import { authenticateToken } from '../middleware/auth';
 import securityService from '../services/SecurityService';
-import rateLimiter from '../services/RateLimiterService';
-import auditService from '../services/SecurityAuditService';
+import rateLimiter from '../services/rate-limit.service';
+import auditService from '../services/security-audit.service';
 import SecurityDAO from '../data/security.dao';
 
 const router = express.Router();

@@ -15,7 +15,7 @@ const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 const auth_1 = require('../middleware/auth.js');
 // @ts-ignore
-const uploadService_1 = __importDefault(require('../services/uploadService.js'));
+const uploadService_1 = __importDefault(require('../services/upload.service'));
 // GDPR Logging
 const debug_logger_1 = require('../utils/debug-logger.js');
 const sanitized_errors_1 = require('../utils/sanitized-errors.js');

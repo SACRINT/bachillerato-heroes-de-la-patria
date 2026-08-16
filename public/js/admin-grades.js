@@ -251,7 +251,7 @@
         });
 
         html += '</tbody></table>';
-        elements.gradesGrid.innerHTML = html;
+        elements.gradesGrid.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(html) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(html) : html));
 
         // Listeners for inputs
         document.querySelectorAll('.grade-input').forEach(input => {
@@ -464,7 +464,7 @@
                 </div>`;
 
             const temp = document.createElement('div');
-            temp.innerHTML = toastHtml;
+            temp.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(toastHtml) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(toastHtml) : toastHtml));
             container.appendChild(temp.firstElementChild);
             setTimeout(() => {
                 const el = document.getElementById(toastId);

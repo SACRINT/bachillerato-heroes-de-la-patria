@@ -7,7 +7,7 @@
  * Uso: node backend/scripts/test-event-bus.js
  */
 
-const eventBusService = require('../services/eventBus.service');
+const eventBusService = require('../services/event-bus.service');
 
 console.log('\n🧪 INICIANDO TESTING DE EVENT BUS\n');
 console.log('='.repeat(60));

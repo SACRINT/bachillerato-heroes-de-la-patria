@@ -229,7 +229,7 @@
                         alert('Error: ' + error.message);
                     } finally {
                         submitBtn.disabled = false;
-                        submitBtn.innerHTML = originalBtnText;
+                        submitBtn.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(originalBtnText) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(originalBtnText) : originalBtnText));
                     }
                 });
             }

@@ -12,7 +12,7 @@ const express_1 = __importDefault(require("express"));
 const express_validator_1 = require("express-validator");
 const auth_1 = require('../middleware/auth.js');
 // @ts-ignore
-const ForumsService_1 = __importDefault(require('../services/ForumsService.js'));
+const ForumsService_1 = __importDefault(require('../services/forums.service'));
 const router = express_1.default.Router();
 // Middleware de validación
 const validate = (req, res, next) => {

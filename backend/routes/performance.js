@@ -14,7 +14,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 // @ts-ignore
 const auth_1 = require('../middleware/auth.js');
-const CacheService_1 = require('../services/CacheService.js');
+const CacheService_1 = require('../services/cache.service');
 const QueryOptimizer_1 = __importDefault(require('../services/QueryOptimizer.js'));
 // pool is not used directly in endpoints, we skip import or rely on DAOs
 const analytics_dao_1 = __importDefault(require('../data/analytics.dao.js'));

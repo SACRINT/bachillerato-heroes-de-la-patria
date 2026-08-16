@@ -30,10 +30,11 @@ class EmailTemplateDAO {
         return result.rows;
     }
     static async getStats(days) {
+        const numDays = parseInt(days) || 30;
         const result = await database_1.pool.query(`
             SELECT template, status, COUNT(*) as count FROM email_log
-            WHERE created_at >= NOW() - INTERVAL '${days} days' GROUP BY template, status ORDER BY count DESC
-        `);
+            WHERE created_at >= NOW() - make_interval(days => $1) GROUP BY template, status ORDER BY count DESC
+        `, [numDays]);
         return result.rows.map((row) => ({
             template: row.template,
             status: row.status,

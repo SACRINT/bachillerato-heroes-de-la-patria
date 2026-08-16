@@ -88,18 +88,20 @@ class AuditLogDAO {
         return { data: result.rows, total };
     }
     static async getUserActivity(userId, days) {
+        const numDays = parseInt(days) || 30;
         const result = await database_1.pool.query(`
             SELECT action, category, timestamp, resource_type, resource_id, details
-            FROM audit_log WHERE user_id = $1 AND timestamp >= NOW() - INTERVAL '${days} days'
+            FROM audit_log WHERE user_id = $1 AND timestamp >= NOW() - make_interval(days => $2)
             ORDER BY timestamp DESC LIMIT 1000
-        `, [userId]);
+        `, [userId, numDays]);
         return result.rows;
     }
     static async getStats(days) {
+        const numDays = parseInt(days) || 30;
         const result = await database_1.pool.query(`
             SELECT category, severity, COUNT(*) as count FROM audit_log
-            WHERE timestamp >= NOW() - INTERVAL '${days} days' GROUP BY category, severity ORDER BY count DESC
-        `);
+            WHERE timestamp >= NOW() - make_interval(days => $1) GROUP BY category, severity ORDER BY count DESC
+        `, [numDays]);
         return result.rows.map(row => ({
             category: row.category,
             severity: row.severity,
@@ -107,10 +109,11 @@ class AuditLogDAO {
         }));
     }
     static async getTrend(days) {
+        const numDays = parseInt(days) || 30;
         const result = await database_1.pool.query(`
             SELECT DATE_TRUNC('day', timestamp) as day, COUNT(*) as count FROM audit_log
-            WHERE timestamp >= NOW() - INTERVAL '${days} days' GROUP BY DATE_TRUNC('day', timestamp) ORDER BY day
-        `);
+            WHERE timestamp >= NOW() - make_interval(days => $1) GROUP BY DATE_TRUNC('day', timestamp) ORDER BY day
+        `, [numDays]);
         return result.rows.map(row => ({
             day: row.day,
             count: parseInt(row.count)
@@ -140,11 +143,12 @@ class AuditLogDAO {
         return result.rows;
     }
     static async cleanup(retentionDays) {
+        const days = parseInt(retentionDays) || 90;
         const result = await database_1.pool.query(`
             DELETE FROM audit_log 
-            WHERE timestamp < NOW() - INTERVAL '${retentionDays} days' 
+            WHERE timestamp < NOW() - make_interval(days => $1) 
             RETURNING id
-        `);
+        `, [days]);
         return result.rows.length;
     }
 }

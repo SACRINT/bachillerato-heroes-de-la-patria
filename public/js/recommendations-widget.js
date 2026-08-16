@@ -249,13 +249,13 @@ class RecommendationsWidget {
 
     try {
       // Mostrar loading
-      container.innerHTML = this.getLoadingHTML();
+      container.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(this.getLoadingHTML()) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(this.getLoadingHTML()) : this.getLoadingHTML()));
 
       // Cargar recomendaciones
       const recommendations = await this.loadRecommendations(type, limit);
 
       if (recommendations.length === 0) {
-        container.innerHTML = this.getEmptyStateHTML(type);
+        container.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(this.getEmptyStateHTML(type)) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(this.getEmptyStateHTML(type)) : this.getEmptyStateHTML(type)));
         return;
       }
 
@@ -273,14 +273,14 @@ class RecommendationsWidget {
 
       html += `</div>`;
 
-      container.innerHTML = html;
+      container.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(html) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(html) : html));
 
       // Agregar event listeners
       this.attachEventListeners(container, type);
 
     } catch (error) {
       console.error('[RECOMMENDATIONS] Error rendering:', error);
-      container.innerHTML = this.getErrorHTML();
+      container.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(this.getErrorHTML()) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(this.getErrorHTML()) : this.getErrorHTML()));
     }
   }
 
@@ -591,7 +591,7 @@ class RecommendationsWidget {
 
       // Insertar modal en DOM
       const modalContainer = document.createElement('div');
-      modalContainer.innerHTML = modalHTML;
+      modalContainer.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(modalHTML) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(modalHTML) : modalHTML));
       document.body.appendChild(modalContainer);
 
       // Mostrar modal

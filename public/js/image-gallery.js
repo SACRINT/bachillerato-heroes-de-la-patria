@@ -340,7 +340,7 @@ class ImageGallery {
             );
         }
 
-        document.getElementById('gallery-grid').innerHTML = this.renderImages();
+        document.getElementById('gallery-grid').innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(this.renderImages()) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(this.renderImages()) : this.renderImages()));
         this.attachEventListeners();
     }
 

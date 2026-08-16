@@ -277,7 +277,7 @@ async function startHTTPSServer() {
 
             // Inicializar servicios adicionales
             try {
-                const { getBackupService } = require('./services/backupService');
+                const { getBackupService } = require('./services/backup.service');
                 getBackupService();
                 devLogger.log('💾 [HTTPS] Sistema de backup inicializado');
             } catch (error) {

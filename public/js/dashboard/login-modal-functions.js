@@ -197,7 +197,7 @@ window.updatePassword = function() {
 function showPasswordMessage(message, type) {
     const messageDiv = document.getElementById('passwordChangeMessage');
     messageDiv.className = `alert alert-${type}`;
-    messageDiv.innerHTML = message;
+    messageDiv.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(message) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(message) : message));
     messageDiv.style.display = 'block';
 }
 
@@ -352,7 +352,7 @@ window.saveStatisticsConfig = function() {
 function showStatisticsMessage(message, type) {
     const messageDiv = document.getElementById('statisticsConfigMessage');
     messageDiv.className = `alert alert-${type}`;
-    messageDiv.innerHTML = message;
+    messageDiv.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(message) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(message) : message));
     messageDiv.style.display = 'block';
 }
 

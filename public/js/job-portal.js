@@ -596,7 +596,7 @@ class JobPortal {
             </div>
         `;
 
-        document.getElementById('jobDetailContent').innerHTML = content;
+        document.getElementById('jobDetailContent').innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(content) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(content) : content));
         
         const modal = new bootstrap.Modal(document.getElementById('jobDetailModal'));
         modal.show();

@@ -7,7 +7,7 @@
 
 import TeacherDAO from '../data/teacher.dao';
 import UserDAO from '../data/user.dao';
-import EventBus from './eventBus.service';
+import EventBus from './event-bus.service';
 import devLogger from '../utils/devLogger';
 import bcrypt from 'bcryptjs';
 

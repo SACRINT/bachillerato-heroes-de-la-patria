@@ -165,7 +165,7 @@ class StudentDashboard {
         });
 
         html += '</tbody></table></div>';
-        container.innerHTML = html;
+        container.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(html) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(html) : html));
     }
 
     /**
@@ -204,7 +204,7 @@ class StudentDashboard {
         });
 
         html += '</div>';
-        container.innerHTML = html;
+        container.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(html) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(html) : html));
     }
 
     /**
@@ -240,7 +240,7 @@ class StudentDashboard {
         });
 
         html += '</div>';
-        container.innerHTML = html;
+        container.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(html) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(html) : html));
     }
 
     /**
@@ -278,7 +278,7 @@ class StudentDashboard {
             });
 
             html += '</div>';
-            container.innerHTML = html;
+            container.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(html) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(html) : html));
         }
     }
 

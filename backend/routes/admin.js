@@ -14,7 +14,7 @@ const express_1 = __importDefault(require("express"));
 const express_validator_1 = require("express-validator");
 const auth_1 = require('../middleware/auth.js');
 // @ts-ignore
-const authService_1 = require('../services/authService.js');
+const authService_1 = require('../services/auth.service');
 // @ts-ignore
 const passwordGenerator_1 = require('../utils/passwordGenerator.js');
 // @ts-ignore

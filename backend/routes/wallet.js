@@ -20,7 +20,7 @@ const router = express_1.default.Router();
 let stripePaymentsService;
 try {
     // @ts-ignore
-    stripePaymentsService = require('../services/stripePaymentsService.bridge.js');
+    stripePaymentsService = require('../services/stripe-payments.service');
 }
 catch (error) {
     debug_logger_1.debugLog.warn('WALLET', '[WALLET] Stripe service no disponible, usando modo legacy');
@@ -293,11 +293,9 @@ router.get('/purchase-history', auth_1.authenticateToken, async (req, res) => {
             res.json({ purchases });
             return;
         }
-        // Fallback desde wallet_history
-        const result = await database_1.pool.query(`SELECT * FROM wallet_history 
-             WHERE user_id = $1 AND transaction_type = 'purchase'
-             ORDER BY created_at DESC LIMIT $2`, [userId, parseInt(limit)]);
-        res.json({ purchases: result.rows });
+        // Fallback desde wallet_history usando WalletDAO
+        const purchases = await wallet_dao_1.default.getPurchaseHistory(userId, parseInt(limit));
+        res.json({ purchases });
     }
     catch (error) {
         debug_logger_1.debugLog.error('WALLET', '[WALLET] Error al obtener historial de compras:', error.message);

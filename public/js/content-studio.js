@@ -193,7 +193,7 @@ function renderProperties(elem) {
         `;
     }
 
-    panel.innerHTML = html;
+    panel.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(html) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(html) : html));
 }
 
 function updateElementConfig(id, key, value) {
@@ -202,7 +202,7 @@ function updateElementConfig(id, key, value) {
         elem.config[key] = value;
         // Re-render only this element preview
         const divContent = document.querySelector(`#${id} .element-content`);
-        divContent.innerHTML = getElementPreviewHtml(elem);
+        divContent.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(getElementPreviewHtml(elem)) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(getElementPreviewHtml(elem)) : getElementPreviewHtml(elem)));
         studioState.isDirty = true;
     }
 }

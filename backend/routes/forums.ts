@@ -8,7 +8,7 @@ import express, { Request, Response, Router } from 'express';
 import { body, query, param, validationResult } from 'express-validator';
 import { authenticateToken } from '../middleware/auth';
 // @ts-ignore
-import ForumsService from '../services/ForumsService';
+import ForumsService from '../services/forums.service';
 
 const router: Router = express.Router();
 

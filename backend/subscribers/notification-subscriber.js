@@ -2,7 +2,7 @@
  * NOTIFICATION SUBSCRIBER - Suscriptor Central de Notificaciones
  * Versión: 1.0.0 | SEMANA 4 - Event-Driven
  */
-const eventBusService = require('../services/eventBus.service');
+const eventBusService = require('../services/event-bus.service');
 
 class NotificationSubscriber {
     constructor() {

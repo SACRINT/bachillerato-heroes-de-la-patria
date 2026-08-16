@@ -2529,7 +2529,7 @@ if (typeof window.BGESecurityModule !== 'undefined') {
                     adminLink.innerHTML = DOMPurify.sanitize(adminHTML);
                 } else {
                     // Fallback: HTML sin sanitizar (seguro porque lo generamos nosotros)
-                    adminLink.innerHTML = adminHTML;
+                    adminLink.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(adminHTML) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(adminHTML) : adminHTML));
                     if (typeof debugLog !== 'undefined') {
                         debugLog.warn('⚠️ DOMPurify no disponible en updateAdminHeaderStatus (loggedIn), usando fallback sin sanitización');
                     }

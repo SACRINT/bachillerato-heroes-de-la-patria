@@ -112,7 +112,7 @@ function showInteraction(interaction) {
         payload.options.forEach((opt, idx) => {
             html += `<button class="quiz-option" onclick="checkAnswer(this, ${idx}, ${payload.correct})">${opt}</button>`;
         });
-        content.innerHTML = html;
+        content.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(html) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(html) : html));
 
     } else {
         title.textContent = 'Información Importante';

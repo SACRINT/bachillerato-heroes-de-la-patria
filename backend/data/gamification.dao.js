@@ -381,7 +381,99 @@ class GamificationDAO {
         const result = await (0, database_1.executeQuery)(query, [userId, challengeId, coinsEarned, xpEarned]);
         return result[0];
     }
+    /**
+     * Obtiene leaderboard de Trivia
+     */
+    static async getTriviaLeaderboard(period = 'all', limit = 10) {
+        let dateFilter = '';
+        if (period === 'weekly') {
+            dateFilter = "AND gs.created_at >= NOW() - INTERVAL '7 days'";
+        } else if (period === 'monthly') {
+            dateFilter = "AND gs.created_at >= NOW() - INTERVAL '30 days'";
+        }
+        const query = `
+            SELECT 
+                u.id,
+                u.nombre || ' ' || COALESCE(LEFT(u.apellido_paterno, 1) || '.', '') as display_name,
+                COALESCE(SUM(gs.score), 0) as total_score,
+                COALESCE(SUM(gs.coins_earned), 0) as total_coins,
+                COUNT(gs.id) as games_played
+            FROM users u
+            LEFT JOIN game_sessions gs ON u.id = gs.user_id AND gs.game_type = 'trivia' ${dateFilter}
+            GROUP BY u.id, u.nombre, u.apellido_paterno
+            HAVING COUNT(gs.id) > 0
+            ORDER BY total_score DESC
+            LIMIT $1
+        `;
+        return (0, database_1.executeQuery)(query, [parseInt(limit)]);
+    }
+    /**
+     * Obtiene estadísticas de Trivia del usuario
+     */
+    static async getTriviaStats(userId) {
+        const query = `
+            SELECT 
+                COUNT(*) as games_played,
+                COALESCE(SUM(score), 0) as total_score,
+                COALESCE(SUM(coins_earned), 0) as total_coins,
+                COALESCE(AVG((metadata->>'correct')::int * 100.0 / NULLIF((metadata->>'total')::int, 0)), 0) as avg_accuracy,
+                COALESCE(MAX((metadata->>'max_streak')::int), 0) as best_streak
+            FROM game_sessions
+            WHERE user_id = $1 AND game_type = 'trivia'
+        `;
+        const rows = await (0, database_1.executeQuery)(query, [userId]);
+        return rows[0] || null;
+    }
+    /**
+     * Obtiene estadísticas de Concept Builder
+     */
+    static async getConceptBuilderStats(userId) {
+        const query = `
+            SELECT 
+                COUNT(*) as maps_completed,
+                COALESCE(SUM(coins_earned), 0) as total_coins,
+                COALESCE(AVG((metadata->>'attempts')::int), 0) as avg_attempts
+            FROM game_sessions
+            WHERE user_id = $1 AND game_type = 'concept_builder'
+        `;
+        const rows = await (0, database_1.executeQuery)(query, [userId]);
+        return rows[0] || null;
+    }
+    /**
+     * Obtiene progreso de AR
+     */
+    static async getARProgress(userId) {
+        const query = `
+            SELECT 
+                COUNT(*) as total_sessions,
+                COUNT(CASE WHEN status = 'completed' THEN 1 END) as completed,
+                COALESCE(SUM(reward), 0) as total_rewards
+            FROM ar_experience_sessions
+            WHERE user_id = $1
+        `;
+        const rows = await (0, database_1.executeQuery)(query, [userId]);
+        return rows[0] || null;
+    }
+    /**
+     * Obtiene leaderboard de AR
+     */
+    static async getARLeaderboard(limit = 10) {
+        const query = `
+            SELECT 
+                u.id,
+                u.nombre || ' ' || COALESCE(LEFT(u.apellidos, 1) || '.', '') as display_name,
+                COUNT(s.id) as total_experiences,
+                COALESCE(SUM(s.reward), 0) as total_earned,
+                MAX(s.score) as best_score
+            FROM users u
+            JOIN ar_experience_sessions s ON u.id = s.user_id
+            WHERE s.status = 'completed'
+            GROUP BY u.id, u.nombre, u.apellidos
+            ORDER BY total_earned DESC
+            LIMIT $1
+        `;
+        return (0, database_1.executeQuery)(query, [parseInt(limit)]);
+    }
 }
 exports.default = GamificationDAO;
 module.exports = GamificationDAO;
-//# sourceMappingURL=gamification.dao.js.map

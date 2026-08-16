@@ -109,7 +109,7 @@ function renderDashboard(data) {
         `;
     });
 
-    tableBody.innerHTML = html;
+    tableBody.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(html) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(html) : html));
 
     // Actualizar contadores
     prodModelsEl.textContent = prodCount;

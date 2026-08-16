@@ -21,7 +21,7 @@
  * Fecha: 20 Noviembre 2025
  */
 
-const performanceMonitor = require('../services/performanceMonitor.js');
+const performanceMonitor = require('../services/performance.service');
 const devLogger = require('../utils/devLogger.js');
 
 /**

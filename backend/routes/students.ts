@@ -80,7 +80,7 @@ interface StudentServiceInterface {
 
 function getStudentService(): StudentServiceInterface | null {
     try {
-        const { getStudentService } = require('../services/studentService');
+        const { getStudentService } = require('../services/student.service');
         return getStudentService();
     } catch (error) {
         debugLog.error('STUDENTS', 'Error obteniendo servicio de estudiantes', sanitizeError(error as Error, 'getStudentService'));

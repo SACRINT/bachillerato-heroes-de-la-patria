@@ -86,7 +86,7 @@ class RiskDashboard {
                 </tr>
             `;
         });
-        tableBody.innerHTML = html;
+        tableBody.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(html) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(html) : html));
     }
 
     renderChart(data) {

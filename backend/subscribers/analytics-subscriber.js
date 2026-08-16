@@ -2,8 +2,8 @@
  * ANALYTICS SUBSCRIBER - SEMANA 5
  * Elimina tracking hardcodeado en 40+ archivos
  */
-const eventBusService = require('../services/eventBus.service');
-const analyticsService = require('../services/analyticsService');
+const eventBusService = require('../services/event-bus.service');
+const analyticsService = require('../services/analytics.service');
 
 class AnalyticsSubscriber {
     constructor() {

@@ -640,13 +640,32 @@
             let currentBal = parseFloat(localStorage.getItem('bge_iacoins_balance') || '250.00');
 
             if (currentBal < price) {
-                alert(`Saldo insuficiente. Necesitas ${price} IACoins para adquirir "${itemName}".
-Tu saldo actual es de ${currentBal.toFixed(2)} IACoins.`);
+                alert(`Saldo insuficiente. Necesitas ${price} IACoins para adquirir "${itemName}".\nTu saldo actual es de ${currentBal.toFixed(2)} IACoins.`);
                 return;
             }
 
             if (!confirm(`¿Deseas comprar "${itemName}" por ${price} IA Coins?`)) {
                 return;
+            }
+
+            const token = getStoredToken();
+            if (token) {
+                try {
+                    await fetch('/api/wallet/spend', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        },
+                        body: JSON.stringify({
+                            amount: price,
+                            description: 'Compra de tienda: ' + itemName,
+                            metadata: { itemId, itemName }
+                        })
+                    });
+                } catch (e) {
+                    console.warn('[STORE] API spend error:', e);
+                }
             }
 
             // Deduct local balance
@@ -658,10 +677,7 @@ Tu saldo actual es de ${currentBal.toFixed(2)} IACoins.`);
             ownedItems.push({ id: itemId, name: itemName, date: new Date().toISOString() });
             localStorage.setItem('bge_store_purchases', JSON.stringify(ownedItems));
 
-            alert(`🎉 ¡Compra exitosa!
-
-Item adquirido: ${itemName}
-Nuevo Saldo: ${currentBal.toFixed(2)} IA Coins`);
+            alert(`🎉 ¡Compra exitosa!\n\nItem adquirido: ${itemName}\nNuevo Saldo: ${currentBal.toFixed(2)} IA Coins`);
             loadWalletBalance();
         }
 
@@ -670,16 +686,33 @@ Nuevo Saldo: ${currentBal.toFixed(2)} IA Coins`);
             if (!currentPackage) return;
 
             const totalCoins = Math.floor(currentPackage.iacoins * (1 + currentPackage.bonus_percentage / 100));
+            const token = getStoredToken();
 
-            // Award coins
+            if (token) {
+                try {
+                    await fetch('/api/wallet/earn', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        },
+                        body: JSON.stringify({
+                            amount: totalCoins,
+                            description: `Recarga de paquete: ${currentPackage.name} (${selectedPaymentMethod.toUpperCase()})`,
+                            metadata: { packageId: currentPackage.id, paymentMethod: selectedPaymentMethod }
+                        })
+                    });
+                } catch (e) {
+                    console.warn('[STORE] API recharge error:', e);
+                }
+            }
+
+            // Award coins locally
             let currentBal = parseFloat(localStorage.getItem('bge_iacoins_balance') || '250.00');
             currentBal += totalCoins;
             localStorage.setItem('bge_iacoins_balance', currentBal);
 
-            alert(`🎉 ¡Pago procesado con éxito via ${selectedPaymentMethod.toUpperCase()}!
-
-Se han acreditado +${totalCoins} IA Coins a tu cuenta.
-Nuevo saldo: ${currentBal.toFixed(2)} IACoins`);
+            alert(`🎉 ¡Pago procesado con éxito via ${selectedPaymentMethod.toUpperCase()}!\n\nSe han acreditado +${totalCoins} IA Coins a tu cuenta.\nNuevo saldo: ${currentBal.toFixed(2)} IACoins`);
 
             const modalInstance = bootstrap.Modal.getInstance(document.getElementById('purchaseModal'));
             if (modalInstance) modalInstance.hide();

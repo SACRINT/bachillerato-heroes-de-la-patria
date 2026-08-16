@@ -221,7 +221,7 @@ class ProductionMonitor {
         // Performance Monitor integration (si existe)
         let perfMetrics = {};
         try {
-            const performanceMonitor = require('./performanceMonitor.js');
+            const performanceMonitor = require('./performance.service');
             const stats = performanceMonitor.getStats();
             perfMetrics = stats;
         } catch (error) {

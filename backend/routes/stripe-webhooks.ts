@@ -13,7 +13,7 @@ const router = express.Router();
 let stripePaymentsService: any;
 try {
     // @ts-ignore
-    stripePaymentsService = require('../services/stripePaymentsService.bridge');
+    stripePaymentsService = require('../services/stripe-payments.service');
 } catch (error) {
     console.log('[STRIPE-WEBHOOKS] Servicio en modo simulado');
     stripePaymentsService = null;

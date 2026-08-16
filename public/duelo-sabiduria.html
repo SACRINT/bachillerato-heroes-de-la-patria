@@ -831,9 +831,52 @@
             clearInterval(gameState.timer);
 
             const question = gameState.questions[gameState.currentIndex];
-            const correctIndex = question.correct ?? 0;
-            const isCorrect = (answerIndex === correctIndex);
-            const pointsAwarded = isCorrect ? (question.points || 10) + (gameState.streak * 2) : 0;
+            let isCorrect = false;
+            let correctIndex = question.correct ?? 0;
+            let pointsAwarded = 0;
+
+            const token = getStoredToken();
+            const timeSpent = Date.now() - (gameState.questionStartTime || Date.now());
+
+            if (token && gameState.gameId && !gameState.gameId.startsWith('local_')) {
+                try {
+                    const res = await fetch('/api/games/trivia/answer', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        },
+                        body: JSON.stringify({
+                            gameId: gameState.gameId,
+                            questionIndex: gameState.currentIndex,
+                            answer: answerIndex,
+                            timeSpent: timeSpent
+                        })
+                    });
+
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data.success && data.result) {
+                            isCorrect = data.result.isCorrect;
+                            correctIndex = data.result.correctAnswer;
+                            pointsAwarded = data.result.pointsEarned;
+                            gameState.score = data.result.totalScore;
+                            gameState.streak = data.result.currentStreak;
+                        }
+                    }
+                } catch (apiErr) {
+                    console.warn('[TRIVIA] Fallback local answer:', apiErr);
+                }
+            } else {
+                isCorrect = (answerIndex === correctIndex);
+                pointsAwarded = isCorrect ? (question.points || 10) + (gameState.streak * 2) : 0;
+                if (isCorrect) {
+                    gameState.score += pointsAwarded;
+                    gameState.streak++;
+                } else {
+                    gameState.streak = 0;
+                }
+            }
 
             // Disable all buttons
             optionsGrid.querySelectorAll('.option-btn').forEach(btn => {
@@ -848,12 +891,8 @@
 
             // Update state
             if (isCorrect) {
-                gameState.score += pointsAwarded;
                 gameState.correctAnswers++;
-                gameState.streak++;
                 gameState.maxStreak = Math.max(gameState.maxStreak, gameState.streak);
-            } else {
-                gameState.streak = 0;
             }
 
             showScorePopup(isCorrect, pointsAwarded);
@@ -882,10 +921,37 @@
         }
 
         // Finish game
-        function finishGame() {
+        async function finishGame() {
             const totalQuestions = gameState.questions.length;
             const accuracy = Math.round((gameState.correctAnswers / totalQuestions) * 100);
-            const coinsEarned = Math.round(gameState.score / 2);
+            let coinsEarned = Math.round(gameState.score / 10);
+            let serverResults = null;
+
+            const token = getStoredToken();
+            if (token && gameState.gameId && !gameState.gameId.startsWith('local_')) {
+                try {
+                    const res = await fetch('/api/games/trivia/finish', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        },
+                        body: JSON.stringify({
+                            gameId: gameState.gameId
+                        })
+                    });
+
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data.success && data.results) {
+                            serverResults = data.results;
+                            coinsEarned = serverResults.coinsEarned;
+                        }
+                    }
+                } catch (apiErr) {
+                    console.warn('[TRIVIA] Error finishing game on server:', apiErr);
+                }
+            }
 
             // Persist stats
             const prevScore = parseInt(localStorage.getItem('bge_trivia_score') || '450');
@@ -896,7 +962,7 @@
             localStorage.setItem('bge_trivia_games', prevGames + 1);
             localStorage.setItem('bge_trivia_streak', Math.max(prevStreak, gameState.maxStreak));
 
-            // Award coins to local wallet
+            // Sync wallet balance
             const currentWalletCoins = parseFloat(localStorage.getItem('bge_iacoins_balance') || '250');
             localStorage.setItem('bge_iacoins_balance', currentWalletCoins + coinsEarned);
 

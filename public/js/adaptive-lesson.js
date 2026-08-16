@@ -122,7 +122,7 @@
                 `;
             }
 
-            area.innerHTML = html;
+            area.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(html) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(html) : html));
         }
     }
 

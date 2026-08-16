@@ -245,7 +245,7 @@ Comienza a acumular puntos jugando duelos de sabiduría y desafíos.');
             </div>
         `).join('');
 
-        content.innerHTML = html;
+        content.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(html) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(html) : html));
     };
 
     document.addEventListener('DOMContentLoaded', init);

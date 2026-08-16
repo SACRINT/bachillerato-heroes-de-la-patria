@@ -17,7 +17,7 @@
  */
 
 const { Pool } = require('pg');
-const encryptionService = require('../services/encryption-service');
+const encryptionService = require('../services/encryption.service');
 const fs = require('fs');
 const path = require('path');
 

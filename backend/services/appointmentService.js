@@ -13,7 +13,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppointmentService = exports.ServiceError = void 0;
 const crypto_1 = __importDefault(require("crypto"));
 const AppointmentDAO = require('../data/appointment.dao.js');
-const EventBus = require('./eventBus.service.js').getInstance();
+const EventBus = require('./event-bus.service').getInstance();
 const NotificationService = require('./notification.service.js');
 const devLogger = require('../utils/devLogger.js');
 // ============================================

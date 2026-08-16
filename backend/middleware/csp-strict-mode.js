@@ -20,7 +20,6 @@ const CSP_POLICIES = {
         'default-src': ["'self'"],
         'script-src': [
             "'self'",
-            "'unsafe-eval'", // Solo en dev para hot reload
             "https://cdn.jsdelivr.net",
             "https://cdnjs.cloudflare.com",
             "https://cdn.tiny.cloud",

@@ -335,9 +335,13 @@ class TournamentDAO {
     }
 
     static async getMatchParticipant(client: any, matchId: number, which: 1 | 2): Promise<number | undefined> {
-        const field = which === 1 ? 'participant1_id' : 'participant2_id';
-        const result = await client.query(`SELECT ${field} FROM tournament_matches WHERE id = $1`, [matchId]);
-        return result.rows[0]?.[field];
+        if (which === 1) {
+            const result = await client.query('SELECT participant1_id FROM tournament_matches WHERE id = $1', [matchId]);
+            return result.rows[0]?.participant1_id;
+        } else {
+            const result = await client.query('SELECT participant2_id FROM tournament_matches WHERE id = $1', [matchId]);
+            return result.rows[0]?.participant2_id;
+        }
     }
 
     static async recordMatchResult(client: any, matchId: number, score1: number, score2: number, winnerId: number | null, isDraw: boolean, responses: any, duration: number): Promise<TournamentMatch> {

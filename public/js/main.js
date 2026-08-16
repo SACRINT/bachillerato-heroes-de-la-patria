@@ -25,7 +25,7 @@
                 const headerResponse = await fetch('/partials/header.html');
                 if (headerResponse.ok) {
                     const headerHTML = await headerResponse.text();
-                    headerElement.innerHTML = headerHTML;
+                    headerElement.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(headerHTML) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(headerHTML) : headerHTML));
 
                     const scripts = headerElement.querySelectorAll('script');
                     for (const script of scripts) {
@@ -47,7 +47,7 @@
                 const footerResponse = await fetch('/partials/footer.html');
                 if (footerResponse.ok) {
                     const footerHTML = await footerResponse.text();
-                    footerElement.innerHTML = footerHTML;
+                    footerElement.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(footerHTML) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(footerHTML) : footerHTML));
 
                     const scripts = footerElement.querySelectorAll('script');
                     for (const script of scripts) {

@@ -278,7 +278,7 @@ router.post('/messages', authenticateToken, [
 
         // Enviar notificación en tiempo real si WebSocket está disponible
         try {
-            const { getWebSocketService } = require('../services/webSocketService.js');
+            const { getWebSocketService } = require('../services/websocket.service');
             const wsService = getWebSocketService();
 
             if (wsService) {

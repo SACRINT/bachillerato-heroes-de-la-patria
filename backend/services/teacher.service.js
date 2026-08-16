@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ServiceError = void 0;
 const teacher_dao_1 = __importDefault(require('../data/teacher.dao.js'));
 const user_dao_1 = __importDefault(require('../data/user.dao.js'));
-const eventBus_service_1 = __importDefault(require('./eventBus.service.js'));
+const eventBus_service_1 = __importDefault(require('./event-bus.service'));
 const devLogger_1 = __importDefault(require('../utils/devLogger.js'));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 class ServiceError extends Error {

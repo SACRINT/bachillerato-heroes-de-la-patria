@@ -270,9 +270,12 @@ class EventBusService extends EventEmitter {
 // ============================================
 
 const eventBusService = new EventBusService();
+(eventBusService as any).getInstance = () => eventBusService;
+(EventBusService as any).getInstance = () => eventBusService;
 
 export { EventBusService };
 export default eventBusService;
 
 module.exports = eventBusService;
 module.exports.EventBusService = EventBusService;
+module.exports.getInstance = () => eventBusService;

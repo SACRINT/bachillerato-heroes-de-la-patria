@@ -16,7 +16,7 @@
 
 const express = require('express');
 const router = express.Router();
-const gdprService = require('../services/gdprComplianceService.js');
+const gdprService = require('../services/gdpr.service');
 const devLogger = require('../utils/devLogger.js');
 
 /**

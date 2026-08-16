@@ -855,7 +855,7 @@ class AppointmentSystem {
         } finally {
             if (submitBtn) {
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = originalText;
+                submitBtn.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(originalText) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(originalText) : originalText));
             }
         }
 
@@ -1278,7 +1278,7 @@ Coronel Tito Hernández, Venustiano Carranza, Puebla
             }
 
             document.getElementById('appointmentsTableBody').innerHTML =
-                this.generateAppointmentsTableRows(filteredAppointments);
+                (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(this.generateAppointmentsTableRows(filteredAppointments)) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(this.generateAppointmentsTableRows(filteredAppointments)) : this.generateAppointmentsTableRows(filteredAppointments)));
         };
 
         searchInput.addEventListener('input', filterAppointments);
@@ -1315,7 +1315,7 @@ Estado: ${this.getAppointmentStatus(appointment)}
         // Actualizar tabla
         if (document.getElementById('appointmentsViewModal')) {
             document.getElementById('appointmentsTableBody').innerHTML =
-                this.generateAppointmentsTableRows(this.appointments);
+                (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(this.generateAppointmentsTableRows(this.appointments)) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(this.generateAppointmentsTableRows(this.appointments)) : this.generateAppointmentsTableRows(this.appointments)));
         }
 
         alert('Cita cancelada exitosamente.');

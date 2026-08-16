@@ -173,7 +173,10 @@ exports.EventBusService = EventBusService;
 // EXPORTS
 // ============================================
 const eventBusService = new EventBusService();
+eventBusService.getInstance = () => eventBusService;
+EventBusService.getInstance = () => eventBusService;
 exports.default = eventBusService;
 module.exports = eventBusService;
 module.exports.EventBusService = EventBusService;
+module.exports.getInstance = () => eventBusService;
 //# sourceMappingURL=event-bus.service.js.map

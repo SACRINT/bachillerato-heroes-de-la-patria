@@ -10,7 +10,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 // @ts-ignore
 import { authenticateToken } from '../middleware/auth';
-import { cache, cacheKeys } from '../services/CacheService';
+import { cache, cacheKeys } from '../services/cache.service';
 import queryOptimizer from '../services/QueryOptimizer';
 // pool is not used directly in endpoints, we skip import or rely on DAOs
 import AnalyticsDAO from '../data/analytics.dao';

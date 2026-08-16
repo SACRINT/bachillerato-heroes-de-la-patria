@@ -152,8 +152,9 @@ class ParentDashboard {
             }
 
             let loginSuccess = false;
-            let token = 'parent_session_' + Date.now();
-            let parentObj = { nombre: 'Samuel (Administrador / Tutor)', email: email, role: 'padre_familia' };
+            let token = null;
+            let parentObj = null;
+            let errorMessage = 'Credenciales inválidas. Verifique su correo y contraseña.';
 
             try {
                 const response = await fetch('/api/parents/auth/login', {
@@ -164,33 +165,28 @@ class ParentDashboard {
 
                 if (response.ok) {
                     const data = await response.json();
-                    if (data.success) {
+                    if (data.success && data.token) {
                         loginSuccess = true;
-                        token = data.token || data.accessToken || data.data?.token || token;
-                        parentObj = data.parent || data.user || data.data?.parent || parentObj;
+                        token = data.token;
+                        parentObj = data.parent || data.user || data.data?.parent;
+                    } else {
+                        errorMessage = data.message || errorMessage;
                     }
+                } else {
+                    const errData = await response.json().catch(() => ({}));
+                    errorMessage = errData.message || errorMessage;
                 }
             } catch (err) {
-                console.warn('Backend login fallback applied');
+                errorMessage = 'Error de conexión con el servidor. Intente nuevamente.';
             }
 
-            if (!loginSuccess && (email.includes('@') && password.length >= 4)) {
-                loginSuccess = true;
-                if (email === 'samuelci6377@gmail.com') {
-                    parentObj = { nombre: 'Ing. Samuel C. (Super Admin & Tutor)', email: email, role: 'admin_tutor' };
-                } else {
-                    const localName = email.split('@')[0].replace('.', ' ').toUpperCase();
-                    parentObj = { nombre: `Padre de Familia (${localName})`, email: email, role: 'padre_familia' };
-                }
-            }
-
-            if (loginSuccess) {
+            if (loginSuccess && token) {
                 localStorage.setItem('parent_auth_token', token);
                 localStorage.setItem('current_parent', JSON.stringify(parentObj));
                 localStorage.setItem('bge_auth_token', token);
                 localStorage.setItem('bge_auth_session', JSON.stringify({
                     user: parentObj,
-                    role: 'padre_familia'
+                    role: parentObj.role || 'padre_familia'
                 }));
 
                 this.authToken = token;
@@ -200,7 +196,7 @@ class ParentDashboard {
                 this.showDashboardSection();
                 await this.loadDashboardData();
             } else {
-                this.showError(errorContainer, 'Credenciales incorrectas. Verifique su correo y contraseña.');
+                this.showError(errorContainer, errorMessage);
             }
         } catch (error) {
             this.showError(errorContainer, 'Error de conexión. Intente nuevamente.');

@@ -14,7 +14,7 @@ const router = express_1.default.Router();
 let stripePaymentsService;
 try {
     // @ts-ignore
-    stripePaymentsService = require('../services/stripePaymentsService.bridge.js');
+    stripePaymentsService = require('../services/stripe-payments.service');
 }
 catch (error) {
     console.log('[STRIPE-WEBHOOKS] Servicio en modo simulado');

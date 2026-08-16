@@ -149,13 +149,33 @@ window.resetSimulation = function () {
 window.submitLab = async function () {
     const notes = document.getElementById('lab-notes').value;
     const hypothesis = document.getElementById('lab-hypothesis').value;
+    const token = localStorage.getItem('bge_auth_token') || sessionStorage.getItem('bge_auth_token');
+
+    const rewardAmount = 50;
+    if (token) {
+        try {
+            await fetch('/api/wallet/earn', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({
+                    amount: rewardAmount,
+                    description: 'Laboratorio Virtual completado: ' + (hypothesis ? hypothesis.slice(0, 35) : 'Simulación 2D')
+                })
+            });
+        } catch (err) {
+            console.warn('[LAB] Error registrando recompensa en backend:', err);
+        }
+    }
 
     let balance = parseFloat(localStorage.getItem('bge_iacoins_balance') || '250.00');
-    balance += 50;
+    balance += rewardAmount;
     localStorage.setItem('bge_iacoins_balance', balance);
 
     alert(`🎉 ¡Laboratorio completado con éxito!\n\n` +
-          `• Recompensa: +50 IACoins acreditadas a tu billetera\n` +
+          `• Recompensa: +${rewardAmount} IACoins acreditadas a tu billetera\n` +
           `• Hipótesis: ${hypothesis || 'Registrada'}\n` +
           `• Conclusiones: ${notes || 'Registradas'}\n\n` +
           `Nuevo Saldo: ${balance.toFixed(2)} IACoins`);
