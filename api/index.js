@@ -157,38 +157,49 @@ const mountRouteSafe = (routePrefix, routeModule) => {
 };
 
 // 1. Admin y Dashboard
-try { mountRouteSafe('/api/admin', require('../backend/routes/admin')); } catch (e) { console.warn('[ROUTER] admin:', e.message); }
-try { mountRouteSafe('/api/dashboard', require('../backend/routes/dashboard')); } catch (e) { console.warn('[ROUTER] dashboard:', e.message); }
+try { mountRouteSafe('/api/admin', require('../backend/routes/admin.js')); } catch (e) { console.warn('[ROUTER] admin:', e.message); }
+try { mountRouteSafe('/api/dashboard', require('../backend/routes/dashboard.js')); } catch (e) { console.warn('[ROUTER] dashboard:', e.message); }
 
-// 2. Portales de Usuarios
-try { mountRouteSafe('/api/parents', require('../backend/routes/parents')); } catch (e) { console.warn('[ROUTER] parents:', e.message); }
-try { mountRouteSafe('/api/students-auth', require('../backend/routes/students-auth')); } catch (e) { console.warn('[ROUTER] students-auth:', e.message); }
-try { mountRouteSafe('/api/teachers-portal', require('../backend/routes/teachers-portal')); } catch (e) { console.warn('[ROUTER] teachers-portal:', e.message); }
-try { mountRouteSafe('/api/teachers-portal-ext', require('../backend/routes/teachers-portal-extended')); } catch (e) { console.warn('[ROUTER] teachers-portal-ext:', e.message); }
+// 2. Portales y Usuarios
+try { mountRouteSafe('/api/students', require('../backend/routes/students.js')); } catch (e) { console.warn('[ROUTER] students:', e.message); }
+try { mountRouteSafe('/api/teachers', require('../backend/routes/teachers.js')); } catch (e) { console.warn('[ROUTER] teachers:', e.message); }
+try { mountRouteSafe('/api/parents', require('../backend/routes/parents.js')); } catch (e) { console.warn('[ROUTER] parents:', e.message); }
+try { mountRouteSafe('/api/students-auth', require('../backend/routes/students-auth.js')); } catch (e) { console.warn('[ROUTER] students-auth:', e.message); }
+try { mountRouteSafe('/api/teachers-portal', require('../backend/routes/teachers-portal.js')); } catch (e) { console.warn('[ROUTER] teachers-portal:', e.message); }
+try { mountRouteSafe('/api/teachers-portal-ext', require('../backend/routes/teachers-portal-extended.js')); } catch (e) { console.warn('[ROUTER] teachers-portal-ext:', e.message); }
 
-// 3. Calificaciones y Asistencia
-try { mountRouteSafe('/api/grades', require('../backend/routes/grades')); } catch (e) { console.warn('[ROUTER] grades:', e.message); }
-try { mountRouteSafe('/api/grades-validation', require('../backend/routes/grades-validation')); } catch (e) { console.warn('[ROUTER] grades-validation:', e.message); }
-try { mountRouteSafe('/api/attendance', require('../backend/routes/attendance')); } catch (e) { console.warn('[ROUTER] attendance:', e.message); }
+// 3. Calificaciones, Asistencia y Cursos
+try { mountRouteSafe('/api/grades', require('../backend/routes/grades.js')); } catch (e) { console.warn('[ROUTER] grades:', e.message); }
+try { mountRouteSafe('/api/grades-validation', require('../backend/routes/grades-validation.js')); } catch (e) { console.warn('[ROUTER] grades-validation:', e.message); }
+try { mountRouteSafe('/api/attendance', require('../backend/routes/attendance.js')); } catch (e) { console.warn('[ROUTER] attendance:', e.message); }
+try { mountRouteSafe('/api/courses', require('../backend/routes/courses.js')); } catch (e) { console.warn('[ROUTER] courses:', e.message); }
 
 // 4. Formularios Públicos e Institucionales
-try { mountRouteSafe('/api/bolsa-trabajo', require('../backend/routes/bolsa-trabajo')); } catch (e) { console.warn('[ROUTER] bolsa-trabajo:', e.message); }
-try { mountRouteSafe('/api/egresados', require('../backend/routes/egresados')); } catch (e) { console.warn('[ROUTER] egresados:', e.message); }
-try { mountRouteSafe('/api/contact', require('../backend/routes/contact')); } catch (e) { console.warn('[ROUTER] contact:', e.message); }
-try { mountRouteSafe('/api/citas', require('../backend/routes/citas')); } catch (e) { console.warn('[ROUTER] citas:', e.message); }
-try { mountRouteSafe('/api/citas-improved', require('../backend/routes/citas-improved')); } catch (e) { console.warn('[ROUTER] citas-improved:', e.message); }
-try { mountRouteSafe('/api/inscriptions', require('../backend/routes/inscriptions')); } catch (e) { console.warn('[ROUTER] inscriptions:', e.message); }
-try { mountRouteSafe('/api/enrollment', require('../backend/routes/enrollment')); } catch (e) { console.warn('[ROUTER] enrollment:', e.message); }
+try { mountRouteSafe('/api/bolsa-trabajo', require('../backend/routes/bolsa-trabajo.js')); } catch (e) { console.warn('[ROUTER] bolsa-trabajo:', e.message); }
+try { mountRouteSafe('/api/egresados', require('../backend/routes/egresados.js')); } catch (e) { console.warn('[ROUTER] egresados:', e.message); }
+try { mountRouteSafe('/api/contact', require('../backend/routes/contact.js')); } catch (e) { console.warn('[ROUTER] contact:', e.message); }
+try { mountRouteSafe('/api/citas', require('../backend/routes/citas.js')); } catch (e) { console.warn('[ROUTER] citas:', e.message); }
+try { mountRouteSafe('/api/citas-improved', require('../backend/routes/citas-improved.js')); } catch (e) { console.warn('[ROUTER] citas-improved:', e.message); }
+try { mountRouteSafe('/api/inscriptions', require('../backend/routes/inscriptions.js')); } catch (e) { console.warn('[ROUTER] inscriptions:', e.message); }
+try { mountRouteSafe('/api/enrollment', require('../backend/routes/enrollment.js')); } catch (e) { console.warn('[ROUTER] enrollment:', e.message); }
 
-// 5. Comunicación, Finanzas, Suscriptores, Aprobaciones y Avisos
-try { mountRouteSafe('/api/avisos', require('../backend/routes/avisos')); } catch (e) { console.warn('[ROUTER] avisos:', e.message); }
-try { mountRouteSafe('/api/noticias', require('../backend/routes/noticias')); } catch (e) { console.warn('[ROUTER] noticias:', e.message); }
-try { mountRouteSafe('/api/eventos', require('../backend/routes/eventos')); } catch (e) { console.warn('[ROUTER] eventos:', e.message); }
-try { mountRouteSafe('/api/comunicados', require('../backend/routes/comunicados')); } catch (e) { console.warn('[ROUTER] comunicados:', e.message); }
-try { mountRouteSafe('/api/finances', require('../backend/routes/finances')); } catch (e) { console.warn('[ROUTER] finances:', e.message); }
-try { mountRouteSafe('/api/suscriptores', require('../backend/routes/suscriptores')); } catch (e) { console.warn('[ROUTER] suscriptores:', e.message); }
-try { mountRouteSafe('/api/approvals', require('../backend/routes/approvals')); } catch (e) { console.warn('[ROUTER] approvals:', e.message); }
-try { mountRouteSafe('/api/solicitudes', require('../backend/routes/solicitudes')); } catch (e) { console.warn('[ROUTER] solicitudes:', e.message); }
+// 5. Comunicación, Finanzas, Suscriptores, Solicitudes y Avisos
+try { mountRouteSafe('/api/avisos', require('../backend/routes/avisos.js')); } catch (e) { console.warn('[ROUTER] avisos:', e.message); }
+try { mountRouteSafe('/api/noticias', require('../backend/routes/noticias.js')); } catch (e) { console.warn('[ROUTER] noticias:', e.message); }
+try { mountRouteSafe('/api/eventos', require('../backend/routes/eventos.js')); } catch (e) { console.warn('[ROUTER] eventos:', e.message); }
+try { mountRouteSafe('/api/comunicados', require('../backend/routes/comunicados.js')); } catch (e) { console.warn('[ROUTER] comunicados:', e.message); }
+try { mountRouteSafe('/api/finances', require('../backend/routes/finances.js')); } catch (e) { console.warn('[ROUTER] finances:', e.message); }
+try { mountRouteSafe('/api/suscriptores', require('../backend/routes/suscriptores.js')); } catch (e) { console.warn('[ROUTER] suscriptores:', e.message); }
+try { mountRouteSafe('/api/approvals', require('../backend/routes/approvals.js')); } catch (e) { console.warn('[ROUTER] approvals:', e.message); }
+try { mountRouteSafe('/api/solicitudes', require('../backend/routes/solicitudes.js')); } catch (e) { console.warn('[ROUTER] solicitudes:', e.message); }
+try { mountRouteSafe('/api/notifications', require('../backend/routes/notifications.js')); } catch (e) { console.warn('[ROUTER] notifications:', e.message); }
+try { mountRouteSafe('/api/settings', require('../backend/routes/settings.js')); } catch (e) { console.warn('[ROUTER] settings:', e.message); }
+try { mountRouteSafe('/api/reports', require('../backend/routes/reports.js')); } catch (e) { console.warn('[ROUTER] reports:', e.message); }
+try { mountRouteSafe('/api/analytics', require('../backend/routes/analytics.js')); } catch (e) { console.warn('[ROUTER] analytics:', e.message); }
+try { mountRouteSafe('/api/iacoins', require('../backend/routes/iacoins.js')); } catch (e) { console.warn('[ROUTER] iacoins:', e.message); }
+try { mountRouteSafe('/api/gamification', require('../backend/routes/gamification.js')); } catch (e) { console.warn('[ROUTER] gamification:', e.message); }
+try { mountRouteSafe('/api/polls', require('../backend/routes/polls.js')); } catch (e) { console.warn('[ROUTER] polls:', e.message); }
+try { mountRouteSafe('/api/quejas', require('../backend/routes/quejas.js')); } catch (e) { console.warn('[ROUTER] quejas:', e.message); }
 
 // ----------------------------------------------------------------------
 // END PROD INTEGRATION
