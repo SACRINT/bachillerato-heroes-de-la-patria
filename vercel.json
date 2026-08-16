@@ -18,7 +18,7 @@
       "memory": 1024,
       "maxDuration": 60,
       "includeFiles": "api/**,backend/**",
-      "excludeFiles": "backend/node_modules/**"
+      "excludeFiles": "backend/node_modules/**,backend/**/*.ts,backend/**/*.d.ts,backend/**/*.map,api/**/*.ts,api/**/*.d.ts,api/**/*.map"
     }
   },
   "headers": [
