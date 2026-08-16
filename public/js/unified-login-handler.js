@@ -10,11 +10,11 @@
 (function() {
     'use strict';
 
-    console.log('[UNIFIED-LOGIN-HANDLER] 📱 Inicializando handler...');
+    // log silenced
 
     // Esperar a que el documento esté listo
     function setupHandler() {
-        console.log('[UNIFIED-LOGIN-HANDLER] ✅ Handler instalado');
+        // log silenced
 
         // Event delegation: escuchar clics en cualquier elemento con data-action="open-unified-login"
         document.addEventListener('click', function(e) {
@@ -22,11 +22,11 @@
 
             if (element) {
                 e.preventDefault();
-                console.log('[UNIFIED-LOGIN-HANDLER] 🎯 Click detectado en elemento con data-action="open-unified-login"');
+                // log silenced
 
                 // Verificar que el sistema unificado esté disponible
                 if (window.unifiedLogin && typeof window.unifiedLogin.showModal === 'function') {
-                    console.log('[UNIFIED-LOGIN-HANDLER] ✅ Abriendo modal unificado...');
+                    // log silenced
                     window.unifiedLogin.showModal();
                 } else {
                     console.error('[UNIFIED-LOGIN-HANDLER] ❌ window.unifiedLogin no disponible');

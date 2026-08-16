@@ -552,7 +552,7 @@ if (typeof window.BGESecurityModule !== 'undefined') {
                 start: () => {
                     if (this.isActive) return;
 
-                    console.log('🔍 Iniciando escaneo en tiempo real...');
+                    
                     this.isActive = true;
 
                     this.scanInterval = setInterval(() => {
@@ -567,7 +567,7 @@ if (typeof window.BGESecurityModule !== 'undefined') {
                         this.scanInterval = null;
                     }
                     this.isActive = false;
-                    console.log('⏹️ Escaneo en tiempo real detenido');
+                    
                 },
 
                 // Realizar escaneo completo
@@ -727,7 +727,7 @@ if (typeof window.BGESecurityModule !== 'undefined') {
                 checkResourceUsage: () => ({ score: 1.0 }),
 
                 notifySecurityAlert: (alert) => {
-                    console.warn('🚨 Alerta de Seguridad:', alert);
+                    
                     if (window.bgeSecurity && window.bgeSecurity.securityMonitor.alertSystem) {
                         window.bgeSecurity.securityMonitor.alertSystem.trigger(alert);
                     }
@@ -790,14 +790,11 @@ if (typeof window.BGESecurityModule !== 'undefined') {
                         critical: 'color: white; font-weight: bold; background: red;'
                     }[severity] || 'color: orange;';
 
-                    console.log(
-                        `%c${icon} ALERTA DE SEGURIDAD [${severity.toUpperCase()}]`,
-                        style
-                    );
-                    console.log('ID:', alert.id);
-                    console.log('Mensaje:', alert.message);
-                    console.log('Detalles:', alert.details || 'Sin detalles adicionales');
-                    console.log('Timestamp:', new Date(alert.timestamp).toLocaleString());
+                    
+                    
+                    
+                    
+                    
                 },
 
                 // Notificar a suscriptores
@@ -1126,7 +1123,7 @@ if (typeof window.BGESecurityModule !== 'undefined') {
 
                     // Console log in development
                     if (this.framework?.config?.debug) {
-                        console.log(`[AUDIT-${level}]`, event, logEntry);
+                        
                     }
 
                     return logEntry;
@@ -1523,7 +1520,7 @@ if (typeof window.BGESecurityModule !== 'undefined') {
                     this.auditLog('security_alert', { threat });
 
                     // In production, this would trigger real alerts
-                    console.warn('🚨 ALERTA DE SEGURIDAD:', threat);
+                    
                 }
             };
         }
@@ -1560,7 +1557,7 @@ if (typeof window.BGESecurityModule !== 'undefined') {
                 }
 
                 // ✅ AUTENTICACIÓN REAL CON BACKEND (Reemplaza credenciales hardcoded)
-                console.log('🔐 Autenticando con backend real en /api/auth/login...');
+                
 
                 const apiBaseUrl = this.detectApiUrl();
                 const response = await fetch(`${apiBaseUrl}/auth/login`, {
@@ -1602,10 +1599,7 @@ if (typeof window.BGESecurityModule !== 'undefined') {
                 // ✅ Obtener datos reales del backend
                 const backendData = await response.json();
 
-                console.log('✅ Autenticación exitosa con backend:', {
-                    user: backendData.user,
-                    hasTokens: !!backendData.tokens
-                });
+                
 
                 // Mapear roles del backend al sistema de permisos local
                 const adminUser = {
@@ -1712,11 +1706,7 @@ if (typeof window.BGESecurityModule !== 'undefined') {
             // De lo contrario, generar tokens locales (modo compatibilidad)
             const tokens = user.backendTokens || await this.generateAdminTokens(user.id);
 
-            console.log('🔐 Creando sesión admin con tokens:', {
-                hasBackendTokens: !!user.backendTokens,
-                tokenType: user.backendTokens ? 'JWT REAL' : 'LOCAL FALLBACK',
-                accessToken: tokens.accessToken?.substring(0, 20) + '...'
-            });
+            
 
             const adminSession = {
                 id: sessionId,
@@ -2280,7 +2270,7 @@ if (typeof window.BGESecurityModule !== 'undefined') {
             localStorage.removeItem('secure_admin_session');
             sessionStorage.removeItem('admin_logout_redirect');
 
-            console.log('🧹 [AUTH] Estado de autenticación limpiado completamente');
+            
         }
 
         hasValidSession() {
@@ -2307,7 +2297,7 @@ if (typeof window.BGESecurityModule !== 'undefined') {
     // Función global para handleAdminLogin (requerida por header.html)
     window.handleAdminLogin = async function () {
         try {
-            console.log('🔑 handleAdminLogin llamado desde header');
+            
 
             // Crear modal de login si no existe
             createAdminLoginModal();
@@ -2429,7 +2419,7 @@ if (typeof window.BGESecurityModule !== 'undefined') {
         if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
             sanitizedHTML = DOMPurify.sanitize(modalHTML);
         } else {
-            console.warn('⚠️ [BGE-SECURITY] DOMPurify no disponible, usando HTML sin sanitizar');
+            
         }
         // ✅ FIX (19 Nov 2025): Eliminar doble sanitización - ya sanitizado en línea 2377
         document.body.insertAdjacentHTML('beforeend', sanitizedHTML);
@@ -2447,11 +2437,11 @@ if (typeof window.BGESecurityModule !== 'undefined') {
 
         // Validar que los elementos existen antes de agregar listeners
         if (!form) {
-            console.warn('⚠️ [BGE-SECURITY] adminLoginForm no encontrado en el DOM');
+            
             return;
         }
         if (!loginBtn) {
-            console.warn('⚠️ [BGE-SECURITY] adminLoginBtn no encontrado en el DOM');
+            
             return;
         }
 
@@ -2485,7 +2475,7 @@ if (typeof window.BGESecurityModule !== 'undefined') {
 
                 if (result.success) {
                     // Login exitoso
-                    console.log('✅ Login admin exitoso:', result);
+                    
 
                     // Actualizar UI del header
                     updateAdminHeaderStatus(true, result.user);
@@ -2611,7 +2601,7 @@ if (typeof window.BGESecurityModule !== 'undefined') {
                         return false;
                     }
                 } catch (error) {
-                    console.warn('❌ [SECURE AUTH] Error verificando autenticación:', error);
+                    
                     return false;
                 }
             },
@@ -2632,7 +2622,7 @@ if (typeof window.BGESecurityModule !== 'undefined') {
                     }
                     return null;
                 } catch (error) {
-                    console.warn('❌ [SECURE AUTH] Error obteniendo usuario:', error);
+                    
                     return null;
                 }
             }
@@ -2646,14 +2636,14 @@ if (typeof window.BGESecurityModule !== 'undefined') {
 
         // Función global de logout para compatibilidad con header.html
         window.logoutAdminPanel = function () {
-            console.log('🚪 Cerrando sesión admin desde BGE Security Module...');
+            
             if (window.secureAdminAuth && typeof window.secureAdminAuth.logout === 'function') {
                 window.secureAdminAuth.logout();
             } else {
                 // Fallback: limpiar localStorage manualmente
                 localStorage.removeItem('secure_admin_session');
                 localStorage.removeItem('admin_session');
-                console.log('✅ Sesión cerrada (fallback)');
+                
                 // Recargar página para actualizar UI
                 window.location.reload();
             }
@@ -2671,13 +2661,13 @@ if (typeof window.BGESecurityModule !== 'undefined') {
                     const isAuth = window.secureAdminAuth.isUserAuthenticated();
                     if (isAuth) {
                         const user = window.secureAdminAuth.getCurrentUser();
-                        console.log('✅ [SECURE AUTH] Sesión activa detectada al cargar página:', user);
+                        
                         // Actualizar UI del header para mostrar botones de admin
                         if (typeof updateAdminHeaderStatus === 'function') {
                             updateAdminHeaderStatus(true, user);
                         }
                     } else {
-                        console.log('ℹ️ [SECURE AUTH] No hay sesión activa');
+                        
                     }
                 }
             }, 500); // Esperar 500ms para que el header se haya cargado

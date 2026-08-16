@@ -39,7 +39,7 @@ class DynamicFinanceLoader {
      * Cargar datos financieros por defecto
      */
     loadDefaultFinances() {
-        console.log('📋 Cargando datos financieros por defecto...');
+
 
         this.finances = {
             resumen: {
@@ -73,7 +73,7 @@ class DynamicFinanceLoader {
             // Buscar las tarjetas en la sección de finanzas
             const financeSection = document.getElementById('finances');
             if (!financeSection) {
-                console.log('⚠️ Sección de finanzas no encontrada');
+
                 return;
             }
 
@@ -229,7 +229,7 @@ class DynamicFinanceLoader {
      * Mostrar modal de configuración financiera
      */
     showFinanceConfigModal() {
-        console.log('⚙️ Mostrando modal de configuración financiera...');
+
         
         // Crear modal si no existe
         let modal = document.getElementById('financeConfigModal');
@@ -367,7 +367,7 @@ class DynamicFinanceLoader {
      */
     async saveFinanceConfig() {
         try {
-            console.log('💾 Guardando configuración financiera...');
+
 
             // Obtener datos del formulario
             const newConfig = {
@@ -467,7 +467,7 @@ class DynamicFinanceLoader {
      */
     async markAsPaid(paymentId) {
         try {
-            console.log('✅ Marcando pago como realizado:', paymentId);
+
             
             // Encontrar el pago
             const paymentIndex = this.finances.pagosPendientes?.findIndex(p => p.id === paymentId);
@@ -530,7 +530,7 @@ class DynamicFinanceLoader {
      * Editar ingreso
      */
     editIncome(incomeId) {
-        console.log('✏️ Editando ingreso ID:', incomeId);
+
 
         // Encontrar el ingreso
         const income = this.finances.ingresos?.find(i => i.id === incomeId);
@@ -547,7 +547,7 @@ class DynamicFinanceLoader {
      * Editar gasto
      */
     editExpense(expenseId) {
-        console.log('✏️ Editando gasto ID:', expenseId);
+
 
         // Encontrar el gasto
         const expense = this.finances.gastos?.find(g => g.id === expenseId);
@@ -564,7 +564,7 @@ class DynamicFinanceLoader {
      * Eliminar ingreso
      */
     async deleteIncome(incomeId) {
-        console.log('🗑️ Eliminando ingreso ID:', incomeId);
+
 
         // Encontrar el ingreso
         const incomeIndex = this.finances.ingresos?.findIndex(i => i.id === incomeId);
@@ -598,7 +598,7 @@ class DynamicFinanceLoader {
      * Eliminar gasto
      */
     async deleteExpense(expenseId) {
-        console.log('🗑️ Eliminando gasto ID:', expenseId);
+
 
         // Encontrar el gasto
         const expenseIndex = this.finances.gastos?.findIndex(g => g.id === expenseId);
@@ -632,7 +632,7 @@ class DynamicFinanceLoader {
      * Mostrar modal de edición de ingreso
      */
     showIncomeEditModal(income) {
-        console.log('📝 Mostrando modal de edición de ingreso:', income);
+
 
         // Por ahora mostrar datos del ingreso
         const details = `
@@ -650,7 +650,7 @@ class DynamicFinanceLoader {
      * Mostrar modal de edición de gasto
      */
     showExpenseEditModal(expense) {
-        console.log('📝 Mostrando modal de edición de gasto:', expense);
+
 
         // Por ahora mostrar datos del gasto
         const details = `
@@ -688,7 +688,7 @@ class DynamicFinanceLoader {
      * Contactar estudiante
      */
     contactStudent(matricula) {
-        console.log('📧 Contactando estudiante:', matricula);
+
         
         // Buscar datos del estudiante en el sistema de estudiantes
         if (window.dynamicStudentLoader && window.dynamicStudentLoader.students) {
@@ -750,7 +750,7 @@ class DynamicFinanceLoader {
      */
     async saveFinancesData() {
         try {
-            console.log('💾 Guardando datos financieros...');
+
 
             // Actualizar configuración
             this.finances.configuracion = {
@@ -773,12 +773,12 @@ class DynamicFinanceLoader {
                 });
 
                 if (response.ok) {
-                    console.log('✅ Datos financieros guardados en servidor');
+
                 } else {
-                    console.log('⚠️ Servidor no disponible, guardado solo en localStorage');
+
                 }
             } catch (serverError) {
-                console.log('⚠️ Servidor no disponible, guardado solo en localStorage');
+
             }
 
             return true;

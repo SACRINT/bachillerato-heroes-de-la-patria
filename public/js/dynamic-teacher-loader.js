@@ -64,7 +64,7 @@ class DynamicTeacherLoader {
      * Cargar docentes por defecto
      */
     loadDefaultTeachers() {
-        console.log('📋 Cargando docentes por defecto...');
+
 
         this.teachers = {
             docentes: [],
@@ -226,7 +226,7 @@ class DynamicTeacherLoader {
      * Editar docente
      */
     editTeacher(teacherId) {
-        console.log('✏️ Editando docente:', teacherId);
+
         
         const teacher = this.teachers.docentes?.find(t => t.id === teacherId);
         if (!teacher) {
@@ -374,7 +374,7 @@ class DynamicTeacherLoader {
      */
     async saveTeacherChanges() {
         try {
-            console.log('💾 Guardando cambios del docente...');
+
 
             if (!this.currentEditingId) {
                 console.error('❌ No hay docente seleccionado para editar');
@@ -437,7 +437,7 @@ class DynamicTeacherLoader {
      * Asignar materias
      */
     assignSubjects(teacherId) {
-        console.log('📚 Asignando materias al docente:', teacherId);
+
         
         const teacher = this.teachers.docentes?.find(t => t.id === teacherId);
         if (!teacher) {
@@ -526,7 +526,7 @@ class DynamicTeacherLoader {
      */
     async saveSubjectAssignment() {
         try {
-            console.log('📚 Guardando asignación de materias...');
+
 
             if (!this.currentEditingId) {
                 console.error('❌ No hay docente seleccionado');
@@ -572,7 +572,7 @@ class DynamicTeacherLoader {
      * Mostrar modal para nuevo docente
      */
     showNewTeacherModal() {
-        console.log('👨‍🏫 Creando nuevo docente...');
+
         
         // Crear modal si no existe
         let modal = document.getElementById('newTeacherModal');
@@ -713,7 +713,7 @@ class DynamicTeacherLoader {
      */
     async saveNewTeacher() {
         try {
-            console.log('👨‍🏫 Guardando nuevo docente...');
+
 
             // Validar formulario
             const form = document.getElementById('newTeacherForm');
@@ -794,7 +794,7 @@ class DynamicTeacherLoader {
                 return;
             }
 
-            console.log('🗑️ Eliminando docente:', teacherId);
+
 
             // Eliminar de la lista
             this.teachers.docentes = this.teachers.docentes.filter(t => t.id !== teacherId);
@@ -861,7 +861,7 @@ class DynamicTeacherLoader {
      */
     async saveTeachersData() {
         try {
-            console.log('💾 Guardando datos de docentes...');
+
 
             // Actualizar configuración
             this.teachers.configuracion = {
@@ -884,12 +884,12 @@ class DynamicTeacherLoader {
                 });
 
                 if (response.ok) {
-                    console.log('✅ Datos de docentes guardados en servidor');
+
                 } else {
-                    console.log('⚠️ Servidor no disponible, guardado solo en localStorage');
+
                 }
             } catch (serverError) {
-                console.log('⚠️ Servidor no disponible, guardado solo en localStorage');
+
             }
 
             return true;
@@ -991,5 +991,3 @@ window.reloadTeachers = async () => {
         await window.dynamicTeacherLoader.loadTeachers();
     }
 };
-
-console.log('👩‍🏫 dynamic-teacher-loader.js cargado correctamente');

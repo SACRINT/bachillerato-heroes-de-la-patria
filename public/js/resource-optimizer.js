@@ -29,7 +29,7 @@ class ResourceOptimizer {
         this.setupResourcePreloading();
         this.monitorResourceLoading();
 
-        console.log('🔧 Resource Optimizer inicializado');
+        
     }
 
     identifyCriticalResources() {
@@ -100,12 +100,12 @@ class ResourceOptimizer {
 
             script.onload = () => {
                 this.loadedResources.add(src);
-                console.log(`✅ Script cargado: ${src}`);
+
                 resolve();
             };
 
             script.onerror = () => {
-                console.warn(`⚠️ Error cargando script: ${src}`);
+
                 reject(new Error(`Failed to load script: ${src}`));
             };
 
@@ -164,7 +164,7 @@ class ResourceOptimizer {
         const criticalAssets = [
             { href: 'images/logo-bachillerato-HDLP.webp', as: 'image' },
             { href: 'css/style.css', as: 'style' },
-            { href: 'js/script.js', as: 'script' }
+            
         ];
 
         criticalAssets.forEach(asset => {
@@ -190,7 +190,7 @@ class ResourceOptimizer {
         }
 
         document.head.appendChild(link);
-        console.log(`🔗 Preload agregado: ${href} (${asType})`);
+        
     }
 
     setupResourcePreloading() {
@@ -243,7 +243,7 @@ class ResourceOptimizer {
                 this.addPrefetchHint(url.pathname);
             }
         } catch (error) {
-            console.warn('Error prefetching page:', error);
+
         }
     }
 
@@ -253,7 +253,7 @@ class ResourceOptimizer {
         link.href = href;
         document.head.appendChild(link);
 
-        console.log(`⚡ Prefetch agregado: ${href}`);
+
     }
 
     monitorResourceLoading() {
@@ -263,7 +263,7 @@ class ResourceOptimizer {
                 const entries = list.getEntries();
                 entries.forEach(entry => {
                     if (entry.duration > 1000) { // Recursos que tardan más de 1 segundo
-                        console.warn(`🐌 Recurso lento detectado: ${entry.name} (${entry.duration.toFixed(2)}ms)`);
+
                     }
                 });
             });
@@ -305,7 +305,7 @@ class ResourceOptimizer {
 
             return compressed;
         } catch (error) {
-            console.warn('Error comprimiendo contenido:', error);
+
             return content;
         }
     }
@@ -355,14 +355,14 @@ class ResourceOptimizer {
     // Método para limpiar cache
     clearCache() {
         this.compressionCache.clear();
-        console.log('🧹 Cache de optimización limpiado');
+
     }
 
     // Método para forzar optimización de todos los recursos
     forceOptimizeAll() {
         this.optimizeExistingResources();
         this.loadDeferredResources();
-        console.log('🚀 Optimización forzada de todos los recursos');
+
     }
 }
 

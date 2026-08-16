@@ -230,7 +230,7 @@ class DynamicStudentLoader {
      * Editar estudiante
      */
     editStudent(studentId) {
-        console.log('✏️ Editando estudiante:', studentId);
+
 
         const student = this.students.estudiantes?.find(s => s.id === studentId);
         if (!student) {
@@ -415,7 +415,7 @@ class DynamicStudentLoader {
      */
     async saveStudentChanges() {
         try {
-            console.log('💾 Guardando cambios del estudiante...');
+
 
             if (!this.currentEditingId) {
                 console.error('❌ No hay estudiante seleccionado para editar');
@@ -480,7 +480,7 @@ class DynamicStudentLoader {
      * Contactar estudiante
      */
     contactStudent(studentId) {
-        console.log('📧 Contactando estudiante:', studentId);
+
 
         const student = this.students.estudiantes?.find(s => s.id === studentId);
         if (!student) {
@@ -543,7 +543,7 @@ class DynamicStudentLoader {
      * Mostrar modal para nuevo estudiante
      */
     showNewStudentModal() {
-        console.log('🎓 Creando nuevo estudiante...');
+
 
         // Crear modal si no existe
         let modal = document.getElementById('newStudentModal');
@@ -668,7 +668,7 @@ class DynamicStudentLoader {
      */
     async saveNewStudent() {
         try {
-            console.log('🎓 Guardando nuevo estudiante...');
+
 
             // Validar formulario
             const form = document.getElementById('newStudentForm');
@@ -757,7 +757,7 @@ class DynamicStudentLoader {
                 return;
             }
 
-            console.log('🗑️ Eliminando estudiante:', studentId);
+
 
             // Eliminar de la lista
             this.students.estudiantes = this.students.estudiantes.filter(s => s.id !== studentId);
@@ -786,7 +786,7 @@ class DynamicStudentLoader {
      */
     exportStudents() {
         try {
-            console.log('📊 Exportando estudiantes...');
+
 
             // Crear datos para exportar
             const exportData = {
@@ -869,7 +869,7 @@ class DynamicStudentLoader {
      */
     async saveStudentsData() {
         try {
-            console.log('💾 Guardando datos de estudiantes...');
+
 
             // Actualizar configuración
             this.students.configuracion = {
@@ -892,12 +892,12 @@ class DynamicStudentLoader {
                 });
 
                 if (response.ok) {
-                    console.log('✅ Datos de estudiantes guardados en servidor');
+
                 } else {
-                    console.log('⚠️ Servidor no disponible, guardado solo en localStorage');
+
                 }
             } catch (serverError) {
-                console.log('⚠️ Servidor no disponible, guardado solo en localStorage');
+
             }
 
             return true;

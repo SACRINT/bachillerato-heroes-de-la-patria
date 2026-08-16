@@ -525,14 +525,14 @@ class UnifiedAuthSystem {
                 loginBtn.addEventListener('click', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    console.log('[AUTH-V2] 🔴 Click DIRECTO en loginBtn detectado');
+                    
 
                     const modal = document.getElementById('unified-auth-modal');
                     if (modal) {
                         // Mostrar modal usando showModalDirectly
                         this.managers.manual.showModalDirectly(modal);
                     } else {
-                        console.log('[AUTH-V2] ⚠️ Modal no existe, creando...');
+                        
                         this.createLoginUI();
                         setTimeout(() => {
                             const newModal = document.getElementById('unified-auth-modal');
@@ -542,7 +542,7 @@ class UnifiedAuthSystem {
                         }, 100);
                     }
                 });
-                console.log('[AUTH-V2] ✅ Listener DIRECTO agregado a #loginBtn o #loginButton');
+                
             }
         };
 
@@ -551,7 +551,7 @@ class UnifiedAuthSystem {
         setTimeout(attachDirectListener, 1000);
         setTimeout(attachDirectListener, 3000);
 
-        console.log('[AUTH-V2] ✅ Event listeners configurados');
+        
     }
 
     /**
@@ -586,9 +586,9 @@ class UnifiedAuthSystem {
      */
     async processLogin(userData, token, rememberMe = false) {
         // 🔍 DEBUG: Log COMPLETO de userData
-        console.log('[AUTH-PROCESS] 📥 userData recibido en processLogin:', userData);
-        console.log('[AUTH-PROCESS] userData.nombre =', userData?.nombre);
-        console.log('[AUTH-PROCESS] userData.name =', userData?.name);
+        
+        
+        
 
         // GDPR: Datos sensibles enmascarados
         debugLog.log('APP', '🔓 Procesando login para:', userData.nombre || userData.name);
@@ -598,13 +598,13 @@ class UnifiedAuthSystem {
         this.state.isAuthenticated = true;
 
         // 🔍 DEBUG: Verificar que state.currentUser se asignó correctamente
-        console.log('[AUTH-PROCESS] ✅ state.currentUser asignado:', this.state.currentUser?.nombre);
+        
 
         // Guardar sesión
         this.managers.session.saveSession(userData, token, rememberMe);
 
         // 🔍 DEBUG: Antes de actualizar UI
-        console.log('[AUTH-PROCESS] 🎬 Llamando a updateAuthUI()...');
+        
 
         // Actualizar UI
         this.updateAuthUI();
@@ -614,21 +614,7 @@ class UnifiedAuthSystem {
             const userMenuName = document.getElementById('userMenuName');
             const loginButtons = document.getElementById('loginButtons');
             const userMenu = document.getElementById('userMenu');
-            console.log('[AUTH-PROCESS] 📍 Después de updateAuthUI():', {
-                userMenuName: {
-                    existe: !!userMenuName,
-                    texto: userMenuName?.textContent,
-                    oculto: userMenuName?.classList.contains('d-none')
-                },
-                loginButtons: {
-                    existe: !!loginButtons,
-                    oculto: loginButtons?.classList.contains('d-none')
-                },
-                userMenu: {
-                    existe: !!userMenu,
-                    visible: !userMenu?.classList.contains('d-none')
-                }
-            });
+            
         }, 100);
 
         // Cerrar modal
@@ -644,12 +630,12 @@ class UnifiedAuthSystem {
 
         // ✅ REDIRECCIÓN AUTOMÁTICA PARA ADMINS
         if (userData.role === 'admin' || userData.role === 'administrativo') {
-            console.log('[AUTH-PROCESS] 🚀 Usuario admin detectado - Iniciando redirección...');
+            
 
             // FORCE REMEMBER ME para asegurar persistencia cruzada en LocalStorage
             // Esto soluciona problemas donde sessionStorage se pierde en redirecciones raras
             if (!rememberMe) {
-                console.log('[AUTH-PROCESS] ⚠️ Forzando RememberMe=true para Admin (Persistencia)');
+                
                 this.managers.session.saveSession(userData, token, true);
             }
 
@@ -657,7 +643,7 @@ class UnifiedAuthSystem {
             setTimeout(() => {
                 // Validación extra para evitar bucles si ya estamos en el dashboard
                 if (!window.location.pathname.includes('admin-dashboard.html')) {
-                    console.log('[AUTH-PROCESS] ➡️ Redirigiendo a admin-dashboard.html (Replace)');
+                    
                     window.location.replace('admin-dashboard.html');
                 }
             }, 500);
@@ -731,12 +717,12 @@ class UnifiedAuthSystem {
 
             // Si header NO está listo, reintentar en 50ms
             if (!loginButtons && attempts < 10) {
-                console.log('[AUTH-UI] ⏳ Header no listo aún, reintentando... (intento', attempts + 1, ')');
+                
                 setTimeout(() => tryUpdateUI(attempts + 1), 50);
                 return;
             }
 
-            console.log('[AUTH-UI] ✅ Header listo, actualizando UI. Autenticado:', this.state.isAuthenticated);
+            
 
             if (this.state.isAuthenticated && this.state.currentUser) {
                 // Usuario autenticado - ocultar botón login, mostrar menú usuario
@@ -749,9 +735,9 @@ class UnifiedAuthSystem {
                         this.state.currentUser.name ||
                         this.state.currentUser.email?.split('@')[0] ||
                         'Usuario';
-                    console.log('[AUTH-UI] ✅ Nombre actualizado:', userMenuName.textContent);
+                    
                 } else {
-                    console.warn('[AUTH-UI] ⚠️ #userMenuName no encontrado en DOM');
+                    
                 }
 
                 // Actualizar rol
@@ -768,9 +754,9 @@ class UnifiedAuthSystem {
                         'parent': 'Padre'
                     };
                     userMenuRole.textContent = roleLabels[role] || role;
-                    console.log('[AUTH-UI] ✅ Rol actualizado:', userMenuRole.textContent);
+                    
                 } else {
-                    console.warn('[AUTH-UI] ⚠️ #userMenuRole no encontrado en DOM');
+                    
                 }
 
                 // Actualizar header del dropdown
@@ -804,7 +790,7 @@ class UnifiedAuthSystem {
                     adminOnlySection.classList.toggle('d-none', !['admin', 'administrator'].includes(role));
                 }
 
-                console.log('[AUTH-UI] ✅ Usuario mostrado:', userMenuName?.textContent, 'Rol:', role);
+                
             } else {
                 // Usuario no autenticado - mostrar botón login, ocultar menú usuario
                 if (loginButtons) loginButtons.classList.remove('d-none');
@@ -814,7 +800,7 @@ class UnifiedAuthSystem {
                 const adminOnlySection = document.getElementById('adminOnlySection');
                 if (adminOnlySection) adminOnlySection.classList.add('d-none');
 
-                console.log('[AUTH-UI] Usuario no autenticado, mostrando botón login');
+                
             }
         };
 
@@ -1332,7 +1318,7 @@ class ManualLoginManager {
      * SETUP LISTENERS - ROBUST EVENT DELEGATION
      */
     setupListeners() {
-        console.log('[AUTH-V2] 🛡️ Configurando listeners robustos de ManualLoginManager...');
+        
 
         // 1. INTERCEPTAR TODOS LOS CLICS EN BOTONES DE LOGIN (Delegación Global)
         document.addEventListener('click', (e) => {
@@ -1343,7 +1329,7 @@ class ManualLoginManager {
 
             if (toggleBtn) {
                 e.preventDefault();
-                console.log('[AUTH-V2] 🎯 Click detectado en botón de login (Global Delegate)');
+                
                 this.openModalSafe();
                 return;
             }
@@ -1352,7 +1338,7 @@ class ManualLoginManager {
             const submitBtn = e.target.closest('#manual-login-btn');
             if (submitBtn) {
                 // No hacemos preventDefault aquí, dejamos que el evento 'submit' del form lo maneje
-                console.log('[AUTH-V2] 👆 Click en botón submit detectado');
+                
             }
         });
 
@@ -1366,7 +1352,7 @@ class ManualLoginManager {
                 e.preventDefault(); // 🛑 DETENER ENVÍO TRADICIONAL
                 e.stopPropagation(); // 🛑 DETENER PROPAGACIÓN
 
-                console.log('[AUTH-V2] 🚀 SUBMIT INTERCEPTADO CORRECTAMENTE');
+                
                 this.handleManualLogin(); // ✅ EJECUTAR LÓGICA JS
                 return false;
             }
@@ -1390,7 +1376,7 @@ class ManualLoginManager {
             }
         });
 
-        console.log('[AUTH-V2] ✅ Listeners configurados (Modo Robusto)');
+        
     }
 
     /**
@@ -1401,7 +1387,7 @@ class ManualLoginManager {
         if (modal) {
             this.showModalDirectly(modal);
         } else {
-            console.warn('[AUTH-V2] ⚠️ Modal no existe, creándolo on-the-fly...');
+            
             this.auth.createLoginUI();
             // Pequeño delay para asegurar que el DOM se actualizó
             setTimeout(() => {
@@ -1467,7 +1453,7 @@ class ManualLoginManager {
                     height: 100% !important;
                 `);
                 document.body.appendChild(backdrop);
-                console.log('[AUTH-V2] ✅ Backdrop creado');
+                
             } else {
                 backdrop.classList.add('show');
                 backdrop.setAttribute('style', `
@@ -1477,7 +1463,7 @@ class ManualLoginManager {
                 `);
             }
 
-            console.log('[AUTH-V2] ✅ Modal mostrado exitosamente');
+            
 
         } catch (error) {
             console.error('[AUTH-V2] ❌ Error abriendo modal:', error);
@@ -1537,7 +1523,7 @@ class ManualLoginManager {
             } else {
                 // Si no es JSON, obtener como texto (posible error 429 u otro error del proxy/Vercel)
                 const text = await response.text();
-                console.warn('[AUTH-LOGIN] ⚠️ Respuesta no-JSON recibida:', text.substring(0, 100));
+                
 
                 // Si es un error de rate limit conocido
                 if (response.status === 429) {
@@ -1550,37 +1536,29 @@ class ManualLoginManager {
             }
 
             // Debug masivo
-            console.log('[AUTH-DEBUG] ----------------------------------------');
-            console.log('[AUTH-DEBUG] Response Status:', response.status);
-            console.log('[AUTH-DEBUG] Response OK:', response.ok);
-            console.log('[AUTH-DEBUG] Data Success (Raw):', data?.success);
-            console.log('[AUTH-DEBUG] Data Message:', data?.message);
-            console.log('[AUTH-DEBUG] Data Error:', data?.error);
-            console.log('[AUTH-DEBUG] Data Keys:', Object.keys(data || {}));
+            
+            
+            
+            
+            
+            
+            
 
             // 🔍 DEBUGGING PROFUNDO: Verificar estructura exacta
             const messageStr = (data?.message || '').toString().toLowerCase();
-            console.log('[AUTH-DEBUG] Message (lowercase):', messageStr);
-            console.log('[AUTH-DEBUG] Message length:', messageStr.length);
-            console.log('[AUTH-DEBUG] Message char codes:', messageStr.split('').map(c => c.charCodeAt(0)).slice(0, 20));
+            
+            
+            
 
             // ✅ FIX (Jan 2026): SUCCESS LOGIC DEFINITIVA Y ROBUSTA
             // No confiar en el cuerpo del mensaje, confiar en el status de la respuesta HTTP
             // y la presencia de datos críticos (user + token)
             const isSuccess = response.ok && !!(data?.user && (data.user.id || data.user.email)) && !!(data?.tokens?.accessToken || data?.token);
 
-            console.log('[AUTH-LOGIN] Success Logic FINAL (CLEANED):', {
-                responseOk: response.ok,
-                hasUser: !!data?.user,
-                hasToken: !!(data?.tokens?.accessToken || data?.token),
-                FINAL: isSuccess
-            });
+            
 
             if (isSuccess) {
-                console.log('[AUTH-LOGIN] ✅ Respuesta del servidor (SUCCESS DETECTED):', {
-                    success: data.success,
-                    user: data.user
-                });
+                
 
                 if (data.requires2FA) {
                     debugLog.log('AUTH', 'Login requiere 2FA');
@@ -1603,11 +1581,11 @@ class ManualLoginManager {
                 }
 
                 const accessToken = data.tokens?.accessToken || data.token;
-                console.log('[AUTH-LOGIN] 📋 Datos recibidos -> Procesando login...');
+                
 
                 await this.auth.processLogin(data.user, accessToken, rememberMe);
             } else {
-                console.warn('[AUTH-LOGIN] ❌ Respuesta del servidor (FAILURE DETECTED)');
+                
                 const errorMsg = data.error || data.message || 'Credenciales inválidas';
                 debugLog.warn('AUTH', 'Login fallido:', errorMsg);
                 this.auth.showError(errorMsg);
@@ -1825,13 +1803,7 @@ class SessionManager {
      * GUARDAR SESIÓN
      */
     saveSession(userData, token, rememberMe = false) {
-        console.log('[SESSION-DEBUG] 💾 saveSession CALLED', {
-            hasUserData: !!userData,
-            userEmail: userData?.email,
-            hasToken: !!token,
-            tokenLength: token?.length,
-            rememberMe: rememberMe
-        });
+        
 
         const storage = rememberMe ? localStorage : sessionStorage;
         const storageName = rememberMe ? 'localStorage' : 'sessionStorage';
@@ -1846,7 +1818,7 @@ class SessionManager {
             localStorage.removeItem('token');
             localStorage.removeItem('authToken');
             localStorage.removeItem('bge_auth_session');
-            console.log('[SESSION-DEBUG] 🧹 Limpiado localStorage para evitar conflictos');
+            
         }
 
         try {
@@ -1874,12 +1846,7 @@ class SessionManager {
             const tokenCheck = storage.getItem(this.STORAGE_KEYS.token);
             const userCheck = storage.getItem(this.STORAGE_KEYS.user);
 
-            console.log(`[SESSION-DEBUG] ✅ Verificación inmediata en ${storageName}:`, {
-                tokenSaved: !!tokenCheck,
-                tokenMatch: tokenCheck === token,
-                userSaved: !!userCheck,
-                userMatch: userCheck === JSON.stringify(userData)
-            });
+            
 
             if (!tokenCheck || !userCheck) {
                 console.error(`[SESSION-DEBUG] ❌ ERROR CRÍTICO: Falló la escritura en ${storageName}`);
@@ -2230,7 +2197,7 @@ if (!window.unifiedLogin) {
                 window.unifiedLogin.updateAuthUI();
             }, 100);
         } else {
-            console.warn('⚠️ [APP] window.unifiedLogin no está disponible o updateAuthUI no es función');
+            
         }
     }, { once: false });
 }
