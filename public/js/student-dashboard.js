@@ -116,42 +116,148 @@ class StudentDashboard {
         }
 
     async checkAuthentication() {
-            if (!this.authToken || !this.currentStudent) {
-                debugLog.log('APP', 'ℹ️ Usuario no autenticado');
-                return false;
-            }
+        this.authToken = localStorage.getItem('student_auth_token') || localStorage.getItem('bge_auth_token');
+        this.currentStudent = JSON.parse(localStorage.getItem('current_student') || localStorage.getItem('bge_auth_user') || 'null');
 
-            // Validate Token Expiration (Prevent Zombie Sessions)
-            try {
+        if (!this.authToken || !this.currentStudent) {
+            debugLog.log('APP', 'ℹ️ Usuario no autenticado');
+            return false;
+        }
+
+        // Validate Token Expiration
+        try {
+            const parts = this.authToken.split('.');
+            if (parts.length === 3) {
+                const payload = JSON.parse(atob(parts[1]));
                 if (payload.role === 'admin' || payload.role === 'director' || payload.role === 'administrativo') {
-                    void 0;
                     window.location.replace('/admin-dashboard.html');
                     return false;
                 }
                 if (payload.role === 'teacher' || payload.role === 'docente') {
-                    void 0;
                     window.location.replace('/docentes.html');
                     return false;
                 }
-
                 if (payload.exp && Date.now() >= payload.exp * 1000) {
                     debugLog.warn('APP', '⚠️ Token expirado, forzando logout...');
                     this.forceLogout();
                     return false;
                 }
-            } catch (e) {
-                debugLog.warn('APP', '⚠️ Error validando token, posible token corrupto');
-                // No forzamos logout inmediato para permitir modo demo/mock si aplica
             }
+        } catch (e) {
+            debugLog.warn('APP', '⚠️ Error validando token');
+        }
 
         try {
-            // Si hay token, cargar dashboard directamente
-            this.loadDashboard();
+            await this.loadDashboard();
             return true;
         } catch (error) {
             debugLog.error('ERROR', '❌ Error verificando autenticación:', error);
-            this.clearAuth();
             return false;
+        }
+    }
+
+    showLoginModal() {
+        let modalEl = document.getElementById('studentLoginModal');
+        if (!modalEl) {
+            const modalHTML = `
+            <div class="modal fade" id="studentLoginModal" tabindex="-1" aria-labelledby="studentLoginModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow">
+                  <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="studentLoginModalLabel"><i class="fas fa-user-graduate me-2"></i>Acceso a Portal Estudiantil</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body p-4">
+                    <form id="studentLoginForm">
+                      <div class="mb-3">
+                        <label class="form-label fw-bold">Matrícula o Correo Institucional</label>
+                        <div class="input-group">
+                          <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                          <input type="text" id="studentLoginIdentifier" class="form-control" placeholder="Ej: MAT-2024-001 o alumno@bge.edu.mx" required>
+                        </div>
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label fw-bold">Contraseña</label>
+                        <div class="input-group">
+                          <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                          <input type="password" id="studentLoginPassword" class="form-control" placeholder="••••••••" required>
+                        </div>
+                      </div>
+                      <div id="studentLoginAlert" class="alert alert-danger d-none"></div>
+                      <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">
+                        <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>`;
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            modalEl = document.getElementById('studentLoginModal');
+            const form = document.getElementById('studentLoginForm');
+            if (form) form.addEventListener('submit', (e) => this.handleLogin(e));
+        }
+
+        if (typeof bootstrap !== 'undefined') {
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
+        }
+    }
+
+    async handleLogin(e) {
+        if (e) e.preventDefault();
+        const identifierEl = document.getElementById('studentLoginIdentifier') || document.getElementById('studentMatricula');
+        const passwordEl = document.getElementById('studentLoginPassword') || document.getElementById('studentPassword');
+        const alertEl = document.getElementById('studentLoginAlert');
+
+        const identifier = identifierEl ? identifierEl.value.trim() : '';
+        const password = passwordEl ? passwordEl.value : '';
+
+        if (!identifier || !password) {
+            if (alertEl) {
+                alertEl.textContent = 'Por favor ingresa tu matrícula y contraseña.';
+                alertEl.classList.remove('d-none');
+            }
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/students-auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ matricula: identifier, password })
+            });
+            const data = await response.json();
+
+            if (data.success && data.token) {
+                this.authToken = data.token;
+                this.currentStudent = data.student || { id: data.userId || 1, matricula: identifier, nombre_completo: identifier };
+                localStorage.setItem('student_auth_token', data.token);
+                localStorage.setItem('current_student', JSON.stringify(this.currentStudent));
+                localStorage.setItem('bge_auth_token', data.token);
+                localStorage.setItem('bge_auth_user', JSON.stringify({ ...this.currentStudent, role: 'estudiante' }));
+
+                const modalEl = document.getElementById('studentLoginModal');
+                if (modalEl && typeof bootstrap !== 'undefined') {
+                    const modal = bootstrap.Modal.getInstance(modalEl);
+                    if (modal) modal.hide();
+                }
+
+                this.showNotification('¡Bienvenido al portal estudiantil!', 'success');
+                await this.loadDashboard();
+            } else {
+                if (alertEl) {
+                    alertEl.textContent = data.message || 'Credenciales inválidas.';
+                    alertEl.classList.remove('d-none');
+                } else {
+                    this.showNotification(data.message || 'Credenciales inválidas.', 'danger');
+                }
+            }
+        } catch (err) {
+            if (alertEl) {
+                alertEl.textContent = 'Error de conexión con el servidor.';
+                alertEl.classList.remove('d-none');
+            }
         }
     }
 

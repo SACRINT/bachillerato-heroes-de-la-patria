@@ -12,10 +12,13 @@ const path = require('path');
 // 🔴 CORRECCIÓN: Cargar variables de entorno con soporte para .env.local
 // Esto asegura que las credenciales locales no se pierdan si se requiere este archivo directamente
 try {
-    if (process.env.NODE_ENV !== 'production') {
-        require('dotenv').config({ path: path.resolve(__dirname, '../../.env.local') });
-    }
-    require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
+    const rootEnv = path.resolve(__dirname, '../../.env');
+    const localEnv = path.resolve(__dirname, '../../.env.local');
+    const cwdEnv = path.resolve(process.cwd(), '.env');
+    require('dotenv').config({ path: localEnv });
+    require('dotenv').config({ path: rootEnv });
+    require('dotenv').config({ path: cwdEnv });
+    require('dotenv').config();
 } catch (e) {
     // dotenv is optional if env vars are already loaded in the environment
 }
