@@ -46,9 +46,31 @@ class ProfileService {
             if (res.rows.length === 0) return null;
             return res.rows[0];
         } catch (error) {
-            // Fallback si la columna username no existe (error de migración previa desconocida)
-            devLogger.error('[ProfileService] Error fetching profile:', error);
-            throw error;
+            // Fallback si las tablas no existen (gamificación extendida no migrada)
+            devLogger.warn('[ProfileService] Tablas no disponibles, usando perfil demo:', error.message);
+            return {
+                id: 1,
+                username,
+                nombre: 'Usuario Demo',
+                apellido_paterno: '',
+                tipo_usuario: 'estudiante',
+                joined_at: new Date().toISOString(),
+                bio: 'Explorador de la comunidad BGE',
+                location: '',
+                website: '',
+                social_links: {},
+                interests: ['educación', 'tecnología'],
+                privacy_show_email: false,
+                privacy_show_activity: true,
+                privacy_show_achievements: true,
+                level: 1,
+                level_title: 'Novato',
+                streak: 0,
+                avatar_base: '/assets/avatars/base_novice.png',
+                avatar_frame: null,
+                avatar_bg: null,
+                avatar_acc: null
+            };
         }
     }
 

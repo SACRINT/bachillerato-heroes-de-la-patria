@@ -541,19 +541,7 @@
                                             <div class="invalid-feedback">Por favor, selecciona tu año de generación.
                                             </div>
                                         </div>
-                                        <script>
-                                            // ✅ Generar años dinámicamente de 1950 a año actual
-                                            (function () {
-                                                const selectGeneracion = document.getElementById('generacion');
-                                                const currentYear = new Date().getFullYear();
-                                                for (let year = currentYear; year >= 1950; year--) {
-                                                    const option = document.createElement('option');
-                                                    option.value = year;
-                                                    option.textContent = year;
-                                                    selectGeneracion.appendChild(option);
-                                                }
-                                            })();
-                                        </script>
+                                        <script src="js/inline/egresados-inline-1.js"></script>
 
                                         <div class="col-md-6">
                                             <label for="email" class="form-label">Correo Electrónico *</label>

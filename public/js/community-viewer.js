@@ -90,28 +90,14 @@ function renderThreads(threads) {
         return;
     }
 
-    container.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(threads.map(t => `
+    const threadsHtml = threads.map(t => `
         <div class="thread-item">
             <div class="vote-control">
                 <button class="vote-btn"><i class="fas fa-chevron-up"></i></button>
                 <div class="vote-count">${t.score || 0}</div>
             </div>
             <div class="thread-content">
-                <a href="#" class="thread-title" onclick="openThread(${t.id})) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(threads.map(t => `
-        <div class="thread-item">
-            <div class="vote-control">
-                <button class="vote-btn"><i class="fas fa-chevron-up"></i></button>
-                <div class="vote-count">${t.score || 0}</div>
-            </div>
-            <div class="thread-content">
-                <a href="#" class="thread-title" onclick="openThread(${t.id})) : threads.map(t => `
-        <div class="thread-item">
-            <div class="vote-control">
-                <button class="vote-btn"><i class="fas fa-chevron-up"></i></button>
-                <div class="vote-count">${t.score || 0}</div>
-            </div>
-            <div class="thread-content">
-                <a href="#" class="thread-title" onclick="openThread(${t.id}))); return false;">
+                <a href="#" class="thread-title" onclick="openThread(${t.id}); return false;">
                     ${t.is_pinned ? '<i class="fas fa-thumbtack text-muted me-1"></i>' : ''}
                     ${t.title}
                     ${t.is_solved ? '<span class="thread-status solved">Resuelto</span>' : ''}
@@ -123,6 +109,8 @@ function renderThreads(threads) {
             </div>
         </div>
     `).join('');
+
+    container.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(threadsHtml) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(threadsHtml) : threadsHtml));
 }
 
 async function openThread(topicId) {

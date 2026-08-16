@@ -247,13 +247,9 @@
                 container.appendChild(listEl);
             }
 
-            listEl.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(molecules.map(m => `
+            const moleculesHtml = molecules.map(m => `
                 <button class="molecule-btn" data-molecule="${m.id}" style="
-                    background: linear-gradient(135deg, #1a1a3a, #2a2a5a)) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(molecules.map(m => `
-                <button class="molecule-btn" data-molecule="${m.id}" style="
-                    background: linear-gradient(135deg, #1a1a3a, #2a2a5a)) : molecules.map(m => `
-                <button class="molecule-btn" data-molecule="${m.id}" style="
-                    background: linear-gradient(135deg, #1a1a3a, #2a2a5a)));
+                    background: linear-gradient(135deg, #1a1a3a, #2a2a5a);
                     border: 2px solid rgba(0, 255, 204, 0.3);
                     color: white;
                     padding: 10px 20px;
@@ -265,6 +261,8 @@
                     ${m.emoji} ${m.name}
                 </button>
             `).join('');
+
+            listEl.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(moleculesHtml) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(moleculesHtml) : moleculesHtml));
 
             // Event handlers
             listEl.querySelectorAll('.molecule-btn').forEach(btn => {

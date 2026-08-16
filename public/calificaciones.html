@@ -660,16 +660,7 @@
 
 
         <!-- Scripts -->
-        <script>
-            // Cache busting - Forzar recarga de scripts
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.getRegistrations().then(function (registrations) {
-                    for (let registration of registrations) {
-                        registration.unregister();
-                    }
-                });
-            }
-        </script>
+        <script src="js/inline/calificaciones-inline-1.js"></script>
         <!-- ðŸš€ BGE FRAMEWORK MODULAR - PÃGINA CALIFICACIONES -->
 
         <!-- Bootstrap JS -->
@@ -725,40 +716,7 @@
         <!-- Dark Mode Styles moved to external CSS -->
 
         <!-- Dark Mode Script -->
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const darkModeToggle = document.getElementById('darkModeToggle');
-                const body = document.body;
-
-                // Check for saved dark mode preference
-                if (localStorage.getItem('darkMode') === 'enabled') {
-                    body.classList.add('dark-mode');
-                    updateDarkModeIcon(true);
-                }
-
-                darkModeToggle.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    body.classList.toggle('dark-mode');
-
-                    if (body.classList.contains('dark-mode')) {
-                        localStorage.setItem('darkMode', 'enabled');
-                        updateDarkModeIcon(true);
-                    } else {
-                        localStorage.setItem('darkMode', 'disabled');
-                        updateDarkModeIcon(false);
-                    }
-                });
-
-                function updateDarkModeIcon(isDark) {
-                    if (darkModeToggle) {
-                        let icon = darkModeToggle.querySelector('i');
-                        if (icon) {
-                            icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-                        }
-                    }
-                }
-            });
-        </script>
+        <script src="js/inline/calificaciones-inline-2.js"></script>
         <script src="js/icon-check.js"></script>
 
         <!-- ðŸŽ¯ REFACTORIZACIÃ“N CSP: Event Listeners Centralizados -->

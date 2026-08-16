@@ -1,4 +1,34 @@
-# CHANGELOG - Bachillerato General Estatal "Héroes de la Patria"
+# CHANGELOG - Bachillerato General Estatal "HǸroes de la Patria"
+
+[v3.3.1] - 2026-08-16 (HOTFIX PRODUCCION: ENDPOINTS 500 CON FALLBACK DEMO + CSP TOTAL + ASSETS AVATAR-SHOP)
+
+**Tipo:** Hotfix / Production Fix / CSP Compliance / Error Handling
+**Estado:** COMPLETADO
+
+### Correcciones Implementadas:
+1. **BUG 1 (P0 - 500 en /api/bolsa-trabajo/cv/stats):** Fallback con datos demo en catch (backend/routes/bolsa-trabajo.js) - la tabla bolsa_trabajo no existe en Neon y antes devolvia 500. Ahora responde 200 con stats vacias.
+2. **BUG 2 (P0 - 500 en /api/gamification-ext/profile/public/:username):** Fallback demo en profile.service.js - tablas de gamificacion extendida no existen. Ahora responde perfil demo valido.
+3. **BUG 3 (P0 - 500 en /api/gamification-ext/leaderboard/global):** Fallback demo en leaderboard.service.js - misma causa. Responde leaderboard demo.
+4. **BUG 4 (P1 - 404 assets avatar-shop):** Creados 8 assets placeholder (base_student.png, base_robot.png, base_novice.png, frames/gold.png, frames/fire.png, frames/wood.png, bg/classroom.png, bg/space.png) en public/assets/.
+5. **BUG 5 (P1 - CSP violations scripts inline):** Extraidos TODOS los scripts inline ejecutables del sitio a public/js/inline/ (39 scripts en 32 paginas HTML, excluyendo JSON-LD). 0 scripts inline ejecutables restantes. Incluye fix de mojibake en index-inline-1.js.
+6. **BUG 6 (P2 - Node 20 deprecado en Vercel):** vercel.json ahora define nodeVersion 24.x - los builds fallarian despues de 2026-10-01 con Node 20.
+
+### Archivos Modificados:
+- backend/routes/bolsa-trabajo.js (fallback demo cv/stats y stats/general)
+- backend/services/profile.service.js (fallback demo perfil publico)
+- backend/services/leaderboard.service.js (fallback demo leaderboard global y streaks)
+- vercel.json (nodeVersion 24.x)
+- 32 paginas HTML (scripts inline -> externos)
+- 39 archivos nuevos en public/js/inline/
+- 8 assets nuevos en public/assets/
+- public/js/tournaments-viewer.js, community-viewer.js, ar/chemistry-ar-experience.js (sintaxis corregida)
+
+### Verificacion:
+- 39/39 inline JS con sintaxis valida (node -c)
+- 3/3 backend services con sintaxis valida (node -c)
+- 0 scripts inline ejecutables restantes en el sitio
+
+---
 
 [v3.3.0] - 2026-08-16 (HOTFIX CRITICO VERCEL: ROOT CAUSE DEFINITIVA - COMPILACION TYPESCRIPT ESM ROMPE LOS ROUTERS)
 

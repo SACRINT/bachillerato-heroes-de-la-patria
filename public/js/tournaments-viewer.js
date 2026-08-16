@@ -199,8 +199,7 @@
             localStorage.setItem('bge_joined_tournaments', JSON.stringify(localJoined));
         }
 
-        alert('🎉 ¡Te has inscrito exitosamente al torneo!
-Comienza a acumular puntos jugando duelos de sabiduría y desafíos.');
+        alert('🎉 ¡Te has inscrito exitosamente al torneo!\nComienza a acumular puntos jugando duelos de sabiduría y desafíos.');
         await loadTournaments();
     };
 
