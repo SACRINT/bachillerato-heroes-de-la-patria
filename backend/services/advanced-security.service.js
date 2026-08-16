@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SecurityServiceError = exports.SessionManager = exports.SecurityAudit = exports.RateLimiter = exports.TwoFactorAuth = exports.AdvancedSecurityService = void 0;
 const crypto_1 = __importDefault(require("crypto"));
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const securityDAO = require('../data/security-advanced.dao.js');
 const devLogger = require('../utils/devLogger.js');
 // ============================================

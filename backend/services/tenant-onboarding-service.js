@@ -3,7 +3,7 @@
  * Refactorizado: 04 Diciembre 2025
  */
 
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const TenantOnboardingDAO = require('../data/tenant-onboarding.dao.js');
 const logger = require('../utils/winston-logger.js');

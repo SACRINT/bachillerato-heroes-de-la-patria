@@ -35,7 +35,7 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PasswordValidatorService = void 0;
 const config_1 = require("./config");
-const bcrypt = __importStar(require("bcrypt"));
+const bcrypt = __importStar(require("bcryptjs"));
 const securityDAO = require('../../data/security-advanced.dao');
 class PasswordValidatorService {
     validate(password) {

@@ -7,26 +7,8 @@ if (typeof debugLog === 'undefined') {
     };
 }
 
-/**
- * 🌍 SISTEMA DE AUTENTICACIÓN UNIFICADO V2 - CLASE MUNDIAL
- *
- * Sistema profesional de autenticación que unifica:
- * ✅ Google OAuth Real (con configuración en Google Cloud)
- * ✅ Login Manual (Email + Contraseña)
- * ✅ Gestión de Sesión Robusta
- * ✅ UI/UX Moderna y Profesional
- *
- * Eliminates: Conflictos entre 2 sistemas, fallbacks a Demo innecesarios
- * Adds: Experiencia de login clase mundial
- *
- * Estructura:
- * - UnifiedAuthSystem (clase principal)
- * - GoogleOAuthManager (Google OAuth real)
- * - ManualLoginManager (Email + Contraseña)
- * - SessionManager (Persistencia)
- * - UIManager (Modal y estados)
- * - ErrorHandler (Gestión de errores)
- */
+if (typeof window !== 'undefined' && typeof window.UnifiedAuthSystem === 'undefined') {
+(function() {
 
 class UnifiedAuthSystem {
     constructor(config = {}) {
@@ -2209,3 +2191,6 @@ if (!window.bgeAuth) {
 
 // Exportar para usar en otros scripts
 window.UnifiedAuthSystem = UnifiedAuthSystem;
+
+})();
+}

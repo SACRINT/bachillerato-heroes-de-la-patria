@@ -6,7 +6,7 @@
 
 const tenantConfigService = require('./tenant-config-service.js');
 const { transactionWithTenant } = require('../config/multi-tenant-pool.js');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 
 /**

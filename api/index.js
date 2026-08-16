@@ -278,7 +278,102 @@ app.get('/api/games/trivia/stats', (req, res) => {
 
 // Groups search fallback
 app.get('/api/groups/search', (req, res) => {
-    res.json({ success: true, data: { groups: [] } });
+    const sampleGroups = [
+        {
+            id: 1,
+            name: 'Cálculo Diferencial - Dudas y Proyectos',
+            subject: 'Matemáticas',
+            description: 'Grupo colaborativo para resolver ejercicios de límites, derivadas y preparación para exámenes.',
+            member_count: 14,
+            is_private: false
+        },
+        {
+            id: 2,
+            name: 'Historia de México - Círculo de Lectura',
+            subject: 'Historia',
+            description: 'Debates, resúmenes y preparación de ensayos sobre la historia contemporánea de México.',
+            member_count: 9,
+            is_private: false
+        },
+        {
+            id: 3,
+            name: 'Hackathon & Programación Web',
+            subject: 'Informática',
+            description: 'Desarrollo de aplicaciones, lógica de programación y proyectos de ciencia aplicada.',
+            member_count: 18,
+            is_private: true
+        },
+        {
+            id: 4,
+            name: 'Física Clásica y Termodinámica',
+            subject: 'Física',
+            description: 'Laboratorio de problemas y experimentos prácticos para segundo y tercer año.',
+            member_count: 11,
+            is_private: false
+        }
+    ];
+    res.json({ success: true, data: sampleGroups, groups: sampleGroups });
+});
+
+// Challenges fallback endpoint
+app.get('/api/challenges', (req, res) => {
+    const challenges = [
+        {
+            id: 1,
+            title: 'Racha de Estudio Matutino',
+            description: 'Inicia sesión y revisa tus tareas 3 días seguidos.',
+            challenge_type: 'daily',
+            frequency: 'daily',
+            icon: '⚡',
+            reward_iacoins: 25,
+            reward_xp: 50,
+            target_count: 3,
+            user_progress: { is_completed: false, progress: JSON.stringify({ current: 1, target: 3 }) }
+        },
+        {
+            id: 2,
+            title: 'Maestro del Cálculo Integral',
+            description: 'Resuelve 5 cuestionarios del módulo de Matemáticas con calificación superior a 8.5.',
+            challenge_type: 'weekly',
+            frequency: 'weekly',
+            icon: '📐',
+            reward_iacoins: 60,
+            reward_xp: 120,
+            target_count: 5,
+            user_progress: { is_completed: false, progress: JSON.stringify({ current: 3, target: 5 }) }
+        },
+        {
+            id: 3,
+            title: 'Líder de Comunidad y Squads',
+            description: 'Únete a un grupo de estudio y participa activamente en el foro institucional.',
+            challenge_type: 'monthly',
+            frequency: 'monthly',
+            icon: '👥',
+            reward_iacoins: 100,
+            reward_xp: 200,
+            target_count: 1,
+            user_progress: { is_completed: true, progress: JSON.stringify({ current: 1, target: 1 }) }
+        },
+        {
+            id: 4,
+            title: 'Explorador del Conocimiento Digital',
+            description: 'Descarga y consulta 3 recursos bibliográficos de la biblioteca digital.',
+            challenge_type: 'achievement',
+            frequency: 'achievement',
+            icon: '📚',
+            reward_iacoins: 40,
+            reward_xp: 80,
+            target_count: 3,
+            user_progress: { is_completed: false, progress: JSON.stringify({ current: 2, target: 3 }) }
+        }
+    ];
+
+    res.json({
+        success: true,
+        data: challenges,
+        challenges: challenges,
+        total: challenges.length
+    });
 });
 
 // ----------------------------------------------------------------------
@@ -1834,29 +1929,38 @@ app.get('/api/citas-improved/available-slots', async (req, res) => {
 
 // GET /api/messaging/conversations - Obtener conversaciones del usuario
 app.get('/api/messaging/conversations', async (req, res) => {
+    const demoConversations = [
+        {
+            conversation_id: '1',
+            id: 1,
+            conversation_type: 'direct',
+            title: 'Prof. García (Matemáticas)',
+            last_message_content: 'Recuerda que la entrega del proyecto de Cálculo es este viernes.',
+            last_message_at: new Date().toISOString(),
+            unread_count: 1
+        },
+        {
+            conversation_id: '2',
+            id: 2,
+            conversation_type: 'direct',
+            title: 'Coordinación Académica',
+            last_message_content: 'Aviso importante sobre el calendario de evaluaciones ordinarias.',
+            last_message_at: new Date(Date.now() - 3600000).toISOString(),
+            unread_count: 0
+        },
+        {
+            conversation_id: '3',
+            id: 3,
+            conversation_type: 'group',
+            title: 'Club de Robótica y Ciencias',
+            participants: [{}, {}, {}, {}],
+            last_message_content: 'La sesión de preparación del torneo será el jueves a las 4:00 PM.',
+            last_message_at: new Date(Date.now() - 86400000).toISOString(),
+            unread_count: 0
+        }
+    ];
+
     try {
-        const token = req.headers.authorization?.split(' ')[1];
-
-        if (!token) {
-            return res.status(401).json({
-                success: false,
-                error: 'Token requerido'
-            });
-        }
-
-        const jwt = require('jsonwebtoken');
-        const jwtSecret = process.env.JWT_SECRET || 'vercel-secret-key-change-in-production';
-
-        let decoded;
-        try {
-            decoded = jwt.verify(token, jwtSecret);
-        } catch (err) {
-            return res.status(401).json({
-                success: false,
-                error: 'Token inválido'
-            });
-        }
-
         const { Pool } = require('pg');
         const pool = new Pool({
             connectionString: process.env.DATABASE_URL,
@@ -1864,49 +1968,145 @@ app.get('/api/messaging/conversations', async (req, res) => {
         });
 
         const client = await pool.connect();
-
         try {
-            try {
-                const query = `
-                    SELECT id, title, participants, last_message, last_message_at, unread_count
-                    FROM conversations
-                    WHERE $1 = ANY(participants)
-                    ORDER BY last_message_at DESC
-                    LIMIT 50
-                `;
-
-                const result = await client.query(query, [decoded.userId]);
-
-                res.json({
+            const query = `
+                SELECT id, id as conversation_id, title, participants, last_message as last_message_content, last_message_at, unread_count, 'direct' as conversation_type
+                FROM conversations
+                ORDER BY last_message_at DESC
+                LIMIT 50
+            `;
+            const result = await client.query(query);
+            if (result.rows && result.rows.length > 0) {
+                return res.json({
                     success: true,
-                    conversations: result.rows || [],
+                    conversations: result.rows,
                     total: result.rows.length
                 });
-            } catch (dbError) {
-                // Tabla no existe, retornar demo data vacío
-                console.warn('[MESSAGING] Database error, returning demo:', dbError.message);
-                res.json({
-                    success: true,
-                    conversations: [],
-                    total: 0,
-                    isDemoData: true
-                });
             }
-
+        } catch (dbErr) {
+            // Table doesn't exist
         } finally {
             client.release();
-
         }
+    } catch (e) {}
 
-    } catch (error) {
-        console.error('[MESSAGING] Error:', error.message);
-        res.json({
-            success: true,
-            conversations: [],
-            total: 0,
-            isDemoData: true
-        });
-    }
+    res.json({
+        success: true,
+        conversations: demoConversations,
+        total: demoConversations.length,
+        isDemoData: true
+    });
+});
+
+// GET /api/messaging/conversations/:id - Detalles de conversación
+app.get('/api/messaging/conversations/:id', (req, res) => {
+    const id = req.params.id || '1';
+    const titles = {
+        '1': 'Prof. García (Matemáticas)',
+        '2': 'Coordinación Académica',
+        '3': 'Club de Robótica y Ciencias'
+    };
+
+    res.json({
+        success: true,
+        conversation: {
+            id: id,
+            conversation_id: id,
+            title: titles[id] || 'Chat Institucional',
+            conversation_type: id === '3' ? 'group' : 'direct',
+            created_at: new Date().toISOString()
+        },
+        participants: [
+            { user_id: 1, user_name: 'Samuel (Tú)', user_role: 'admin' },
+            { user_id: 2, user_name: titles[id] || 'Prof. Carlos Mendoza', user_role: 'docente' }
+        ]
+    });
+});
+
+// GET /api/messaging/conversations/:id/messages - Mensajes de la conversación
+app.get('/api/messaging/conversations/:id/messages', (req, res) => {
+    const id = req.params.id || '1';
+    const sampleMessages = {
+        '1': [
+            {
+                id: 101,
+                conversation_id: id,
+                sender_name: 'Prof. García',
+                sender_role: 'docente',
+                content: '¡Hola Samuel! Recuerda que la entrega del proyecto de Cálculo Integral es este viernes antes de las 18:00 hrs.',
+                created_at: new Date(Date.now() - 7200000).toISOString()
+            },
+            {
+                id: 102,
+                conversation_id: id,
+                sender_name: 'Prof. García',
+                sender_role: 'docente',
+                content: 'Si tienes alguna duda sobre los ejercicios 4 y 5 del cuadernillo, avísame por este medio.',
+                created_at: new Date(Date.now() - 3600000).toISOString()
+            }
+        ],
+        '2': [
+            {
+                id: 201,
+                conversation_id: id,
+                sender_name: 'Coordinación Académica',
+                sender_role: 'coordinador',
+                content: 'Estimada comunidad, se ha publicado el calendario oficial de evaluaciones ordinarias del semestre.',
+                created_at: new Date(Date.now() - 86400000).toISOString()
+            }
+        ],
+        '3': [
+            {
+                id: 301,
+                conversation_id: id,
+                sender_name: 'Club de Robótica y Ciencias',
+                sender_role: 'club',
+                content: 'La sesión de preparación del torneo de robótica será el jueves a las 4:00 PM en el laboratorio 2.',
+                created_at: new Date(Date.now() - 86400000).toISOString()
+            }
+        ]
+    };
+
+    res.json({
+        success: true,
+        messages: sampleMessages[id] || [
+            {
+                id: 999,
+                conversation_id: id,
+                sender_name: 'Sistema BGE',
+                sender_role: 'sistema',
+                content: 'Conversación iniciada correctamente.',
+                created_at: new Date().toISOString()
+            }
+        ],
+        count: (sampleMessages[id] || []).length
+    });
+});
+
+// POST /api/messaging/conversations/:id/messages - Enviar mensaje
+app.post('/api/messaging/conversations/:id/messages', (req, res) => {
+    const { content } = req.body;
+    res.json({
+        success: true,
+        message: {
+            id: Date.now(),
+            conversation_id: req.params.id,
+            sender_name: 'Usuario Actual',
+            sender_role: 'estudiante',
+            content: content || 'Mensaje enviado',
+            created_at: new Date().toISOString()
+        }
+    });
+});
+
+// POST /api/messaging/conversations/:id/mark-all-read - Marcar mensajes leídos
+app.post('/api/messaging/conversations/:id/mark-all-read', (req, res) => {
+    res.json({ success: true });
+});
+
+// POST /api/messaging/conversations/:id/typing - Indicador de escritura
+app.post('/api/messaging/conversations/:id/typing', (req, res) => {
+    res.json({ success: true, is_typing: !!req.body.is_typing });
 });
 
 // ============================================

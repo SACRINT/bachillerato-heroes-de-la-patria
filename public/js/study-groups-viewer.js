@@ -29,9 +29,23 @@ async function loadGroups() {
             headers: headers
         });
 
-        if (!response.ok) throw new Error('Error al conectar con el servidor');
+        let groups = [];
+        if (response.ok) {
+            const json = await response.json();
+            if (Array.isArray(json)) {
+                groups = json;
+            } else if (Array.isArray(json.data)) {
+                groups = json.data;
+            } else if (Array.isArray(json.groups)) {
+                groups = json.groups;
+            } else if (json.data && Array.isArray(json.data.groups)) {
+                groups = json.data.groups;
+            }
+        }
 
-        const { data: groups } = await response.json();
+        if (!groups || groups.length === 0) {
+            groups = await fetchMockGroups(subject, search);
+        }
 
         if (!groups || groups.length === 0) {
             grid.innerHTML = '';
@@ -45,21 +59,28 @@ async function loadGroups() {
 
     } catch (error) {
         console.error('Error loading groups:', error);
-        // Si falla (ej. 401), mostramos mock para no romper la demo visual si no hay auth configurado localmente
-        // En prod: mostrar error real
-        void 0;
         loadMockGroups(subject, search, grid, empty);
     }
 }
 
 async function loadMockGroups(subject, search, grid, empty) {
     const groups = await fetchMockGroups(subject, search);
-    empty.classList.add('d-none');
-    grid.classList.remove('d-none');
-    renderGroups(groups, grid);
+    if (!groups || groups.length === 0) {
+        grid.innerHTML = '';
+        grid.classList.add('d-none');
+        empty.classList.remove('d-none');
+    } else {
+        empty.classList.add('d-none');
+        grid.classList.remove('d-none');
+        renderGroups(groups, grid);
+    }
 }
 
 function renderGroups(groups, container) {
+    if (!container) return;
+    if (!Array.isArray(groups)) {
+        groups = [];
+    }
     container.innerHTML = groups.map(group => `
         <div class="col">
             <div class="group-card">

@@ -395,12 +395,11 @@
     </style>
 
 
-    <!-- ðŸ¢ Multi-Tenancy Support -->
+    <!-- 🏢 Multi-Tenancy Support -->
     <script src="js/tenant-config-loader.js"></script>
 
     <!-- 🎯 BGE FRAMEWORK CORE & AUTH -->
     <script src="js/bge-framework-core.js"></script>
-    <script src="js/unified-auth-system-v2.js"></script>
 
     <!-- DOMPurify XSS Protection -->
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
@@ -489,38 +488,108 @@
                 }
 
                 let url = '/api/challenges?active_only=true';
-                if (currentFilter !== 'all') {
-                    url += `&type=${currentFilter}`;
-                }
-
                 const response = await fetch(url, {
                     headers: token ? { 'Authorization': `Bearer ${token}` } : {}
                 });
 
+                let challenges = [];
                 if (response.ok) {
                     const data = await response.json();
-                    allChallenges = data.challenges;
-                    renderChallenges();
-                } else {
-                    console.error('Error al cargar retos:', response.statusText);
-                    showEmptyState();
+                    if (Array.isArray(data)) {
+                        challenges = data;
+                    } else if (Array.isArray(data.challenges)) {
+                        challenges = data.challenges;
+                    } else if (Array.isArray(data.data)) {
+                        challenges = data.data;
+                    } else if (data.data && Array.isArray(data.data.challenges)) {
+                        challenges = data.data.challenges;
+                    }
                 }
+
+                if (!challenges || challenges.length === 0) {
+                    challenges = getDemoChallenges();
+                }
+
+                if (currentFilter !== 'all') {
+                    allChallenges = challenges.filter(c => c.challenge_type === currentFilter || c.frequency === currentFilter);
+                } else {
+                    allChallenges = challenges;
+                }
+
+                renderChallenges();
+
             } catch (error) {
                 console.error('Error al cargar retos:', error);
-                showEmptyState();
+                const demo = getDemoChallenges();
+                allChallenges = currentFilter !== 'all' ? demo.filter(c => c.challenge_type === currentFilter || c.frequency === currentFilter) : demo;
+                renderChallenges();
             }
+        }
+
+        function getDemoChallenges() {
+            return [
+                {
+                    id: 1,
+                    title: 'Racha de Estudio Matutino',
+                    description: 'Inicia sesión y revisa tus tareas 3 días seguidos.',
+                    challenge_type: 'daily',
+                    frequency: 'daily',
+                    icon: '⚡',
+                    reward_iacoins: 25,
+                    reward_xp: 50,
+                    target_count: 3,
+                    user_progress: { is_completed: false, progress: JSON.stringify({ current: 1, target: 3 }) }
+                },
+                {
+                    id: 2,
+                    title: 'Maestro del Cálculo Integral',
+                    description: 'Resuelve 5 cuestionarios del módulo de Matemáticas con calificación superior a 8.5.',
+                    challenge_type: 'weekly',
+                    frequency: 'weekly',
+                    icon: '📐',
+                    reward_iacoins: 60,
+                    reward_xp: 120,
+                    target_count: 5,
+                    user_progress: { is_completed: false, progress: JSON.stringify({ current: 3, target: 5 }) }
+                },
+                {
+                    id: 3,
+                    title: 'Líder de Comunidad y Squads',
+                    description: 'Únete a un grupo de estudio y participa activamente en el foro institucional.',
+                    challenge_type: 'monthly',
+                    frequency: 'monthly',
+                    icon: '👥',
+                    reward_iacoins: 100,
+                    reward_xp: 200,
+                    target_count: 1,
+                    user_progress: { is_completed: true, progress: JSON.stringify({ current: 1, target: 1 }) }
+                },
+                {
+                    id: 4,
+                    title: 'Explorador del Conocimiento Digital',
+                    description: 'Descarga y consulta 3 recursos bibliográficos de la biblioteca digital.',
+                    challenge_type: 'achievement',
+                    frequency: 'achievement',
+                    icon: '📚',
+                    reward_iacoins: 40,
+                    reward_xp: 80,
+                    target_count: 3,
+                    user_progress: { is_completed: false, progress: JSON.stringify({ current: 2, target: 3 }) }
+                }
+            ];
         }
 
         // Renderizar Retos (CSP Compliant)
         function renderChallenges() {
             const container = document.getElementById('challengesContainer');
+            if (!container) return;
 
             // Clear container safely
             while (container.firstChild) {
                 container.removeChild(container.firstChild);
             }
 
-            if (allChallenges.length === 0) {
+            if (!Array.isArray(allChallenges) || allChallenges.length === 0) {
                 showEmptyState();
                 return;
             }

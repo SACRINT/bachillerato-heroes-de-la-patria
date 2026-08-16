@@ -11,7 +11,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const parent_dao_1 = __importDefault(require('../data/parent.dao.js'));
 const grades_dao_1 = __importDefault(require('../data/grades.dao.js'));
 const attendance_dao_1 = __importDefault(require('../data/attendance.dao.js'));
-const bcrypt_1 = __importDefault(require("bcrypt"));
+const bcrypt_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 class ParentService {
     /**

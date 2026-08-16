@@ -35,7 +35,7 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TwoFactorService = void 0;
 const crypto = __importStar(require("crypto"));
-const bcrypt = __importStar(require("bcrypt"));
+const bcrypt = __importStar(require("bcryptjs"));
 const config_1 = require("./config");
 // Import dinámico porque el DAO es JS
 const securityDAO = require('../../data/security-advanced.dao');

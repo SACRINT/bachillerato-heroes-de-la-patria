@@ -12,14 +12,7 @@ const express_1 = __importDefault(require("express"));
 const debug_logger_1 = require('../utils/debug-logger.js');
 // @ts-ignore
 const sanitized_errors_1 = require('../utils/sanitized-errors.js');
-let bcrypt_1 = { default: { hash: async (p) => p, compare: async (p, h) => true } };
-try {
-    bcrypt_1 = __importDefault(require("bcryptjs"));
-} catch (e) {
-    try {
-        bcrypt_1 = __importDefault(require("bcrypt"));
-    } catch (e2) {}
-}
+let bcrypt_1 = { default: require('bcryptjs') };
 // @ts-ignore
 const database_1 = require('../config/database.js');
 // @ts-ignore
