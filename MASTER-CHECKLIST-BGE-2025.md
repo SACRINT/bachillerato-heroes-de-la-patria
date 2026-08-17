@@ -1,8 +1,40 @@
 # ✅ MASTER CHECKLIST - PROYECTO BGE HÉROES DE LA PATRIA
 
-**Última Actualización:** 16 Agosto 2026 - PLAN DE MODERNIZACIÓN BGE: FASE 4 SAAS MULTI-TENANT, RLS Y SUPER-ADMIN ✅
-**Estado del Proyecto:** v3.5.0 - ✅ FASE 0, 1, 2, 3 Y 4 COMPLETADAS (Semanas 1-17)
-**Release Status:** ✅ CRITERIOS DE SALIDA DE FASE 0, 1, 2, 3 Y 4 CUMPLIDOS AL 100% (26/26 verificaciones FASE 4, Aislamiento RLS bidireccional verificado Escuela A vs Escuela B, Super-Admin y Branding por tenant)
+**Última Actualización:** 17 Agosto 2026 - PLAN DE MODERNIZACIÓN BGE: FASE 5 IA ÚTIL (RAG, TUTOR CON MEMORIA, DETECCIÓN HEURÍSTICA DE RIESGO, VAK Y GRAFO) ✅
+**Estado del Proyecto:** v3.6.0 - ✅ FASE 0, 1, 2, 3, 4 Y 5 COMPLETADAS (Semanas 1-20)
+**Release Status:** ✅ CRITERIOS DE SALIDA DE FASES 0, 1, 2, 3, 4 Y 5 CUMPLIDOS AL 100% (Chatbot RAG institucional con fuentes verificadas, Alerta a docentes de riesgo de abandono, Tutor socrático con memoria multi-turno, Lecciones VAK + Spaced Repetition y Grafo curricular con detección de brechas cognitivas)
+
+---
+
+## 🤖 FASE 5 (SEMANAS 18-20): IA ÚTIL Y HERRAMIENTAS PEDAGÓGICAS ADAPTATIVAS ✅
+
+**Estado:** ✅ **COMPLETADA**
+**Criterio de Salida:** El chatbot responde con información REAL del plantel citando documentos oficiales + el sistema alerta automáticamente a un docente de un estudiante en riesgo de abandono; 5/5 pruebas E2E verificadas contra backend real.
+
+### Checklist de Implementación Fase 5
+
+- [x] **5.1 Chatbot con RAG Real sobre Documentos Institucionales (`public/js/bge-chatbot-ia-avanzado.js` & `backend/services/rag.service.js`):**
+  * Corpus oficial indexado (`backend/data/institutional-knowledge.js`) con normativas, horarios de atención (07:00 a 14:00 hrs), escala de calificaciones (mínimo 6.0), oferta de 6 semestres (capacitaciones en Informática, Contabilidad y Salud), Becas Benito Juárez y directorio de contacto.
+  * Motor RAG con búsqueda léxica y citas de fuentes (`[Fuente: ...]`).
+  * Endpoints `/api/ai-chatbot/message` y `/api/ai-chatbot/health` con deducción de IACoins y fallback demo contextual.
+- [x] **5.2 Tutor IA con Memoria Conversacional Multi-Turno (`backend/services/ai-tutor-v2.service.js`):**
+  * Persistencia de sesiones y mensajes en PostgreSQL (`tutor_chat_sessions` y `tutor_chat_messages`) con cache tolerante a fallos.
+  * Reconstrucción del contexto previo de la conversación para responder de forma pedagógica y continua.
+  * Endpoints `/api/ai-tutor-v2/session/start`, `/chat` y `/history/:sessionId`.
+- [x] **5.3 Detección Heurística de Riesgo de Abandono (`backend/routes/deteccion-riesgos.js`):**
+  * Cálculo heurístico transparente (Asistencia <80%, Calificaciones <7.0, Inactividad >14 días / IACoins).
+  * Niveles de riesgo: `BAJO`, `MEDIO`, `ALTO`.
+  * Generación y persistencia de alertas automáticas para docentes/tutores en tabla `notifications` de PostgreSQL.
+  * Panel de monitoreo de riesgo conectado a `GET /api/deteccion-riesgos/estudiantes` (`public/js/admin-risk-dashboard.js`).
+- [x] **5.4 Lecciones Adaptativas (VAK + Spaced Repetition) (`backend/services/personality-profiling.service.js`):**
+  * Cuestionario y perfilado VAK (Visual, Auditivo, Kinestésico) (`POST /api/adaptive-content/vak/assess`).
+  * Recomendador de formato según estilo de aprendizaje (`GET /api/adaptive-content/recommend/:topic`).
+  * Agendador de repaso espaciado SM-2 simple (`POST /api/adaptive-content/spaced-repetition/schedule`, `GET /spaced-repetition/due/:userId`).
+- [x] **5.5 Grafo de Conocimiento Curricular y Detección de Gaps (`backend/services/knowledge-graph.service.js`):**
+  * Modelado del currículo oficial BGE en grafo dirigido (`knowledge_nodes`, `knowledge_links`).
+  * Algoritmo de backtracking para identificar la brecha cognitiva raíz ante fallos (`GET /api/knowledge/gaps/:studentId`).
+- [x] **5.6 Suite de Pruebas Automatizadas E2E (`scripts/test-fase5-real.js`):**
+  * 5/5 pruebas aprobadas al 100% contra el servidor en vivo.
 
 ---
 

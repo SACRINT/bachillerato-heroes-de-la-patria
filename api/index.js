@@ -204,6 +204,11 @@ try { mountRouteSafe('/api/pendientes-aprobacion', require('../backend/routes/pe
 try { mountRouteSafe('/api/polls', require('../backend/routes/polls.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/polls:', e.stack || e); }
 try { mountRouteSafe('/api/quejas', require('../backend/routes/quejas.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/quejas:', e.stack || e); }
 try { mountRouteSafe('/api/knowledge', require('../backend/routes/knowledge-graph.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/knowledge:', e.stack || e); }
+try { mountRouteSafe('/api/ai-chatbot', require('../backend/routes/ai-chatbot.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/ai-chatbot:', e.stack || e); }
+try { mountRouteSafe('/api/ai/chatbot', require('../backend/routes/ai-chatbot.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/ai/chatbot:', e.stack || e); }
+try { mountRouteSafe('/api/ai-tutor-v2', require('../backend/routes/ai-tutor-v2.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/ai-tutor-v2:', e.stack || e); }
+try { mountRouteSafe('/api/deteccion-riesgos', require('../backend/routes/deteccion-riesgos.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/deteccion-riesgos:', e.stack || e); }
+try { mountRouteSafe('/api/adaptive-content', require('../backend/routes/adaptive-content.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/adaptive-content:', e.stack || e); }
 try { mountRouteSafe('/api/mentorship', require('../backend/routes/mentorship.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/mentorship:', e.stack || e); }
 try { mountRouteSafe('/api/support-tickets', require('../backend/routes/support-tickets.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/support-tickets:', e.stack || e); }
 try { mountRouteSafe('/api/messaging', require('../backend/routes/messaging.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/messaging:', e.stack || e); }
