@@ -49,9 +49,6 @@ no_usados/
 !MASTER-CHECKLIST-BGE-2025.md
 !CLAUDE.md
 # Los .md dentro de docs/, doc/ y backend/docs/ SÍ se suben (documentación del proyecto)
-docs/
-doc/
-backend/docs/
 
 # Archivos de trabajo de agentes (NO subir a GitHub)
 scratch/
