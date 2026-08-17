@@ -1616,4 +1616,16 @@ module.exports = {
     getApprovalById,
     getApprovalStatistics,
     updateRequestStatus,
+
+    // Database access helpers
+    getPool: () => pool,
+    executeQuery: async (sql, params = []) => {
+        const client = await pool.connect();
+        try {
+            const result = await client.query(sql, params);
+            return result.rows;
+        } finally {
+            client.release();
+        }
+    }
 };

@@ -10,7 +10,7 @@ function showLoginModal() {
     const modal = document.getElementById('loginModal');
     if (modal) {
         void 0;
-        const modalInstance = new bootstrap.Modal(modal);
+        const modalInstance = bootstrap.Modal.getOrCreateInstance(modal);
         modalInstance.show();
     } else {
         console.error('❌ Modal loginModal no encontrado');
@@ -28,7 +28,7 @@ window.showInfoModal = function() {
         // Actualizar estadísticas con datos actuales (localStorage o configurados)
         updateSystemInfoModal();
 
-        const modalInstance = new bootstrap.Modal(modal);
+        const modalInstance = bootstrap.Modal.getOrCreateInstance(modal);
         modalInstance.show();
     } else {
         console.error('❌ Modal infoModal no encontrado');
@@ -124,7 +124,7 @@ window.showChangePasswordModal = function() {
         document.getElementById('passwordChangeMessage').style.display = 'none';
         document.getElementById('passwordStrengthIndicator').style.display = 'none';
 
-        const modalInstance = new bootstrap.Modal(modal);
+        const modalInstance = bootstrap.Modal.getOrCreateInstance(modal);
         modalInstance.show();
     }
 }
@@ -271,7 +271,7 @@ window.showStatisticsConfigModal = function() {
         // Limpiar mensajes
         document.getElementById('statisticsConfigMessage').style.display = 'none';
 
-        const modalInstance = new bootstrap.Modal(modal);
+        const modalInstance = bootstrap.Modal.getOrCreateInstance(modal);
         modalInstance.show();
     }
 }

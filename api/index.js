@@ -218,6 +218,8 @@ try { mountRouteSafe('/api/wallet', require('../backend/routes/wallet.js')); } c
 try { mountRouteSafe('/api/iacoins', require('../backend/routes/iacoins.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/iacoins:', e.stack || e); }
 try { mountRouteSafe('/api/gamification', require('../backend/routes/gamification.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/gamification:', e.stack || e); }
 try { mountRouteSafe('/api/gamification-ext', require('../backend/routes/gamification-extended.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/gamification-ext:', e.stack || e); }
+try { mountRouteSafe('/api/gamification', require('../backend/routes/gamification-fase3.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/gamification-fase3:', e.stack || e); }
+try { mountRouteSafe('/api/ia', require('../backend/routes/ia-gemini.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/ia:', e.stack || e); }
 try { mountRouteSafe('/api/games/trivia', require('../backend/routes/trivia-game.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/games/trivia:', e.stack || e); }
 try { mountRouteSafe('/api/trivia', require('../backend/routes/trivia-game.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/trivia:', e.stack || e); }
 try { mountRouteSafe('/api/games/concepts', require('../backend/routes/concept-builder.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/games/concepts:', e.stack || e); }

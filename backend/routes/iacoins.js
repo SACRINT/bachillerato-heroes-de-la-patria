@@ -17,21 +17,7 @@ const express = require('express');
 const router = express.Router();
 const { body, param, query, validationResult } = require('express-validator');
 const { authenticateToken } = require('../middleware/auth.js');
-const { getPool } = require('../data/database-access.js');
-
-// =====================================================
-// Helper function to execute queries (since executeQuery is not exported)
-// =====================================================
-async function executeQuery(sqlQuery, params = []) {
-    const pool = getPool();
-    const client = await pool.connect();
-    try {
-        const result = await client.query(sqlQuery, params);
-        return result.rows;
-    } finally {
-        client.release();
-    }
-}
+const { getPool, executeQuery } = require('../data/database-access.js');
 
 // =====================================================
 // GET /api/iacoins/balance - Obtener balance del usuario
@@ -45,26 +31,15 @@ router.get('/balance',
             // Obtener o crear balance del usuario
             let balance = await executeQuery(`
                 SELECT * FROM iacoins_balances WHERE user_id = $1
-            `, [userId]).catch(err => {
-                // Si la tabla no existe, retornar datos demo
-                console.warn('[IACOINS] Tabla iacoins_balances no existe, usando datos demo');
-                return null;
-            });
+            `, [userId]);
 
             if (!balance || balance.length === 0) {
-                // Retornar datos demo (tabla no existe o usuario nuevo)
-                console.log('[IACOINS] Retornando balance demo para usuario:', userId);
-                return res.json({
-                    success: true,
-                    data: {
-                        user_id: userId,
-                        balance: 150,
-                        total_earned: 250,
-                        total_spent: 100,
-                        level: 2,
-                        experience_points: 350
-                    }
-                });
+                // Crear balance inicial con 100 IACoins para nuevo usuario
+                balance = await executeQuery(`
+                    INSERT INTO iacoins_balances (user_id, balance, total_earned, total_spent, level, experience_points)
+                    VALUES ($1, 100, 100, 0, 1, 0)
+                    RETURNING *
+                `, [userId]);
             }
 
             res.json({
@@ -73,17 +48,10 @@ router.get('/balance',
             });
         } catch (error) {
             console.error('[IACOINS] Error obteniendo balance:', error);
-            // Retornar datos demo en caso de error
-            res.json({
-                success: true,
-                data: {
-                    user_id: req.user.id,
-                    balance: 150,
-                    total_earned: 250,
-                    total_spent: 100,
-                    level: 2,
-                    experience_points: 350
-                }
+            res.status(500).json({
+                success: false,
+                message: 'Error al obtener balance',
+                error: error.message
             });
         }
     }
@@ -100,7 +68,6 @@ router.get('/transactions',
         query('type').optional().isIn(['earn', 'spend', 'bonus', 'refund', 'admin_adjustment'])
     ],
     async (req, res) => {
-        // Definir limit y offset ANTES del try block
         const limitParam = parseInt(req.query.limit) || 10;
         const offsetParam = parseInt(req.query.offset) || 0;
 
@@ -130,56 +97,7 @@ router.get('/transactions',
             sqlQuery += ` ORDER BY created_at DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
             params.push(limitParam, offsetParam);
 
-            let transactions = await executeQuery(sqlQuery, params).catch(err => {
-                console.warn('[IACOINS] Tabla iacoins_transactions no existe, usando datos demo');
-                return null;
-            });
-
-            // Si la tabla no existe, retornar datos demo
-            if (!transactions) {
-                const demoTransactions = [
-                    {
-                        id: 1,
-                        user_id: userId,
-                        type: 'earn',
-                        amount: 50,
-                        description: 'Reto completado: Quiz Matemáticas',
-                        created_at: new Date(Date.now() - 86400000).toISOString(),
-                        balance_before: 100,
-                        balance_after: 150
-                    },
-                    {
-                        id: 2,
-                        user_id: userId,
-                        type: 'spend',
-                        amount: 20,
-                        description: 'Generar ensayo con OpenAI',
-                        created_at: new Date(Date.now() - 43200000).toISOString(),
-                        balance_before: 150,
-                        balance_after: 130
-                    },
-                    {
-                        id: 3,
-                        user_id: userId,
-                        type: 'earn',
-                        amount: 100,
-                        description: 'Bonus semanal',
-                        created_at: new Date(Date.now() - 3600000).toISOString(),
-                        balance_before: 130,
-                        balance_after: 230
-                    }
-                ];
-
-                return res.json({
-                    success: true,
-                    data: demoTransactions.slice(offsetParam, offsetParam + limitParam),
-                    pagination: {
-                        total: demoTransactions.length,
-                        limit: limitParam,
-                        offset: offsetParam
-                    }
-                });
-            }
+            let transactions = await executeQuery(sqlQuery, params);
 
             // Obtener total de transacciones
             let countQuerySQL = `SELECT COUNT(*) as total FROM iacoins_transactions WHERE user_id = $1`;
@@ -188,39 +106,23 @@ router.get('/transactions',
                 countQuerySQL += ` AND type = $2`;
                 countParams.push(type);
             }
-            const countResult = await executeQuery(countQuerySQL, countParams).catch(err => [{ total: 0 }]);
+            const countResult = await executeQuery(countQuerySQL, countParams);
 
             res.json({
                 success: true,
                 data: transactions,
                 pagination: {
-                    total: parseInt(countResult[0].total),
+                    total: parseInt(countResult[0]?.total || 0),
                     limit: limitParam,
                     offset: offsetParam
                 }
             });
         } catch (error) {
             console.error('[IACOINS] Error obteniendo transacciones:', error);
-            // Retornar datos demo en caso de error
-            const demoTransactions = [
-                {
-                    id: 1,
-                    user_id: req.user.id,
-                    type: 'earn',
-                    amount: 50,
-                    description: 'Reto completado: Quiz Matemáticas',
-                    balance_before: 100,
-                    balance_after: 150
-                }
-            ];
-            res.json({
-                success: true,
-                data: demoTransactions,
-                pagination: {
-                    total: demoTransactions.length,
-                    limit: limitParam,
-                    offset: 0
-                }
+            res.status(500).json({
+                success: false,
+                message: 'Error al obtener transacciones',
+                error: error.message
             });
         }
     }
@@ -235,7 +137,7 @@ router.post('/earn',
         body('amount').isInt({ min: 1, max: 1000 }).withMessage('Cantidad inválida (1-1000)'),
         body('description').isString().isLength({ min: 5, max: 500 }).withMessage('Descripción requerida'),
         body('reference_type').optional().isString(),
-        body('reference_id').optional().isInt()
+        body('reference_id').optional()
     ],
     async (req, res) => {
         try {
@@ -248,7 +150,8 @@ router.post('/earn',
             }
 
             const userId = req.user.id;
-            const { amount, description, reference_type, reference_id } = req.body;
+            const { amount, description, reference_type, reference_id, xp_amount } = req.body;
+            const xp = xp_amount || Math.ceil(amount * 1.5);
 
             // Obtener balance actual
             const currentBalance = await executeQuery(`
@@ -258,7 +161,7 @@ router.post('/earn',
             const balanceBefore = currentBalance[0]?.balance || 0;
             const balanceAfter = balanceBefore + amount;
 
-            // Actualizar balance
+            // Actualizar iacoins_balances
             await executeQuery(`
                 INSERT INTO iacoins_balances (user_id, balance, total_earned, total_spent)
                 VALUES ($1, $2, $2, 0)
@@ -268,20 +171,37 @@ router.post('/earn',
                     updated_at = NOW()
             `, [userId, amount, amount]);
 
+            // Sincronizar con iacoins_balance (GamificationDAO)
+            try {
+                const pool = getPool();
+                if (pool && typeof pool.query === 'function') {
+                    pool.query(`
+                        INSERT INTO iacoins_balance (user_id, balance, total_earned, experience_points)
+                        VALUES ($1, $2, $2, $3)
+                        ON CONFLICT (user_id) DO UPDATE SET
+                            balance = iacoins_balance.balance + $4,
+                            total_earned = iacoins_balance.total_earned + $4,
+                            experience_points = iacoins_balance.experience_points + $5,
+                            updated_at = NOW()
+                    `, [userId, amount, xp, amount, xp]).catch(() => {});
+                }
+            } catch (e) {}
+
             // Registrar transacción
             const transaction = await executeQuery(`
                 INSERT INTO iacoins_transactions
-                (user_id, type, amount, balance_before, balance_after, description, reference_type, reference_id)
+                    (user_id, type, amount, balance_before, balance_after, description, reference_type, reference_id)
                 VALUES ($1, 'earn', $2, $3, $4, $5, $6, $7)
                 RETURNING *
-            `, [userId, amount, balanceBefore, balanceAfter, description, reference_type || null, reference_id || null]);
+            `, [userId, amount, balanceBefore, balanceAfter, description, reference_type || null, reference_id ? String(reference_id) : null]);
 
             res.json({
                 success: true,
                 message: `Has ganado ${amount} IACoins`,
                 data: {
-                    transaction: transaction[0],
-                    newBalance: balanceAfter
+                    transaction: transaction ? transaction[0] : null,
+                    newBalance: balanceAfter,
+                    xp_earned: xp
                 }
             });
         } catch (error) {
@@ -303,7 +223,7 @@ router.post('/spend',
     [
         body('amount').isInt({ min: 1, max: 500 }).withMessage('Cantidad inválida (1-500)'),
         body('description').isString().isLength({ min: 5, max: 500 }).withMessage('Descripción requerida'),
-        body('ai_provider').optional().isIn(['openai', 'anthropic', 'gemini']),
+        body('ai_provider').optional().isIn(['openai', 'anthropic', 'gemini', 'google']),
         body('ai_model').optional().isString(),
         body('generation_type').optional().isString()
     ],
@@ -347,19 +267,37 @@ router.post('/spend',
                 WHERE user_id = $2
             `, [amount, userId]);
 
+            // Sincronizar con iacoins_balance (GamificationDAO)
+            try {
+                const pool = getPool();
+                if (pool && typeof pool.query === 'function') {
+                    pool.query(`
+                        UPDATE iacoins_balance
+                        SET balance = balance - $1,
+                            total_spent = COALESCE(total_spent, 0) + $1,
+                            updated_at = NOW()
+                        WHERE user_id = $2
+                    `, [amount, userId]).catch(() => {});
+                }
+            } catch (e) {}
+
             // Registrar transacción
             const transaction = await executeQuery(`
                 INSERT INTO iacoins_transactions
-                (user_id, type, amount, balance_before, balance_after, description, ai_provider, ai_model, reference_type)
-                VALUES ($1, 'spend', $2, $3, $4, $5, $6, $7, $8)
+                    (user_id, type, amount, balance_before, balance_after, description, reference_type, metadata)
+                VALUES ($1, 'spend', $2, $3, $4, $5, $6, $7)
                 RETURNING *
-            `, [userId, amount, balanceBefore, balanceAfter, description, ai_provider || null, ai_model || null, generation_type || 'ai_generation']);
+            `, [
+                userId, amount, balanceBefore, balanceAfter, description,
+                generation_type || 'ai_generation',
+                JSON.stringify({ ai_provider: ai_provider || 'google', ai_model: ai_model || 'gemini-2.0-flash' })
+            ]);
 
             res.json({
                 success: true,
                 message: `Has gastado ${amount} IACoins`,
                 data: {
-                    transaction: transaction[0],
+                    transaction: transaction ? transaction[0] : null,
                     newBalance: balanceAfter
                 }
             });

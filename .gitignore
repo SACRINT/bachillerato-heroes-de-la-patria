@@ -42,13 +42,20 @@ no_usados/
 03_BachilleratoHeroesWeb_copia/
 
 # Documentación local (no subir a GitHub ni a Vercel para despliegue)
-# Generalizado para ignorar todos los archivos Markdown excepto README.md
-# *.md
+# Ignorar archivos Markdown de trabajo en la RAÍZ, permitiendo los esenciales del proyecto
+/*.md
 !README.md # Mantener README.md en GitHub para referencia del repositorio
 !CHANGELOG.md
 !MASTER-CHECKLIST-BGE-2025.md
 !CLAUDE.md
-docs/*.md # Permitir todos los archivos .md dentro de docs/
+# Los .md dentro de docs/, doc/ y backend/docs/ SÍ se suben (documentación del proyecto)
+docs/
+doc/
+backend/docs/
+
+# Archivos de trabajo de agentes (NO subir a GitHub)
+scratch/
+.agent/
 
 # Reportes de texto (ya cubierto por *.log, pero se mantiene si hay otros .txt)
 *.txt

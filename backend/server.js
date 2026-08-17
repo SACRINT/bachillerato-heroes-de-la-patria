@@ -568,6 +568,8 @@ app.use('/api/digital-library', digitalLibraryRoutes);
 app.use('/api/support-tickets', supportTicketsRoutes);
 app.use('/api/gamification', gamificationRoutes);  // ✅ GAMIFICATION ROUTES - Sistema de logros y puntuaciones
 app.use('/api/gamification-ext', gamificationExtendedRoutes); // ✅ GAMIFICATION EXTENDED (Semanas 1-8)
+app.use('/api/gamification', require('./routes/gamification-fase3')); // ✅ GAMIFICATION FASE 3 - Rachas, Ligas, Leaderboard real (AGO 2026)
+app.use('/api/ia', require('./routes/ia-gemini')); // ✅ IA GEMINI - Generación IA con deducción IACoins (FASE 3 AGO 2026)
 app.use('/api/ai/hyper', require('./routes/ai-hyperpersonalization')); // ✅ AI HYPERPERSONALIZATION (Semana 9+)
 app.use('/api/wallet', walletRoutes);  // ✅ WALLET ROUTES - Gestión de IACoins (15 NOV 2025)
 app.use('/api/iacoins', iacoinsRoutes);  // ✅ IACOINS ROUTES - IACoins Dashboard (14 DIC 2025)

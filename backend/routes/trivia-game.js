@@ -370,21 +370,66 @@ router.post('/finish', authenticateToken, async (req, res) => {
             ]
         );
 
-        // Intentar guardar en tabla de juegos (si existe)
+        // Sincronizar con iacoins_balance (tabla principal GamificationDAO)
         try {
-            await client.query(
-                `INSERT INTO game_sessions 
-                 (user_id, game_type, score, coins_earned, xp_earned, metadata, completed_at)
-                 VALUES ($1, 'trivia', $2, $3, $4, $5, NOW())`,
-                [userId, game.score, coinsEarned, xpEarned, JSON.stringify({
-                    category: game.category,
-                    correct: game.correctAnswers,
-                    total: totalQuestions,
-                    max_streak: game.maxStreak
-                })]
-            );
+            await client.query(`
+                INSERT INTO iacoins_balance (user_id, balance, total_earned, experience_points)
+                VALUES ($1, $2, $2, $3)
+                ON CONFLICT (user_id) DO UPDATE SET
+                    balance = iacoins_balance.balance + $4,
+                    total_earned = iacoins_balance.total_earned + $4,
+                    experience_points = iacoins_balance.experience_points + $5,
+                    updated_at = NOW()
+            `, [userId, coinsEarned, xpEarned, coinsEarned, xpEarned]);
         } catch (e) {
-            // Tabla puede no existir, continuar
+            console.warn('[TRIVIA] iacoins_balance sync (tabla puede no existir):', e.message);
+        }
+
+        // Sincronizar con iacoins_balances (legado)
+        try {
+            await client.query(`
+                INSERT INTO iacoins_balances (user_id, balance, total_earned, total_spent)
+                VALUES ($1, $2, $2, 0)
+                ON CONFLICT (user_id) DO UPDATE SET
+                    balance = iacoins_balances.balance + $3,
+                    total_earned = iacoins_balances.total_earned + $3,
+                    updated_at = NOW()
+            `, [userId, coinsEarned, coinsEarned]);
+        } catch (e) {
+            console.warn('[TRIVIA] iacoins_balances sync:', e.message);
+        }
+
+        // Guardar en trivia_sessions (para stats/leaderboard reales)
+        try {
+            const won = game.correctAnswers >= Math.ceil(game.questions.length * 0.6); // 60%+ = victoria
+            await client.query(`
+                INSERT INTO trivia_sessions
+                    (user_id, category, total_questions, correct_answers, wrong_answers,
+                     score, coins_earned, xp_earned, status, finished_at)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'completed', NOW())
+            `, [
+                userId, game.category, game.questions.length,
+                game.correctAnswers, game.questions.length - game.correctAnswers,
+                game.score, coinsEarned, xpEarned
+            ]);
+        } catch (e) {
+            console.warn('[TRIVIA] trivia_sessions insert:', e.message);
+        }
+
+        // Guardar en game_sessions (tabla general de sesiones)
+        try {
+            await client.query(`
+                INSERT INTO game_sessions 
+                 (user_id, game_type, score, coins_earned, xp_earned, metadata)
+                 VALUES ($1, 'trivia', $2, $3, $4, $5)
+            `, [userId, game.score, coinsEarned, xpEarned, JSON.stringify({
+                category: game.category,
+                correct: game.correctAnswers,
+                total: game.questions.length,
+                max_streak: game.maxStreak
+            })]);
+        } catch (e) {
+            console.warn('[TRIVIA] game_sessions insert:', e.message);
         }
 
         await client.query('COMMIT');
