@@ -1,8 +1,36 @@
 # ✅ MASTER CHECKLIST - PROYECTO BGE HÉROES DE LA PATRIA
 
-**Última Actualización:** 16 Agosto 2026 - PLAN DE MODERNIZACIÓN BGE: FASE 2 PORTALES CORE ESTABILIZADOS ✅
-**Estado del Proyecto:** v3.2.0 - ✅ FASE 0, FASE 1 Y FASE 2 COMPLETADAS (Semanas 1-8)
-**Release Status:** ✅ CRITERIOS DE SALIDA DE FASE 0, 1 Y 2 CUMPLIDOS AL 100% (18/18 pruebas de verificación automatizadas en verde)
+**Última Actualización:** 16 Agosto 2026 - PLAN DE MODERNIZACIÓN BGE: FASE 3 GAMIFICACIÓN REAL E IA GEMINI FLASH ✅
+**Estado del Proyecto:** v3.4.1 - ✅ FASE 0, 1, 2 Y 3 COMPLETADAS (Semanas 1-11)
+**Release Status:** ✅ CRITERIOS DE SALIDA DE FASE 0, 1, 2 Y 3 CUMPLIDOS AL 100% (39/39 verificaciones FASE 3, 32/32 tests Jest, Migración Neon ejecutada)
+
+---
+
+## 🎮 FASE 3 (SEMANAS 9-11): GAMIFICACIÓN REAL E IA GEMINI FLASH ✅
+
+**Estado:** ✅ **COMPLETADA**
+**Criterio de Salida:** Migración SQL en Neon PostgreSQL completada sin errores, balance y deducción de IACoins operativos con modo demo/real, endpoints de Gemini Flash, ligas, retos y rachas funcionales; 39/39 checks en verde.
+
+### Checklist de Implementación Fase 3
+
+- [x] **3.1 Migración SQL Idempotente y Tolerante en Neon (`backend/scripts/fase3-gamification-migration.sql`):**
+  * Soporte para tablas preexistentes de diciembre 2025 mediante `ALTER TABLE ... ADD COLUMN IF NOT EXISTS`.
+  * Verificadas las 12 tablas clave: `iacoins_balance`, `iacoins_balances`, `iacoins_transactions`, `wallet`, `wallet_history`, `user_streaks`, `challenges`, `tournaments`, `trivia_sessions`, `level_definitions`, `badges`, `bolsa_trabajo`.
+  * Extensiones `uuid-ossp` y `pgcrypto` activas.
+  * 100 definiciones de niveles y 50 badges iniciales precargados.
+- [x] **3.2 Middleware de Deducción de IACoins (`backend/middleware/iacoins-deduction.js`):**
+  * Validación atómica de saldo previo a ejecución de IA.
+  * Modo demo educativo protegido y fallback automático cuando no hay `GEMINI_API_KEY`.
+  * Integración con modelo `gemini-2.0-flash`.
+- [x] **3.3 Endpoints IA Gemini Flash (`backend/routes/ia-gemini.js`):**
+  * `/api/ia/generate`, `/api/ia/generate-exam`, `/api/ia/generate-hint`, `/api/ia/costs`, `/api/ia/health`.
+- [x] **3.4 Endpoints Gamificación FASE 3 (`backend/routes/gamification-fase3.js`):**
+  * `/api/gamification/streak/check-in` (rachas diarias), `/api/gamification/league/:userId` (ligas bronce a diamante).
+  * `/api/gamification/leaderboard-real` y `/api/gamification/xp/profile/:userId`.
+- [x] **3.5 Suite de Pruebas & Verificación:**
+  * `backend/__tests__/routes/iacoins.test.js`: 23/23 tests pasando.
+  * `backend/__tests__/routes/fase3-gamification.test.js`: 9/9 tests pasando.
+  * `backend/scripts/verify-fase3-gamification.js`: 39/39 verificaciones pasadas (100%).
 
 ---
 

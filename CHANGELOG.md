@@ -1,4 +1,37 @@
-# CHANGELOG - Bachillerato General Estatal "HǸroes de la Patria"
+# CHANGELOG - Bachillerato General Estatal "Héroes de la Patria"
+
+[v3.4.1] - 2026-08-16 (FASE 3: GAMIFICACIÓN REAL, IA GEMINI FLASH Y MIGRACIÓN SQL ROBUSTA EN NEON)
+
+**Tipo:** Major Feature / Database Migration / AI Integration / Gamification
+**Estado:** COMPLETADO - Migración SQL ejecutada y verificada exitosamente en Neon PostgreSQL
+
+### Componentes Implementados:
+1. **MIGRACIÓN SQL TOLERANTE A ESQUEMAS LEGACY (`backend/scripts/fase3-gamification-migration.sql`):**
+   - 100% tolerante a tablas preexistentes de diciembre 2025 (`iacoins_transactions`, `user_streaks`, `challenges`, `badges`, `tournaments`, `bolsa_trabajo`).
+   - Uso sistemático de `ALTER TABLE ... ADD COLUMN IF NOT EXISTS` para garantizar existencia de todas las columnas requeridas (`status`, `transaction_type`, `balance_before`, `balance_after`, `metadata`, `updated_at`, etc.) antes de crear los índices.
+   - Eliminación de constraints `NOT NULL` en columnas legacy para interoperabilidad con esquemas nuevos.
+   - Sincronización automática de datos entre columnas en español (`nombre`, `titulo`, `max_streak`) y columnas en inglés (`name`, `title`, `longest_streak`).
+   - 31 tablas maestras y vistas globales (`v_leaderboard_global`, `v_daily_challenges_summary`) verificadas en Neon (12/12 tablas críticas operativas).
+   - 100 niveles precargados (`level_definitions`) y 50 badges iniciales (`badges`).
+2. **MIDDLEWARE DE DEDUCCIÓN IACOINS + GEMINI FLASH (`backend/middleware/iacoins-deduction.js`):**
+   - Middleware `checkAndDeductCoins` con verificación atómica de saldo previo a ejecución de IA.
+   - Soporte dual de tablas (`iacoins_balance` y `iacoins_balances`).
+   - Integración nativa con Google Gemini Flash (`gemini-2.0-flash`) y fallback a modo demo seguro si `GEMINI_API_KEY` no está configurada.
+   - Tabla de costos configurable vía `.env`.
+3. **RUTAS IA GEMINI FLASH (`backend/routes/ia-gemini.js`):**
+   - Endpoints `/api/ia/generate`, `/api/ia/generate-exam`, `/api/ia/generate-hint`, `/api/ia/costs`, `/api/ia/health`.
+4. **RUTAS GAMIFICACIÓN FASE 3 (`backend/routes/gamification-fase3.js`):**
+   - Endpoints `/api/gamification/streak/check-in`, `/api/gamification/league/:userId`, `/api/gamification/leaderboard-real`, `/api/gamification/xp/profile/:userId`.
+5. **SINCRONIZACIÓN DE JUEGOS EDUCATIVOS:**
+   - Duelo de Sabiduría (`trivia-game.js`) y Constructor de Conceptos conectados a deducción/ganancia de IACoins y XP.
+
+### Verificación:
+- Migración ejecutada directamente en Neon PostgreSQL: 12/12 tablas verificadas, 2/2 extensiones (`uuid-ossp`, `pgcrypto`).
+- `node backend/scripts/verify-fase3-gamification.js`: 39/39 verificaciones pasadas (100%).
+- `npx jest backend/__tests__/routes/iacoins.test.js backend/__tests__/routes/fase3-gamification.test.js`: 32/32 tests pasando.
+- `node -c` en todos los archivos modificados: 0 errores de sintaxis.
+
+---
 
 [v3.3.1] - 2026-08-16 (HOTFIX PRODUCCION: ENDPOINTS 500 CON FALLBACK DEMO + CSP TOTAL + ASSETS AVATAR-SHOP)
 

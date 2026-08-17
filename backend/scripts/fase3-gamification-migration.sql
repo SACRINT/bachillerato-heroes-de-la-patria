@@ -1,18 +1,12 @@
 -- ================================================================
--- FASE 3: MIGRACIÓN SQL DE GAMIFICACIÓN E IACOINS REALES
+-- FASE 3: MIGRACIÓN SQL DE GAMIFICACIÓN E IACOINS REALES (ROBUSTO)
 -- Bachillerato General Estatal "Héroes de la Patria"
 -- Fecha: Agosto 2026
 -- ================================================================
--- INSTRUCCIONES PARA EJECUTAR EN NEON CONSOLE:
---   1. Ve a https://console.neon.tech → tu proyecto → SQL Editor
---   2. Copia y pega TODO este archivo
---   3. Ejecuta (Run All / Execute)
---   4. Verifica que finalice sin errores
---   5. Avisa al equipo para activar datos reales (los fallbacks demo
---      se reemplazarán automáticamente al existir las tablas)
--- ================================================================
--- SEGURIDAD: Script idempotente — se puede ejecutar múltiples veces
--- sin duplicar datos. Usa CREATE TABLE IF NOT EXISTS y ON CONFLICT.
+-- SEGURIDAD & COMPATIBILIDAD:
+--   - Idempotente: seguro para ejecutar múltiples veces sin duplicar ni borrar datos
+--   - Tolerante a tablas preexistentes: usa ALTER TABLE ... ADD COLUMN IF NOT EXISTS
+--   - Compatible con versiones legacy (Diciembre 2025) y nuevas
 -- ================================================================
 
 -- ----------------------------------------------------------------
@@ -26,45 +20,76 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 -- ================================================================
 
 -- 1.1 iacoins_balance (tabla maestra de saldo, XP y nivel por usuario)
---     NOTA: GamificationDAO usa "iacoins_balance" (sin 's')
 CREATE TABLE IF NOT EXISTS iacoins_balance (
     id              SERIAL PRIMARY KEY,
-    user_id         UUID NOT NULL UNIQUE,
+    user_id         UUID UNIQUE,
     balance         INTEGER NOT NULL DEFAULT 0,
     total_earned    INTEGER NOT NULL DEFAULT 0,
     total_spent     INTEGER NOT NULL DEFAULT 0,
     experience_points INTEGER NOT NULL DEFAULT 0,
     level           INTEGER NOT NULL DEFAULT 1,
+    streak_days     INTEGER NOT NULL DEFAULT 0,
+    last_streak_date DATE,
+    is_vip          BOOLEAN DEFAULT FALSE,
+    vip_expires_at  TIMESTAMP WITH TIME ZONE,
     created_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+ALTER TABLE iacoins_balance ADD COLUMN IF NOT EXISTS balance INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE iacoins_balance ADD COLUMN IF NOT EXISTS total_earned INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE iacoins_balance ADD COLUMN IF NOT EXISTS total_spent INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE iacoins_balance ADD COLUMN IF NOT EXISTS experience_points INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE iacoins_balance ADD COLUMN IF NOT EXISTS level INTEGER NOT NULL DEFAULT 1;
+ALTER TABLE iacoins_balance ADD COLUMN IF NOT EXISTS streak_days INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE iacoins_balance ADD COLUMN IF NOT EXISTS last_streak_date DATE;
+ALTER TABLE iacoins_balance ADD COLUMN IF NOT EXISTS is_vip BOOLEAN DEFAULT FALSE;
+ALTER TABLE iacoins_balance ADD COLUMN IF NOT EXISTS vip_expires_at TIMESTAMP WITH TIME ZONE;
+ALTER TABLE iacoins_balance ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+ALTER TABLE iacoins_balance ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
 
 CREATE INDEX IF NOT EXISTS idx_iacoins_balance_user ON iacoins_balance(user_id);
 CREATE INDEX IF NOT EXISTS idx_iacoins_balance_level ON iacoins_balance(level DESC);
 CREATE INDEX IF NOT EXISTS idx_iacoins_balance_xp ON iacoins_balance(experience_points DESC);
 
--- 1.2 iacoins_balances (alias compatible con código legado de iacoins.js que usa esta variante)
+-- 1.2 iacoins_balances (variante legacy)
 CREATE TABLE IF NOT EXISTS iacoins_balances (
     id              SERIAL PRIMARY KEY,
-    user_id         UUID NOT NULL UNIQUE,
+    user_id         INTEGER UNIQUE,
     balance         INTEGER NOT NULL DEFAULT 0,
     total_earned    INTEGER NOT NULL DEFAULT 0,
     total_spent     INTEGER NOT NULL DEFAULT 0,
     level           INTEGER NOT NULL DEFAULT 1,
     experience_points INTEGER NOT NULL DEFAULT 0,
+    streak_days     INTEGER NOT NULL DEFAULT 0,
+    last_streak_date DATE,
+    is_vip          BOOLEAN DEFAULT FALSE,
+    vip_expires_at  TIMESTAMP WITH TIME ZONE,
     created_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+ALTER TABLE iacoins_balances ADD COLUMN IF NOT EXISTS balance INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE iacoins_balances ADD COLUMN IF NOT EXISTS total_earned INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE iacoins_balances ADD COLUMN IF NOT EXISTS total_spent INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE iacoins_balances ADD COLUMN IF NOT EXISTS level INTEGER NOT NULL DEFAULT 1;
+ALTER TABLE iacoins_balances ADD COLUMN IF NOT EXISTS experience_points INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE iacoins_balances ADD COLUMN IF NOT EXISTS streak_days INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE iacoins_balances ADD COLUMN IF NOT EXISTS last_streak_date DATE;
+ALTER TABLE iacoins_balances ADD COLUMN IF NOT EXISTS is_vip BOOLEAN DEFAULT FALSE;
+ALTER TABLE iacoins_balances ADD COLUMN IF NOT EXISTS vip_expires_at TIMESTAMP WITH TIME ZONE;
+ALTER TABLE iacoins_balances ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+ALTER TABLE iacoins_balances ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+
 CREATE INDEX IF NOT EXISTS idx_iacoins_balances_user ON iacoins_balances(user_id);
 
--- 1.3 iacoins_transactions (historial completo de earn/spend)
+-- 1.3 iacoins_transactions (historial de transacciones)
 CREATE TABLE IF NOT EXISTS iacoins_transactions (
     id              SERIAL PRIMARY KEY,
-    user_id         UUID NOT NULL,
-    amount          INTEGER NOT NULL,
-    type            VARCHAR(50) NOT NULL CHECK (type IN ('earn','spend','bonus','refund','admin_adjustment')),
-    transaction_type VARCHAR(50),   -- alias usado por tournament.dao
+    user_id         INTEGER,
+    amount          INTEGER NOT NULL DEFAULT 0,
+    type            VARCHAR(50) DEFAULT 'earn',
+    transaction_type VARCHAR(50),
     description     VARCHAR(500),
     balance_before  INTEGER,
     balance_after   INTEGER,
@@ -75,14 +100,27 @@ CREATE TABLE IF NOT EXISTS iacoins_transactions (
     created_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+ALTER TABLE iacoins_transactions ADD COLUMN IF NOT EXISTS type VARCHAR(50);
+ALTER TABLE iacoins_transactions ADD COLUMN IF NOT EXISTS transaction_type VARCHAR(50);
+ALTER TABLE iacoins_transactions ADD COLUMN IF NOT EXISTS amount INTEGER;
+ALTER TABLE iacoins_transactions ADD COLUMN IF NOT EXISTS description VARCHAR(500);
+ALTER TABLE iacoins_transactions ADD COLUMN IF NOT EXISTS balance_before INTEGER;
+ALTER TABLE iacoins_transactions ADD COLUMN IF NOT EXISTS balance_after INTEGER;
+ALTER TABLE iacoins_transactions ADD COLUMN IF NOT EXISTS reference_type VARCHAR(50);
+ALTER TABLE iacoins_transactions ADD COLUMN IF NOT EXISTS reference_id VARCHAR(100);
+ALTER TABLE iacoins_transactions ADD COLUMN IF NOT EXISTS metadata JSONB DEFAULT '{}';
+ALTER TABLE iacoins_transactions ADD COLUMN IF NOT EXISTS status VARCHAR(20) DEFAULT 'completed';
+ALTER TABLE iacoins_transactions ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+
 CREATE INDEX IF NOT EXISTS idx_iac_trans_user ON iacoins_transactions(user_id);
 CREATE INDEX IF NOT EXISTS idx_iac_trans_user_date ON iacoins_transactions(user_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_iac_trans_type ON iacoins_transactions(type);
 CREATE INDEX IF NOT EXISTS idx_iac_trans_status ON iacoins_transactions(status);
 
--- 1.4 wallet (WalletDAO: backend/data/wallet.dao.js)
+-- 1.4 wallet
 CREATE TABLE IF NOT EXISTS wallet (
-    user_id         UUID PRIMARY KEY,
+    id              SERIAL PRIMARY KEY,
+    user_id         INTEGER UNIQUE,
     balance         INTEGER NOT NULL DEFAULT 0,
     total_earned    INTEGER NOT NULL DEFAULT 0,
     total_spent     INTEGER NOT NULL DEFAULT 0,
@@ -91,27 +129,41 @@ CREATE TABLE IF NOT EXISTS wallet (
     updated_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+ALTER TABLE wallet ADD COLUMN IF NOT EXISTS balance INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE wallet ADD COLUMN IF NOT EXISTS total_earned INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE wallet ADD COLUMN IF NOT EXISTS total_spent INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE wallet ADD COLUMN IF NOT EXISTS total_purchased INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE wallet ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+ALTER TABLE wallet ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+
 CREATE INDEX IF NOT EXISTS idx_wallet_user ON wallet(user_id);
 
--- 1.5 wallet_history (WalletDAO history)
+-- 1.5 wallet_history
 CREATE TABLE IF NOT EXISTS wallet_history (
     id              SERIAL PRIMARY KEY,
-    user_id         UUID NOT NULL,
-    transaction_type VARCHAR(50) NOT NULL CHECK (transaction_type IN ('earn','spend','purchase','refund','admin')),
+    user_id         INTEGER NOT NULL,
+    transaction_type VARCHAR(50) NOT NULL,
     amount          INTEGER NOT NULL,
-    balance_after   INTEGER NOT NULL,
+    balance_after   INTEGER,
     description     VARCHAR(500),
     metadata        JSONB DEFAULT '{}',
     created_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+ALTER TABLE wallet_history ADD COLUMN IF NOT EXISTS transaction_type VARCHAR(50);
+ALTER TABLE wallet_history ADD COLUMN IF NOT EXISTS amount INTEGER;
+ALTER TABLE wallet_history ADD COLUMN IF NOT EXISTS balance_after INTEGER;
+ALTER TABLE wallet_history ADD COLUMN IF NOT EXISTS description VARCHAR(500);
+ALTER TABLE wallet_history ADD COLUMN IF NOT EXISTS metadata JSONB DEFAULT '{}';
+ALTER TABLE wallet_history ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+
 CREATE INDEX IF NOT EXISTS idx_wallet_hist_user ON wallet_history(user_id);
 CREATE INDEX IF NOT EXISTS idx_wallet_hist_user_date ON wallet_history(user_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_wallet_hist_type ON wallet_history(transaction_type);
 
--- 1.6 iacoins_wallets (alias usado por tournament.dao.js)
+-- 1.6 iacoins_wallets
 CREATE TABLE IF NOT EXISTS iacoins_wallets (
-    user_id         UUID PRIMARY KEY,
+    user_id         INTEGER PRIMARY KEY,
     balance         INTEGER NOT NULL DEFAULT 0,
     total_earned    INTEGER NOT NULL DEFAULT 0,
     total_spent     INTEGER NOT NULL DEFAULT 0,
@@ -119,23 +171,44 @@ CREATE TABLE IF NOT EXISTS iacoins_wallets (
     updated_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+ALTER TABLE iacoins_wallets ADD COLUMN IF NOT EXISTS balance INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE iacoins_wallets ADD COLUMN IF NOT EXISTS total_earned INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE iacoins_wallets ADD COLUMN IF NOT EXISTS total_spent INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE iacoins_wallets ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+ALTER TABLE iacoins_wallets ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+
 CREATE INDEX IF NOT EXISTS idx_iac_wallets_user ON iacoins_wallets(user_id);
 
--- 1.7 iacoins_ai_generations (log de generaciones IA pagadas)
+-- 1.7 iacoins_ai_generations
 CREATE TABLE IF NOT EXISTS iacoins_ai_generations (
     id              SERIAL PRIMARY KEY,
-    user_id         UUID NOT NULL,
+    user_id         INTEGER NOT NULL,
     ai_provider     VARCHAR(50) NOT NULL DEFAULT 'google',
     model           VARCHAR(100) DEFAULT 'gemini-2.0-flash',
+    prompt          TEXT,
     prompt_preview  TEXT,
+    response        TEXT,
     response_preview TEXT,
     tokens_used     INTEGER,
-    coins_spent     INTEGER NOT NULL,
+    coins_spent     INTEGER NOT NULL DEFAULT 0,
     generation_type VARCHAR(50) DEFAULT 'text',
     is_demo         BOOLEAN DEFAULT FALSE,
     metadata        JSONB DEFAULT '{}',
     created_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+ALTER TABLE iacoins_ai_generations ADD COLUMN IF NOT EXISTS ai_provider VARCHAR(50) DEFAULT 'google';
+ALTER TABLE iacoins_ai_generations ADD COLUMN IF NOT EXISTS model VARCHAR(100) DEFAULT 'gemini-2.0-flash';
+ALTER TABLE iacoins_ai_generations ADD COLUMN IF NOT EXISTS prompt TEXT;
+ALTER TABLE iacoins_ai_generations ADD COLUMN IF NOT EXISTS prompt_preview TEXT;
+ALTER TABLE iacoins_ai_generations ADD COLUMN IF NOT EXISTS response TEXT;
+ALTER TABLE iacoins_ai_generations ADD COLUMN IF NOT EXISTS response_preview TEXT;
+ALTER TABLE iacoins_ai_generations ADD COLUMN IF NOT EXISTS tokens_used INTEGER;
+ALTER TABLE iacoins_ai_generations ADD COLUMN IF NOT EXISTS coins_spent INTEGER DEFAULT 0;
+ALTER TABLE iacoins_ai_generations ADD COLUMN IF NOT EXISTS generation_type VARCHAR(50) DEFAULT 'text';
+ALTER TABLE iacoins_ai_generations ADD COLUMN IF NOT EXISTS is_demo BOOLEAN DEFAULT FALSE;
+ALTER TABLE iacoins_ai_generations ADD COLUMN IF NOT EXISTS metadata JSONB DEFAULT '{}';
+ALTER TABLE iacoins_ai_generations ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
 
 CREATE INDEX IF NOT EXISTS idx_iac_ai_gen_user ON iacoins_ai_generations(user_id);
 CREATE INDEX IF NOT EXISTS idx_iac_ai_gen_date ON iacoins_ai_generations(created_at DESC);
@@ -144,23 +217,36 @@ CREATE INDEX IF NOT EXISTS idx_iac_ai_gen_date ON iacoins_ai_generations(created
 -- BLOQUE 2: NIVELES Y PROGRESIÓN
 -- ================================================================
 
--- 2.1 level_definitions (GamificationDAO.getLevelDefinitions)
+-- 2.1 level_definitions
 CREATE TABLE IF NOT EXISTS level_definitions (
-    level       INTEGER PRIMARY KEY,
-    title       VARCHAR(100) NOT NULL,
-    subtitle    VARCHAR(200),
-    icon        VARCHAR(10) DEFAULT '⭐',
-    color       VARCHAR(20) DEFAULT '#6c757d',
-    description TEXT,
-    xp_required INTEGER NOT NULL,
-    coins_reward INTEGER DEFAULT 0,
-    created_at  TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    level           INTEGER PRIMARY KEY,
+    title           VARCHAR(100) NOT NULL,
+    subtitle        VARCHAR(200),
+    icon            VARCHAR(10) DEFAULT '⭐',
+    color           VARCHAR(20) DEFAULT '#6c757d',
+    description     TEXT,
+    xp_required     INTEGER NOT NULL,
+    coins_reward    INTEGER DEFAULT 0,
+    perks           JSONB DEFAULT '[]',
+    badge_id        INTEGER,
+    created_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 2.2 level_history (GamificationDAO.addLevelUpHistory)
+ALTER TABLE level_definitions ADD COLUMN IF NOT EXISTS title VARCHAR(100);
+ALTER TABLE level_definitions ADD COLUMN IF NOT EXISTS subtitle VARCHAR(200);
+ALTER TABLE level_definitions ADD COLUMN IF NOT EXISTS icon VARCHAR(10) DEFAULT '⭐';
+ALTER TABLE level_definitions ADD COLUMN IF NOT EXISTS color VARCHAR(20) DEFAULT '#6c757d';
+ALTER TABLE level_definitions ADD COLUMN IF NOT EXISTS description TEXT;
+ALTER TABLE level_definitions ADD COLUMN IF NOT EXISTS xp_required INTEGER;
+ALTER TABLE level_definitions ADD COLUMN IF NOT EXISTS coins_reward INTEGER DEFAULT 0;
+ALTER TABLE level_definitions ADD COLUMN IF NOT EXISTS perks JSONB DEFAULT '[]';
+ALTER TABLE level_definitions ADD COLUMN IF NOT EXISTS badge_id INTEGER;
+ALTER TABLE level_definitions ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+
+-- 2.2 level_history
 CREATE TABLE IF NOT EXISTS level_history (
     id              SERIAL PRIMARY KEY,
-    user_id         UUID NOT NULL,
+    user_id         INTEGER NOT NULL,
     level           INTEGER NOT NULL,
     previous_level  INTEGER NOT NULL DEFAULT 1,
     xp_at_levelup   INTEGER NOT NULL DEFAULT 0,
@@ -169,9 +255,15 @@ CREATE TABLE IF NOT EXISTS level_history (
     achieved_at     TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+ALTER TABLE level_history ADD COLUMN IF NOT EXISTS previous_level INTEGER DEFAULT 1;
+ALTER TABLE level_history ADD COLUMN IF NOT EXISTS xp_at_levelup INTEGER DEFAULT 0;
+ALTER TABLE level_history ADD COLUMN IF NOT EXISTS coins_earned INTEGER DEFAULT 0;
+ALTER TABLE level_history ADD COLUMN IF NOT EXISTS unlocks_gained INTEGER DEFAULT 0;
+ALTER TABLE level_history ADD COLUMN IF NOT EXISTS achieved_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+
 CREATE INDEX IF NOT EXISTS idx_level_hist_user ON level_history(user_id);
 
--- 2.3 level_unlocks (GamificationDAO)
+-- 2.3 level_unlocks
 CREATE TABLE IF NOT EXISTS level_unlocks (
     id              SERIAL PRIMARY KEY,
     level           INTEGER NOT NULL,
@@ -183,12 +275,20 @@ CREATE TABLE IF NOT EXISTS level_unlocks (
     UNIQUE(level, feature_slug)
 );
 
--- 2.4 user_levels (usado por tournament.dao.js)
+ALTER TABLE level_unlocks ADD COLUMN IF NOT EXISTS feature_name VARCHAR(200);
+ALTER TABLE level_unlocks ADD COLUMN IF NOT EXISTS description TEXT;
+ALTER TABLE level_unlocks ADD COLUMN IF NOT EXISTS icon VARCHAR(10) DEFAULT '🔓';
+ALTER TABLE level_unlocks ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE;
+
+-- 2.4 user_levels
 CREATE TABLE IF NOT EXISTS user_levels (
-    user_id         UUID PRIMARY KEY,
+    user_id         INTEGER PRIMARY KEY,
     current_level   INTEGER NOT NULL DEFAULT 1,
     updated_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+ALTER TABLE user_levels ADD COLUMN IF NOT EXISTS current_level INTEGER DEFAULT 1;
+ALTER TABLE user_levels ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
 
 CREATE INDEX IF NOT EXISTS idx_user_levels_user ON user_levels(user_id);
 
@@ -196,39 +296,91 @@ CREATE INDEX IF NOT EXISTS idx_user_levels_user ON user_levels(user_id);
 -- BLOQUE 3: BADGES/LOGROS
 -- ================================================================
 
--- 3.1 badges (GamificationDAO)
+-- 3.1 badges
 CREATE TABLE IF NOT EXISTS badges (
     id              SERIAL PRIMARY KEY,
-    name            VARCHAR(200) NOT NULL,
+    name            VARCHAR(200),
+    slug            VARCHAR(100),
     description     TEXT,
     icon            VARCHAR(200),
     icon_emoji      VARCHAR(10) DEFAULT '🏆',
-    rarity          VARCHAR(50) NOT NULL DEFAULT 'common' CHECK (rarity IN ('common','uncommon','rare','epic','legendary')),
+    rarity          VARCHAR(50) DEFAULT 'common',
     category        VARCHAR(100) DEFAULT 'general',
     requirement_type VARCHAR(100),
     requirement_value INTEGER DEFAULT 0,
     coins_reward    INTEGER DEFAULT 0,
+    reward_iacoins  INTEGER DEFAULT 0,
     xp_reward       INTEGER DEFAULT 0,
+    reward_xp       INTEGER DEFAULT 0,
     sort_order      INTEGER DEFAULT 0,
+    order_index     INTEGER DEFAULT 0,
     is_active       BOOLEAN DEFAULT TRUE,
+    is_secret       BOOLEAN DEFAULT FALSE,
     created_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+ALTER TABLE badges ADD COLUMN IF NOT EXISTS name VARCHAR(200);
+ALTER TABLE badges ADD COLUMN IF NOT EXISTS slug VARCHAR(100);
+ALTER TABLE badges ADD COLUMN IF NOT EXISTS description TEXT;
+ALTER TABLE badges ADD COLUMN IF NOT EXISTS icon VARCHAR(200);
+ALTER TABLE badges ADD COLUMN IF NOT EXISTS icon_emoji VARCHAR(10) DEFAULT '🏆';
+ALTER TABLE badges ADD COLUMN IF NOT EXISTS rarity VARCHAR(50) DEFAULT 'common';
+ALTER TABLE badges ADD COLUMN IF NOT EXISTS category VARCHAR(100) DEFAULT 'general';
+ALTER TABLE badges ADD COLUMN IF NOT EXISTS requirement_type VARCHAR(100);
+ALTER TABLE badges ADD COLUMN IF NOT EXISTS requirement_value INTEGER DEFAULT 0;
+ALTER TABLE badges ADD COLUMN IF NOT EXISTS coins_reward INTEGER DEFAULT 0;
+ALTER TABLE badges ADD COLUMN IF NOT EXISTS reward_iacoins INTEGER DEFAULT 0;
+ALTER TABLE badges ADD COLUMN IF NOT EXISTS xp_reward INTEGER DEFAULT 0;
+ALTER TABLE badges ADD COLUMN IF NOT EXISTS reward_xp INTEGER DEFAULT 0;
+ALTER TABLE badges ADD COLUMN IF NOT EXISTS sort_order INTEGER DEFAULT 0;
+ALTER TABLE badges ADD COLUMN IF NOT EXISTS order_index INTEGER DEFAULT 0;
+ALTER TABLE badges ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE;
+ALTER TABLE badges ADD COLUMN IF NOT EXISTS is_secret BOOLEAN DEFAULT FALSE;
+ALTER TABLE badges ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+
+-- Sincronizar nombres si tabla existía con columnas en español
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='badges' AND column_name='nombre') THEN
+        ALTER TABLE badges ALTER COLUMN nombre DROP NOT NULL;
+        UPDATE badges SET name = COALESCE(name, nombre) WHERE name IS NULL;
+    END IF;
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='badges' AND column_name='descripcion') THEN
+        UPDATE badges SET description = COALESCE(description, descripcion) WHERE description IS NULL;
+    END IF;
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='badges' AND column_name='icono') THEN
+        UPDATE badges SET icon = COALESCE(icon, icono) WHERE icon IS NULL;
+    END IF;
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='badges' AND column_name='activo') THEN
+        UPDATE badges SET is_active = COALESCE(is_active, activo) WHERE is_active IS NULL;
+    END IF;
+END $$;
 
 CREATE INDEX IF NOT EXISTS idx_badges_category ON badges(category);
 CREATE INDEX IF NOT EXISTS idx_badges_rarity ON badges(rarity);
 CREATE INDEX IF NOT EXISTS idx_badges_active ON badges(is_active);
 CREATE INDEX IF NOT EXISTS idx_badges_req_type ON badges(requirement_type);
 
--- 3.2 user_badges (GamificationDAO)
+-- 3.2 user_badges
 CREATE TABLE IF NOT EXISTS user_badges (
     id              SERIAL PRIMARY KEY,
-    user_id         UUID NOT NULL,
+    user_id         INTEGER NOT NULL,
     badge_id        INTEGER NOT NULL REFERENCES badges(id) ON DELETE CASCADE,
     earn_details    JSONB DEFAULT '{}',
     is_featured     BOOLEAN DEFAULT FALSE,
+    is_viewed       BOOLEAN DEFAULT FALSE,
+    metadata        JSONB DEFAULT '{}',
     earned_at       TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    unlocked_at     TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     UNIQUE(user_id, badge_id)
 );
+
+ALTER TABLE user_badges ADD COLUMN IF NOT EXISTS earn_details JSONB DEFAULT '{}';
+ALTER TABLE user_badges ADD COLUMN IF NOT EXISTS is_featured BOOLEAN DEFAULT FALSE;
+ALTER TABLE user_badges ADD COLUMN IF NOT EXISTS is_viewed BOOLEAN DEFAULT FALSE;
+ALTER TABLE user_badges ADD COLUMN IF NOT EXISTS metadata JSONB DEFAULT '{}';
+ALTER TABLE user_badges ADD COLUMN IF NOT EXISTS earned_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+ALTER TABLE user_badges ADD COLUMN IF NOT EXISTS unlocked_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
 
 CREATE INDEX IF NOT EXISTS idx_user_badges_user ON user_badges(user_id);
 CREATE INDEX IF NOT EXISTS idx_user_badges_badge ON user_badges(badge_id);
@@ -237,22 +389,48 @@ CREATE INDEX IF NOT EXISTS idx_user_badges_badge ON user_badges(badge_id);
 -- BLOQUE 4: RACHAS
 -- ================================================================
 
--- 4.1 user_streaks (GamificationDAO + ChallengeDAO)
+-- 4.1 user_streaks
 CREATE TABLE IF NOT EXISTS user_streaks (
     id              SERIAL PRIMARY KEY,
-    user_id         UUID NOT NULL,
+    user_id         INTEGER NOT NULL,
     streak_type     VARCHAR(50) NOT NULL DEFAULT 'daily_login',
     current_streak  INTEGER NOT NULL DEFAULT 0,
     longest_streak  INTEGER NOT NULL DEFAULT 0,
     total_completions INTEGER NOT NULL DEFAULT 0,
     last_activity_date DATE,
     streak_started_at DATE,
+    streak_freeze_count INTEGER DEFAULT 0,
     shield_active   BOOLEAN DEFAULT FALSE,
     shield_used_at  TIMESTAMP WITH TIME ZONE,
+    history         JSONB DEFAULT '[]',
     created_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    UNIQUE(user_id, streak_type)
+    updated_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+ALTER TABLE user_streaks ADD COLUMN IF NOT EXISTS streak_type VARCHAR(50) DEFAULT 'daily_login';
+ALTER TABLE user_streaks ADD COLUMN IF NOT EXISTS current_streak INTEGER DEFAULT 0;
+ALTER TABLE user_streaks ADD COLUMN IF NOT EXISTS longest_streak INTEGER DEFAULT 0;
+ALTER TABLE user_streaks ADD COLUMN IF NOT EXISTS total_completions INTEGER DEFAULT 0;
+ALTER TABLE user_streaks ADD COLUMN IF NOT EXISTS last_activity_date DATE;
+ALTER TABLE user_streaks ADD COLUMN IF NOT EXISTS streak_started_at DATE;
+ALTER TABLE user_streaks ADD COLUMN IF NOT EXISTS streak_freeze_count INTEGER DEFAULT 0;
+ALTER TABLE user_streaks ADD COLUMN IF NOT EXISTS shield_active BOOLEAN DEFAULT FALSE;
+ALTER TABLE user_streaks ADD COLUMN IF NOT EXISTS shield_used_at TIMESTAMP WITH TIME ZONE;
+ALTER TABLE user_streaks ADD COLUMN IF NOT EXISTS history JSONB DEFAULT '[]';
+ALTER TABLE user_streaks ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+ALTER TABLE user_streaks ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+
+-- Sincronizar max_streak si existía
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='user_streaks' AND column_name='max_streak') THEN
+        UPDATE user_streaks SET longest_streak = COALESCE(longest_streak, max_streak, current_streak, 0);
+    END IF;
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='user_streaks' AND column_name='last_login') THEN
+        ALTER TABLE user_streaks ALTER COLUMN last_login DROP NOT NULL;
+        UPDATE user_streaks SET last_activity_date = COALESCE(last_activity_date, last_login::date);
+    END IF;
+END $$;
 
 CREATE INDEX IF NOT EXISTS idx_streaks_user ON user_streaks(user_id);
 CREATE INDEX IF NOT EXISTS idx_streaks_type ON user_streaks(streak_type);
@@ -261,21 +439,30 @@ CREATE INDEX IF NOT EXISTS idx_streaks_type ON user_streaks(streak_type);
 -- BLOQUE 5: RETOS (CHALLENGES)
 -- ================================================================
 
--- 5.1 challenges (ChallengeDAO.getAvailableChallenges)
+-- 5.1 challenges
 CREATE TABLE IF NOT EXISTS challenges (
     id              SERIAL PRIMARY KEY,
-    title           VARCHAR(255) NOT NULL,
+    title           VARCHAR(255),
     description     TEXT,
     icon            VARCHAR(10) DEFAULT '🎯',
     category        VARCHAR(100) DEFAULT 'general',
-    difficulty      VARCHAR(50) DEFAULT 'easy' CHECK (difficulty IN ('easy','medium','hard','expert')),
-    frequency       VARCHAR(50) DEFAULT 'daily' CHECK (frequency IN ('daily','weekly','monthly','unique')),
+    difficulty      VARCHAR(50) DEFAULT 'easy',
+    frequency       VARCHAR(50) DEFAULT 'daily',
+    challenge_type  VARCHAR(50) DEFAULT 'daily',
     subject         VARCHAR(100),
     target_count    INTEGER NOT NULL DEFAULT 1,
+    target_metric   VARCHAR(100),
+    target_value    INTEGER DEFAULT 1,
     reward_coins    INTEGER NOT NULL DEFAULT 10,
+    reward_iacoins  INTEGER NOT NULL DEFAULT 10,
     reward_xp       INTEGER NOT NULL DEFAULT 20,
+    reward_badge_id INTEGER,
     requirement_type VARCHAR(100),
     is_active       BOOLEAN DEFAULT TRUE,
+    is_repeatable   BOOLEAN DEFAULT FALSE,
+    repeat_interval VARCHAR(20),
+    max_completions INTEGER DEFAULT 1,
+    metadata        JSONB DEFAULT '{}',
     featured        BOOLEAN DEFAULT FALSE,
     sort_order      INTEGER DEFAULT 0,
     start_date      TIMESTAMP WITH TIME ZONE,
@@ -284,17 +471,76 @@ CREATE TABLE IF NOT EXISTS challenges (
     updated_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+ALTER TABLE challenges ADD COLUMN IF NOT EXISTS title VARCHAR(255);
+ALTER TABLE challenges ADD COLUMN IF NOT EXISTS description TEXT;
+ALTER TABLE challenges ADD COLUMN IF NOT EXISTS icon VARCHAR(10) DEFAULT '🎯';
+ALTER TABLE challenges ADD COLUMN IF NOT EXISTS category VARCHAR(100) DEFAULT 'general';
+ALTER TABLE challenges ADD COLUMN IF NOT EXISTS difficulty VARCHAR(50) DEFAULT 'easy';
+ALTER TABLE challenges ADD COLUMN IF NOT EXISTS frequency VARCHAR(50) DEFAULT 'daily';
+ALTER TABLE challenges ADD COLUMN IF NOT EXISTS challenge_type VARCHAR(50) DEFAULT 'daily';
+ALTER TABLE challenges ADD COLUMN IF NOT EXISTS subject VARCHAR(100);
+ALTER TABLE challenges ADD COLUMN IF NOT EXISTS target_count INTEGER DEFAULT 1;
+ALTER TABLE challenges ADD COLUMN IF NOT EXISTS target_metric VARCHAR(100);
+ALTER TABLE challenges ADD COLUMN IF NOT EXISTS target_value INTEGER DEFAULT 1;
+ALTER TABLE challenges ADD COLUMN IF NOT EXISTS reward_coins INTEGER DEFAULT 10;
+ALTER TABLE challenges ADD COLUMN IF NOT EXISTS reward_iacoins INTEGER DEFAULT 10;
+ALTER TABLE challenges ADD COLUMN IF NOT EXISTS reward_xp INTEGER DEFAULT 20;
+ALTER TABLE challenges ADD COLUMN IF NOT EXISTS reward_badge_id INTEGER;
+ALTER TABLE challenges ADD COLUMN IF NOT EXISTS requirement_type VARCHAR(100);
+ALTER TABLE challenges ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE;
+ALTER TABLE challenges ADD COLUMN IF NOT EXISTS is_repeatable BOOLEAN DEFAULT FALSE;
+ALTER TABLE challenges ADD COLUMN IF NOT EXISTS repeat_interval VARCHAR(20);
+ALTER TABLE challenges ADD COLUMN IF NOT EXISTS max_completions INTEGER DEFAULT 1;
+ALTER TABLE challenges ADD COLUMN IF NOT EXISTS metadata JSONB DEFAULT '{}';
+ALTER TABLE challenges ADD COLUMN IF NOT EXISTS featured BOOLEAN DEFAULT FALSE;
+ALTER TABLE challenges ADD COLUMN IF NOT EXISTS sort_order INTEGER DEFAULT 0;
+ALTER TABLE challenges ADD COLUMN IF NOT EXISTS start_date TIMESTAMP WITH TIME ZONE;
+ALTER TABLE challenges ADD COLUMN IF NOT EXISTS end_date TIMESTAMP WITH TIME ZONE;
+ALTER TABLE challenges ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+ALTER TABLE challenges ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+
+-- Sincronizar columnas en español si existían
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='challenges' AND column_name='tipo') THEN
+        ALTER TABLE challenges ALTER COLUMN tipo DROP NOT NULL;
+    END IF;
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='challenges' AND column_name='titulo') THEN
+        ALTER TABLE challenges ALTER COLUMN titulo DROP NOT NULL;
+        UPDATE challenges SET title = COALESCE(title, titulo) WHERE title IS NULL;
+    END IF;
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='challenges' AND column_name='descripcion') THEN
+        UPDATE challenges SET description = COALESCE(description, descripcion) WHERE description IS NULL;
+    END IF;
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='challenges' AND column_name='objetivo') THEN
+        ALTER TABLE challenges ALTER COLUMN objetivo DROP NOT NULL;
+    END IF;
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='challenges' AND column_name='metrica') THEN
+        ALTER TABLE challenges ALTER COLUMN metrica DROP NOT NULL;
+    END IF;
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='challenges' AND column_name='recompensa_coins') THEN
+        UPDATE challenges SET reward_coins = COALESCE(reward_coins, recompensa_coins, 10);
+        UPDATE challenges SET reward_iacoins = COALESCE(reward_iacoins, recompensa_coins, 10);
+    END IF;
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='challenges' AND column_name='recompensa_xp') THEN
+        UPDATE challenges SET reward_xp = COALESCE(reward_xp, recompensa_xp, 20);
+    END IF;
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='challenges' AND column_name='activo') THEN
+        UPDATE challenges SET is_active = COALESCE(is_active, activo) WHERE is_active IS NULL;
+    END IF;
+END $$;
+
 CREATE INDEX IF NOT EXISTS idx_challenges_active ON challenges(is_active);
 CREATE INDEX IF NOT EXISTS idx_challenges_category ON challenges(category);
 CREATE INDEX IF NOT EXISTS idx_challenges_freq ON challenges(frequency);
 CREATE INDEX IF NOT EXISTS idx_challenges_difficulty ON challenges(difficulty);
 
--- 5.2 challenge_progress (ChallengeDAO)
+-- 5.2 challenge_progress
 CREATE TABLE IF NOT EXISTS challenge_progress (
     id              SERIAL PRIMARY KEY,
-    user_id         UUID NOT NULL,
+    user_id         INTEGER NOT NULL,
     challenge_id    INTEGER NOT NULL REFERENCES challenges(id) ON DELETE CASCADE,
-    status          VARCHAR(50) NOT NULL DEFAULT 'available' CHECK (status IN ('available','in_progress','completed','claimed','expired')),
+    status          VARCHAR(50) NOT NULL DEFAULT 'available',
     progress        INTEGER DEFAULT 0,
     current_progress INTEGER DEFAULT 0,
     target_progress INTEGER DEFAULT 1,
@@ -308,19 +554,34 @@ CREATE TABLE IF NOT EXISTS challenge_progress (
     UNIQUE(user_id, challenge_id)
 );
 
+ALTER TABLE challenge_progress ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'available';
+ALTER TABLE challenge_progress ADD COLUMN IF NOT EXISTS progress INTEGER DEFAULT 0;
+ALTER TABLE challenge_progress ADD COLUMN IF NOT EXISTS current_progress INTEGER DEFAULT 0;
+ALTER TABLE challenge_progress ADD COLUMN IF NOT EXISTS target_progress INTEGER DEFAULT 1;
+ALTER TABLE challenge_progress ADD COLUMN IF NOT EXISTS completion_count INTEGER DEFAULT 0;
+ALTER TABLE challenge_progress ADD COLUMN IF NOT EXISTS coins_earned INTEGER DEFAULT 0;
+ALTER TABLE challenge_progress ADD COLUMN IF NOT EXISTS xp_earned INTEGER DEFAULT 0;
+ALTER TABLE challenge_progress ADD COLUMN IF NOT EXISTS started_at TIMESTAMP WITH TIME ZONE;
+ALTER TABLE challenge_progress ADD COLUMN IF NOT EXISTS first_completed_at TIMESTAMP WITH TIME ZONE;
+ALTER TABLE challenge_progress ADD COLUMN IF NOT EXISTS last_completed_at TIMESTAMP WITH TIME ZONE;
+ALTER TABLE challenge_progress ADD COLUMN IF NOT EXISTS reset_date DATE;
+
 CREATE INDEX IF NOT EXISTS idx_chall_prog_user ON challenge_progress(user_id);
 CREATE INDEX IF NOT EXISTS idx_chall_prog_status ON challenge_progress(user_id, status);
 CREATE INDEX IF NOT EXISTS idx_chall_prog_reset ON challenge_progress(reset_date);
 
--- 5.3 collaborative_challenge_participants (ChallengeDAO)
+-- 5.3 collaborative_challenge_participants
 CREATE TABLE IF NOT EXISTS collaborative_challenge_participants (
     id              SERIAL PRIMARY KEY,
     challenge_id    INTEGER NOT NULL REFERENCES challenges(id) ON DELETE CASCADE,
-    user_id         UUID NOT NULL,
+    user_id         INTEGER NOT NULL,
     role            VARCHAR(50) DEFAULT 'participant',
     joined_at       TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     UNIQUE(challenge_id, user_id)
 );
+
+ALTER TABLE collaborative_challenge_participants ADD COLUMN IF NOT EXISTS role VARCHAR(50) DEFAULT 'participant';
+ALTER TABLE collaborative_challenge_participants ADD COLUMN IF NOT EXISTS joined_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
 
 CREATE INDEX IF NOT EXISTS idx_collab_chall_challenge ON collaborative_challenge_participants(challenge_id);
 CREATE INDEX IF NOT EXISTS idx_collab_chall_user ON collaborative_challenge_participants(user_id);
@@ -329,15 +590,21 @@ CREATE INDEX IF NOT EXISTS idx_collab_chall_user ON collaborative_challenge_part
 -- BLOQUE 6: LIGAS
 -- ================================================================
 
--- 6.1 user_leagues (liga actual del usuario)
+-- 6.1 user_leagues
 CREATE TABLE IF NOT EXISTS user_leagues (
-    user_id         UUID PRIMARY KEY,
-    league          VARCHAR(50) NOT NULL DEFAULT 'bronze' CHECK (league IN ('bronze','silver','gold','platinum','diamond')),
+    user_id         INTEGER PRIMARY KEY,
+    league          VARCHAR(50) NOT NULL DEFAULT 'bronze',
     points          INTEGER NOT NULL DEFAULT 0,
     rank            INTEGER,
     season          VARCHAR(20) DEFAULT '2026-1',
     updated_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+ALTER TABLE user_leagues ADD COLUMN IF NOT EXISTS league VARCHAR(50) DEFAULT 'bronze';
+ALTER TABLE user_leagues ADD COLUMN IF NOT EXISTS points INTEGER DEFAULT 0;
+ALTER TABLE user_leagues ADD COLUMN IF NOT EXISTS rank INTEGER;
+ALTER TABLE user_leagues ADD COLUMN IF NOT EXISTS season VARCHAR(20) DEFAULT '2026-1';
+ALTER TABLE user_leagues ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
 
 CREATE INDEX IF NOT EXISTS idx_user_leagues_league ON user_leagues(league);
 
@@ -345,23 +612,54 @@ CREATE INDEX IF NOT EXISTS idx_user_leagues_league ON user_leagues(league);
 -- BLOQUE 7: TRIVIA / DUELO DE SABIDURÍA
 -- ================================================================
 
--- 7.1 trivia_sessions (historial de duelos)
+-- 7.1 trivia_sessions
 CREATE TABLE IF NOT EXISTS trivia_sessions (
     id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id         UUID NOT NULL,
-    category        VARCHAR(100) NOT NULL,
+    user_id         INTEGER,
+    opponent_id     INTEGER,
+    category        VARCHAR(100) NOT NULL DEFAULT 'general',
     difficulty      VARCHAR(50) DEFAULT 'mixed',
     total_questions INTEGER NOT NULL DEFAULT 5,
     correct_answers INTEGER DEFAULT 0,
     wrong_answers   INTEGER DEFAULT 0,
     score           INTEGER DEFAULT 0,
+    score_user      INTEGER DEFAULT 0,
+    score_opponent  INTEGER DEFAULT 0,
+    winner_id       INTEGER,
     coins_earned    INTEGER DEFAULT 0,
     xp_earned       INTEGER DEFAULT 0,
+    reward_iacoins  INTEGER DEFAULT 0,
+    reward_xp       INTEGER DEFAULT 0,
     time_spent_seconds INTEGER DEFAULT 0,
-    status          VARCHAR(50) DEFAULT 'in_progress' CHECK (status IN ('in_progress','completed','abandoned')),
+    questions_data  JSONB DEFAULT '[]',
+    answers_data    JSONB DEFAULT '[]',
+    status          VARCHAR(50) DEFAULT 'in_progress',
     started_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    finished_at     TIMESTAMP WITH TIME ZONE
+    finished_at     TIMESTAMP WITH TIME ZONE,
+    ended_at        TIMESTAMP WITH TIME ZONE
 );
+
+ALTER TABLE trivia_sessions ADD COLUMN IF NOT EXISTS opponent_id INTEGER;
+ALTER TABLE trivia_sessions ADD COLUMN IF NOT EXISTS category VARCHAR(100) DEFAULT 'general';
+ALTER TABLE trivia_sessions ADD COLUMN IF NOT EXISTS difficulty VARCHAR(50) DEFAULT 'mixed';
+ALTER TABLE trivia_sessions ADD COLUMN IF NOT EXISTS total_questions INTEGER DEFAULT 5;
+ALTER TABLE trivia_sessions ADD COLUMN IF NOT EXISTS correct_answers INTEGER DEFAULT 0;
+ALTER TABLE trivia_sessions ADD COLUMN IF NOT EXISTS wrong_answers INTEGER DEFAULT 0;
+ALTER TABLE trivia_sessions ADD COLUMN IF NOT EXISTS score INTEGER DEFAULT 0;
+ALTER TABLE trivia_sessions ADD COLUMN IF NOT EXISTS score_user INTEGER DEFAULT 0;
+ALTER TABLE trivia_sessions ADD COLUMN IF NOT EXISTS score_opponent INTEGER DEFAULT 0;
+ALTER TABLE trivia_sessions ADD COLUMN IF NOT EXISTS winner_id INTEGER;
+ALTER TABLE trivia_sessions ADD COLUMN IF NOT EXISTS coins_earned INTEGER DEFAULT 0;
+ALTER TABLE trivia_sessions ADD COLUMN IF NOT EXISTS xp_earned INTEGER DEFAULT 0;
+ALTER TABLE trivia_sessions ADD COLUMN IF NOT EXISTS reward_iacoins INTEGER DEFAULT 0;
+ALTER TABLE trivia_sessions ADD COLUMN IF NOT EXISTS reward_xp INTEGER DEFAULT 0;
+ALTER TABLE trivia_sessions ADD COLUMN IF NOT EXISTS time_spent_seconds INTEGER DEFAULT 0;
+ALTER TABLE trivia_sessions ADD COLUMN IF NOT EXISTS questions_data JSONB DEFAULT '[]';
+ALTER TABLE trivia_sessions ADD COLUMN IF NOT EXISTS answers_data JSONB DEFAULT '[]';
+ALTER TABLE trivia_sessions ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'in_progress';
+ALTER TABLE trivia_sessions ADD COLUMN IF NOT EXISTS started_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+ALTER TABLE trivia_sessions ADD COLUMN IF NOT EXISTS finished_at TIMESTAMP WITH TIME ZONE;
+ALTER TABLE trivia_sessions ADD COLUMN IF NOT EXISTS ended_at TIMESTAMP WITH TIME ZONE;
 
 CREATE INDEX IF NOT EXISTS idx_trivia_sess_user ON trivia_sessions(user_id);
 CREATE INDEX IF NOT EXISTS idx_trivia_sess_status ON trivia_sessions(status);
@@ -371,48 +669,103 @@ CREATE INDEX IF NOT EXISTS idx_trivia_sess_date ON trivia_sessions(started_at DE
 -- BLOQUE 8: TORNEOS
 -- ================================================================
 
--- 8.1 tournaments (TournamentDAO)
+-- 8.1 tournaments
 CREATE TABLE IF NOT EXISTS tournaments (
     id              SERIAL PRIMARY KEY,
-    name            VARCHAR(255) NOT NULL,
-    slug            VARCHAR(255) UNIQUE,
+    name            VARCHAR(255),
+    title           VARCHAR(255),
+    slug            VARCHAR(255),
     description     TEXT,
     tournament_type VARCHAR(100) DEFAULT 'trivia',
     format          VARCHAR(100) DEFAULT 'bracket',
+    category        VARCHAR(100),
     subject         VARCHAR(100),
     topics          JSONB DEFAULT '[]',
     min_participants INTEGER DEFAULT 2,
     max_participants INTEGER DEFAULT 32,
     team_size       INTEGER DEFAULT 1,
     is_team_tournament BOOLEAN DEFAULT FALSE,
-    status          VARCHAR(50) DEFAULT 'draft' CHECK (status IN ('draft','registration','active','completed','cancelled')),
+    status          VARCHAR(50) DEFAULT 'draft',
     registration_start TIMESTAMP WITH TIME ZONE,
     registration_end   TIMESTAMP WITH TIME ZONE,
     start_date      TIMESTAMP WITH TIME ZONE,
     end_date        TIMESTAMP WITH TIME ZONE,
     min_level       INTEGER DEFAULT 1,
+    min_level_required INTEGER DEFAULT 1,
     entry_fee_coins INTEGER DEFAULT 0,
+    entry_fee_iacoins INTEGER DEFAULT 0,
     prize_pool_coins INTEGER DEFAULT 0,
+    prize_pool_iacoins INTEGER DEFAULT 0,
     prize_pool_xp   INTEGER DEFAULT 0,
     prizes          JSONB DEFAULT '[]',
     rules           TEXT,
     scoring_system  JSONB DEFAULT '{}',
+    scoring_type    VARCHAR(50) DEFAULT 'xp_gained',
     settings        JSONB DEFAULT '{}',
+    metadata        JSONB DEFAULT '{}',
     created_by      UUID,
     created_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS name VARCHAR(255);
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS title VARCHAR(255);
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS slug VARCHAR(255);
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS description TEXT;
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS tournament_type VARCHAR(100) DEFAULT 'trivia';
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS format VARCHAR(100) DEFAULT 'bracket';
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS category VARCHAR(100);
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS subject VARCHAR(100);
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS topics JSONB DEFAULT '[]';
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS min_participants INTEGER DEFAULT 2;
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS max_participants INTEGER DEFAULT 32;
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS team_size INTEGER DEFAULT 1;
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS is_team_tournament BOOLEAN DEFAULT FALSE;
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'draft';
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS registration_start TIMESTAMP WITH TIME ZONE;
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS registration_end TIMESTAMP WITH TIME ZONE;
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS start_date TIMESTAMP WITH TIME ZONE;
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS end_date TIMESTAMP WITH TIME ZONE;
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS min_level INTEGER DEFAULT 1;
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS min_level_required INTEGER DEFAULT 1;
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS entry_fee_coins INTEGER DEFAULT 0;
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS entry_fee_iacoins INTEGER DEFAULT 0;
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS prize_pool_coins INTEGER DEFAULT 0;
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS prize_pool_iacoins INTEGER DEFAULT 0;
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS prize_pool_xp INTEGER DEFAULT 0;
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS prizes JSONB DEFAULT '[]';
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS rules TEXT;
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS scoring_system JSONB DEFAULT '{}';
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS scoring_type VARCHAR(50) DEFAULT 'xp_gained';
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS settings JSONB DEFAULT '{}';
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS metadata JSONB DEFAULT '{}';
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS created_by UUID;
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='tournaments' AND column_name='title') THEN
+        ALTER TABLE tournaments ALTER COLUMN title DROP NOT NULL;
+    END IF;
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='tournaments' AND column_name='name') THEN
+        ALTER TABLE tournaments ALTER COLUMN name DROP NOT NULL;
+    END IF;
+END $$;
+
+UPDATE tournaments SET name = COALESCE(name, title) WHERE name IS NULL;
+UPDATE tournaments SET title = COALESCE(title, name) WHERE title IS NULL;
+
 CREATE INDEX IF NOT EXISTS idx_tournaments_status ON tournaments(status);
 CREATE INDEX IF NOT EXISTS idx_tournaments_subject ON tournaments(subject);
 CREATE INDEX IF NOT EXISTS idx_tournaments_dates ON tournaments(start_date, end_date);
 
--- 8.2 tournament_participants (TournamentDAO)
+-- 8.2 tournament_participants
 CREATE TABLE IF NOT EXISTS tournament_participants (
     id              SERIAL PRIMARY KEY,
     tournament_id   INTEGER NOT NULL REFERENCES tournaments(id) ON DELETE CASCADE,
-    user_id         UUID NOT NULL,
-    status          VARCHAR(50) DEFAULT 'registered' CHECK (status IN ('registered','active','eliminated','winner','withdrawn')),
+    user_id         INTEGER NOT NULL,
+    status          VARCHAR(50) DEFAULT 'registered',
     seed            INTEGER,
     matches_played  INTEGER DEFAULT 0,
     wins            INTEGER DEFAULT 0,
@@ -420,21 +773,50 @@ CREATE TABLE IF NOT EXISTS tournament_participants (
     points          INTEGER DEFAULT 0,
     rank            INTEGER,
     final_rank      INTEGER,
+    score           INTEGER DEFAULT 0,
+    current_score   INTEGER DEFAULT 0,
     entry_paid      BOOLEAN DEFAULT FALSE,
     paid_at         TIMESTAMP WITH TIME ZONE,
     prize_won_coins INTEGER DEFAULT 0,
+    prize_iacoins   INTEGER DEFAULT 0,
     prize_won_xp    INTEGER DEFAULT 0,
     badge_won_id    INTEGER REFERENCES badges(id),
     confirmed_at    TIMESTAMP WITH TIME ZONE,
     registered_at   TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    UNIQUE(tournament_id, user_id)
+    joined_at       TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    last_updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    rank_at_closure INTEGER,
+    reward_claimed  BOOLEAN DEFAULT FALSE
 );
+
+ALTER TABLE tournament_participants ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'registered';
+ALTER TABLE tournament_participants ADD COLUMN IF NOT EXISTS seed INTEGER;
+ALTER TABLE tournament_participants ADD COLUMN IF NOT EXISTS matches_played INTEGER DEFAULT 0;
+ALTER TABLE tournament_participants ADD COLUMN IF NOT EXISTS wins INTEGER DEFAULT 0;
+ALTER TABLE tournament_participants ADD COLUMN IF NOT EXISTS losses INTEGER DEFAULT 0;
+ALTER TABLE tournament_participants ADD COLUMN IF NOT EXISTS points INTEGER DEFAULT 0;
+ALTER TABLE tournament_participants ADD COLUMN IF NOT EXISTS rank INTEGER;
+ALTER TABLE tournament_participants ADD COLUMN IF NOT EXISTS final_rank INTEGER;
+ALTER TABLE tournament_participants ADD COLUMN IF NOT EXISTS score INTEGER DEFAULT 0;
+ALTER TABLE tournament_participants ADD COLUMN IF NOT EXISTS current_score INTEGER DEFAULT 0;
+ALTER TABLE tournament_participants ADD COLUMN IF NOT EXISTS entry_paid BOOLEAN DEFAULT FALSE;
+ALTER TABLE tournament_participants ADD COLUMN IF NOT EXISTS paid_at TIMESTAMP WITH TIME ZONE;
+ALTER TABLE tournament_participants ADD COLUMN IF NOT EXISTS prize_won_coins INTEGER DEFAULT 0;
+ALTER TABLE tournament_participants ADD COLUMN IF NOT EXISTS prize_iacoins INTEGER DEFAULT 0;
+ALTER TABLE tournament_participants ADD COLUMN IF NOT EXISTS prize_won_xp INTEGER DEFAULT 0;
+ALTER TABLE tournament_participants ADD COLUMN IF NOT EXISTS badge_won_id INTEGER;
+ALTER TABLE tournament_participants ADD COLUMN IF NOT EXISTS confirmed_at TIMESTAMP WITH TIME ZONE;
+ALTER TABLE tournament_participants ADD COLUMN IF NOT EXISTS registered_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+ALTER TABLE tournament_participants ADD COLUMN IF NOT EXISTS joined_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+ALTER TABLE tournament_participants ADD COLUMN IF NOT EXISTS last_updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+ALTER TABLE tournament_participants ADD COLUMN IF NOT EXISTS rank_at_closure INTEGER;
+ALTER TABLE tournament_participants ADD COLUMN IF NOT EXISTS reward_claimed BOOLEAN DEFAULT FALSE;
 
 CREATE INDEX IF NOT EXISTS idx_tourn_part_tournament ON tournament_participants(tournament_id);
 CREATE INDEX IF NOT EXISTS idx_tourn_part_user ON tournament_participants(user_id);
 CREATE INDEX IF NOT EXISTS idx_tourn_part_status ON tournament_participants(status);
 
--- 8.3 tournament_rounds (TournamentDAO)
+-- 8.3 tournament_rounds
 CREATE TABLE IF NOT EXISTS tournament_rounds (
     id              SERIAL PRIMARY KEY,
     tournament_id   INTEGER NOT NULL REFERENCES tournaments(id) ON DELETE CASCADE,
@@ -447,18 +829,18 @@ CREATE TABLE IF NOT EXISTS tournament_rounds (
 
 CREATE INDEX IF NOT EXISTS idx_tourn_rounds_tournament ON tournament_rounds(tournament_id);
 
--- 8.4 tournament_matches (TournamentDAO)
+-- 8.4 tournament_matches
 CREATE TABLE IF NOT EXISTS tournament_matches (
     id              SERIAL PRIMARY KEY,
     tournament_id   INTEGER NOT NULL REFERENCES tournaments(id) ON DELETE CASCADE,
     round_id        INTEGER REFERENCES tournament_rounds(id),
-    participant1_id INTEGER REFERENCES tournament_participants(id),
-    participant2_id INTEGER REFERENCES tournament_participants(id),
-    winner_participant_id INTEGER REFERENCES tournament_participants(id),
+    participant1_id INTEGER,
+    participant2_id INTEGER,
+    winner_participant_id INTEGER,
     score1          INTEGER DEFAULT 0,
     score2          INTEGER DEFAULT 0,
     match_number    INTEGER,
-    status          VARCHAR(50) DEFAULT 'scheduled' CHECK (status IN ('scheduled','live','completed','cancelled')),
+    status          VARCHAR(50) DEFAULT 'scheduled',
     started_at      TIMESTAMP WITH TIME ZONE,
     ended_at        TIMESTAMP WITH TIME ZONE,
     created_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -467,11 +849,11 @@ CREATE TABLE IF NOT EXISTS tournament_matches (
 CREATE INDEX IF NOT EXISTS idx_tourn_matches_tournament ON tournament_matches(tournament_id);
 CREATE INDEX IF NOT EXISTS idx_tourn_matches_status ON tournament_matches(status);
 
--- 8.5 tournament_leaderboards (TournamentDAO)
+-- 8.5 tournament_leaderboards
 CREATE TABLE IF NOT EXISTS tournament_leaderboards (
     id              SERIAL PRIMARY KEY,
     tournament_id   INTEGER NOT NULL REFERENCES tournaments(id) ON DELETE CASCADE,
-    user_id         UUID NOT NULL,
+    user_id         INTEGER NOT NULL,
     rank            INTEGER NOT NULL,
     points          INTEGER DEFAULT 0,
     wins            INTEGER DEFAULT 0,
@@ -479,17 +861,16 @@ CREATE TABLE IF NOT EXISTS tournament_leaderboards (
     score           NUMERIC(10,2) DEFAULT 0,
     matches_played  INTEGER DEFAULT 0,
     avg_score       NUMERIC(10,2) DEFAULT 0,
-    updated_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    UNIQUE(tournament_id, user_id)
+    updated_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 CREATE INDEX IF NOT EXISTS idx_tourn_lb_tournament ON tournament_leaderboards(tournament_id);
 CREATE INDEX IF NOT EXISTS idx_tourn_lb_rank ON tournament_leaderboards(rank);
 
--- 8.6 tournament_history (TournamentDAO)
+-- 8.6 tournament_history
 CREATE TABLE IF NOT EXISTS tournament_history (
     id              SERIAL PRIMARY KEY,
-    user_id         UUID NOT NULL,
+    user_id         INTEGER NOT NULL,
     tournament_id   INTEGER NOT NULL REFERENCES tournaments(id) ON DELETE CASCADE,
     final_rank      INTEGER,
     total_points    INTEGER DEFAULT 0,
@@ -505,7 +886,7 @@ CREATE TABLE IF NOT EXISTS tournament_history (
 CREATE INDEX IF NOT EXISTS idx_tourn_hist_user ON tournament_history(user_id);
 CREATE INDEX IF NOT EXISTS idx_tourn_hist_tournament ON tournament_history(tournament_id);
 
--- 8.7 tournament_achievements (TournamentDAO)
+-- 8.7 tournament_achievements
 CREATE TABLE IF NOT EXISTS tournament_achievements (
     id              SERIAL PRIMARY KEY,
     name            VARCHAR(200) NOT NULL,
@@ -519,24 +900,24 @@ CREATE TABLE IF NOT EXISTS tournament_achievements (
 -- 8.8 user_tournament_achievements
 CREATE TABLE IF NOT EXISTS user_tournament_achievements (
     id              SERIAL PRIMARY KEY,
-    user_id         UUID NOT NULL,
+    user_id         INTEGER NOT NULL,
     achievement_id  INTEGER NOT NULL REFERENCES tournament_achievements(id) ON DELETE CASCADE,
     tournament_id   INTEGER REFERENCES tournaments(id),
-    earned_at       TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    UNIQUE(user_id, achievement_id)
+    earned_at       TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 CREATE INDEX IF NOT EXISTS idx_user_tourn_ach_user ON user_tournament_achievements(user_id);
 
 -- ================================================================
--- BLOQUE 9: BOLSA DE TRABAJO (tablas requeridas por BolsaTrabajoDAO)
+-- BLOQUE 9: BOLSA DE TRABAJO
 -- ================================================================
 
--- 9.1 bolsa_trabajo (registro principal de CVs)
+-- 9.1 bolsa_trabajo
 CREATE TABLE IF NOT EXISTS bolsa_trabajo (
     id              SERIAL PRIMARY KEY,
-    uuid            UUID DEFAULT uuid_generate_v4() UNIQUE,
-    nombre          VARCHAR(255) NOT NULL,
+    uuid            UUID DEFAULT uuid_generate_v4(),
+    nombre          VARCHAR(255),
+    nombre_completo VARCHAR(255),
     email           VARCHAR(255) NOT NULL,
     telefono        VARCHAR(50),
     generacion      VARCHAR(20),
@@ -545,41 +926,88 @@ CREATE TABLE IF NOT EXISTS bolsa_trabajo (
     experiencia     TEXT,
     resumen_profesional TEXT,
     habilidades     TEXT,
-    status          VARCHAR(50) DEFAULT 'activo' CHECK (status IN ('activo','inactivo','contratado','pendiente')),
-    estado          VARCHAR(50) DEFAULT 'nuevo' CHECK (estado IN ('nuevo','revisado','contactado','archivado')),
+    status          VARCHAR(50) DEFAULT 'activo',
+    estado          VARCHAR(50) DEFAULT 'nuevo',
     verificado      BOOLEAN DEFAULT FALSE,
     cv_url          VARCHAR(500),
+    notas           TEXT,
     fecha_registro  TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     fecha_creacion  TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     fecha_actualizacion TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+ALTER TABLE bolsa_trabajo ADD COLUMN IF NOT EXISTS uuid UUID DEFAULT uuid_generate_v4();
+ALTER TABLE bolsa_trabajo ADD COLUMN IF NOT EXISTS nombre VARCHAR(255);
+ALTER TABLE bolsa_trabajo ADD COLUMN IF NOT EXISTS nombre_completo VARCHAR(255);
+ALTER TABLE bolsa_trabajo ADD COLUMN IF NOT EXISTS telefono VARCHAR(50);
+ALTER TABLE bolsa_trabajo ADD COLUMN IF NOT EXISTS generacion VARCHAR(20);
+ALTER TABLE bolsa_trabajo ADD COLUMN IF NOT EXISTS anio_egreso INTEGER;
+ALTER TABLE bolsa_trabajo ADD COLUMN IF NOT EXISTS area_interes VARCHAR(255);
+ALTER TABLE bolsa_trabajo ADD COLUMN IF NOT EXISTS experiencia TEXT;
+ALTER TABLE bolsa_trabajo ADD COLUMN IF NOT EXISTS resumen_profesional TEXT;
+ALTER TABLE bolsa_trabajo ADD COLUMN IF NOT EXISTS habilidades TEXT;
+ALTER TABLE bolsa_trabajo ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'activo';
+ALTER TABLE bolsa_trabajo ADD COLUMN IF NOT EXISTS estado VARCHAR(50) DEFAULT 'nuevo';
+ALTER TABLE bolsa_trabajo ADD COLUMN IF NOT EXISTS verificado BOOLEAN DEFAULT FALSE;
+ALTER TABLE bolsa_trabajo ADD COLUMN IF NOT EXISTS cv_url VARCHAR(500);
+ALTER TABLE bolsa_trabajo ADD COLUMN IF NOT EXISTS notas TEXT;
+ALTER TABLE bolsa_trabajo ADD COLUMN IF NOT EXISTS fecha_registro TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+ALTER TABLE bolsa_trabajo ADD COLUMN IF NOT EXISTS fecha_creacion TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+ALTER TABLE bolsa_trabajo ADD COLUMN IF NOT EXISTS fecha_actualizacion TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+ALTER TABLE bolsa_trabajo ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='bolsa_trabajo' AND column_name='nombre_completo') THEN
+        ALTER TABLE bolsa_trabajo ALTER COLUMN nombre_completo DROP NOT NULL;
+    END IF;
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='bolsa_trabajo' AND column_name='nombre') THEN
+        ALTER TABLE bolsa_trabajo ALTER COLUMN nombre DROP NOT NULL;
+    END IF;
+END $$;
+
+UPDATE bolsa_trabajo SET nombre = COALESCE(nombre, nombre_completo) WHERE nombre IS NULL;
+UPDATE bolsa_trabajo SET nombre_completo = COALESCE(nombre_completo, nombre) WHERE nombre_completo IS NULL;
 
 CREATE INDEX IF NOT EXISTS idx_bolsa_email ON bolsa_trabajo(email);
 CREATE INDEX IF NOT EXISTS idx_bolsa_status ON bolsa_trabajo(status);
 CREATE INDEX IF NOT EXISTS idx_bolsa_estado ON bolsa_trabajo(estado);
 CREATE INDEX IF NOT EXISTS idx_bolsa_anio ON bolsa_trabajo(anio_egreso);
 
--- 9.2 bolsa_trabajo_pending_confirmation (BolsaTrabajoDAO)
+-- 9.2 bolsa_trabajo_pending_confirmation
 CREATE TABLE IF NOT EXISTS bolsa_trabajo_pending_confirmation (
     id              SERIAL PRIMARY KEY,
-    email_usuario   VARCHAR(255) NOT NULL UNIQUE,
+    uuid            UUID DEFAULT uuid_generate_v4(),
+    email_usuario   VARCHAR(255) NOT NULL,
     datos_json      JSONB NOT NULL DEFAULT '{}',
-    confirmation_token VARCHAR(255) NOT NULL UNIQUE,
+    confirmation_token VARCHAR(255),
+    token_confirmacion VARCHAR(255),
     token_expires_at TIMESTAMP WITH TIME ZONE DEFAULT (NOW() + INTERVAL '24 hours'),
     confirmed_at    TIMESTAMP WITH TIME ZONE,
-    created_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    created_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+ALTER TABLE bolsa_trabajo_pending_confirmation ADD COLUMN IF NOT EXISTS uuid UUID DEFAULT uuid_generate_v4();
+ALTER TABLE bolsa_trabajo_pending_confirmation ADD COLUMN IF NOT EXISTS email_usuario VARCHAR(255);
+ALTER TABLE bolsa_trabajo_pending_confirmation ADD COLUMN IF NOT EXISTS datos_json JSONB DEFAULT '{}';
+ALTER TABLE bolsa_trabajo_pending_confirmation ADD COLUMN IF NOT EXISTS confirmation_token VARCHAR(255);
+ALTER TABLE bolsa_trabajo_pending_confirmation ADD COLUMN IF NOT EXISTS token_confirmacion VARCHAR(255);
+ALTER TABLE bolsa_trabajo_pending_confirmation ADD COLUMN IF NOT EXISTS token_expires_at TIMESTAMP WITH TIME ZONE DEFAULT (NOW() + INTERVAL '24 hours');
+ALTER TABLE bolsa_trabajo_pending_confirmation ADD COLUMN IF NOT EXISTS confirmed_at TIMESTAMP WITH TIME ZONE;
+ALTER TABLE bolsa_trabajo_pending_confirmation ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+ALTER TABLE bolsa_trabajo_pending_confirmation ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+
+UPDATE bolsa_trabajo_pending_confirmation SET confirmation_token = COALESCE(confirmation_token, token_confirmacion) WHERE confirmation_token IS NULL;
+
 CREATE INDEX IF NOT EXISTS idx_bolsa_pending_email ON bolsa_trabajo_pending_confirmation(email_usuario);
-CREATE INDEX IF NOT EXISTS idx_bolsa_pending_token ON bolsa_trabajo_pending_confirmation(confirmation_token);
 
 -- ================================================================
--- BLOQUE 10: GAME SESSIONS (GamificationDAO referencias)
+-- BLOQUE 10: GAME SESSIONS
 -- ================================================================
 
 CREATE TABLE IF NOT EXISTS game_sessions (
-    id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id         UUID NOT NULL,
+    id              SERIAL PRIMARY KEY,
+    user_id         INTEGER NOT NULL,
     game_type       VARCHAR(100) NOT NULL DEFAULT 'trivia',
     category        VARCHAR(100),
     score           INTEGER DEFAULT 0,
@@ -588,8 +1016,22 @@ CREATE TABLE IF NOT EXISTS game_sessions (
     duration_seconds INTEGER DEFAULT 0,
     status          VARCHAR(50) DEFAULT 'completed',
     metadata        JSONB DEFAULT '{}',
+    started_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    completed_at    TIMESTAMP WITH TIME ZONE,
     created_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+ALTER TABLE game_sessions ADD COLUMN IF NOT EXISTS game_type VARCHAR(100) DEFAULT 'trivia';
+ALTER TABLE game_sessions ADD COLUMN IF NOT EXISTS category VARCHAR(100);
+ALTER TABLE game_sessions ADD COLUMN IF NOT EXISTS score INTEGER DEFAULT 0;
+ALTER TABLE game_sessions ADD COLUMN IF NOT EXISTS coins_earned INTEGER DEFAULT 0;
+ALTER TABLE game_sessions ADD COLUMN IF NOT EXISTS xp_earned INTEGER DEFAULT 0;
+ALTER TABLE game_sessions ADD COLUMN IF NOT EXISTS duration_seconds INTEGER DEFAULT 0;
+ALTER TABLE game_sessions ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'completed';
+ALTER TABLE game_sessions ADD COLUMN IF NOT EXISTS metadata JSONB DEFAULT '{}';
+ALTER TABLE game_sessions ADD COLUMN IF NOT EXISTS started_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+ALTER TABLE game_sessions ADD COLUMN IF NOT EXISTS completed_at TIMESTAMP WITH TIME ZONE;
+ALTER TABLE game_sessions ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
 
 CREATE INDEX IF NOT EXISTS idx_game_sess_user ON game_sessions(user_id);
 CREATE INDEX IF NOT EXISTS idx_game_sess_type ON game_sessions(game_type);
@@ -710,102 +1152,99 @@ ON CONFLICT (level) DO UPDATE SET
     coins_reward = EXCLUDED.coins_reward;
 
 -- 11.2 Retos iniciales (10 retos de ejemplo)
-INSERT INTO challenges (title, description, icon, category, difficulty, frequency, target_count, reward_coins, reward_xp, requirement_type, is_active, featured) VALUES
-('¡Primera Victoria!',      'Completa tu primer Duelo de Sabiduría',        '⚔️', 'duel',     'easy',   'unique',  1,  30, 50,  'duel_complete',    TRUE, TRUE),
-('Racha de 3 días',          'Inicia sesión 3 días consecutivos',            '🔥', 'streak',   'easy',   'unique',  3,  25, 40,  'login_streak',     TRUE, FALSE),
-('Duelo Diario',             'Completa 1 Duelo de Sabiduría hoy',           '🎯', 'duel',     'easy',   'daily',   1,  15, 25,  'duel_complete',    TRUE, TRUE),
-('Campeón Semanal',          'Gana 5 duelos esta semana',                   '🏆', 'duel',     'medium', 'weekly',  5,  60, 100, 'duel_win',         TRUE, FALSE),
-('Primera Generación IA',    'Usa la IA por primera vez',                   '🤖', 'ia',       'easy',   'unique',  1,  20, 30,  'ai_use',           TRUE, FALSE),
-('Estudiante Aplicado',      'Completa 3 retos en un día',                  '📚', 'general',  'medium', 'daily',   3,  40, 60,  'challenges_daily', TRUE, FALSE),
-('Racha Semanal',            'Mantén una racha de 7 días',                  '🌟', 'streak',   'medium', 'unique',  7,  75, 120, 'login_streak',     TRUE, FALSE),
-('Maestro del Trivia',       'Responde 20 preguntas correctamente',         '🧠', 'trivia',   'hard',   'weekly',  20, 80, 150, 'trivia_correct',   TRUE, FALSE),
-('Explorador de IA',         'Realiza 5 generaciones con IA',               '💡', 'ia',       'medium', 'weekly',  5,  50, 80,  'ai_use',           TRUE, FALSE),
-('Invicto',                  'Gana 3 duelos consecutivos sin perder',       '🛡️', 'duel',     'hard',   'unique',  3, 100, 200, 'duel_streak',      TRUE, FALSE)
-ON CONFLICT DO NOTHING;
+INSERT INTO challenges (title, description, icon, category, difficulty, frequency, target_count, reward_coins, reward_iacoins, reward_xp, requirement_type, is_active, featured) VALUES
+('¡Primera Victoria!',      'Completa tu primer Duelo de Sabiduría',        '⚔️', 'duel',     'easy',   'unique',  1,  30, 30, 50,  'duel_complete',    TRUE, TRUE),
+('Racha de 3 días',          'Inicia sesión 3 días consecutivos',            '🔥', 'streak',   'easy',   'unique',  3,  25, 25, 40,  'login_streak',     TRUE, FALSE),
+('Duelo Diario',             'Completa 1 Duelo de Sabiduría hoy',           '🎯', 'duel',     'easy',   'daily',   1,  15, 15, 25,  'duel_complete',    TRUE, TRUE),
+('Campeón Semanal',          'Gana 5 duelos esta semana',                   '🏆', 'duel',     'medium', 'weekly',  5,  60, 60, 100, 'duel_win',         TRUE, FALSE),
+('Primera Generación IA',    'Usa la IA por primera vez',                   '🤖', 'ia',       'easy',   'unique',  1,  20, 20, 30,  'ai_use',           TRUE, FALSE),
+('Estudiante Aplicado',      'Completa 3 retos en un día',                  '📚', 'general',  'medium', 'daily',   3,  40, 40, 60,  'challenges_daily', TRUE, FALSE),
+('Racha Semanal',            'Mantén una racha de 7 días',                  '🌟', 'streak',   'medium', 'unique',  7,  75, 75, 120, 'login_streak',     TRUE, FALSE),
+('Maestro del Trivia',       'Responde 20 preguntas correctamente',         '🧠', 'trivia',   'hard',   'weekly',  20, 80, 80, 150, 'trivia_correct',   TRUE, FALSE),
+('Explorador de IA',         'Realiza 5 generaciones con IA',               '💡', 'ia',       'medium', 'weekly',  5,  50, 50, 80,  'ai_use',           TRUE, FALSE),
+('Invicto',                  'Gana 3 duelos consecutivos sin perder',       '🛡️', 'duel',     'hard',   'unique',  3, 100, 100, 200, 'duel_streak',      TRUE, FALSE);
 
 -- 11.3 Badges/Logros iniciales (50 logros)
-INSERT INTO badges (name, description, icon_emoji, rarity, category, requirement_type, requirement_value, coins_reward, xp_reward, sort_order) VALUES
+INSERT INTO badges (name, description, icon_emoji, rarity, category, requirement_type, requirement_value, coins_reward, reward_iacoins, xp_reward, reward_xp, sort_order) VALUES
 -- Logros de inicio
-('Bienvenido',           'Primer inicio de sesión',                  '👋', 'common',    'inicio',    'login_count',    1,    5,  10, 1),
-('Perfil Completo',      'Completa tu perfil al 100%',               '✅', 'common',    'inicio',    'profile_complete', 1,  10,  20, 2),
-('Primera Moneda',       'Gana tus primeros IACoins',                '🪙', 'common',    'economia',  'coins_earned',   1,   10,  15, 3),
+('Bienvenido',           'Primer inicio de sesión',                  '👋', 'common',    'inicio',    'login_count',    1,    5,    5,  10,  10, 1),
+('Perfil Completo',      'Completa tu perfil al 100%',               '✅', 'common',    'inicio',    'profile_complete', 1,  10,   10,  20,  20, 2),
+('Primera Moneda',       'Gana tus primeros IACoins',                '🪙', 'common',    'economia',  'coins_earned',   1,   10,   10,  15,  15, 3),
 
 -- Logros de duelo
-('Duelo Iniciado',       'Completa tu primer duelo',                 '⚔️', 'common',    'duel',      'duel_complete',  1,   20,  30, 10),
-('Victorioso',           'Gana tu primer duelo',                     '🏆', 'common',    'duel',      'duel_win',       1,   25,  40, 11),
-('Maestro del Duelo',    'Gana 10 duelos',                           '🥇', 'uncommon',  'duel',      'duel_win',       10,  50,  80, 12),
-('Campeón Invicto',      'Gana 50 duelos',                           '🏅', 'rare',      'duel',      'duel_win',       50, 150, 250, 13),
-('Leyenda del Duelo',    'Gana 200 duelos',                          '👑', 'epic',      'duel',      'duel_win',       200,500, 800, 14),
-('Dios del Duelo',       'Gana 1000 duelos',                         '⚡', 'legendary', 'duel',      'duel_win',      1000,2000,3000,15),
+('Duelo Iniciado',       'Completa tu primer duelo',                 '⚔️', 'common',    'duel',      'duel_complete',  1,   20,   20,  30,  30, 10),
+('Victorioso',           'Gana tu primer duelo',                     '🏆', 'common',    'duel',      'duel_win',       1,   25,   25,  40,  40, 11),
+('Maestro del Duelo',    'Gana 10 duelos',                           '🥇', 'uncommon',  'duel',      'duel_win',       10,  50,   50,  80,  80, 12),
+('Campeón Invicto',      'Gana 50 duelos',                           '🏅', 'rare',      'duel',      'duel_win',       50, 150,  150, 250, 250, 13),
+('Leyenda del Duelo',    'Gana 200 duelos',                          '👑', 'epic',      'duel',      'duel_win',       200,500,  500, 800, 800, 14),
+('Dios del Duelo',       'Gana 1000 duelos',                         '⚡', 'legendary', 'duel',      'duel_win',      1000,2000, 2000,3000,3000,15),
 
 -- Logros de racha
-('3 Días Seguidos',      'Racha de 3 días de inicio de sesión',      '🔥', 'common',    'streak',    'login_streak',   3,   15,  25, 20),
-('Una Semana Activo',    'Racha de 7 días',                          '📅', 'uncommon',  'streak',    'login_streak',   7,   40,  60, 21),
-('Un Mes Activo',        'Racha de 30 días',                         '🌟', 'rare',      'streak',    'login_streak',   30, 150, 250, 22),
-('Dedicación Total',     'Racha de 100 días',                        '💎', 'epic',      'streak',    'login_streak',  100, 500, 800, 23),
-('Inquebrantable',       'Racha de 365 días',                        '♾️', 'legendary', 'streak',    'login_streak',  365,2000,3000, 24),
+('3 Días Seguidos',      'Racha de 3 días de inicio de sesión',      '🔥', 'common',    'streak',    'login_streak',   3,   15,   15,  25,  25, 20),
+('Una Semana Activo',    'Racha de 7 días',                          '📅', 'uncommon',  'streak',    'login_streak',   7,   40,   40,  60,  60, 21),
+('Un Mes Activo',        'Racha de 30 días',                         '🌟', 'rare',      'streak',    'login_streak',   30, 150,  150, 250, 250, 22),
+('Dedicación Total',     'Racha de 100 días',                        '💎', 'epic',      'streak',    'login_streak',  100, 500,  500, 800, 800, 23),
+('Inquebrantable',       'Racha de 365 días',                        '♾️', 'legendary', 'streak',    'login_streak',  365,2000, 2000,3000,3000, 24),
 
 -- Logros de IACoins
-('Ahorrista',            'Acumula 100 IACoins',                      '💰', 'common',    'economia',  'coins_balance',  100,  20,  30, 30),
-('Millonario',           'Acumula 1000 IACoins',                     '🤑', 'uncommon',  'economia',  'coins_balance', 1000,  80, 120, 31),
-('Empresario',           'Gana un total de 5000 IACoins',            '📈', 'rare',      'economia',  'coins_earned',  5000, 200, 350, 32),
-('Magnate',              'Gana un total de 25000 IACoins',           '🏦', 'epic',      'economia',  'coins_earned', 25000, 600,1000, 33),
-('Tycoon',               'Gana un total de 100000 IACoins',          '💹', 'legendary', 'economia',  'coins_earned',100000,2000,3500, 34),
+('Ahorrista',            'Acumula 100 IACoins',                      '💰', 'common',    'economia',  'coins_balance',  100,  20,   20,  30,  30, 30),
+('Millonario',           'Acumula 1000 IACoins',                     '🤑', 'uncommon',  'economia',  'coins_balance', 1000,  80,   80, 120, 120, 31),
+('Empresario',           'Gana un total de 5000 IACoins',            '📈', 'rare',      'economia',  'coins_earned',  5000, 200,  200, 350, 350, 32),
+('Magnate',              'Gana un total de 25000 IACoins',           '🏦', 'epic',      'economia',  'coins_earned', 25000, 600,  600,1000,1000, 33),
+('Tycoon',               'Gana un total de 100000 IACoins',          '💹', 'legendary', 'economia',  'coins_earned',100000,2000, 2000,3500,3500, 34),
 
 -- Logros de IA
-('Curiosidad IA',        'Usa la IA por primera vez',                '🤖', 'common',    'ia',        'ai_use',         1,   15,  25, 40),
-('Explorador de IA',     'Realiza 10 generaciones con IA',           '💡', 'uncommon',  'ia',        'ai_use',         10,  50,  80, 41),
-('Maestro de IA',        'Realiza 100 generaciones con IA',          '🧬', 'rare',      'ia',        'ai_use',         100,200, 350, 42),
-('Gurú de IA',           'Realiza 1000 generaciones con IA',         '🌐', 'epic',      'ia',        'ai_use',        1000,600,1000, 43),
+('Curiosidad IA',        'Usa la IA por primera vez',                '🤖', 'common',    'ia',        'ai_use',         1,   15,   15,  25,  25, 40),
+('Explorador de IA',     'Realiza 10 generaciones con IA',           '💡', 'uncommon',  'ia',        'ai_use',         10,  50,   50,  80,  80, 41),
+('Maestro de IA',        'Realiza 100 generaciones con IA',          '🧬', 'rare',      'ia',        'ai_use',         100,200,  200, 350, 350, 42),
+('Gurú de IA',           'Realiza 1000 generaciones con IA',         '🌐', 'epic',      'ia',        'ai_use',        1000,600,  600,1000,1000, 43),
 
 -- Logros de niveles
-('Nivel 5',              'Alcanza el nivel 5',                       '🌱', 'common',    'nivel',     'level_reach',    5,   25,  40, 50),
-('Nivel 10',             'Alcanza el nivel 10',                      '🌿', 'common',    'nivel',     'level_reach',    10,  40,  60, 51),
-('Nivel 25',             'Alcanza el nivel 25 — Gran Sabio',         '🌳', 'uncommon',  'nivel',     'level_reach',    25, 100, 175, 52),
-('Nivel 50',             'Alcanza el nivel 50 — Semidiós',           '🏔️', 'rare',      'nivel',     'level_reach',    50, 300, 500, 53),
-('Nivel 75',             'Alcanza el nivel 75 — Maestro del Cosmos', '🌋', 'epic',      'nivel',     'level_reach',    75, 750,1250, 54),
-('Nivel 100',            'Alcanza el nivel 100 — Leyenda Viviente',  '🗻', 'legendary', 'nivel',     'level_reach',   100,2500,4000, 55),
+('Nivel 5',              'Alcanza el nivel 5',                       '🌱', 'common',    'nivel',     'level_reach',    5,   25,   25,  40,  40, 50),
+('Nivel 10',             'Alcanza el nivel 10',                      '🌿', 'common',    'nivel',     'level_reach',    10,  40,   40,  60,  60, 51),
+('Nivel 25',             'Alcanza el nivel 25 — Gran Sabio',         '🌳', 'uncommon',  'nivel',     'level_reach',    25, 100,  100, 175, 175, 52),
+('Nivel 50',             'Alcanza el nivel 50 — Semidiós',           '🏔️', 'rare',      'nivel',     'level_reach',    50, 300,  300, 500, 500, 53),
+('Nivel 75',             'Alcanza el nivel 75 — Maestro del Cosmos', '🌋', 'epic',      'nivel',     'level_reach',    75, 750,  750,1250,1250, 54),
+('Nivel 100',            'Alcanza el nivel 100 — Leyenda Viviente',  '🗻', 'legendary', 'nivel',     'level_reach',   100,2500, 2500,4000,4000, 55),
 
 -- Logros de retos
-('Primer Reto',          'Completa tu primer reto',                  '🎯', 'common',    'reto',      'challenges_complete', 1, 20, 30, 60),
-('Retador Activo',       'Completa 10 retos',                        '💪', 'common',    'reto',      'challenges_complete', 10, 50, 80, 61),
-('Cazarrecompensas',     'Completa 50 retos',                        '🎖️', 'uncommon',  'reto',      'challenges_complete', 50,150,250, 62),
-('Maestro de Retos',     'Completa 200 retos',                       '🏹', 'rare',      'reto',      'challenges_complete',200,400,700, 63),
-('Leyenda de Retos',     'Completa 1000 retos',                      '⚜️', 'epic',      'reto',      'challenges_complete',1000,1500,2500,64),
+('Primer Reto',          'Completa tu primer reto',                  '🎯', 'common',    'reto',      'challenges_complete', 1, 20,   20,  30,  30, 60),
+('Retador Activo',       'Completa 10 retos',                        '💪', 'common',    'reto',      'challenges_complete', 10, 50,   50,  80,  80, 61),
+('Cazarrecompensas',     'Completa 50 retos',                        '🎖️', 'uncommon',  'reto',      'challenges_complete', 50,150,  150, 250, 250, 62),
+('Maestro de Retos',     'Completa 200 retos',                       '🏹', 'rare',      'reto',      'challenges_complete',200,400,  400, 700, 700, 63),
+('Leyenda de Retos',     'Completa 1000 retos',                      '⚜️', 'epic',      'reto',      'challenges_complete',1000,1500,1500,2500,2500,64),
 
 -- Logros de trivia
-('Primer Acierto',       'Responde 1 pregunta correctamente',        '✔️', 'common',    'trivia',    'trivia_correct',  1,  10,  15, 70),
-('10 Respuestas',        'Responde 10 preguntas correctamente',      '📝', 'common',    'trivia',    'trivia_correct',  10, 30,  50, 71),
-('100 Respuestas',       'Responde 100 preguntas correctamente',     '📚', 'uncommon',  'trivia',    'trivia_correct', 100,100, 175, 72),
-('1000 Respuestas',      'Responde 1000 preguntas correctamente',    '🧠', 'rare',      'trivia',    'trivia_correct',1000,400, 700, 73),
+('Primer Acierto',       'Responde 1 pregunta correctamente',        '✔️', 'common',    'trivia',    'trivia_correct',  1,  10,   10,  15,  15, 70),
+('10 Respuestas',        'Responde 10 preguntas correctamente',      '📝', 'common',    'trivia',    'trivia_correct',  10, 30,   30,  50,  50, 71),
+('100 Respuestas',       'Responde 100 preguntas correctamente',     '📚', 'uncommon',  'trivia',    'trivia_correct', 100,100,  100, 175, 175, 72),
+('1000 Respuestas',      'Responde 1000 preguntas correctamente',    '🧠', 'rare',      'trivia',    'trivia_correct',1000,400,  400, 700, 700, 73),
 
 -- Logros de torneos
-('Primer Torneo',        'Participa en tu primer torneo',            '🎪', 'common',    'torneo',    'tournament_join', 1,  25,  40, 80),
-('Finalista',            'Llega a la final de un torneo',            '🥈', 'uncommon',  'torneo',    'tournament_final',1,  75, 125, 81),
-('Campeón',              'Gana un torneo',                           '🥇', 'rare',      'torneo',    'tournament_win',  1, 200, 350, 82),
-('Multicampeón',         'Gana 5 torneos',                           '🏆', 'epic',      'torneo',    'tournament_win',  5, 600,1000, 83),
+('Primer Torneo',        'Participa en tu primer torneo',            '🎪', 'common',    'torneo',    'tournament_join', 1,  25,   25,  40,  40, 80),
+('Finalista',            'Llega a la final de un torneo',            '🥈', 'uncommon',  'torneo',    'tournament_final',1,  75,   75, 125, 125, 81),
+('Campeón',              'Gana un torneo',                           '🥇', 'rare',      'torneo',    'tournament_win',  1, 200,  200, 350, 350, 82),
+('Multicampeón',         'Gana 5 torneos',                           '🏆', 'epic',      'torneo',    'tournament_win',  5, 600,  600,1000,1000, 83),
 
 -- Logros sociales
-('Colaborador',          'Participa en un reto colaborativo',        '🤝', 'common',    'social',    'collab_join',     1,  20,  30, 90),
-('Mentor',               'Ayuda a 5 compañeros en retos',            '👨‍🏫','uncommon',  'social',    'mentor_help',     5,  60, 100, 91),
+('Colaborador',          'Participa en un reto colaborativo',        '🤝', 'common',    'social',    'collab_join',     1,  20,   20,  30,  30, 90),
+('Mentor',               'Ayuda a 5 compañeros en retos',            '👨‍🏫','uncommon',  'social',    'mentor_help',     5,  60,   60, 100, 100, 91),
 
 -- Logros especiales
-('Perfeccionista',       'Completa un duelo con 100% de aciertos',  '💯', 'rare',      'especial',  'perfect_duel',    1, 100, 175, 95),
-('Velocista',            'Completa un duelo en menos de 60 segundos','⚡', 'uncommon',  'especial',  'speed_duel',      1,  60, 100, 96),
-('Nocturno',             'Inicia sesión después de las 11pm',        '🌙', 'common',    'especial',  'night_login',     1,  15,  25, 97),
-('Madrugador',           'Inicia sesión antes de las 6am',           '🌅', 'common',    'especial',  'morning_login',   1,  15,  25, 98),
-('Año Nuevo',            'Inicia sesión el 1 de enero',              '🎆', 'rare',      'especial',  'new_year_login',  1, 100, 175, 99),
-('Cumpleañero',          'Inicia sesión en tu cumpleaños',           '🎂', 'uncommon',  'especial',  'birthday_login',  1,  50,  80,100)
-ON CONFLICT DO NOTHING;
+('Perfeccionista',       'Completa un duelo con 100% de aciertos',  '💯', 'rare',      'especial',  'perfect_duel',    1, 100,  100, 175, 175, 95),
+('Velocista',            'Completa un duelo en menos de 60 segundos','⚡', 'uncommon',  'especial',  'speed_duel',      1,  60,   60, 100, 100, 96),
+('Nocturno',             'Inicia sesión después de las 11pm',        '🌙', 'common',    'especial',  'night_login',     1,  15,   15,  25,  25, 97),
+('Madrugador',           'Inicia sesión antes de las 6am',           '🌅', 'common',    'especial',  'morning_login',   1,  15,   15,  25,  25, 98),
+('Año Nuevo',            'Inicia sesión el 1 de enero',              '🎆', 'rare',      'especial',  'new_year_login',  1, 100,  100, 175, 175, 99),
+('Cumpleañero',          'Inicia sesión en tu cumpleaños',           '🎂', 'uncommon',  'especial',  'birthday_login',  1,  50,   50,  80,  80,100);
 
 -- 11.4 Torneo de prueba (activo para demo)
-INSERT INTO tournaments (name, slug, description, tournament_type, format, subject, status, min_participants, max_participants, entry_fee_coins, prize_pool_coins, prize_pool_xp, start_date, end_date)
-VALUES ('Torneo de Bienvenida 2026', 'bienvenida-2026',
+INSERT INTO tournaments (name, title, slug, description, tournament_type, format, subject, status, min_participants, max_participants, entry_fee_coins, entry_fee_iacoins, prize_pool_coins, prize_pool_iacoins, prize_pool_xp, start_date, end_date)
+VALUES ('Torneo de Bienvenida 2026', 'Torneo de Bienvenida 2026', 'bienvenida-2026',
         'Primer torneo oficial de la plataforma. ¡Demuestra tu sabiduría!',
         'trivia', 'round_robin', 'general', 'registration',
-        2, 32, 0, 500, 1000,
-        NOW(), NOW() + INTERVAL '30 days')
-ON CONFLICT (slug) DO NOTHING;
+        2, 32, 0, 0, 500, 500, 1000,
+        NOW(), NOW() + INTERVAL '30 days');
 
 -- ================================================================
 -- BLOQUE 12: VISTAS ÚTILES
@@ -814,14 +1253,15 @@ ON CONFLICT (slug) DO NOTHING;
 -- Vista: leaderboard global por IACoins ganados
 CREATE OR REPLACE VIEW v_leaderboard_global AS
 SELECT
-    ib.user_id,
-    ib.level,
-    ib.total_earned,
-    ib.experience_points,
-    ib.balance,
-    ROW_NUMBER() OVER (ORDER BY ib.total_earned DESC, ib.experience_points DESC) AS rank
+    COALESCE(ib.user_id::text, ibs.user_id::text) AS user_id,
+    COALESCE(ib.level, ibs.level, 1) AS level,
+    COALESCE(ib.total_earned, ibs.total_earned, 0) AS total_earned,
+    COALESCE(ib.experience_points, ibs.experience_points, 0) AS experience_points,
+    COALESCE(ib.balance, ibs.balance, 0) AS balance,
+    ROW_NUMBER() OVER (ORDER BY COALESCE(ib.total_earned, ibs.total_earned, 0) DESC, COALESCE(ib.experience_points, ibs.experience_points, 0) DESC) AS rank
 FROM iacoins_balance ib
-ORDER BY ib.total_earned DESC;
+FULL OUTER JOIN iacoins_balances ibs ON ib.id = ibs.id
+ORDER BY total_earned DESC;
 
 -- Vista: estado de retos del día para un usuario
 CREATE OR REPLACE VIEW v_daily_challenges_summary AS
@@ -845,9 +1285,4 @@ WHERE c.is_active = TRUE
 
 -- ================================================================
 -- FIN DEL SCRIPT
--- ================================================================
--- Verifica la ejecución con:
---   SELECT table_name FROM information_schema.tables
---   WHERE table_schema = 'public'
---   ORDER BY table_name;
 -- ================================================================
