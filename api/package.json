@@ -22,6 +22,8 @@
     "nodemailer": "^7.0.6",
     "pdfkit": "^0.17.2",
     "pg": "^8.11.3",
+    "openai": "^6.10.0",
+    "@anthropic-ai/sdk": "^0.71.2",
     "stripe": "^20.0.0",
     "uuid": "^9.0.1",
     "validator": "^13.15.23",
