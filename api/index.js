@@ -161,6 +161,8 @@ const mountRouteSafe = (routePrefix, routeModule) => {
 // 1. Admin y Dashboard
 try { mountRouteSafe('/api/admin', require('../backend/routes/admin.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/admin:', e.stack || e); }
 try { mountRouteSafe('/api/dashboard', require('../backend/routes/dashboard.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/dashboard:', e.stack || e); }
+try { mountRouteSafe('/api/tenants', require('../backend/routes/tenants.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/tenants:', e.stack || e); }
+try { mountRouteSafe('/api/admin/tenants', require('../backend/routes/tenants.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/admin/tenants:', e.stack || e); }
 
 // 2. Portales y Usuarios
 try { mountRouteSafe('/api/students', require('../backend/routes/students.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/students:', e.stack || e); }

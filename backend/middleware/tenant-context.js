@@ -15,7 +15,6 @@ const { getTenantByDomain } = require('../data/database-access.js'); // ✅ Impo
 
 /**
  * Cache de configuraciones de tenant (en memoria)
- * En producción usar Redis
  */
 const tenantCache = new Map();
 const CACHE_TTL = 3600000; // 1 hora
@@ -24,21 +23,25 @@ const CACHE_TTL = 3600000; // 1 hora
  * Detecta tenant_id desde múltiples fuentes
  */
 function detectTenantId(req) {
-    // Estrategia 1: Header X-Tenant-ID (más confiable)
+    // Estrategia 1: Header X-Tenant-ID o X-Tenant (más confiable)
     if (req.headers['x-tenant-id']) {
         return req.headers['x-tenant-id'];
     }
+    if (req.headers['x-tenant']) {
+        return req.headers['x-tenant'];
+    }
 
-    // Estrategia 2: Subdomain
-    const hostname = req.hostname || req.get('host')?.split(':')[0];
-    if (hostname && hostname !== 'localhost' && !hostname.match(/^\d+\.\d+\.\d+\.\d+$/)) {
-        const parts = hostname.split('.');
-        // Si hay subdomain (ejemplo: tenant1.bge.edu.mx)
-        if (parts.length > 2) {
-            const subdomain = parts[0];
-            // Excluir subdomains comunes o dominios base de la app que NO son tenants
-            if (!['www', 'api', 'admin', 'dev', 'staging', 'bge-heroesdelapatria', 'bge-heroes-de-la-patria'].includes(subdomain) && !hostname.includes('vercel.app')) {
-                return subdomain;
+    // Estrategia 2: Subdomain / Host
+    const hostHeader = req.headers['x-forwarded-host'] || req.headers.host || req.hostname;
+    if (hostHeader) {
+        const cleanHost = hostHeader.split(':')[0];
+        if (cleanHost && cleanHost !== 'localhost' && !cleanHost.match(/^\d+\.\d+\.\d+\.\d+$/)) {
+            const parts = cleanHost.split('.');
+            if (parts.length >= 2) {
+                const subdomain = parts[0];
+                if (!['www', 'api', 'admin', 'dev', 'staging', 'bge-heroesdelapatria', 'bge-heroes-de-la-patria'].includes(subdomain) && !cleanHost.includes('vercel.app')) {
+                    return subdomain;
+                }
             }
         }
     }
@@ -48,58 +51,86 @@ function detectTenantId(req) {
         return req.user.tenant_id;
     }
 
-    // Estrategia 4: Query parameter (solo para testing/debugging)
-    if (req.query.tenant && process.env.NODE_ENV !== 'production') {
-        return req.query.tenant;
+    // Estrategia 4: Query parameter (para testing/debugging o routing directo)
+    if (req.query && (req.query.tenant || req.query.tenant_id)) {
+        return req.query.tenant || req.query.tenant_id;
     }
 
-    // Default: 'default' tenant (para instalaciones single-tenant)
-    return 'default';
+    // Default: '1' tenant
+    return 1;
 }
 
 /**
  * Obtiene configuración de tenant desde BD (con cache)
  */
 async function getTenantConfig(tenantId) {
+    const cacheKey = String(tenantId);
     // Check cache primero
-    const cached = tenantCache.get(tenantId);
+    const cached = tenantCache.get(cacheKey);
     if (cached && (Date.now() - cached.timestamp) < CACHE_TTL) {
         return cached.data;
     }
 
     try {
-        // Query a BD
-        const result = await pool.query(
-            `SELECT
-                id,
-                nombre,
-                dominio,
-                subdomain,
-                status,
-                config_json,
-                created_at
-             FROM tenants
-             WHERE id::text = $1 OR subdomain = $1 OR dominio = $1
-             LIMIT 1`,
-            [tenantId]
-        );
+        const isNumeric = !isNaN(Number(tenantId)) && Number(tenantId) > 0;
+        let result;
+
+        if (isNumeric) {
+            result = await pool.query(
+                `SELECT
+                    id,
+                    uuid,
+                    school_name,
+                    nombre,
+                    domain,
+                    dominio,
+                    subdomain,
+                    status,
+                    config_json,
+                    created_at
+                 FROM tenants
+                 WHERE id = $1 OR subdomain = $2 OR dominio = $2 OR domain = $2
+                 LIMIT 1`,
+                [Number(tenantId), String(tenantId)]
+            );
+        } else {
+            result = await pool.query(
+                `SELECT
+                    id,
+                    uuid,
+                    school_name,
+                    nombre,
+                    domain,
+                    dominio,
+                    subdomain,
+                    status,
+                    config_json,
+                    created_at
+                 FROM tenants
+                 WHERE subdomain = $1 OR dominio = $1 OR domain = $1 OR school_name ILIKE $1
+                 LIMIT 1`,
+                [String(tenantId)]
+            );
+        }
 
         if (result.rows.length === 0) {
-            // Intentar obtener tenant 'default'
+            // Intentar obtener tenant por defecto (ID 1)
             const defaultResult = await pool.query(
-                `SELECT * FROM tenants WHERE id::text = 'default' OR subdomain = 'default' LIMIT 1`
+                `SELECT * FROM tenants WHERE id = 1 LIMIT 1`
             );
 
             if (defaultResult.rows.length === 0) {
-                // Si tampoco existe 'default', crear configuración básica
+                // Si tampoco existe ID 1 en BD, crear configuración básica
                 const basicConfig = {
-                    id: 'default',
-                    nombre: 'BGE Héroes de la Patria',
+                    id: 1,
+                    nombre: 'Bachillerato General Estatal "Héroes de la Patria"',
+                    school_name: 'Bachillerato General Estatal "Héroes de la Patria"',
                     dominio: 'localhost',
+                    domain: 'localhost',
                     subdomain: 'default',
                     status: 'activo',
                     config_json: {
-                        school_name: 'BGE Héroes de la Patria',
+                        school_name: 'Bachillerato General Estatal "Héroes de la Patria"',
                         school_short_name: 'BGE',
                         school_type: 'Bachillerato General por Competencias',
                         colors: {
@@ -109,7 +140,7 @@ async function getTenantConfig(tenantId) {
                     }
                 };
 
-                tenantCache.set(tenantId, {
+                tenantCache.set(cacheKey, {
                     data: basicConfig,
                     timestamp: Date.now()
                 });
@@ -119,9 +150,12 @@ async function getTenantConfig(tenantId) {
 
             const tenant = defaultResult.rows[0];
             tenant.config_json = tenant.config_json || {};
+            tenant.nombre = tenant.nombre || tenant.school_name;
+            tenant.school_name = tenant.school_name || tenant.nombre;
+            tenant.dominio = tenant.dominio || tenant.domain;
+            tenant.domain = tenant.domain || tenant.dominio;
 
-            // Cache tenant para este tenantId
-            tenantCache.set(tenantId, {
+            tenantCache.set(cacheKey, {
                 data: tenant,
                 timestamp: Date.now()
             });
@@ -133,16 +167,20 @@ async function getTenantConfig(tenantId) {
 
         // Parsear config_json si es string
         if (typeof tenant.config_json === 'string') {
-            tenant.config_json = JSON.parse(tenant.config_json);
+            try {
+                tenant.config_json = JSON.parse(tenant.config_json);
+            } catch (e) {
+                tenant.config_json = {};
+            }
         }
 
-        // Validar status
-        if (tenant.status !== 'activo') {
-            throw new Error(`Tenant inactivo: ${tenantId}`);
-        }
+        tenant.nombre = tenant.nombre || tenant.school_name;
+        tenant.school_name = tenant.school_name || tenant.nombre;
+        tenant.dominio = tenant.dominio || tenant.domain;
+        tenant.domain = tenant.domain || tenant.dominio;
 
         // Cache el tenant
-        tenantCache.set(tenantId, {
+        tenantCache.set(cacheKey, {
             data: tenant,
             timestamp: Date.now()
         });
@@ -154,13 +192,15 @@ async function getTenantConfig(tenantId) {
 
         // Fallback a configuración default hardcoded
         return {
-            id: 'default',
-            nombre: 'BGE Héroes de la Patria',
+            id: 1,
+            nombre: 'Bachillerato General Estatal "Héroes de la Patria"',
+            school_name: 'Bachillerato General Estatal "Héroes de la Patria"',
             dominio: 'localhost',
+            domain: 'localhost',
             subdomain: 'default',
             status: 'activo',
             config_json: {
-                school_name: 'BGE Héroes de la Patria',
+                school_name: 'Bachillerato General Estatal "Héroes de la Patria"',
                 school_short_name: 'BGE',
                 school_type: 'Bachillerato General por Competencias'
             }
@@ -173,8 +213,6 @@ async function getTenantConfig(tenantId) {
  */
 async function setRLSContext(tenantId) {
     try {
-        // ✅ CORREGIDO: Usar set_config() en lugar de SET LOCAL $1
-        // PostgreSQL no soporta parámetros en SET LOCAL, usa set_config() en su lugar
         await pool.query(
             `SELECT set_config($1, $2, false)`,
             ['app.current_tenant_id', String(tenantId)]
@@ -197,16 +235,16 @@ async function tenantContext(req, res, next) {
         // 2. Obtener configuración del tenant
         const tenantConfig = await getTenantConfig(tenantId);
 
-        // 3. Configurar RLS context en PostgreSQL (para esta transacción)
-        // Nota: Solo funciona si la conexión se usa en una transacción
-        // En queries individuales, pasar tenant_id como parámetro
+        // 3. Configurar RLS context en PostgreSQL
         await setRLSContext(tenantConfig.id);
 
         // 4. Agregar contexto de tenant al request
         req.tenant = {
             id: tenantConfig.id,
-            nombre: tenantConfig.nombre,
-            dominio: tenantConfig.dominio,
+            nombre: tenantConfig.nombre || tenantConfig.school_name,
+            school_name: tenantConfig.school_name || tenantConfig.nombre,
+            dominio: tenantConfig.dominio || tenantConfig.domain,
+            domain: tenantConfig.domain || tenantConfig.dominio,
             subdomain: tenantConfig.subdomain,
             config: tenantConfig.config_json || {},
 
@@ -229,7 +267,7 @@ async function tenantContext(req, res, next) {
 
         // 5. Log de detección (solo en desarrollo)
         if (process.env.NODE_ENV !== 'production') {
-            console.log(`[TENANT-CONTEXT] Tenant detectado: ${tenantConfig.id} (${tenantConfig.nombre})`);
+            console.log(`[TENANT-CONTEXT] Tenant detectado: ${tenantConfig.id} (${tenantConfig.nombre || tenantConfig.school_name})`);
         }
 
         // 6. Continuar con siguiente middleware

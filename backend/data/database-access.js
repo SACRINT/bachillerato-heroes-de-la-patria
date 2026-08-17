@@ -1180,21 +1180,29 @@ async function deleteCourse(courseId) {
 async function getTenantByDomain(domain) {
     try {
         devLogger.log(`[DAL] Buscando tenant por dominio: ${domain}`);
-        // ✅ FIX (19 Nov 2025): Buscar tanto 'active' como 'activo' para compatibilidad
+        if (!domain) return null;
+
+        // Limpiar puerto si viene ej: localhost:3000
+        const cleanDomain = domain.split(':')[0];
+        const subdomain = cleanDomain.includes('.') ? cleanDomain.split('.')[0] : cleanDomain;
+
         let query = {
-            text: 'SELECT * FROM tenants WHERE domain = $1 AND status IN ($2, $3)',
-            values: [domain, 'active', 'activo'],
+            text: `SELECT * FROM tenants 
+                   WHERE (domain = $1 OR dominio = $1 OR domain = $2 OR dominio = $2 OR subdomain = $1 OR subdomain = $3)
+                     AND status IN ('active', 'activo')
+                   LIMIT 1`,
+            values: [domain, cleanDomain, subdomain],
         };
         let result = await pool.query(query);
         let tenant = result.rows[0] || null;
 
         // 🚨 FALLBACK CRÍTICO PARA PRODUCCIÓN 🚨
-        // Si no se encuentra un tenant para el dominio de Vercel, busca un default.
-        if (!tenant && domain && domain.includes('vercel.app')) {
-            devLogger.warn(`[DAL] No se encontró tenant para el dominio de Vercel "${domain}". Buscando tenant por defecto (ID=1 o localhost).`);
+        // Si no se encuentra un tenant para el dominio de Vercel o localhost, busca un default (ID=1).
+        if (!tenant && (domain.includes('vercel.app') || domain.includes('localhost') || domain === '127.0.0.1')) {
+            devLogger.warn(`[DAL] No se encontró tenant específico para "${domain}". Buscando tenant por defecto (ID=1).`);
             query = {
-                text: 'SELECT * FROM tenants WHERE id = 1 OR domain = $1 LIMIT 1',
-                values: ['localhost'],
+                text: 'SELECT * FROM tenants WHERE id = 1 LIMIT 1',
+                values: [],
             };
             result = await pool.query(query);
             tenant = result.rows[0] || null;
@@ -1244,7 +1252,7 @@ async function getAllTenants() {
     try {
         devLogger.log('Operación DAL iniciada');
         const result = await pool.query(
-            'SELECT id, uuid, schema_name, school_name, domain, status, created_at FROM tenants ORDER BY school_name ASC'
+            'SELECT id, uuid, schema_name, school_name, nombre, domain, dominio, subdomain, admin_email, status, config_json, created_at FROM tenants ORDER BY id ASC'
         );
 
         const tenants = result.rows || [];
@@ -1268,19 +1276,38 @@ async function createTenant(tenantData) {
         devLogger.log('Operación DAL iniciada');
         const {
             school_name,
+            nombre,
             domain,
-            schema_name,
+            dominio,
+            subdomain,
+            schema_name = 'public',
             config_json,
             admin_email,
             admin_phone,
             status = 'activo'
         } = tenantData;
 
+        const effectiveSchoolName = school_name || nombre || 'Nueva Escuela';
+        const effectiveDomain = domain || dominio || subdomain || 'escuela.local';
+        const effectiveSubdomain = subdomain || (effectiveDomain ? effectiveDomain.split(':')[0].split('.')[0] : 'escuela');
+
         const result = await pool.query(
-            `INSERT INTO tenants (school_name, domain, schema_name, config_json, admin_email, admin_phone, status)
-             VALUES ($1, $2, $3, $4, $5, $6, $7)
-             RETURNING id, uuid, schema_name, school_name, domain, status, created_at`,
-            [school_name, domain, schema_name, config_json, admin_email, admin_phone, status]
+            `INSERT INTO tenants (
+                school_name, nombre, domain, dominio, subdomain, schema_name, 
+                config_json, admin_email, admin_phone, status
+            )
+             VALUES ($1, $1, $2, $2, $3, $4, $5, $6, $7, $8)
+             RETURNING id, uuid, schema_name, school_name, nombre, domain, dominio, subdomain, admin_email, status, config_json, created_at`,
+            [
+                effectiveSchoolName,
+                effectiveDomain,
+                effectiveSubdomain,
+                schema_name,
+                typeof config_json === 'object' ? JSON.stringify(config_json) : (config_json || '{}'),
+                admin_email,
+                admin_phone,
+                status
+            ]
         );
 
         const tenant = result.rows[0];
@@ -1304,16 +1331,28 @@ async function updateTenant(tenantId, updateData) {
     try {
         devLogger.log('Operación DAL iniciada');
 
-        const { school_name, status, admin_email, admin_phone, config_json } = updateData;
+        const { school_name, nombre, domain, dominio, subdomain, status, admin_email, admin_phone, config_json } = updateData;
 
         // Construir query dinámica (solo actualizar campos proporcionados)
         const updates = [];
         const values = [];
         let paramCount = 1;
 
-        if (school_name !== undefined) {
-            updates.push(`school_name = $${paramCount++}`);
-            values.push(school_name);
+        if (school_name !== undefined || nombre !== undefined) {
+            const nameVal = school_name || nombre;
+            updates.push(`school_name = $${paramCount}`);
+            updates.push(`nombre = $${paramCount++}`);
+            values.push(nameVal);
+        }
+        if (domain !== undefined || dominio !== undefined) {
+            const domVal = domain || dominio;
+            updates.push(`domain = $${paramCount}`);
+            updates.push(`dominio = $${paramCount++}`);
+            values.push(domVal);
+        }
+        if (subdomain !== undefined) {
+            updates.push(`subdomain = $${paramCount++}`);
+            values.push(subdomain);
         }
         if (status !== undefined) {
             updates.push(`status = $${paramCount++}`);
@@ -1329,7 +1368,7 @@ async function updateTenant(tenantId, updateData) {
         }
         if (config_json !== undefined) {
             updates.push(`config_json = $${paramCount++}`);
-            values.push(config_json);
+            values.push(typeof config_json === 'object' ? JSON.stringify(config_json) : config_json);
         }
 
         if (updates.length === 0) {
@@ -1339,7 +1378,7 @@ async function updateTenant(tenantId, updateData) {
         values.push(tenantId);
 
         const result = await pool.query(
-            `UPDATE tenants SET ${updates.join(', ')} WHERE id = $${paramCount} RETURNING *`,
+            `UPDATE tenants SET ${updates.join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE id = $${paramCount} RETURNING *`,
             values
         );
 

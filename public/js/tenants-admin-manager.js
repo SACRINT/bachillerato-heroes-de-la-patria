@@ -50,12 +50,17 @@ class TenantsAdminManager {
         void 0;
     }
 
+    getAuthToken() {
+        return localStorage.getItem('bge_auth_token') ||
+            localStorage.getItem('authToken') ||
+            sessionStorage.getItem('bge_auth_token') ||
+            localStorage.getItem('token') || '';
+    }
+
     /**
      * Cargar lista de tenants desde API
      */
     async loadTenants() {
-        void 0;
-
         const loadingEl = document.getElementById('loadingTenants');
         const listEl = document.getElementById('tenantsList');
         const emptyEl = document.getElementById('emptyStateTenants');
@@ -66,11 +71,12 @@ class TenantsAdminManager {
         emptyEl.classList.add('d-none');
 
         try {
+            const token = this.getAuthToken();
             const response = await fetch('/api/admin/tenants', {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    'Authorization': token ? `Bearer ${token}` : ''
                 }
             });
 
@@ -285,11 +291,12 @@ class TenantsAdminManager {
             const method = isCreating ? 'POST' : 'PUT';
             const url = isCreating ? '/api/admin/tenants' : `/api/admin/tenants/${tenantId}`;
 
+            const token = this.getAuthToken();
             const response = await fetch(url, {
                 method: method,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    'Authorization': token ? `Bearer ${token}` : ''
                 },
                 body: JSON.stringify(tenantData)
             });
@@ -334,10 +341,11 @@ class TenantsAdminManager {
         }
 
         try {
+            const token = this.getAuthToken();
             const response = await fetch(`/api/admin/tenants/${tenantId}`, {
                 method: 'DELETE',
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    'Authorization': token ? `Bearer ${token}` : ''
                 }
             });
 

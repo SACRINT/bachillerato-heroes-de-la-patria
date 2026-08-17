@@ -517,6 +517,7 @@ app.use('/api/approvals', approvalsRoutes);
 app.use('/api/noticias', noticiasRoutes);
 app.use('/api/eventos', eventosRoutes);
 app.use('/api/avisos', avisosRoutes);
+app.use('/api/tenants', tenantsRoutes);  // ✅ SAAS MULTI-TENANT (FASE 4)
 app.use('/api/admin/tenants', tenantsRoutes);  // ✅ MULTI-TENANT MANAGEMENT (8 NOV 2025)
 app.use('/api/comunicados', comunicadosRoutes);
 app.use('/api/push', pushNotificationsRoutes); // ✅ PUSH NOTIFICATIONS

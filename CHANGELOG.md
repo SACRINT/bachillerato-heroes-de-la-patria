@@ -1,5 +1,53 @@
 # CHANGELOG - Bachillerato General Estatal "Héroes de la Patria"
 
+[v3.5.0] - 2026-08-16 (FASE 4: SAAS MULTI-TENANT, AISLAMIENTO RLS 100%, BRANDING DINÁMICO Y SUPER-ADMIN)
+
+**Tipo:** Major Feature / SaaS Architecture / Multi-Tenancy / Database Security / RLS
+**Estado:** COMPLETADO - Migración SQL ejecutada en Neon PostgreSQL y suite de aislamiento 100% verificada (26/26 tests)
+
+### Componentes Implementados:
+1. **AISLAMIENTO DE DATOS CON ROW-LEVEL SECURITY (RLS) EN POSTGRESQL:**
+   - Columna `tenant_id` (DEFAULT 1) agregada con índices de rendimiento a **26 tablas** del sistema (`usuarios`, `estudiantes`, `docentes`, `calificaciones`, `teacher_attendance_sessions`, `iacoins_balance`, `user_streaks`, `challenges`, `tournaments`, `bolsa_trabajo`, `avisos`, `noticias`, `eventos`, `citas`, etc.).
+   - Activado `ENABLE ROW LEVEL SECURITY` + `FORCE ROW LEVEL SECURITY` en **8 tablas núcleo**: `estudiantes`, `docentes`, `calificaciones`, `teacher_attendance_sessions`, `iacoins_balance`, `user_streaks`, `challenges`, `tournaments`.
+   - Función SQL helper `current_app_tenant_id()` y políticas RLS type-safe (`tenant_isolation_*`) que aíslan el acceso de cada institución según el tenant context del request (`app.current_tenant_id`), permitiendo a su vez acceso unificado para el super-admin (`bypass`) y fallback seguro (tenant ID 1).
+2. **MIDDLEWARE DE CONTEXTO TENANT (`backend/middleware/tenant-context.js`):**
+   - Detección multinivel de tenant:
+     - Estrategia 1: Header `X-Tenant-ID` o `X-Tenant`.
+     - Estrategia 2: Subdominio extraído de `x-forwarded-host`, `host`, o `hostname` (omitiendo subdominios base como `www`, `api`, `admin`).
+     - Estrategia 3: JWT claim `tenant_id`.
+     - Estrategia 4: Query param `?tenant=` o `?tenant_id=`.
+     - Fallback seguro a Tenant ID 1 (BGE).
+   - Cache LRU de configuraciones en memoria con TTL de 1 hora.
+   - Inyección de `req.tenant` con helper `req.tenant.getConfig(key, default)` y setup del setting de RLS `app.current_tenant_id` en PostgreSQL.
+3. **ACCESO A DATOS DAL RESILIENTE (`backend/data/database-access.js`):**
+   - `getTenantByDomain`: resolución tolerante de subdominios, dominios completos, puertos y fallback seguro a Tenant 1 (`localhost` / `vercel.app`).
+   - `getAllTenants`, `createTenant`, `updateTenant`: compatibilidad y sincronización bidireccional de columnas (`school_name`/`nombre`, `domain`/`dominio`/`subdomain`).
+4. **BRANDING DINÁMICO POR TENANT:**
+   - Endpoint `GET /api/config/tenant` sincronizado con base de datos Neon.
+   - Loader frontend (`public/js/tenant-config-loader.js`) que expone `window.TENANT_CONFIG`, dispara evento `tenantConfigLoaded` y aplica estilos/logos específicos de cada colegio.
+5. **SUPER-ADMIN PANEL Y CRUD MULTI-ESCUELA:**
+   - Endpoints `/api/tenants` y `/api/admin/tenants` registrados con paridad local (`backend/server.js`) y serverless Vercel (`api/index.js`).
+   - Panel de administración (`public/tenants-admin.html` + `public/js/tenants-admin-manager.js`) con soporte unificado de tokens JWT (`bge_auth_token`) para crear, listar, editar y dar de baja tenants.
+6. **TEST SUITE DE AISLAMIENTO MULTI-TENANT (`backend/scripts/verify-fase4-tenant-isolation.js`):**
+   - 26/26 pruebas superadas (100% éxito):
+     - Aislamiento bidireccional SQL verificado: Escuela Alpha (ID 9001) y Colegio Beta (ID 9002) solo ven sus propios estudiantes, docentes, calificaciones, rachas y retos.
+     - Bypass de Super-Admin verificado: visualización de todos los tenants.
+     - Resolución de branding institucional por subdominio y header validada.
+
+### Archivos Modificados / Creados:
+- `backend/scripts/fase4-multitenant-migration.sql` (Migración SQL DDL con RLS y función helper)
+- `backend/scripts/run-fase4-clean.js` / `run-fase4-multitenant-migration.js` (Ejecutores de migración)
+- `backend/scripts/verify-fase4-tenant-isolation.js` (Suite de verificación de aislamiento)
+- `backend/middleware/tenant-context.js` (Middleware de resolución y RLS)
+- `backend/data/database-access.js` (Métodos DAL para tenants)
+- `backend/server.js` (Montaje de rutas `/api/tenants`)
+- `api/index.js` (Montaje serverless de `/api/tenants`)
+- `public/js/tenants-admin-manager.js` (Adaptador de auth tokens en dashboard de tenants)
+- `CHANGELOG.md`
+- `MASTER-CHECKLIST-BGE-2025.md`
+
+---
+
 [v3.4.2] - 2026-08-16 (BUGFIX CSP: PERMITIR FUENTES DE VERCEL TOOLBAR EN FONT-SRC)
 
 **Tipo:** Bugfix / CSP Compliance / Developer Experience
