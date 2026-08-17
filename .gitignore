@@ -43,7 +43,7 @@ no_usados/
 
 # Documentación local (no subir a GitHub ni a Vercel para despliegue)
 # Ignorar archivos Markdown de trabajo en la RAÍZ, permitiendo los esenciales del proyecto
-/*.md
+*.md
 !README.md # Mantener README.md en GitHub para referencia del repositorio
 CHANGELOG.md
 MASTER-CHECKLIST-BGE-2025.md
