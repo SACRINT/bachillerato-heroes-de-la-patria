@@ -158,3 +158,44 @@ dist/
 backend/node_modules/
 # NOTA: backend/package-lock.json DEBE estar en GitHub para que npm ci funcione en Vercel
 # NO ignorar este archivo - es esencial para reproducibilidad en CI/CD
+
+# ============================================
+# 🧹 LIMPIEZA ENERO 2026 (Solo local, NO subir a GitHub)
+# ============================================
+
+# Documentación y archivos no funcionales (movidos fuera del proyecto activo)
+Documentacio_2026/
+
+# Suite de testing local (conservada en disco, no en GitHub)
+/tests/
+/e2e/
+/cypress/
+/__tests__/
+/test-utils/
+/jest.config.js
+/playwright.config.ts
+/cypress.config.js
+/jest.setup.cjs
+
+# Build frontend local (conservado en disco, no en GitHub)
+/src/
+/vite.config.ts
+/tsconfig.json
+/tsconfig.tsbuildinfo
+/webpack.config.cjs
+/postcss.config.cjs
+/metaverse.html
+
+# Datos y configs del backend local (conservados en disco, no en GitHub)
+# OJO: public/data/ y backend/data/ SÍ se suben (esenciales para Vercel)
+/data/
+/config/
+/templates/
+/generated/
+/uploads/
+
+# Config local de agentes
+.claude.json
+
+# Scripts de automatización local (la regla antigua "scripts/ # comentario" no funcionaba)
+/scripts/

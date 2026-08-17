@@ -1,7 +1,0 @@
-# Ignorar todos los archivos de backup
-database/*.sql.gz
-database/*.sql
-database/*.dump
-
-# Pero mantener la estructura de directorios
-!database/.gitkeep
