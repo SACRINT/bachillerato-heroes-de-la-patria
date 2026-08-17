@@ -2680,3 +2680,13 @@ FIXES CRÍTICOS: Arquitectura Corregida y Solución Definitiva de TinyMCE
 ✅ CSP Unificada: Eliminadas definiciones de CSP conflictivas en api/app.js y backend/server.js, dejando vercel.json como única fuente de verdad.
 ✅ Rutas Sincronizadas: Corregidas rutas de Calendar y Google OAuth que daban 404 en producción.
 ✅ Solución TinyMCE: Implementada URL absoluta del CDN en tinymce-config.js para asegurar la carga correcta de plugins y temas.
+
+### [17 de Agosto 2026] - LIMPIEZA MASIVA DEL REPOSITORIO (LOCAL + GITHUB)
+*   **Tipo:** Refactor / Housekeeping
+*   **Impacto:** Repositorio reducido drasticamente. Todo lo no funcional movido a `Documentacio_2026/` (solo local, ignorada en GitHub). Vercel y el backend intactos.
+*   **Movido a Documentacio_2026/:** frontend-nextjs (509MB), blockchain (10MB), mobile, docs/ (excepto openapi.yaml requerido por swagger local), images, videos, documents, css, partials, k8s, artillery, sdk, lib, prometheus, grafana, logstash, backups, logs, scratch, .agent + 73 archivos de raiz (scripts de testing, capturas PNG, SQL de diagnostico, Dockerfiles/docker-compose legacy, planificaciones .md).
+*   **Copiado a public/ (mejora en produccion):** videos institucionales, 30+ PDFs/documentos y default-news.jpg que antes daban 404 en Vercel. Ahora todos HTTP 200.
+*   **Destrackeados de GitHub (conservados en disco):** tests, e2e, cypress, __tests__, src (build vite), data, config, templates, generated, uploads, scripts + configs de build/test + .claude.json. Ver .gitignore seccion "LIMPIEZA ENERO 2026".
+*   **Verificacion post-deploy:** Pagina 200, /health 200, /api/config/tenant 200, /api/config/public-keys 200, /api/ia/health 200 (Gemini real), /api/ai/chatbot/health 200, /js/main.js 200, videos/PDFs/imagenes 200.
+*   **Archivos Modificados:** .gitignore (reglas de limpieza)
+*   **Commit:** f31007f
