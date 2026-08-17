@@ -10,8 +10,8 @@
 
 class BGEChatbotIAAvanzado {
     constructor() {
-        this.apiEndpoint = '/api/ai-gateway/v1/process';
-        this.serviceHealthEndpoint = '/api/ai/chatbot/health';
+        this.apiEndpoint = '/api/ai-chatbot/message';
+        this.serviceHealthEndpoint = '/api/ai-chatbot/health';
         this.isInitialized = false;
         this.conversationHistory = [];
         this.currentContext = {

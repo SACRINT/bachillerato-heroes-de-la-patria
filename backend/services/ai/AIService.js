@@ -17,6 +17,8 @@ const AIChatbotDAO = require('../../data/ai-chatbot.dao');
 
 
 
+const ragService = require('../rag.service.js');
+
 class AIService {
     constructor() {
         this.aiProvider = getRealAIService();
@@ -75,25 +77,17 @@ class AIService {
     async handleTutorChat(payload, context) {
         const { message, sessionId, subject } = payload;
 
-        // 1. Get User Profile & History (Delegate to existing service logic)
-        // Ideally, we refactor AITutorService to be 'dumber' and put control here,
-        // but for migration we wrap it.
-
-        // Using RealAIService directly for the chat response for now, 
-        // effectively bypassing some of the old spaghetti code in routes.
-
         const response = await this.aiProvider.processAIRequest({
             message: message,
             userProfile: {
                 name: context.username || 'Student',
                 type: context.role || 'student',
-                level: 'intermediate' // TODO: Fetch real level
+                level: 'intermediate'
             },
             context: `Subject: ${subject}. SessionID: ${sessionId}`,
             complexity: 'medium'
         });
 
-        // 2. Async: Log to session history (Fire & Forget)
         if (sessionId) {
             aiTutorService.addMessage(sessionId, 'user', message).catch(e => console.error(e));
             aiTutorService.addMessage(sessionId, 'ai', response.text).catch(e => console.error(e));
@@ -113,14 +107,10 @@ class AIService {
     async handleAnalyticsPrediction(payload, context) {
         devLogger.log('AI_ORCHESTRATOR', `Handling Analytics Prediction for user: ${context.userId}`);
 
-        // Extract studentId from payload or context
         const studentId = payload.studentId || context.userId;
-        const type = payload.type || 'risk'; // risk, trends, etc.
+        const type = payload.type || 'risk';
 
         if (type === 'risk') {
-            // Using the new Service Layer DAO-based logic
-            // We might need to adapt the response to match what frontend expects
-            // But for now, we return the robust service response
             return await predictiveAnalyticsService.predictAcademicRisk({
                 threshold: payload.threshold || 7.0,
                 includeFactors: true
@@ -141,11 +131,9 @@ class AIService {
 
     /**
      * Handler for Sentiment Analysis
-     * Uses Local Logic or Lightweight model
      */
     async handleSentimentAnalysis(payload, context) {
         const { text } = payload;
-        // Verify text length to decide provider
         const useLocal = text.length < 100;
 
         return await this.aiProvider.processAIRequest({
@@ -156,9 +144,10 @@ class AIService {
             systemPrompt: 'Return JSON: { score: number, label: "positive"|"negative"|"neutral" }'
         });
     }
+
     /**
-    * Handler for Personality Profiling (VAK, etc.)
-    */
+     * Handler for Personality Profiling (VAK, etc.)
+     */
     async handlePersonalityProfiling(payload, context) {
         const { action, responses } = payload;
         const userId = context.userId;
@@ -173,10 +162,9 @@ class AIService {
     }
 
     /**
-     * Handler for Content Generation (Intelligent Login, etc.)
+     * Handler for Content Generation
      */
     async handleContentGeneration(payload, context) {
-        // e.g. payload: { promptId: 'basic-summary', userInput: '...', userProfile: {} }
         const { promptId, userInput, systemPrompt } = payload;
 
         return await this.aiProvider.processAIRequest({
@@ -187,44 +175,38 @@ class AIService {
             systemPrompt: systemPrompt || 'You are an helpful AI assistant.'
         });
     }
+
     /**
-     * Handler for General Chat (FAQ + Context Aware)
+     * Handler for General Chat (RAG Institucional + FAQ + Context Aware)
      */
     async handleGeneralChat(payload, context) {
         const { message, language = 'es', includeContext = true } = payload;
         const userId = context.userId;
 
-        devLogger.log('AI_ORCHESTRATOR', `Handling General Chat for user: ${userId}`);
+        devLogger.log('AI_ORCHESTRATOR', `Handling General Chat with RAG for user: ${userId || 'anonymous'}`);
 
-        // 1. Get History
+        // 1. Ejecutar búsqueda RAG en Base de Conocimiento Institucional
+        const relevantDocs = ragService.search(message, 2);
+        const ragContext = ragService.buildAugmentedPrompt(message, relevantDocs);
+
+        // 2. Obtener Historial de Conversación
         const history = userId ? await AIChatbotDAO.getChatHistory(userId, 5) : [];
         const formattedHistory = history.reverse().flatMap(row => [
             { role: 'user', content: row.user_message },
             { role: 'assistant', content: row.assistant_message }
         ]);
 
-        // 2. Search FAQs
+        // 3. Buscar FAQs complementarias si no hay documentos RAG directos
         let faqContext = '';
-        if (includeContext) {
-            const faqs = await AIChatbotDAO.searchRelevantFAQs(message, 3);
+        if (includeContext && relevantDocs.length === 0) {
+            const faqs = await AIChatbotDAO.searchRelevantFAQs(message, 2);
             if (faqs && faqs.length > 0) {
                 faqContext = faqs.map((f, i) => `[FAQ ${i + 1}] Q: ${f.pregunta}\nA: ${f.respuesta}`).join('\n\n');
             }
         }
 
-        // 3. Call AI
-        const systemPrompt = `Eres un asistente virtual académico del Bachillerato General Estatal por Competencias "Héroes de la Patria".
-        Tu objetivo es ayudar con información académica y administrativa.
-        Responde de manera amigable, profesional y concisa. Siempre en español.
-
-        INFORMACIÓN INSTITUCIONAL CLAVE:
-        - Institución: Bachillerato General Estatal "Héroes de la Patria"
-        - Director: Ing. Samuel Cruz Interial (Director General, con +23 años de experiencia)
-        - Ubicación: C. Manuel Ávila Camacho #7, Col. Centro, Coronel Tito Hernández, Venustiano Carranza, Puebla. C.P. 73030.
-        - Horarios: Lunes a Viernes de 8:00 AM a 1:30 PM.
-        - CCT: 21EBH0200X.
-
-        ${faqContext ? `\nUsa la siguiente información de la base de conocimiento si es relevante:\n${faqContext}` : ''}`;
+        const fullSystemPrompt = `${ragContext.systemPrompt}
+        ${faqContext ? `\nINFORMACIÓN ADICIONAL DE FAQS:\n${faqContext}` : ''}`;
 
         try {
             const response = await this.aiProvider.processAIRequest({
@@ -233,22 +215,32 @@ class AIService {
                     name: context.username || 'Usuario',
                     type: context.role || 'guest'
                 },
-                systemPrompt: systemPrompt,
+                systemPrompt: fullSystemPrompt,
                 context: conversationHistoryToString(formattedHistory),
                 complexity: 'medium'
             });
 
-            // 4. Save History (Async)
-            if (userId && response.text) {
-                AIChatbotDAO.saveChatMessage(userId, message, response.text, response.tokensUsed || 0).catch(e => console.error(e));
+            let finalResponseText = response.text;
+
+            // Asegurar que si hay documento oficial y la respuesta no incluye la cita, se añada explícitamente
+            if (relevantDocs.length > 0 && !finalResponseText.includes('[Fuente:')) {
+                finalResponseText += `\n\n[Fuente: ${relevantDocs[0].source}]`;
+            }
+
+            // 4. Guardar Historial en Base de Datos
+            if (userId && finalResponseText) {
+                AIChatbotDAO.saveChatMessage(userId, message, finalResponseText, response.tokensUsed || 0).catch(e => console.error(e));
             }
 
             return {
                 success: true,
-                response: response.text,
+                response: finalResponseText,
+                sources: ragContext.sources,
                 metadata: {
                     model: response.model,
-                    tokens: response.tokensUsed
+                    provider: response.provider,
+                    tokens: response.tokensUsed,
+                    rag_matches: relevantDocs.length
                 }
             };
         } catch (error) {

@@ -198,7 +198,23 @@ exports.callGemini = async function callGemini(prompt, type = 'short', options =
 
     // ---- MODO DEMO ----
     if (!isConfigured) {
-        console.warn('[IA-DEMO] GEMINI_API_KEY no configurada — devolviendo respuesta simulada');
+        console.warn('[IA-DEMO] GEMINI_API_KEY no configurada — devolviendo respuesta simulada contextualizada');
+
+        // Si el prompt incluye contexto RAG institucional, responder con la información del documento
+        if (prompt.includes('[DOCUMENTO OFICIAL') || prompt.includes('INFORMACIÓN INSTITUCIONAL OFICIAL')) {
+            const match = prompt.match(/Contenido:\s*([\s\S]*?)(?=\n\n|\n---|$)/i);
+            const sourceMatch = prompt.match(/Fuente:\s*([^\n]+)/i);
+            const sourceStr = sourceMatch ? sourceMatch[1].trim() : 'Reglamento General BGE';
+            const contentStr = match ? match[1].trim() : 'Información institucional verificada del Bachillerato General Estatal "Héroes de la Patria".';
+            
+            return {
+                text: `${contentStr}\n\n[Fuente: ${sourceStr}]`,
+                tokensUsed: 40,
+                isDemo: true,
+                model: 'demo-rag'
+            };
+        }
+
         const demoResponses = {
             short:   `[DEMO] Esta es una respuesta simulada de corta extensión para: "${prompt.substring(0, 60)}...". Configura GEMINI_API_KEY en backend/.env para activar llamadas reales.`,
             long:    `[DEMO] Respuesta larga simulada.\n\nEl tema "${prompt.substring(0, 80)}" es un concepto importante en el ámbito educativo. Esta respuesta es un placeholder mientras configuras tu GEMINI_API_KEY en el archivo backend/.env.\n\nUna vez configurada la key, recibirás respuestas reales de Google Gemini Flash.`,

@@ -164,6 +164,8 @@ const gradingRoutes = loadRoute('./routes/grading-engine'); // ✅ GRADING ENGIN
 const realtimeRoutes = loadRoute('./routes/realtime-analytics'); // ✅ REAL-TIME ANALYTICS - SEMANA 47 (FASE 6)
 const notifCenterRoutes = loadRoute('./routes/notification-center'); // ✅ NOTIFICATION CENTER - SEMANA 51 (FASE 7)
 const helpdeskRoutes = loadRoute('./routes/helpdesk'); // ✅ HELPDESK - SEMANA 54 (FASE 7)
+const adaptiveContentRoutes = loadRoute('./routes/adaptive-content'); // ✅ ADAPTIVE CONTENT (FASE 5)
+const knowledgeGraphRoutes = loadRoute('./routes/knowledge-graph'); // ✅ KNOWLEDGE GRAPH (FASE 5)
 const mobileAuthRoutes = require('./routes/mobile/auth'); // ✅ MOBILE AUTH - SEMANA 17
 const microlearningRoutes = require('./routes/microlearning'); // ✅ MICROLEARNING - SEMANA 18
 const voiceInterfaceRoutes = require('./routes/voice-interface'); // ✅ VOICE INTERFACE - SEMANA 19
@@ -594,6 +596,13 @@ app.use('/api/notifications/center', notifCenterRoutes);  // ✅ NOTIFICATION CE
 app.use('/api/support/tickets', helpdeskRoutes);  // ✅ HELPDESK - SEMANA 54 (FASE 7)
 app.use('/api/docs', apiDocsRoutes); // ✅ SWAGGER UI - SEMANA 29
 app.use('/api/tutor', aiTutorRoutes); // ✅ AI TUTOR SERVICE - SEMANAS 27-28
+app.use('/api/ai-chatbot', aiChatbotRoutes); // ✅ AI CHATBOT CON RAG REAL (FASE 5)
+app.use('/api/ai/chatbot', aiChatbotRoutes); // ✅ ALIAS CHATBOT RAG
+app.use('/api/deteccion-riesgos', deteccionRiesgosRoutes); // ✅ DETECCIÓN HEURÍSTICA DE RIESGO (FASE 5)
+app.use('/api/riesgos', deteccionRiesgosRoutes); // ✅ ALIAS RIESGOS ACADÉMICOS
+app.use('/api/ai-tutor-v2', tutorV2Routes); // ✅ TUTOR IA CON MEMORIA (FASE 5)
+app.use('/api/adaptive-content', adaptiveContentRoutes); // ✅ LECCIONES ADAPTATIVAS VAK + SPACED REP (FASE 5)
+app.use('/api/knowledge', knowledgeGraphRoutes); // ✅ GRAFO DE CONOCIMIENTO (FASE 5)
 /* 🛑 CONSOLIDATED INTO AI ORCHESTRATOR
 app.use('/api/ai/analytics', aiAnalyticsRoutes); // ✅ AI DESCRIPTIVE ANALYTICS - SEMANA 9 (19 DIC 2025)
 app.use('/api/ai/tutor-alpha', aiTutorAlphaRoutes); // ✅ AI TUTOR ALPHA - SEMANA 10 (19 DIC 2025)

@@ -254,6 +254,26 @@ class LocalIAProcessor {
         const { message, context, conversationHistory, systemPrompt } = params;
 
         try {
+            // 0. Si se inyectó contexto RAG institucional en systemPrompt, usarlo prioritariamente
+            if (systemPrompt && (systemPrompt.includes('[DOCUMENTO OFICIAL') || systemPrompt.includes('INFORMACIÓN INSTITUCIONAL OFICIAL'))) {
+                const match = systemPrompt.match(/Contenido:\s*([\s\S]*?)(?=\n\n|\n---|$)/i);
+                const sourceMatch = systemPrompt.match(/Fuente:\s*([^\n]+)/i);
+                if (match && sourceMatch) {
+                    const contentStr = match[1].trim();
+                    const sourceStr = sourceMatch[1].trim();
+                    const rText = `${contentStr}\n\n[Fuente: ${sourceStr}]`;
+                    return {
+                        text: rText,
+                        confidence: 0.95,
+                        intent: 'rag_institutional',
+                        processingTime: Date.now() - startTime,
+                        contextModifiers: [],
+                        knowledgeSource: sourceStr,
+                        isLocal: true
+                    };
+                }
+            }
+
             // 1. Análisis de intención
             const intent = this.classifyIntent(message);
 

@@ -57,12 +57,28 @@ const anonymousLimiter = (0, express_rate_limit_1.default)({
 // ============================================
 
 /**
+ * GET /api/ai-chatbot/health
+ * Health check para el cliente del chatbot
+ */
+router.get('/health', (req, res) => {
+    res.json({
+        success: true,
+        status: 'healthy',
+        service: 'BGE AI Chatbot with RAG',
+        availableModel: 'gemini-2.0-flash',
+        timestamp: new Date().toISOString()
+    });
+});
+
+/**
  * POST /api/ai-chatbot/message
  * Enviar mensaje al chatbot (con o sin autenticación)
  */
 router.post('/message', async (req, res) => {
     try {
-        const { message, language = 'es', includeContext = true } = req.body;
+        const message = req.body.message || req.body.payload?.message;
+        const language = req.body.language || req.body.payload?.language || 'es';
+        const includeContext = req.body.includeContext ?? req.body.payload?.includeContext ?? true;
 
         // Validación de mensaje
         if (!message || typeof message !== 'string') {

@@ -105,34 +105,22 @@
         // Send to Backend
         try {
             const token = sessionStorage.getItem('bge_auth_token') || localStorage.getItem('bge_auth_token');
-            if (!token) {
-                alert('Sesión no encontrada. Por favor inicia sesión.');
-                // Calculate locally anyway for demo
-                calculateResultsLocally();
-                return;
-            }
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
 
-            const res = await fetch('/api/ai/v1/process', {
+            const res = await fetch('/api/adaptive-content/vak/assess', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
+                headers,
                 body: JSON.stringify({
-                    intent: 'PERSONALITY',
-                    payload: {
-                        action: 'assess',
-                        responses: userResponses
-                    }
+                    responses: userResponses
                 })
             });
 
             const json = await res.json();
 
-            if (json.success) {
+            if (json.success && json.data) {
                 displayResults(json.data);
             } else {
-                console.error(json.error);
                 calculateResultsLocally(); // Fallback
             }
         } catch (e) {
