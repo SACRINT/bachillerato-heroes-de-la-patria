@@ -60,7 +60,9 @@ const cspConfig = {
             "https://cdn.jsdelivr.net",        // Bootstrap Icons
             "https://cdn.tiny.cloud",          // TinyMCE fonts
             "https://*.tiny.cloud",
-            "https://sp.tinymce.com"           // TinyMCE Spark
+            "https://sp.tinymce.com",          // TinyMCE Spark
+            "https://vercel.live",             // Vercel Toolbar fonts (Geist, Geist Mono)
+            "https://*.vercel.live"
         ],
 
         // 5. IMÁGENES - Whitelist de dominios (no wildcard https:)

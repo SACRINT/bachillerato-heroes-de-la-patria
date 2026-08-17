@@ -1,5 +1,25 @@
 # CHANGELOG - Bachillerato General Estatal "Héroes de la Patria"
 
+[v3.4.2] - 2026-08-16 (BUGFIX CSP: PERMITIR FUENTES DE VERCEL TOOLBAR EN FONT-SRC)
+
+**Tipo:** Bugfix / CSP Compliance / Developer Experience
+**Estado:** COMPLETADO
+
+### Correcciones Implementadas:
+1. **CSP FONT-SRC VERCEL TOOLBAR (`vercel.json` y `backend/config/csp-config.js`):**
+   - Agregados `https://vercel.live` y `https://*.vercel.live` a la directiva `font-src`.
+   - Elimina las advertencias/violaciones de CSP en consola provocadas por la carga de fuentes del Vercel Toolbar (`geist.woff2` y `geist_mono.woff2`).
+
+### Archivos Modificados:
+- `vercel.json` (directiva `font-src` en header CSP)
+- `backend/config/csp-config.js` (array `fontSrc`)
+
+### Verificación:
+- `vercel.json`: JSON válido (`JSON.parse` OK)
+- `backend/config/csp-config.js`: Sintaxis JS válida (`node -c` OK)
+
+---
+
 [v3.4.1] - 2026-08-16 (FASE 3: GAMIFICACIÓN REAL, IA GEMINI FLASH Y MIGRACIÓN SQL ROBUSTA EN NEON)
 
 **Tipo:** Major Feature / Database Migration / AI Integration / Gamification
