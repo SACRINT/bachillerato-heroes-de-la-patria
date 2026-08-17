@@ -45,9 +45,9 @@ no_usados/
 # Ignorar archivos Markdown de trabajo en la RAÍZ, permitiendo los esenciales del proyecto
 /*.md
 !README.md # Mantener README.md en GitHub para referencia del repositorio
-# !CHANGELOG.md
-# !MASTER-CHECKLIST-BGE-2025.md
-# !CLAUDE.md
+CHANGELOG.md
+MASTER-CHECKLIST-BGE-2025.md
+CLAUDE.md
 # Los .md dentro de docs/, doc/ y backend/docs/ SÍ se suben (documentación del proyecto)
 
 # Archivos de trabajo de agentes (NO subir a GitHub)
