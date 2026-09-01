@@ -523,7 +523,7 @@ app.get('/api/config/tenant', (req, res) => {
         enable_gamification: true
     };
 
-    const hostname = req.headers.host || 'bge-heroesdelapatria.vercel.app';
+    const hostname = req.headers.host || 'sipweb-bg.vercel.app';
 
     const response = {
         success: true,
@@ -696,18 +696,18 @@ app.post('/api/auth/login', async (req, res) => {
                 permissions: getPermissionsForRole(user.role)
             };
 
-            const jwtSecret = process.env.JWT_SECRET || 'bge-secret-key-heroes-patria-2024-jwt-production';
+            const jwtSecret = process.env.JWT_SECRET || 'sipweb-bg-jwt-secret-2026-production';
 
             const accessToken = jwt.sign(
                 { ...userPayload, type: 'access' },
                 jwtSecret,
-                { expiresIn: '24h', audience: 'bge-users', issuer: 'bge-heroes-patria' }
+                { expiresIn: '24h', audience: 'sipweb-users', issuer: 'sipweb-bg' }
             );
 
             const refreshToken = jwt.sign(
                 { userId: user.id, uuid: user.uuid, email: user.email, type: 'refresh' },
                 jwtSecret,
-                { expiresIn: '7d', audience: 'bge-users', issuer: 'bge-heroes-patria' }
+                { expiresIn: '7d', audience: 'sipweb-users', issuer: 'sipweb-bg' }
             );
 
             const accessTokenExpiry = Math.floor(Date.now() / 1000) + (24 * 60 * 60);

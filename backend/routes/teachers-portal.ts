@@ -105,7 +105,7 @@ router.post('/login', [
             {
                 expiresIn: '8h',
                 audience: 'bge-users',
-                issuer: 'bge-heroes-patria'
+                issuer: 'sipweb-bg'
             }
         );
 

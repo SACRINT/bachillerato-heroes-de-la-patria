@@ -9,7 +9,7 @@ const crypto = require('crypto');
 
 class JWTUtils {
     constructor() {
-        this.jwtSecret = process.env.JWT_SECRET || 'bge-secret-key-heroes-patria-2024-jwt-production';
+        this.jwtSecret = process.env.JWT_SECRET || 'sipweb-bg-jwt-secret-2026-production';
         this.algorithm = 'HS256';
 
         // Configuraciones de tiempo
@@ -18,7 +18,7 @@ class JWTUtils {
         this.rememberMeExpiry = process.env.REMEMBER_ME_EXPIRY || '30d';
 
         // Configuración de emisor
-        this.issuer = 'bge-heroes-patria';
+        this.issuer = 'sipweb-bg';
         this.audience = 'bge-users';
 
         // Blacklist de tokens (en memoria, en producción usar Redis)

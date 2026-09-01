@@ -1,5 +1,5 @@
 {
-  "name": "heroes-patria-backend",
+  "name": "sipweb-bg-backend",
   "version": "1.0.0",
   "description": "Backend API para Bachillerato General Estatal Héroes de la Patria",
   "main": "server.js",

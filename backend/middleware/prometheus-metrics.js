@@ -11,7 +11,7 @@ const register = new promClient.Registry();
 
 // Configurar prefix global
 register.setDefaultLabels({
-  app: 'bge-heroes-patria',
+  app: 'sipweb-bg',
   env: process.env.NODE_ENV || 'development',
 });
 

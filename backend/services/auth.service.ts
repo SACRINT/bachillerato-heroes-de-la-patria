@@ -297,7 +297,7 @@ export class AuthService {
 
         return jwt.sign(payload, this.jwtSecret, {
             expiresIn: this.tokenExpiry,
-            issuer: 'bge-heroes-patria',
+            issuer: 'sipweb-bg',
             subject: user.id.toString(),
             audience: 'bge-users'
         } as jwt.SignOptions);
@@ -316,7 +316,7 @@ export class AuthService {
 
         return jwt.sign(payload, this.jwtSecret, {
             expiresIn: this.refreshTokenExpiry,
-            issuer: 'bge-heroes-patria',
+            issuer: 'sipweb-bg',
             subject: user.id.toString(),
             audience: 'bge-users'
         } as jwt.SignOptions);
@@ -328,7 +328,7 @@ export class AuthService {
     verifyToken(token: string): any {
         try {
             return jwt.verify(token, this.jwtSecret, {
-                issuer: 'bge-heroes-patria',
+                issuer: 'sipweb-bg',
                 audience: 'bge-users'
             });
         } catch (error: any) {

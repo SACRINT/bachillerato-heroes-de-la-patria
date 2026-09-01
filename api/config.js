@@ -55,9 +55,9 @@ function handleTenantConfig(req, res) {
         };
 
         // Obtener hostname de forma segura
-        let hostname = 'bge-heroesdelapatria.vercel.app';
+        let hostname = 'sipweb-bg.vercel.app';
         try {
-            hostname = req.headers.host || req.headers['x-forwarded-host'] || 'bge-heroesdelapatria.vercel.app';
+            hostname = req.headers.host || req.headers['x-forwarded-host'] || 'sipweb-bg.vercel.app';
         } catch (e) {
             console.warn('[CONFIG-API] Warning obtaining hostname:', e.message);
         }

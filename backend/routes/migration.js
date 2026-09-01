@@ -109,7 +109,7 @@ router.get('/status', authenticateToken, async (req, res) => {
                     configuracion: {
                         host: process.env.DB_HOST || 'localhost',
                         puerto: process.env.DB_PORT || 3306,
-                        base_datos: process.env.DB_NAME || 'heroes_patria_db'
+                        base_datos: process.env.DB_NAME || 'sipweb-bg'
                     },
                     tablas: tablesInfo
                 },

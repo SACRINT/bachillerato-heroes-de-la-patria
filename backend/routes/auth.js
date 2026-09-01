@@ -926,7 +926,7 @@ router.post('/public-register', registerLimiter, publicRegisterValidation, async
         const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
         await user_dao_1.default.deleteVerificationTokens(userId);
         await user_dao_1.default.createVerificationToken(userId, verificationToken, 'registration', expiresAt);
-        const baseUrl = process.env.APP_URL || 'https://bge-heroesdelapatria.vercel.app';
+        const baseUrl = process.env.APP_URL || 'https://sipweb-bg.vercel.app';
         const verificationUrl = `${baseUrl}/verify-email.html?token=${verificationToken}`;
         try {
             await emailService_1.default.sendEmail({
@@ -992,7 +992,7 @@ router.post('/resend-verification', registerLimiter, async (req, res) => {
         const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
         await user_dao_1.default.deleteVerificationTokens(user.id);
         await user_dao_1.default.createVerificationToken(user.id, verificationToken, 'registration', expiresAt);
-        const baseUrl = process.env.APP_URL || 'https://bge-heroesdelapatria.vercel.app';
+        const baseUrl = process.env.APP_URL || 'https://sipweb-bg.vercel.app';
         const verificationUrl = `${baseUrl}/verify-email.html?token=${verificationToken}`;
         await emailService_1.default.sendEmail({
             to: email, subject: 'Verifica tu Email - BGE Héroes de la Patria', template: 'email-verification',

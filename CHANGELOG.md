@@ -1,5 +1,47 @@
 # CHANGELOG - SIPWEB-BG / EDUZONA EMS
 
+[v4.2.0] - 2026-09-01 (REBRAND COMPLETO - DOMINIO + BASE DE DATOS)
+
+**Tipo:** Infrastructure / Rebrand / Domain Migration
+**Estado:** ✅ COMPLETADO
+
+### Cambios de Dominio:
+- ✅ Dominio: `bge-heroesdelapatria.vercel.app` → `sipweb-bg.vercel.app`
+- ✅ CSP headers actualizados en `vercel.json`
+- ✅ CORS origins actualizados en `.env`
+- ✅ Referencias en backend actualizadas (api/index.js, api/config.js, server.js, auth.js, etc.)
+
+### Cambios de Base de Datos:
+- ✅ Nombre DB: `heroes_patria_db` → `sipweb-bg`
+- ✅ Default database name actualizado en `backend/config/database.js`
+- ✅ Default database name actualizado en `.env` y `.env.example`
+
+### Cambios de Marca:
+- ✅ Package names: `bachillerato-heroes-patria-website` → `sipweb-bg`
+- ✅ Backend package: `heroes-patria-backend` → `sipweb-bg-backend`
+- ✅ JWT issuer: `bge-heroes-patria` → `sipweb-bg`
+- ✅ JWT secret default actualizado
+- ✅ Prometheus metrics app name actualizado
+- ✅ Tenant context subdomains actualizados (sipweb-bg, heroes, zona1)
+- ✅ Correos electrónicos actualizados en institutional-knowledge.js
+
+### Archivos Modificados (20+):
+- vercel.json, package.json, .env, backend/.env.example
+- api/index.js, api/config.js
+- backend/config/database.js, backend/config/csp-config.js
+- backend/utils/jwtUtils.js, backend/middleware/*.js
+- backend/routes/auth.js, backend/routes/migration.js
+- backend/services/auth.service.js, backend/services/auth.service.ts
+- backend/services/rag.service.js, backend/data/institutional-knowledge.js
+- backend/scripts/create-tenants-table.sql
+- backend/ai/knowledge-transfer/knowledge_transfer_service.js
+
+### Acciones Requeridas por el Usuario:
+1. **Vercel Dashboard:** Eliminar dominio antiguo, agregar `sipweb-bg.vercel.app`
+2. **Neon Console:** Crear nueva DB `sipweb-bg`, migrar datos, actualizar `DATABASE_URL` en Vercel
+
+---
+
 [v4.1.2] - 2026-09-01 (FASE 0 COMPLETADA - ADAPTACIÓN HTML MULTI-TENANT)
 
 **Tipo:** Frontend / Multi-Tenant / HTML Adaptation

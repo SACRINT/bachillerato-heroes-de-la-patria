@@ -85,7 +85,7 @@ class RAGService {
         if (!relevantDocs || relevantDocs.length === 0) {
             return {
                 systemPrompt: `Eres el Asistente Virtual Oficial del Bachillerato General Estatal "Héroes de la Patria". 
-Responde con amabilidad, precisión y tono institucional a los estudiantes, padres y docentes. Si no tienes certeza de un dato administrativo, sugiere amablemente acudir a la oficina de Control Escolar o enviar correo a contacto@bge-heroesdelapatria.edu.mx.`,
+Responde con amabilidad, precisión y tono institucional a los estudiantes, padres y docentes. Si no tienes certeza de un dato administrativo, sugiere amablemente acudir a la oficina de Control Escolar o enviar correo a contacto@sipweb-bg.edu.mx.`,
                 contextText: "",
                 sources: []
             };

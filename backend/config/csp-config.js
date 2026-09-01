@@ -82,7 +82,7 @@ const cspConfig = {
         // 6. CONEXIONES - Endpoints específicos
         connectSrc: [
             "'self'",
-            "https://bge-heroesdelapatria.vercel.app",  // Production domain
+            "https://sipweb-bg.vercel.app",  // Production domain
             "https://cdn.jsdelivr.net",        // ✅ AGREGADO: Source maps de Bootstrap
             "https://cdnjs.cloudflare.com",    // ✅ AGREGADO: Source maps de librerías
             "https://sp.tinymce.com",          // TinyMCE plugin server

@@ -79,8 +79,8 @@ El trámite se puede iniciar en línea en la sección de Pre-Registro del portal
         content: `Información de contacto y localización del Bachillerato General Estatal "Héroes de la Patria":
 - Dirección: Calle 2 Poniente No. 303, Col. Centro, Heroica Puebla de Zaragoza, Puebla, C.P. 72000.
 - Teléfonos de atención: (222) 232-4567 y (222) 232-4568.
-- Correo de contacto general: contacto@bge-heroesdelapatria.edu.mx
-- Correo de Control Escolar: controlescolar@bge-heroesdelapatria.edu.mx
+- Correo de contacto general: contacto@sipweb-bg.edu.mx
+- Correo de Control Escolar: controlescolar@sipweb-bg.edu.mx
 - Horario de atención en ventanillas: Lunes a Viernes de 07:30 a 14:00 hrs.`
     }
 ];

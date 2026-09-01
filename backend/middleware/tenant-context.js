@@ -39,7 +39,7 @@ function detectTenantId(req) {
             const parts = cleanHost.split('.');
             if (parts.length >= 2) {
                 const subdomain = parts[0];
-                if (!['www', 'api', 'admin', 'dev', 'staging', 'bge-heroesdelapatria', 'bge-heroes-de-la-patria'].includes(subdomain) && !cleanHost.includes('vercel.app')) {
+                if (!['www', 'api', 'admin', 'dev', 'staging', 'sipweb-bg', 'heroes', 'zona1'].includes(subdomain) && !cleanHost.includes('vercel.app')) {
                     return subdomain;
                 }
             }

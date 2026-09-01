@@ -320,8 +320,8 @@ const corsOptions = {
                 'http://localhost:8080',
                 'http://127.0.0.1:8080',
                 'http://localhost:3000',
-                'https://bge-heroesdelapatria.vercel.app', // 🌍 PRODUCCIÓN
-                'https://bge-heroesdelapatria.vercel.app/' // Variación con slash
+                'https://sipweb-bg.vercel.app', // 🌍 PRODUCCIÓN
+                'https://sipweb-bg.vercel.app/' // Variación con slash
             ];
 
         // ✅ CORRECCIÓN: Permitir origin null (archivos HTML locales) y undefined

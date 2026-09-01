@@ -442,7 +442,7 @@ class KnowledgeTransferService {
             docId: `api_${Date.now()}`,
             title: 'Documentación de API REST',
             version: 'v2.0',
-            baseUrl: 'https://bge-heroesdelapatria.vercel.app/api',
+            baseUrl: 'https://sipweb-bg.vercel.app/api',
             format: 'OpenAPI 3.0',
             totalEndpoints: 303,
             categories: [

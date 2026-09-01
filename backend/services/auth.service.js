@@ -226,7 +226,7 @@ class AuthService {
         };
         return jsonwebtoken_1.default.sign(payload, this.jwtSecret, {
             expiresIn: this.tokenExpiry,
-            issuer: 'bge-heroes-patria',
+            issuer: 'sipweb-bg',
             subject: user.id.toString(),
             audience: 'bge-users'
         });
@@ -243,7 +243,7 @@ class AuthService {
         };
         return jsonwebtoken_1.default.sign(payload, this.jwtSecret, {
             expiresIn: this.refreshTokenExpiry,
-            issuer: 'bge-heroes-patria',
+            issuer: 'sipweb-bg',
             subject: user.id.toString(),
             audience: 'bge-users'
         });
@@ -254,7 +254,7 @@ class AuthService {
     verifyToken(token) {
         try {
             return jsonwebtoken_1.default.verify(token, this.jwtSecret, {
-                issuer: 'bge-heroes-patria',
+                issuer: 'sipweb-bg',
                 audience: 'bge-users'
             });
         }

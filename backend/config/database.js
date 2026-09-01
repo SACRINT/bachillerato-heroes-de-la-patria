@@ -54,7 +54,7 @@ const poolConfig = hasValidUrl
         port: process.env.DB_PORT || 5432,
         user: process.env.DB_USER || 'postgres',
         password: process.env.DB_PASSWORD || '',
-        database: process.env.DB_NAME || 'heroes_patria_db',
+        database: process.env.DB_NAME || 'sipweb-bg',
         max: parseInt(process.env.DB_CONNECTION_LIMIT) || 100,   // Aumentado de 10 a 100
         min: parseInt(process.env.DB_CONNECTION_MIN) || 10,      // Min = 10 conexiones
         idleTimeoutMillis: 60000,                                // Aumentado de 30s a 60s

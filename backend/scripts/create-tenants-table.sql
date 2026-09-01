@@ -101,8 +101,8 @@ VALUES (
             "primaryColor": "#1F3A93",
             "secondaryColor": "#FFB813",
             "accentColor": "#D4AF37",
-            "logoUrl": "https://bge-heroesdelapatria.vercel.app/images/logo.png",
-            "faviconUrl": "https://bge-heroesdelapatria.vercel.app/favicon.ico"
+"logoUrl": "https://sipweb-bg.vercel.app/images/logo.png",
+                    "faviconUrl": "https://sipweb-bg.vercel.app/favicon.ico"
         },
         "features": {
             "studentManagement": true,
