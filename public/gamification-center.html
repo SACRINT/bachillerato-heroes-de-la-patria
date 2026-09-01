@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Centro de Gamificación - IACoins | BGE Héroes de la Patria</title>
+    <title>Centro de Gamificación - IACoins | BGE <span data-tenant-field="school_short_name">nuestro plantel</span></title>
 
     <!-- Preconnects -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,8 +12,8 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
 
     <!-- Meta tags -->
-    <meta name="description"
-        content="Centro de Gamificación - Gana IACoins, completa retos, sube de nivel y desbloquea recompensas. Sistema Learn-to-Earn del BGE Héroes de la Patria.">
+    <meta name="description" id="page-description" data-tenant-field="mision" content="Bachillerato General - Educación media superior de calidad."
+        >
     <meta name="keywords" content="Gamificación, iacoins, retos, niveles, aprendizaje, recompensas">
     <meta name="theme-color" content="#1976D2">
 
@@ -38,6 +38,7 @@
 
     <!-- 🏢 Multi-Tenancy Support -->
     <script src="js/tenant-config-loader.js"></script>
+    <script src="js/tenant-content-binder.js"></script>
     <!-- DOMPurify XSS Protection -->
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
     <!-- Main JS for dynamic header/footer loading -->

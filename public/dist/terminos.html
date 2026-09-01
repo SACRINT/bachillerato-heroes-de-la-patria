@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title" data-base-title="Términos y Condiciones - Bachillerato General Estatal " Héroes de la
-        Patria"">Términos y Condiciones - Bachillerato General Estatal "Héroes de la Patria"</title>
+    <title id="page-title" data-base-title="Términos y Condiciones" data-tenant-field="school_name" id="page-title" data-base-title="Términos y Condiciones - Bachillerato General Estatal " Héroes de la
+        Patria"">Términos y Condiciones - Bachillerato General</title>
 
     <!-- Preconnects -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,8 +16,8 @@
     <link rel="preload" href="css/style.css" as="style">
 
     <!-- Meta tags -->
-    <meta name="description" id="page-description"
-        content="Términos y Condiciones del sitio web del Bachillerato General Estatal Héroes de la Patria. Normas de uso y condiciones legales.">
+    <meta name="description" id="page-description" data-tenant-field="mision" content="Bachillerato General - Educación media superior de calidad." id="page-description"
+        >
     <meta name="keywords" content="términos condiciones, normas uso, bachillerato heroes patria, condiciones legales">
     <meta name="theme-color" content="#1976D2">
 
@@ -137,7 +137,7 @@
                                                 "La Institución"
                                             </h6>
                                             <p class="card-text small mb-0">
-                                                Se refiere al Bachillerato General Estatal "Héroes de la Patria" y todo
+                                                Se refiere al <span data-tenant-field="school_type">Bachillerato General</span> <span data-tenant-field="school_short_name">BGE</span> y todo
                                                 su personal autorizado.
                                             </p>
                                         </div>
@@ -281,7 +281,7 @@
                                     <tbody>
                                         <tr>
                                             <td><strong>Logotipo Institucional</strong></td>
-                                            <td>Â© Bachillerato Héroes de la Patria</td>
+                                            <td>Â© Bachillerato <span data-tenant-field="school_short_name">nuestro plantel</span></td>
                                             <td>Solo con autorización expresa</td>
                                         </tr>
                                         <tr>
@@ -504,7 +504,7 @@
                                                 <i class="fas fa-map-marker-alt text-primary me-3 mt-1"></i>
                                                 <div>
                                                     <strong>Dirección:</strong><br>
-                                                    Coronel Tito Hernández, Venustiano Carranza, Puebla, C.P. 73560
+                                                    <span data-tenant-field="direccion">Dirección del plantel, Puebla</span>, C.P. 73560
                                                 </div>
                                             </div>
                                         </div>
@@ -564,7 +564,8 @@
     <script src="js/search-unified.js"></script>
     <script src="js/chatbot.js"></script>
     <!-- ðŸ¢ TENANT CONFIG LOADER - Carga configuración multi-tenancy desde BD -->
-    <script src="js/tenant-config-loader.js" defer></script>
+    <script src="js/tenant-config-loader.js"></script>
+    <script src="js/tenant-content-binder.js"></script>
 
 </body>
 

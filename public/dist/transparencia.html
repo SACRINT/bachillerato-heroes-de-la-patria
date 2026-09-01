@@ -138,8 +138,8 @@
                                 </div>
                                 <h5 class="card-title text-dark fw-bold">Domicilio</h5>
                                 <div class="text-start mt-3">
-                                    <p class="mb-1">Coronel Tito Hernández</p>
-                                    <p class="mb-1">Venustiano Carranza, Puebla</p>
+                                    <p class="mb-1"><span data-tenant-field="direccion">Dirección del plantel</span></p>
+                                    <p class="mb-1"><span data-tenant-field="municipio">Municipio</span>, Puebla</p>
                                     <p class="mb-1">C.P. 73560</p>
                                     <p class="mb-0">México</p>
                                 </div>
@@ -361,11 +361,11 @@
                             <h5 class="fw-bold text-primary mb-3">Datos de Contacto</h5>
                             <div class="contact-item mb-3">
                                 <i class="fas fa-map-marker-alt text-primary me-2"></i>
-                                <strong>Dirección:</strong> Coronel Tito Hernández, V. Carranza, Puebla
+                                <strong>Dirección:</strong> <span data-tenant-field="direccion">Dirección del plantel, Puebla</span>
                             </div>
                             <div class="contact-item mb-3">
                                 <i class="fas fa-envelope text-primary me-2"></i>
-                                <strong>Email:</strong> transparencia@heroesdelapatria.edu.mx
+                                <strong>Email:</strong> transparencia@ejemplo.edu.mx
                             </div>
                             <div class="contact-item mb-3">
                                 <i class="fas fa-phone text-primary me-2"></i>
@@ -600,7 +600,8 @@
 
 
     <!-- 🏷¢ TENANT CONFIG LOADER - Carga configuración multi-tenancy desde BD -->
-    <script src="js/tenant-config-loader.js" defer></script>
+    <script src="js/tenant-config-loader.js"></script>
+    <script src="js/tenant-content-binder.js"></script>
 
 </body>
 

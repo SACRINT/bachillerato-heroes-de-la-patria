@@ -24,8 +24,8 @@
     <meta property="og:description"
         content="Portal de empleos exclusivo para egresados. Encuentra tu próxima oportunidad laboral.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://heroesdelapatria.edu.mx/bolsa-trabajo.html">
-    <meta property="og:image" content="https://heroesdelapatria.edu.mx/images/hero/fachada1.webp">
+    <meta property="og:url" content="https://ejemplo.edu.mx/bolsa-trabajo.html">
+    <meta property="og:image" content="https://ejemplo.edu.mx/images/hero/fachada1.webp">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
@@ -57,19 +57,19 @@
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Inicio",
-                "item": "https://heroesdelapatria.edu.mx/"
+                "item": "https://ejemplo.edu.mx/"
             },
             {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "Egresados",
-                "item": "https://heroesdelapatria.edu.mx/egresados.html"
+                "item": "https://ejemplo.edu.mx/egresados.html"
             },
             {
                 "@type": "ListItem",
                 "position": 3,
                 "name": "Bolsa de Trabajo",
-                "item": "https://heroesdelapatria.edu.mx/bolsa-trabajo.html"
+                "item": "https://ejemplo.edu.mx/bolsa-trabajo.html"
             }
         ]
     }
@@ -81,6 +81,9 @@
     <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
     <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
 
+    <!-- Multi-tenant Dynamic Config & Binder -->
+    <script src="js/tenant-config-loader.js"></script>
+    <script src="js/tenant-content-binder.js"></script>
 </head>
 
 <body>
@@ -120,7 +123,7 @@
                             Bolsa de Trabajo
                         </h1>
                         <p class="hero-subtitle lead mb-4">
-                            Portal exclusivo de empleos para egresados del Bachillerato Héroes de la Patria.
+                            Portal exclusivo de empleos para egresados del Bachillerato <span data-tenant-field="school_short_name">nuestro plantel</span>.
                             Conectamos talento con oportunidades laborales.
                         </p>
                         <div class="hero-badges d-flex flex-wrap gap-2 justify-content-start">

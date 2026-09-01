@@ -4,13 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" id="page-description"
-        content="Plataforma de calificaciones del Bachillerato General Estatal Héroes de la Patria - Consulta tus notas y seguimiento académico">
+    <meta name="description" id="page-description" data-tenant-field="mision" content="Bachillerato General - Educación media superior de calidad." id="page-description"
+        >
     <meta name="keywords" content="calificaciones, notas, académico, estudiantes, seguimiento, boletas, evaluación">
-    <meta name="author" content="BGE Héroes de la Patria">
+    <meta name="author" content="BGE <span data-tenant-field="school_short_name">nuestro plantel</span>">
     <meta name="theme-color" content="#1976D2">
-    <title id="page-title" data-base-title="Plataforma de Calificaciones | BGE Héroes de la Patria">Plataforma de
-        Calificaciones | BGE Héroes de la Patria</title>
+    <title id="page-title" data-base-title="Plataforma de Calificaciones | BGE nuestro plantel">Plataforma de
+        Calificaciones | BGE nuestro plantel</title>
 
     <!-- Preconnects para performance -->
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
@@ -18,11 +18,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
 
     <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Plataforma de Calificaciones - BGE Héroes de la Patria">
+    <meta property="og:title" content="Plataforma de Calificaciones - BGE <span data-tenant-field="school_short_name">nuestro plantel</span>">
     <meta property="og:description"
         content="Consulta tus calificaciones, seguimiento académico y reportes de evaluación en tiempo real">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="https://heroesdelapatria.edu.mx/images/hero/fachada1.webp">
+    <meta property="og:image" content="https://ejemplo.edu.mx/images/hero/fachada1.webp">
 
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
@@ -723,7 +723,8 @@
         <script defer src="js/calificaciones-events.js"></script>
 
         <!-- ðŸš€ TENANT CONFIG LOADER - Configuración multi-tenant dinámica -->
-        <script src="js/tenant-config-loader.js" defer></script>
+        <script src="js/tenant-config-loader.js"></script>
+    <script src="js/tenant-content-binder.js"></script>
 </body>
 
 </html>

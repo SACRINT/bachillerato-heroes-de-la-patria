@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" id="page-description"
-        content="Portal de Docentes - Bachillerato General del Estado Héroes de la Patria">
-    <title id="page-title" data-base-title="Portal de Docentes | BGE Héroes de la Patria">Portal de Docentes | BGE
-        Héroes de la Patria</title>
+    <meta name="description" id="page-description" data-tenant-field="mision" content="Bachillerato General - Educación media superior de calidad." id="page-description"
+        >
+    <title id="page-title" data-base-title="Portal de Docentes | BGE nuestro plantel">Portal de Docentes | BGE
+        nuestro plantel</title>
 
     <!-- Bootstrap 5.3.0 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -48,9 +48,9 @@
     <div class="login-container" id="loginScreen">
         <div class="login-card">
             <div class="login-header">
-                <img src="images/logo-bachillerato-HDLP.webp" alt="BGE Logo">
+                <img data-tenant-src="logo_url" data-tenant-src="logo_url" src="/images/logo-bachillerato-HDLP.webp" alt="Logo del Bachillerato">
                 <h3>Portal de Docentes</h3>
-                <p class="text-muted">BGE Héroes de la Patria</p>
+                <p class="text-muted">BGE <span data-tenant-field="school_short_name">nuestro plantel</span></p>
             </div>
 
             <form id="loginForm">
@@ -100,7 +100,7 @@
         <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <img src="images/logo-bachillerato-HDLP.webp" alt="BGE Logo" class="sidebar-logo">
+                <img data-tenant-src="logo_url" data-tenant-src="logo_url" src="/images/logo-bachillerato-HDLP.webp" alt="Logo del Bachillerato" class="sidebar-logo">
                 <h4>Portal Docentes</h4>
                 <p class="text-muted small mb-0" id="teacherName">Bienvenido</p>
             </div>
@@ -537,6 +537,7 @@
 
     <!-- 🏢 TENANT CONFIG LOADER - Carga configuración multi-tenancy desde BD -->
     <script src="js/tenant-config-loader.js"></script>
+    <script src="js/tenant-content-binder.js"></script>
 
     <!-- API Client -->
     <!-- <script src="js/api-client.js"></script> -->

@@ -67,7 +67,7 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
                             text: 'Sábados, domingos y días festivos oficiales: Cerrado.'
                         }
                     ],
-                    footer: 'CCT: 21EBH0200X | Horario de atención presencial: 08:00 - 13:30 hrs.'
+                    footer: `CCT: ${window.getTenantValue ? window.getTenantValue('cct', '21EBHXXXXX') : '21EBHXXXXX'} | Horario de atención presencial: 08:00 - 13:30 hrs.`
                 }
             },
 
@@ -78,7 +78,7 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
                     content: [
                         {
                             subtitle: '🏠 Dirección Completa',
-                            text: 'C. Manuel Ávila Camacho #7, Col. Centro<br>Coronel Tito Hernández (María Andrea)<br>Venustiano Carranza, Puebla<br>C.P. 73030'
+                            text: window.getTenantValue ? window.getTenantValue('direccion', 'Dirección del plantel, Puebla') : 'Dirección del plantel, Puebla'
                         },
                         {
                             subtitle: '🗺️ Cómo llegar',
@@ -86,7 +86,7 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
                         },
                         {
                             subtitle: '🚌 Transporte',
-                            text: 'Accesible por transporte público. Pregunta por las rutas que llegan a María Andrea.'
+                            text: 'Accesible por transporte público.'
                         }
                     ],
                     footer: '¿Necesitas direcciones específicas? ¡Contáctanos!'
@@ -100,11 +100,11 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
                     content: [
                         {
                             subtitle: '📧 Email Oficial',
-                            text: '21ebh0200x.sep@gmail.com'
+                            text: window.getTenantValue ? window.getTenantValue('email_institucional', 'contacto@ejemplo.edu.mx') : 'contacto@ejemplo.edu.mx'
                         },
                         {
                             subtitle: '📱 Redes Sociales',
-                            text: 'Facebook: Bachillerato General Estatal "Héroes de la Patria"'
+                            text: 'Consulta nuestras redes sociales oficiales en la parte inferior de la página.'
                         },
                         {
                             subtitle: '🕐 Horario de Respuesta',

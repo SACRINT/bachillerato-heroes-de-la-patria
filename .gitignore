@@ -40,6 +40,7 @@ node_modules/
 # Directorio de archivos no usados (COMPLETO)
 no_usados/
 03_BachilleratoHeroesWeb_copia/
+bachillerato-heroes-de-la-patria/
 
 # Documentación local (no subir a GitHub ni a Vercel para despliegue)
 # Ignorar archivos Markdown de trabajo en la RAÍZ, permitiendo los esenciales del proyecto

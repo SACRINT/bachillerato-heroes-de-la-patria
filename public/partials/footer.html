@@ -10,13 +10,13 @@
                         <div class="footer-brand d-flex align-items-start">
                             <div class="logo-container me-2">
                                 <!-- 🏢 TENANT-AWARE: Logo dinámico desde config de base de datos -->
-                                <img data-tenant="school-logo" src="images/logo-bachillerato-HDLP2.webp"
-                                    alt="Logo BGE Héroes de la Patria" width="45" height="45" class="footer-logo">
+                                <img data-tenant="school-logo" data-tenant-src="logo_url" src="images/logo-bachillerato-HDLP2.webp"
+                                    alt="Logo del Bachillerato" width="45" height="45" class="footer-logo">
                             </div>
                             <div>
-                                <h5 class="footer-title fw-bold mb-1">Bachillerato General Estatal</h5>
+                                <h5 class="footer-title fw-bold mb-1">Bachillerato General</h5>
                                 <!-- 🏢 TENANT-AWARE: Nombre de escuela dinámico desde config -->
-                                <h6 class="footer-subtitle mb-0" data-tenant="school-name">"Héroes de la Patria"</h6>
+                                <h6 class="footer-subtitle mb-0" data-tenant="school-name" data-tenant-field="school_short_name">BGE</h6>
                             </div>
                         </div>
                     </div>
@@ -27,24 +27,24 @@
                     </p>
                     <div class="certification-mini d-flex align-items-center mb-2">
                         <i class="fas fa-certificate text-warning me-2"></i>
-                        <small class="text-muted">Institución oficial registrada ante la SEP • CCT: 21EBH0200X</small>
+                        <small class="text-muted">Institución oficial registrada ante la SEP • CCT: <span data-tenant-field="cct">21EBHXXXXX</span></small>
                     </div>
                     <div class="social-links-container d-flex align-items-center">
                         <h6 class="social-title mb-0 me-2"><i class="fas fa-share-alt me-1"></i>Síguenos:</h6>
                         <div class="social-links d-flex gap-2">
-                            <a href="https://www.facebook.com/heroesdelapatria1" target="_blank"
+                            <a data-tenant-href="facebook_url" href="#" target="_blank"
                                 class="social-link facebook" aria-label="Facebook" title="Síguenos en Facebook"
                                 rel="noopener noreferrer">
                                 <i class="fab fa-facebook-f"></i>
                             </a>
-                            <a href="#" class="social-link instagram" aria-label="Instagram"
+                            <a data-tenant-href="instagram_url" href="#" class="social-link instagram" aria-label="Instagram"
                                 title="Síguenos en Instagram">
                                 <i class="fab fa-instagram"></i>
                             </a>
-                            <a href="#" class="social-link youtube" aria-label="YouTube" title="Canal de YouTube">
+                            <a data-tenant-href="youtube_url" href="#" class="social-link youtube" aria-label="YouTube" title="Canal de YouTube">
                                 <i class="fab fa-youtube"></i>
                             </a>
-                            <a href="mailto:21ebh0200x.sep@gmail.com" class="social-link email" aria-label="Email"
+                            <a data-tenant-href="email_institucional" href="mailto:contacto@ejemplo.edu.mx" class="social-link email" aria-label="Email"
                                 title="Envíanos un email">
                                 <i class="fas fa-envelope"></i>
                             </a>
@@ -116,8 +116,7 @@
                             <i class="fas fa-map-marker-alt footer-icon me-2"></i>
                             <div class="footer-contact-text">
                                 <strong class="footer-label">Dirección:</strong>
-                                <span data-tenant="school-address">C. Manuel Ávila Camacho #7, Coronel Tito Hernández,
-                                    V. Carranza, Puebla</span>
+                                <span data-tenant="school-address" data-tenant-field="direccion">Dirección del plantel</span>
                             </div>
                         </div>
                         <!-- 🏢 TENANT-AWARE: Teléfono dinámico desde config -->
@@ -125,8 +124,8 @@
                             <i class="fas fa-phone footer-icon me-2"></i>
                             <div class="footer-contact-text">
                                 <strong class="footer-label">Teléfono:</strong>
-                                <a data-tenant="school-phone" href="tel:+52-xxx-xxx-xxxx"
-                                    class="footer-contact-link">Disponible próximamente</a>
+                                <a data-tenant="school-phone" data-tenant-field="telefono" data-tenant-href="telefono" href="#"
+                                    class="footer-contact-link">(XXX) XXX-XXXX</a>
                             </div>
                         </div>
                         <!-- 🏢 TENANT-AWARE: Email dinámico desde config -->
@@ -134,8 +133,8 @@
                             <i class="fas fa-envelope footer-icon me-2"></i>
                             <div class="footer-contact-text">
                                 <strong class="footer-label">Email:</strong>
-                                <a data-tenant="school-email" href="mailto:21ebh0200x.sep@gmail.com"
-                                    class="footer-contact-link">21ebh0200x.sep@gmail.com</a>
+                                <a data-tenant="school-email" data-tenant-field="email_institucional" data-tenant-href="email_institucional" href="#"
+                                    class="footer-contact-link">contacto@ejemplo.edu.mx</a>
                             </div>
                         </div>
                         <!-- 🏢 TENANT-AWARE: Horario dinámico desde config -->
@@ -143,7 +142,7 @@
                             <i class="fas fa-clock footer-icon me-2"></i>
                             <div class="footer-contact-text">
                                 <strong class="footer-label">Horario:</strong>
-                                <span data-tenant="school-hours">Lun - Vie: 8:00 AM - 1:30 PM</span>
+                                <span data-tenant="school-hours" data-tenant-field="horario_clases">Lun - Vie: 8:00 AM - 1:30 PM</span>
                             </div>
                         </div>
                     </div>
@@ -161,8 +160,7 @@
                     <p class="footer-copyright mb-1">
                         <i class="fas fa-copyright me-1"></i>
                         <!-- 🏢 TENANT-AWARE: Año dinámico + Nombre de escuela dinámico -->
-                        <span id="currentYear">2024</span> <span data-tenant="school-name-copyright">Bachillerato
-                            General Estatal "Héroes de la Patria"</span>
+                        <span id="currentYear">2024</span> <span data-tenant="school-name-copyright" data-tenant-field="school_name">Bachillerato General</span>
                         Todos los derechos reservados
                         <span class="footer-legal-links ms-5">
                             <a href="aviso-privacidad.html" class="footer-legal-simple">Aviso de Privacidad</a>

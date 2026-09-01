@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Comunicación Padres-Docentes | BGE Héroes de la Patria</title>
+    <title>Comunicación Padres-Docentes | BGE <span data-tenant-field="school_short_name">nuestro plantel</span></title>
 
     <!-- Preconnects -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,8 +13,8 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
 
     <!-- Meta tags -->
-    <meta name="description"
-        content="Plataforma de comunicación directa entre padres de familia y docentes del Bachillerato General Estatal Héroes de la Patria.">
+    <meta name="description" id="page-description" data-tenant-field="mision" content="Bachillerato General - Educación media superior de calidad."
+        >
     <meta name="theme-color" content="#1976D2">
 
     <!-- Script para actualización dinámica de metadatos -->
@@ -347,7 +347,8 @@
     <!-- Parents Dashboard & Auth -->
     <script src="js/parents-dashboard.js"></script>
     <!-- Tenant Config Loader -->
-    <script src="js/tenant-config-loader.js" defer></script>
+    <script src="js/tenant-config-loader.js"></script>
+    <script src="js/tenant-content-binder.js"></script>
     <script src="js/script.js" defer></script>
 </body>
 

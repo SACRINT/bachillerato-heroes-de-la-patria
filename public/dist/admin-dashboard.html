@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" id="page-description"
-        content="Dashboard Administrativo del Bachillerato General Estatal Héroes de la Patria">
+    <meta name="description" id="page-description" data-tenant-field="mision" content="Bachillerato General - Educación media superior de calidad." id="page-description"
+        >
     <meta name="keywords" content="administración, dashboard, gestión, académico, control">
-    <title id="page-title" data-base-title="Dashboard Administrativo | BGE Héroes de la Patria">Dashboard Administrativo
-        | BGE Héroes de la Patria</title>
+    <title id="page-title" data-base-title="Dashboard Administrativo | BGE nuestro plantel">Dashboard Administrativo
+        | BGE nuestro plantel</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
@@ -106,7 +106,7 @@
                     </h1>
                     <p class="lead mb-4">
                         Panel de control integral para la gestión académica y administrativa
-                        del BGE Héroes de la Patria.
+                        del BGE <span data-tenant-field="school_short_name">nuestro plantel</span>.
                     </p>
                 </div>
                 <div class="col-lg-4 text-center">
@@ -3182,7 +3182,7 @@
                                     </div>
                                     <div class="card-body">
                                         <div class="d-grid gap-2">
-                                            <a href="https://SACRINT.github.io/heroes_de_la_patria_oficial/"
+                                            <a href="/"
                                                 target="_blank" class="btn btn-outline-primary btn-sm">
                                                 <i class="fas fa-globe me-2"></i>Ver Sitio Web
                                             </a>
@@ -3269,6 +3269,7 @@
 
     <!-- 🏢 TENANT CONFIG LOADER - Carga configuración multi-tenancy desde BD -->
     <script src="js/tenant-config-loader.js"></script>
+    <script src="js/tenant-content-binder.js"></script>
 
     <!-- 📊 Chart.js se carga más adelante (línea 5082) antes de dashboard-charts.js -->
 

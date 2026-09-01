@@ -9,7 +9,7 @@
     <meta http-equiv="Content-Security-Policy"
         content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://www.googletagmanager.com https://www.google-analytics.com https://accounts.google.com https://www.googleapis.com https://cdn.tiny.cloud https://*.tiny.cloud https://sp.tinymce.com https://vercel.live https://*.vercel.live blob:; script-src-elem 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://www.googletagmanager.com https://www.google-analytics.com https://accounts.google.com https://www.googleapis.com https://cdn.tiny.cloud https://*.tiny.cloud https://sp.tinymce.com https://vercel.live https://*.vercel.live; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://fonts.googleapis.com https://accounts.google.com https://accounts.google.com/gsi/style https://cdn.tiny.cloud https://*.tiny.cloud; style-src-elem 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://fonts.googleapis.com https://accounts.google.com https://accounts.google.com/gsi/style https://cdn.tiny.cloud https://*.tiny.cloud; connect-src 'self' https://bge-heroesdelapatria.vercel.app https://sp.tinymce.com https://www.google-analytics.com https://www.googletagmanager.com https: ws: wss:; img-src 'self' data: blob: https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://cdn.tiny.cloud https://*.tiny.cloud https://ui-avatars.com https:; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://cdn.tiny.cloud https://*.tiny.cloud; frame-src 'self' https://accounts.google.com https://www.google.com https://maps.google.com https://forms.gle https://vercel.live https://*.vercel.live; object-src 'none'; form-action 'self'; base-uri 'self';">
 
-    <title>Comunicación Padres-Docentes | BGE Héroes de la Patria</title>
+    <title>Comunicación Padres-Docentes | BGE <span data-tenant-field="school_short_name">nuestro plantel</span></title>
 
     <!-- Preconnects -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,8 +17,8 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
 
     <!-- Meta tags -->
-    <meta name="description"
-        content="Plataforma de comunicación directa entre padres de familia y docentes del Bachillerato General Estatal Héroes de la Patria.">
+    <meta name="description" id="page-description" data-tenant-field="mision" content="Bachillerato General - Educación media superior de calidad."
+        >
     <meta name="theme-color" content="#1976D2">
 
     <!-- Script para actualización dinámica de metadatos -->
@@ -243,7 +243,8 @@
     <script src="js/bge-framework-core.js"></script>
 
     <!-- Tenant Config Loader -->
-    <script src="js/tenant-config-loader.js" defer></script>
+    <script src="js/tenant-config-loader.js"></script>
+    <script src="js/tenant-content-binder.js"></script>
     <script src="js/chatbot.js"></script>
 </body>
 

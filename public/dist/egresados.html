@@ -8,7 +8,7 @@
 
     <!-- SEO Meta Tags -->
     <meta name="description" id="page-description"
-        content="Seguimiento a egresados del {school_name}: historias de éxito, testimonios y oportunidades para nuestros graduados en Coronel Tito Hernández, Puebla.">
+        content="Seguimiento a egresados del {school_name}: historias de éxito, testimonios y oportunidades para nuestros graduados en <span data-tenant-field="direccion">Dirección del plantel</span>, Puebla.">
     <meta name="keywords"
         content="egresados bachillerato, seguimiento egresados, testimonios graduados, historias éxito, ex alumnos">
     <meta name="author" content="{school_name}">
@@ -17,8 +17,8 @@
     <meta property="og:title" content="Egresados - {school_name}">
     <meta property="og:description" content="Conoce las historias de éxito de nuestros egresados y mantente conectado">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://heroesdelapatria.edu.mx/egresados.html">
-    <meta property="og:image" content="https://heroesdelapatria.edu.mx/images/hero/fachada1.webp">
+    <meta property="og:url" content="https://ejemplo.edu.mx/egresados.html">
+    <meta property="og:image" content="https://ejemplo.edu.mx/images/hero/fachada1.webp">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
@@ -57,13 +57,13 @@
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Inicio",
-                "item": "https://heroesdelapatria.edu.mx/"
+                "item": "https://ejemplo.edu.mx/"
             },
             {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "Egresados",
-                "item": "https://heroesdelapatria.edu.mx/egresados.html"
+                "item": "https://ejemplo.edu.mx/egresados.html"
             }
         ]
     }
@@ -397,7 +397,7 @@
                                             </div>
                                             <blockquote class="blockquote mb-4">
                                                 <p class="lead fst-italic">
-                                                    "El bachillerato Héroes de la Patria me brindó una formación
+                                                    "El bachillerato <span data-tenant-field="school_short_name">nuestro plantel</span> me brindó una formación
                                                     integral excepcional.
                                                     Los conocimientos sólidos que adquirí fueron fundamentales para mi
                                                     éxito en la universidad
@@ -471,7 +471,7 @@
                                                     fortaleció mi vocación de servicio.
                                                     Hoy trabajo como maestra y aplico los mismos valores de excelencia y
                                                     compromiso que viví como estudiante.
-                                                    Siempre estaré orgullosa de ser egresada de Héroes de la Patria."
+                                                    Siempre estaré orgullosa de ser egresada de <span data-tenant-field="school_short_name">nuestro plantel</span>."
                                                 </p>
                                             </blockquote>
                                             <div class="badges">
@@ -744,7 +744,8 @@
     <!-- ðŸ”’ Seguridad y autenticación (mismo que index.html) -->
     <!--  DESHABILITADO - Ya no necesario con auth seguro -->
     <!-- ðŸ¢ TENANT CONFIG LOADER - Carga configuración multi-tenancy desde BD -->
-    <script src="js/tenant-config-loader.js" defer></script>
+    <script src="js/tenant-config-loader.js"></script>
+    <script src="js/tenant-content-binder.js"></script>
 
 </body>
 

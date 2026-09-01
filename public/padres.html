@@ -4,28 +4,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title"
-        data-base-title="Portal de Padres de Familia - Bachillerato General Estatal 'Héroes de la Patria'">Portal de
-        Padres de Familia - Bachillerato General Estatal "Héroes de la Patria"</title>
+    <title id="page-title" data-base-title="Portal de
+        Padres de Familia" data-tenant-field="school_name" id="page-title"
+        data-base-title="Portal de Padres de Familia - Bachillerato General Estatal 'nuestro plantel'">Portal de
+        Padres de Familia - Bachillerato General</title>
 
     <!-- SEO Meta Tags -->
-    <meta name="description" id="page-description"
-        content="Portal exclusivo para padres de familia del BGE Héroes de la Patria. Consulta calificaciones, comunicación con docentes, eventos y recursos educativos.">
+    <meta name="description" id="page-description" data-tenant-field="mision" content="Bachillerato General - Educación media superior de calidad." id="page-description"
+        >
     <meta name="keywords"
         content="portal padres, calificaciones, comunicación docentes, eventos escolares, recursos padres">
-    <meta name="author" content="BGE Héroes de la Patria">
+    <meta name="author" content="BGE <span data-tenant-field="school_short_name">nuestro plantel</span>">
 
     <!-- Open Graph -->
-    <meta property="og:title" content="Portal de Padres - BGE Héroes de la Patria">
+    <meta property="og:title" content="Portal de Padres - BGE <span data-tenant-field="school_short_name">nuestro plantel</span>">
     <meta property="og:description"
         content="Portal integral para padres de familia con acceso a información académica y comunicación directa">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://heroesdelapatria.edu.mx/padres.html">
-    <meta property="og:image" content="https://heroesdelapatria.edu.mx/images/hero/fachada1.webp">
+    <meta property="og:url" content="https://ejemplo.edu.mx/padres.html">
+    <meta property="og:image" content="https://ejemplo.edu.mx/images/hero/fachada1.webp">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Portal de Padres - BGE Héroes de la Patria">
+    <meta name="twitter:title" content="Portal de Padres - BGE <span data-tenant-field="school_short_name">nuestro plantel</span>">
     <meta name="twitter:description" content="Acceso completo a información académica y comunicación escolar">
 
     <!-- Preconnects -->
@@ -58,13 +59,13 @@
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Inicio",
-                "item": "https://heroesdelapatria.edu.mx/"
+                "item": "https://ejemplo.edu.mx/"
             },
             {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "Portal de Padres",
-                "item": "https://heroesdelapatria.edu.mx/padres.html"
+                "item": "https://ejemplo.edu.mx/padres.html"
             }
         ]
     }
@@ -216,7 +217,7 @@
                                     </li>
                                     <li class="mb-2">
                                         <i class="fas fa-envelope text-primary me-2"></i>
-                                        Email: contacto@heroesdelapatria.edu.mx
+                                        Email: contacto@ejemplo.edu.mx
                                     </li>
                                     <li class="mb-2">
                                         <i class="fas fa-calendar-check text-primary me-2"></i>
@@ -685,6 +686,7 @@
 
     <!-- ðŸ¢ TENANT CONFIG LOADER - Carga configuración multi-tenancy desde BD -->
     <script src="js/tenant-config-loader.js"></script>
+    <script src="js/tenant-content-binder.js"></script>
 
     <!-- ðŸ”§ SISTEMA CORE (OBLIGATORIO) -->
     <script src="js/context-manager.js"></script> <!-- ðŸ”’ Base del sistema -->

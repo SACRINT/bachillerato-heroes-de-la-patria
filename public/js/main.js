@@ -76,6 +76,9 @@
             }
 
             window.dispatchEvent(new CustomEvent('headerLoaded'));
+            if (typeof window.rebindTenantContent === 'function') {
+                window.rebindTenantContent();
+            }
         } catch (error) {
             // Silencioso en producción
         }

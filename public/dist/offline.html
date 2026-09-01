@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title" data-base-title="Sin conexión - Bachillerato Héroes de la Patria">Sin conexión - Bachillerato
-        Héroes de la Patria</title>
+    <title id="page-title" data-base-title="Sin conexión - Bachillerato nuestro plantel">Sin conexión - Bachillerato
+        nuestro plantel</title>
 
     <!-- Inline critical styles for offline page -->
     <style>
@@ -377,9 +377,9 @@
                 BGE
             </div>
             <p class="brand-text">
-                <strong>Bachillerato General Estatal<br>"Héroes de la Patria"</strong><br>
+                <strong>Bachillerato General Estatal<br><span data-tenant-field="school_short_name">nuestro plantel</span></strong><br>
                 Educación de calidad con valores sólidos<br>
-                Coronel Tito Hernández, Puebla
+                <span data-tenant-field="direccion">Dirección del plantel</span>, Puebla
             </p>
         </div>
     </div>
@@ -579,7 +579,8 @@
     <!-- ðŸ”§ MAIN.JS - CARGA DINÁMICA DE HEADER Y FOOTER -->
     <script src="js/main.js"></script>
     <!-- ðŸ¢ TENANT CONFIG LOADER - Carga configuración multi-tenancy desde BD -->
-    <script src="js/tenant-config-loader.js" defer></script>
+    <script src="js/tenant-config-loader.js"></script>
+    <script src="js/tenant-content-binder.js"></script>
 
     <!-- Footer dinámico inyectado por main.js -->
     <footer id="main-footer"></footer>

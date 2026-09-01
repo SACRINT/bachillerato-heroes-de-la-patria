@@ -4,11 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title" data-base-title="Conócenos - Bachillerato General Estatal " Héroes de la Patria"">
+    <title id="page-title" data-base-title="Conócenos - Bachillerato General Estatal " nuestro plantel"">
         Conócenos -
-        <span data-tenant-field="school_name">Bachillerato General Estatal <span
-                data-tenant-field="school_name">"Héroes
-                de la Patria"</span></span>
+        Bachillerato General Estatal "Héroes
+                de la Patria"
     </title>
 
     <!-- Preconnects -->
@@ -20,10 +19,10 @@
     <link rel="preload" href="css/style.css" as="style">
 
     <!-- Meta tags -->
-    <meta name="description" id="page-description"
-        content="Conoce la historia, misión, visión, valores e infraestructura del Bachillerato General Estatal Héroes de la Patria en Puebla.">
+    <meta name="description" id="page-description" data-tenant-field="mision" content="Bachillerato General - Educación media superior de calidad." id="page-description"
+        >
     <meta name="keywords"
-        content="historia, mision, vision, valores, infraestructura, bachillerato heroes patria puebla">
+        content="historia, mision, vision, valores, infraestructura, bachillerato puebla educacion media superior">
     <meta name="theme-color" content="#1976D2">
 
     <!-- Bootstrap CSS -->
@@ -52,18 +51,19 @@
         "@type": "ListItem",
         "position": 1,
         "name": "Inicio",
-        "item": "https://SACRINT.github.io/heroes_de_la_patria_oficial/"
+        "item": "/"
       },{
         "@type": "ListItem",
         "position": 2,
         "name": "Conócenos",
-        "item": "https://SACRINT.github.io/heroes_de_la_patria_oficial/conocenos.html"
+        "item": "/conocenos.html"
       }]
     }
     </script>
     <script src="js/meta-updater.js" defer></script>
     <!-- Multi-tenancy Scripts -->
     <script src="js/tenant-config-loader.js"></script>
+    <script src="js/tenant-content-binder.js"></script>
     <!-- tenant-replacer.js removed - functionality handled by tenant-config-loader.js above -->
     <!-- âœ… FIX (18 Nov 2025): Header/Footer styles loaded globally -->
     <!-- These MUST be in <head> so they apply BEFORE dynamic header/footer injection -->
@@ -218,7 +218,7 @@
                             <picture>
                                 <source srcset="images/historia/fundacion.webp" type="image/webp">
                                 <img src="images/historia/fundacion.jpg"
-                                    alt="Fundación del Bachillerato Héroes de la Patria"
+                                    alt="Fundación del Bachillerato <span data-tenant-field="school_short_name">nuestro plantel</span>"
                                     class="img-fluid rounded shadow" loading="lazy" width="600" height="400">
                             </picture>
                         </div>
@@ -739,7 +739,7 @@
 
                             <!-- Para cuando se agregue video real:
                             <iframe src="https://www.youtube.com/embed/VIDEO_ID" 
-                                    title="Video Institucional Bachillerato Héroes de la Patria" 
+                                    title="Video Institucional Bachillerato <span data-tenant-field="school_short_name">nuestro plantel</span>" 
                                     allowfullscreen></iframe>
                             -->
                         </div>
@@ -1485,7 +1485,7 @@
                                                         <i class="fas fa-envelope text-primary me-3"></i>
                                                         <div>
                                                             <small class="text-muted">Email</small>
-                                                            <p class="mb-0 fw-semibold">director@heroesdelapatria.edu.mx
+                                                            <p class="mb-0 fw-semibold">director@ejemplo.edu.mx
                                                             </p>
                                                         </div>
                                                     </div>
@@ -1762,7 +1762,7 @@
                                         poderosa para cambiar el mundo.</em></p>
 
                                 <h5>Contacto:</h5>
-                                <p><i class="fas fa-envelope"></i> 21ebh0200x.sep@gmail.com</p>
+                                <p><i class="fas fa-envelope"></i> <span data-tenant-field="email_institucional">contacto@ejemplo.edu.mx</span></p>
                             </div>
                         </div>
                     </div>

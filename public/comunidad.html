@@ -4,27 +4,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title" data-base-title="Comunidad - Bachillerato General Estatal " Héroes de la Patria"">Comunidad -
-        Bachillerato General Estatal "Héroes de la Patria"</title>
+    <title id="page-title" data-base-title="Comunidad" data-tenant-field="school_name" id="page-title" data-base-title="Comunidad - Bachillerato General Estatal " nuestro plantel"">Comunidad - Bachillerato General</title>
 
     <!-- SEO Meta Tags -->
-    <meta name="description" id="page-description"
-        content="Vida estudiantil del BGE Héroes de la Patria: noticias, eventos, testimonios y actividades de nuestra comunidad educativa en Coronel Tito Hernández, Puebla.">
+    <meta name="description" id="page-description" data-tenant-field="mision" content="Bachillerato General - Educación media superior de calidad." id="page-description"
+        >
     <meta name="keywords"
         content="vida estudiantil, noticias bachillerato, eventos escolares, testimonios estudiantes, comunidad educativa">
-    <meta name="author" content="BGE Héroes de la Patria">
+    <meta name="author" content="BGE <span data-tenant-field="school_short_name">nuestro plantel</span>">
 
     <!-- Open Graph -->
-    <meta property="og:title" content="Comunidad - BGE Héroes de la Patria">
+    <meta property="og:title" content="Comunidad - BGE <span data-tenant-field="school_short_name">nuestro plantel</span>">
     <meta property="og:description"
         content="Descubre la vida estudiantil, noticias y eventos de nuestra comunidad educativa">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://heroesdelapatria.edu.mx/comunidad.html">
-    <meta property="og:image" content="https://heroesdelapatria.edu.mx/images/hero/fachada1.webp">
+    <meta property="og:url" content="https://ejemplo.edu.mx/comunidad.html">
+    <meta property="og:image" content="https://ejemplo.edu.mx/images/hero/fachada1.webp">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Comunidad - BGE Héroes de la Patria">
+    <meta name="twitter:title" content="Comunidad - BGE <span data-tenant-field="school_short_name">nuestro plantel</span>">
     <meta name="twitter:description" content="Conoce la vibrante vida estudiantil de nuestro bachillerato">
 
     <!-- Preconnects -->
@@ -56,13 +55,13 @@
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Inicio",
-                "item": "https://heroesdelapatria.edu.mx/"
+                "item": "https://ejemplo.edu.mx/"
             },
             {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "Comunidad",
-                "item": "https://heroesdelapatria.edu.mx/comunidad.html"
+                "item": "https://ejemplo.edu.mx/comunidad.html"
             }
         ]
     }
@@ -528,7 +527,7 @@
                     <div class="col-12">
                         <div class="card border-0 shadow-sm">
                             <div class="card-body p-4">
-                                <p class="lead text-center mb-4">En "Héroes de la Patria" creemos en la formación
+                                <p class="lead text-center mb-4">En <span data-tenant-field="school_short_name">nuestro plantel</span> creemos en la formación
                                     integral. Por ello, ofrecemos una variedad de actividades para desarrollar tus
                                     talentos e intereses:</p>
 
@@ -1176,7 +1175,8 @@
 
                 <script src="js/inline/comunidad-inline-2.js"></script>
     <!-- ðŸ¢ TENANT CONFIG LOADER - Carga configuración multi-tenancy desde BD -->
-    <script src="js/tenant-config-loader.js" defer></script>
+    <script src="js/tenant-config-loader.js"></script>
+    <script src="js/tenant-content-binder.js"></script>
 
 </body>
 

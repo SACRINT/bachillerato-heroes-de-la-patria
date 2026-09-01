@@ -6,14 +6,14 @@
         <div class="d-flex align-items-center justify-content-between w-100">
             <a class="navbar-brand d-flex align-items-center navbar-brand-custom" href="index.html">
                 <!-- 🏢 TENANT-AWARE: Logo cargado dinámicamente desde config -->
-                <img data-tenant="school-logo" src="/images/logo-bachillerato-HDLP.webp"
-                    alt="Logo Bachillerato Héroes de la Patria" width="45" height="45">
+                <img data-tenant="school-logo" data-tenant-src="logo_url" src="/images/logo-bachillerato-HDLP.webp"
+                    alt="Logo Bachillerato" width="45" height="45">
                 <div class="ms-2">
                     <div class="fw-bold text-primary logo-main-text logo-main-text-style">
-                        Bachillerato General Estatal</div>
+                        <span data-tenant-field="school_type">Bachillerato General</span></div>
                     <!-- 🏢 TENANT-AWARE: Nombre de escuela cargado dinámicamente desde config -->
-                    <div class="text-secondary fw-semibold logo-sub-text logo-sub-text-style" data-tenant="school-name">
-                        "Héroes de la Patria"</div>
+                    <div class="text-secondary fw-semibold logo-sub-text logo-sub-text-style" data-tenant="school-name" data-tenant-field="school_short_name">
+                        BGE</div>
                 </div>
             </a>
 

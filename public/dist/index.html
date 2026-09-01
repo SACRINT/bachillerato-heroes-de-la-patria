@@ -16,8 +16,7 @@
     <meta http-equiv="Content-Security-Policy"
         content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://www.googletagmanager.com https://www.google-analytics.com https://accounts.google.com https://www.googleapis.com https://cdn.tiny.cloud https://*.tiny.cloud https://sp.tinymce.com https://vercel.live https://*.vercel.live blob:; script-src-elem 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://www.googletagmanager.com https://www.google-analytics.com https://accounts.google.com https://www.googleapis.com https://cdn.tiny.cloud https://*.tiny.cloud https://sp.tinymce.com https://vercel.live https://*.vercel.live; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://fonts.googleapis.com https://accounts.google.com https://accounts.google.com/gsi/style https://cdn.tiny.cloud https://*.tiny.cloud; style-src-elem 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://fonts.googleapis.com https://accounts.google.com https://accounts.google.com/gsi/style https://cdn.tiny.cloud https://*.tiny.cloud; connect-src 'self' https://bge-heroesdelapatria.vercel.app https://sp.tinymce.com https://www.google-analytics.com https://www.googletagmanager.com https: ws: wss:; img-src 'self' data: blob: https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://cdn.tiny.cloud https://*.tiny.cloud https://ui-avatars.com https:; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://cdn.tiny.cloud https://*.tiny.cloud; frame-src 'self' https://accounts.google.com https://www.google.com https://maps.google.com https://forms.gle https://vercel.live https://*.vercel.live; object-src 'none'; form-action 'self'; base-uri 'self';">
 
-    <title id="page-title" data-base-title="Inicio" data-tenant-field="school_name">Bachillerato General Estatal "Héroes
-        de la Patria"</title>
+    <title id="page-title" data-base-title="Portal Institucional" data-tenant-field="school_name" id="page-title" data-base-title="Inicio" data-tenant-field="school_name">Bachillerato General</title>
 
     <!-- Preconnects -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,16 +29,17 @@
 
     <!-- Meta tags -->
     <meta name="description" id="page-description"
-        content="Bachillerato General Estatal 'Héroes de la Patria' en Coronel Tito Hernández, Venustiano Carranza, Puebla. Educación media superior de calidad con formación integral.">
+        content="Bachillerato General Estatal '<span data-tenant-field="school_short_name">nuestro plantel</span>' en <span data-tenant-field="direccion">Dirección del plantel, Puebla</span>. Educación media superior de calidad con formación integral.">
     <meta name="keywords"
-        content="bachillerato, heroes de la patria, puebla, venustiano carranza, coronel tito hernandez, educacion media superior, prepa">
+        content="bachillerato, <span data-tenant-field="school_short_name">nuestro plantel</span>, puebla, <span data-tenant-field="municipio">Municipio</span>, <span data-tenant-field="direccion">Dirección del plantel</span>, educacion media superior, prepa">
     <meta name="theme-color" content="#1976D2">
 
     <!-- Script para actualización dinámica de metadatos -->
     <script src="js/meta-updater.js" defer></script>
 
     <!-- 🏢 Multi-Tenancy: Carga y actualiza configuración del tenant -->
-    <script src="js/tenant-config-loader.js" defer></script>
+    <script src="js/tenant-config-loader.js"></script>
+    <script src="js/tenant-content-binder.js"></script>
     <script src="js/tenant-auto-updater.js" defer></script>
 
     <!-- Bootstrap CSS -->
@@ -71,15 +71,15 @@
     {
       "@context": "https://schema.org",
       "@type": "EducationalOrganization",
-      "name": "Bachillerato General Estatal Héroes de la Patria",
-      "alternateName": "BGE Héroes de la Patria",
-      "description": "Bachillerato General Estatal ubicado en Coronel Tito Hernández, Venustiano Carranza, Puebla. Ofrecemos educación media superior de calidad con formación integral.",
-      "url": "https://SACRINT.github.io/heroes_de_la_patria_oficial/",
-      "logo": "https://SACRINT.github.io/heroes_de_la_patria_oficial/images/logo/logo-bachillerato-HDLP.webp",
+      "name": "Bachillerato General",
+      "alternateName": "BGE",
+      "description": "Bachillerato General Estatal ubicado en <span data-tenant-field="direccion">Dirección del plantel, Puebla</span>. Ofrecemos educación media superior de calidad con formación integral.",
+      "url": "/",
+      "logo": "/images/logo/logo-bachillerato-HDLP.webp",
       "address": {
         "@type": "PostalAddress",
-        "streetAddress": "Coronel Tito Hernández",
-        "addressLocality": "Venustiano Carranza",
+        "streetAddress": "Dirección del plantel",
+        "addressLocality": "Municipio",
         "addressRegion": "Puebla",
         "addressCountry": "MX"
       },
@@ -118,7 +118,7 @@
                                 <picture>
                                     <source srcset="images/hero/fachada1.webp" type="image/webp">
                                     <img src="images/hero/fachada1.jpeg"
-                                        alt="Fachada del Bachillerato Héroes de la Patria"
+                                        alt="Fachada del Bachillerato <span data-tenant-field="school_short_name">nuestro plantel</span>"
                                         class="img-fluid w-100 h-100 object-fit-cover rounded-3 shadow-lg"
                                         loading="eager" width="800" height="600">
                                 </picture>
@@ -195,7 +195,7 @@
                             <div class="mt-4 pt-3">
                                 <small class="text-white-50 d-flex align-items-center">
                                     <i class="fas fa-shield-check text-success me-2"></i>
-                                    Institución oficial registrada ante la SEP • CCT: 21EBH0200X
+                                    Institución oficial registrada ante la SEP • CCT: <span data-tenant-field="cct">21EBHXXXXX</span>
                                 </small>
                             </div>
                         </div>
@@ -221,7 +221,7 @@
             <div class="container">
                 <div class="row text-center mb-5">
                     <div class="col-12">
-                        <h2 class="display-5 fw-bold text-primary mb-3">¿Por qué elegir "Héroes de la Patria"?</h2>
+                        <h2 class="display-5 fw-bold text-primary mb-3">¿Por qué elegir <span data-tenant-field="school_short_name">nuestro plantel</span>?</h2>
                         <p class="lead text-muted">Descubre lo que nos hace únicos y por qué somos la mejor opción para
                             tu futuro</p>
                     </div>
@@ -1363,8 +1363,8 @@
                                 <h5 class="card-title">Dirección</h5>
                                 <p class="card-text text-muted">
                                     C. Manuel Ávila Camacho #7, Col. Centro<br>
-                                    Coronel Tito Hernández (María Andrea)<br>
-                                    Venustiano Carranza, Puebla<br>
+                                    <span data-tenant-field="direccion">Dirección del plantel</span><br>
+                                    <span data-tenant-field="municipio">Municipio</span>, Puebla<br>
                                     C.P. 73030
                                 </p>
                             </div>
@@ -1380,7 +1380,7 @@
                                 </div>
                                 <h5 class="card-title">Email</h5>
                                 <p class="card-text text-muted">
-                                    <a href="mailto:21ebh0200x.sep@gmail.com">21ebh0200x.sep@gmail.com</a>
+                                    <a href="mailto:<span data-tenant-field="email_institucional">contacto@ejemplo.edu.mx</span>"><span data-tenant-field="email_institucional">contacto@ejemplo.edu.mx</span></a>
                                 </p>
                             </div>
                         </div>

@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Page Title -->
-    <title id="page-title" data-base-title="Encuestas y Votaciones">Encuestas y Votaciones - BGE Héroes de la Patria</title>
+    <title id="page-title" data-base-title="Encuestas y Votaciones">Encuestas y Votaciones - BGE nuestro plantel</title>
 
     <!-- Preconnects -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,19 +20,19 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
 
     <!-- SEO Meta Tags -->
-    <meta name="description" id="page-description" content="Participa en las encuestas y votaciones del Bachillerato General Estatal Héroes de la Patria">
-    <meta name="keywords" content="encuestas, votaciones, BGE, Héroes de la Patria, participación estudiantil">
-    <meta name="author" content="BGE Héroes de la Patria">
+    <meta name="description" id="page-description" data-tenant-field="mision" content="Bachillerato General - Educación media superior de calidad." id="page-description" >
+    <meta name="keywords" content="encuestas, votaciones, BGE, <span data-tenant-field="school_short_name">nuestro plantel</span>, participación estudiantil">
+    <meta name="author" content="BGE <span data-tenant-field="school_short_name">nuestro plantel</span>">
     <meta name="theme-color" content="#1976D2">
 
     <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Encuestas y Votaciones - BGE Héroes de la Patria">
+    <meta property="og:title" content="Encuestas y Votaciones - BGE <span data-tenant-field="school_short_name">nuestro plantel</span>">
     <meta property="og:description" content="Participa en nuestras encuestas y votaciones">
     <meta property="og:type" content="website">
 
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Encuestas y Votaciones - BGE Héroes de la Patria">
+    <meta name="twitter:title" content="Encuestas y Votaciones - BGE <span data-tenant-field="school_short_name">nuestro plantel</span>">
     <meta name="twitter:description" content="Participa en nuestras encuestas y votaciones">
 
     <!-- Favicon -->
@@ -42,7 +42,8 @@
     <script src="js/meta-updater.js" defer></script>
 
     <!-- Tenant Config Loader - Multi-tenant Configuration -->
-    <script src="js/tenant-config-loader.js" defer></script>
+    <script src="js/tenant-config-loader.js"></script>
+    <script src="js/tenant-content-binder.js"></script>
     <script src="js/tenant-auto-updater.js" defer></script>
 
     <!-- Bootstrap CSS - CON INTEGRITY ATTRIBUTE -->

@@ -25,17 +25,52 @@
     const DEFAULT_CONFIG = {
         id: null,
         uuid: null,
-        school_name: '"Héroes de la Patria"', // Nombre visual
-        school_official_name: 'Bachillerato General por Competencias "Héroes de la Patria"',
-        school_short_name: '"Héroes de la Patria"', // Fix: Reemplazar "BGE" por el nombre que el usuario prefiere
+        school_name: 'Bachillerato General',
+        school_official_name: 'Bachillerato General',
+        school_short_name: 'BGE',
+        school_type: 'Bachillerato General Estatal',
+        cct: '21EBHXXXXX',
+        zona_escolar: '0XX',
+        turno: 'Matutino',
         domain: 'localhost:3000',
-        address: 'Coronel Tito Hernández, Venustiano Carranza, Puebla',
-        phone: '+52-xxx-xxx-xxxx',
-        website: 'https://heroes-de-la-patria.edu.mx',
+        subdomain: 'default',
         logo_url: '/images/logo-bachillerato-HDLP.webp',
-        primary_color: '#1976D2',
-        secondary_color: '#FFC107',
-        accent_color: '#FF5722',
+        escudo_url: '/images/logo-bachillerato-HDLP.webp',
+        favicon_url: '/favicon.ico',
+        colors: {
+            primary: '#1e40af',
+            secondary: '#dc2626',
+            accent: '#059669'
+        },
+        font_family: 'Inter',
+        direccion: 'Dirección del plantel',
+        codigo_postal: 'XXXXX',
+        municipio: 'Municipio',
+        estado: 'Puebla',
+        telefono: '(XXX) XXX-XXXX',
+        email_institucional: 'contacto@ejemplo.edu.mx',
+        website_url: '',
+        horario_clases: '8:00 AM - 1:30 PM',
+        horario_atencion: '8:00 AM - 2:00 PM',
+        director_name: 'Nombre del Director',
+        director_email: 'director@ejemplo.edu.mx',
+        director_phone: '(XXX) XXX-XXXX',
+        director_photo_url: '',
+        director_message: 'Bienvenidos a nuestra institución educativa.',
+        mision: 'Misión institucional',
+        vision: 'Visión institucional',
+        valores: 'Valores institucionales',
+        historia: 'Historia del plantel',
+        eslogan: 'Tu futuro comienza aquí',
+        facebook_url: '',
+        twitter_url: '',
+        instagram_url: '',
+        youtube_url: '',
+        tiktok_url: '',
+        whatsapp_number: '',
+        latitud: null,
+        longitud: null,
+        google_maps_embed_url: '',
         status: 'activo',
         features: {
             google_oauth: true,
@@ -48,6 +83,17 @@
             calendar: true,
             grades_system: true,
             attendance_system: true
+        },
+        features_enabled: {
+            chatbot_ia: true,
+            gamificacion_iacoins: true,
+            alerta_temprana: true,
+            portal_estudiantes: true,
+            portal_docentes: true,
+            portal_padres: true,
+            portal_egresados: true,
+            biblioteca_digital: true,
+            citas_orientacion: true
         },
         localization: {
             language: 'es',
@@ -92,11 +138,24 @@
             const finalConfig = {
                 ...DEFAULT_CONFIG,
                 ...data.tenant,
+                ...(data.config || {}),
                 config: data.config
             };
 
-            if (finalConfig.school_short_name === 'BGE') {
-                finalConfig.school_short_name = '"Héroes de la Patria"';
+            // Asegurar que colors sea un objeto
+            if (!finalConfig.colors || typeof finalConfig.colors !== 'object') {
+                finalConfig.colors = {
+                    primary: finalConfig.primary_color || DEFAULT_CONFIG.colors.primary,
+                    secondary: finalConfig.secondary_color || DEFAULT_CONFIG.colors.secondary,
+                    accent: finalConfig.accent_color || DEFAULT_CONFIG.colors.accent
+                };
+            }
+
+            // Asegurar school_short_name
+            if (!finalConfig.school_short_name || finalConfig.school_short_name === 'BGE') {
+                finalConfig.school_short_name = finalConfig.school_name
+                    ? finalConfig.school_name.substring(0, 10)
+                    : 'BGE';
             }
 
             try {
