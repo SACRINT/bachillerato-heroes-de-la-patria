@@ -68,7 +68,10 @@ class AdminTenantCMS {
     }
 
     getToken() {
-        return localStorage.getItem('authToken') || '';
+        return localStorage.getItem('token') ||
+               localStorage.getItem('authToken') ||
+               localStorage.getItem('bge_auth_token') ||
+               localStorage.getItem('auth_token') || '';
     }
 
     async fetchAPI(endpoint, method = 'GET', data = null) {
@@ -239,7 +242,7 @@ class AdminTenantCMS {
                     <td>${this.esc(item.album || '-')}</td>
                     <td>${badge}</td><td>${editBtn}${delBtn}</td>`;
             case 'testimonials':
-                return `<td><strong>${this.esc(item.full_name)}</strong></td>
+                return `<td><strong>${this.esc(item.person_name)}</strong></td>
                     <td>${this.esc(item.graduation_year || '-')}</td>
                     <td>${this.esc(item.occupation || '-')}</td>
                     <td>${'★'.repeat(item.rating || 0)}${'☆'.repeat(5 - (item.rating || 0))}</td>
@@ -251,7 +254,7 @@ class AdminTenantCMS {
             case 'hero':
                 return `<td><strong>${this.esc(item.title)}</strong></td>
                     <td>${this.esc(item.subtitle || '-')}</td>
-                    <td>${this.esc(item.link || '-')}</td>
+                    <td>${this.esc(item.link_url || '-')}</td>
                     <td>${badge}</td><td>${editBtn}${delBtn}</td>`;
             default:
                 return '';
@@ -421,7 +424,7 @@ class AdminTenantCMS {
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">Nombre completo *</label>
-                            <input type="text" class="form-control" name="full_name" value="${this.esc(item?.full_name || '')}" required>
+                            <input type="text" class="form-control" name="person_name" value="${this.esc(item?.person_name || '')}" required>
                         </div>
                         <div class="col-md-3">
                             <label class="form-label">Año graduación</label>
@@ -441,7 +444,14 @@ class AdminTenantCMS {
                         </div>
                         <div class="col-12">
                             <label class="form-label">Testimonio *</label>
-                            <textarea class="form-control" name="testimonial_text" rows="4" required>${this.esc(item?.testimonial_text || '')}</textarea>
+                            <textarea class="form-control" name="testimonial" rows="4" required>${this.esc(item?.testimonial || '')}</textarea>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Destacado</label>
+                            <select class="form-select" name="is_featured">
+                                <option value="false" ${!item?.is_featured ? 'selected' : ''}>No</option>
+                                <option value="true" ${item?.is_featured ? 'selected' : ''}>Sí</option>
+                            </select>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Activo</label>
@@ -483,7 +493,7 @@ class AdminTenantCMS {
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Equipamiento</label>
-                            <input type="text" class="form-control" name="equipment" value="${this.esc(item?.equipment || '')}" placeholder="Ej: Proyector, internet">
+                            <input type="text" class="form-control" name="features" value="${this.esc(item?.features || '')}" placeholder="Ej: Proyector, internet">
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Orden</label>
@@ -516,7 +526,7 @@ class AdminTenantCMS {
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Enlace (botón)</label>
-                            <input type="url" class="form-control" name="link" value="${this.esc(item?.link || '')}" placeholder="https://...">
+                            <input type="url" class="form-control" name="link_url" value="${this.esc(item?.link_url || '')}" placeholder="https://...">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Texto del botón</label>

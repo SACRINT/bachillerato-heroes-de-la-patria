@@ -287,7 +287,7 @@
             }
         });
 
-        await Promise.allSettled(promits);
+        await Promise.allSettled(promises);
     }
 
     // Esperar a que el DOM esté listo

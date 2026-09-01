@@ -392,4 +392,5 @@ router.get('/public/:section', async (req, res) => {
     }
 });
 
-exports.default = router;
+module.exports = router;
+module.exports.default = router;

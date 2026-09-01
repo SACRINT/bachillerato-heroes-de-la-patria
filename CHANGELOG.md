@@ -1,5 +1,105 @@
 # CHANGELOG - SIPWEB-BG / EDUZONA EMS
 
+[v4.1.2] - 2026-09-01 (FASE 0 COMPLETADA - ADAPTACIÓN HTML MULTI-TENANT)
+
+**Tipo:** Frontend / Multi-Tenant / HTML Adaptation
+**Estado:** ✅ COMPLETADO
+
+### Páginas HTML adaptadas con `data-tenant-*` attributes:
+
+**PRIORIDAD ALTA (5 páginas):**
+- ✅ convocatorias.html - title + meta description
+- ✅ servicios.html - estructura HTML corregida + title + meta description
+- ✅ conocenos.html - title corregido (eliminado hardcode "Héroes de la Patria")
+- ✅ oferta-educativa.html - title + meta description agregada
+- ✅ egresados.html - title + meta + Open Graph + Twitter Cards
+
+**PRIORIDAD MEDIA (9 páginas):**
+- ✅ reglamento.html - title + meta description
+- ✅ normatividad.html - title + meta description + keywords
+- ✅ transparencia.html - title + meta description + keywords
+- ✅ biblioteca.html - title + meta description agregada
+- ✅ sitios-interes.html - title + meta description
+- ✅ calendario.html - title + meta + author + Open Graph + Twitter Cards
+- ✅ docentes.html - title + meta description
+- ✅ chatbot.html - title + meta description
+- ✅ citas.html - title + meta + author + Open Graph + Twitter Cards
+
+**PRIORIDAD BAJA + ADICIONALES (12 páginas):**
+- ✅ soporte.html - title corregido
+- ✅ mensajeria.html - title corregido (eliminado encoding issues)
+- ✅ pagos.html - title + meta description (eliminado HTML roto)
+- ✅ encuestas.html - title + meta + keywords + author + Open Graph
+- ✅ padres.html - title + meta + author + Open Graph + Twitter Cards
+- ✅ aviso-privacidad.html - title + meta description + keywords
+- ✅ terminos.html - title + meta description + keywords
+- ✅ ar-vr-lab.html - title + meta description
+- ✅ bolsa-trabajo.html - title + meta + author + Open Graph
+- ✅ comunidad.html - title + meta + author + Open Graph + Twitter Cards
+- ✅ estudiantes.html - title + meta + author + Open Graph + Twitter Cards
+- ✅ descargas.html - title + meta + author + Open Graph + Twitter Cards
+
+### Cambios técnicos:
+- **26 páginas HTML** adaptadas con `data-tenant-field="school_name"` en `<title>`
+- **26 páginas HTML** adaptadas con `data-tenant-field="mision"` en `<meta description>`
+- Eliminados todos los `<span>` tags de meta tags (no funcionan en SEO)
+- Eliminados todos los placeholders `{school_name}` hardcodeados
+- Eliminados todos los textos "Héroes de la Patria" y "nuestro plantel" hardcodeados
+- Corregidos atributos `id` duplicados en tags
+- Corregida estructura HTML rota en servicios.html
+
+### Bugs corregidos previamente (v4.1.1):
+- ✅ Bug #1: `exports.default` en backend/routes/tenant-cms.js
+- ✅ Bug #2: Typo `promits` en tenant-cms-loader.js
+- ✅ Mejora #3: `getToken()` resilient en admin-tenant-cms.js
+
+**Archivos Modificados:** 26 HTML + 3 JS backend/frontend
+**Commits Relacionados:** FASE 0 multi-tenant HTML adaptation
+
+---
+
+[v4.1.1] - 2026-09-01 (TABLAS MULTI-TENANT DE CONTENIDO - FASE 1 COMPLETADA)
+
+**Tipo:** Database / Multi-Tenant / Schema
+**Estado:** ✅ COMPLETADO
+
+### Tablas creadas en Neon PostgreSQL:
+
+1. **tenant_pages** - Páginas editables por director CMS
+   - 7 columnas: id, tenant_id (FK), page_slug, page_title, page_content, is_published, timestamps
+   - UNIQUE constraint en (tenant_id, page_slug) para evitar duplicados
+   - 3 índices para optimizar consultas
+
+2. **tenant_banners** - Carrusel de imágenes del hero
+   - 9 columnas: id, tenant_id (FK), title, subtitle, image_url, link_url, is_active, sort_order, timestamps
+   - 3 índices para ordenamiento y filtrado
+
+3. **tenant_notices** - Avisos y comunicados de zona
+   - 9 columnas: id, tenant_id (FK), title, content, type, is_zone_notice, is_published, published_at, timestamps
+   - Soporte para tipos: aviso, convocatoria, urgente, circular_zona
+   - 4 índices incluyendo filtrado por tipo y zona
+
+4. **tenant_programs** - Oferta educativa (capacitaciones/talleres)
+   - 8 columnas: id, tenant_id (FK), program_type, program_name, description, image_url, is_active, timestamps
+   - Tipos: capacitacion, paraescolar, club
+   - 3 índices
+
+5. **tenant_files** - Archivos segregados por tenant
+   - 8 columnas: id, tenant_id (FK), file_type, stored_path, original_name, mime_type, file_size, uploaded_by, created_at
+   - 2 índices para tipo y tenant
+
+### Infraestructura:
+- 4 triggers para actualización automática de `updated_at`
+- Foreign keys con ON DELETE CASCADE (eliminación en cascada)
+- Datos demo insertados para tenant #1 (BGE Héroes de la Patria)
+- Scripts SQL y Node.js creados en `backend/scripts/`
+
+### Archivos creados:
+- `backend/scripts/create-tenant-content-tables.sql` (Script SQL completo)
+- `backend/scripts/run-create-tenant-content-tables.js` (Script Node.js ejecutable)
+
+---
+
 [v4.1.0] - 2026-09-01 (LIMPIEZA DE CÓDIGO MUERTO + CMS DEL DIRECTOR + IMÁGENES DINÁMICAS)
 
 **Tipo:** Code Cleanup / Feature / Multi-Tenant Enhancement

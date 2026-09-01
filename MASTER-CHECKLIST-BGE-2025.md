@@ -1,8 +1,65 @@
 # ✅ MASTER CHECKLIST - PROYECTO BGE HÉROES DE LA PATRIA
 
-**Última Actualización:** 1 Septiembre 2026 - LIMPIEZA CÓDIGO MUERTO + CMS DEL DIRECTOR + IMÁGENES DINÁMICAS
-**Estado del Proyecto:** v4.1.0 - ✅ FASE 0 COMPLETADA + LIMPIEZA TÉCNICA + CMS DIRECTOR
-**Release Status:** ✅ CÓDIGO MUERTO ELIMINADO (860 archivos), CMS DEL DIRECTOR IMPLEMENTADO (6 endpoints, 6 tablas, 6 DAOs)
+**Última Actualización:** 1 Septiembre 2026 - FASE 0 COMPLETADA + FASE 1 SQL MULTI-TENANT COMPLETADA
+**Estado del Proyecto:** v4.1.2 - ✅ FASE 0 COMPLETADA + FASE 1 SQL MULTI-TENANT COMPLETADA
+**Release Status:** ✅ CMS DEL DIRECTOR + 11 TABLAS MULTI-TENANT EN NEON + 26 PÁGINAS HTML ADAPTADAS
+
+---
+
+## 🎨 FASE 0: ADAPTACIÓN HTML MULTI-TENANT (1 SEPTIEMBRE 2026)
+
+**Estado:** ✅ **COMPLETADO** - 26 páginas HTML adaptadas
+
+### Páginas Adaptadas
+
+| Categoría | Páginas | Estado |
+|-----------|---------|--------|
+| PRIORIDAD ALTA | convocatorias, servicios, conocenos, oferta-educativa, egresados | ✅ 5/5 |
+| PRIORIDAD MEDIA | reglamento, normatividad, transparencia, biblioteca, sitios-interes, calendario, docentes, chatbot, citas | ✅ 9/9 |
+| PRIORIDAD BAJA | soporte, mensajeria, pagos, encuestas | ✅ 4/4 |
+| ADICIONALES | padres, aviso-privacidad, terminos, ar-vr-lab, bolsa-trabajo, comunidad, estudiantes, descargas | ✅ 8/8 |
+
+### Cambios Realizados
+- [x] `<title>` tags: `data-tenant-field="school_name"` agregado a 26 páginas
+- [x] `<meta description>`: `data-tenant-field="mision"` agregado a 26 páginas
+- [x] Eliminados placeholders `{school_name}` hardcodeados
+- [x] Eliminados textos "Héroes de la Patria" y "nuestro plantel" hardcodeados
+- [x] Eliminados `<span>` tags de meta tags (no funcionan en SEO)
+- [x] Corregidos atributos `id` duplicados en tags HTML
+- [x] Corregida estructura HTML rota en servicios.html
+- [x] Open Graph y Twitter Cards adaptados
+
+### Bugs Corregidos en FASE 0
+- [x] Bug #1: `exports.default` en backend/routes/tenant-cms.js (v4.1.1)
+- [x] Bug #2: Typo `promits` en tenant-cms-loader.js (v4.1.1)
+- [x] Mejora #3: `getToken()` resilient en admin-tenant-cms.js (v4.1.1)
+
+---
+
+## 🗄️ FASE 1: TABLAS MULTI-TENANT DE CONTENIDO (1 SEPTIEMBRE 2026)
+
+**Estado:** ✅ **COMPLETADO** - 5 tablas creadas en Neon PostgreSQL
+
+### Tablas Multi-Tenant de Contenido
+
+| Tabla | Propósito | Columnas | Índices |
+|-------|-----------|----------|---------|
+| `tenant_pages` | Páginas editables por director CMS | 7 | 3 |
+| `tenant_banners` | Carrusel de imágenes del hero | 9 | 3 |
+| `tenant_notices` | Avisos y comunicados de zona | 9 | 4 |
+| `tenant_programs` | Oferta educativa (capacitaciones/talleres) | 8 | 3 |
+| `tenant_files` | Archivos segregados por tenant | 8 | 2 |
+
+### Checklist de Implementación
+
+- [x] **1. Script SQL creado:** `backend/scripts/create-tenant-content-tables.sql`
+- [x] **2. Script Node.js creado:** `backend/scripts/run-create-tenant-content-tables.js`
+- [x] **3. Tablas creadas en Neon con:**
+  * Foreign keys a `tenants(id)` con ON DELETE CASCADE
+  * Índices optimizados por tenant_id
+  * Triggers para updated_at automático
+  * Datos demo insertados para tenant #1
+- [x] **4. Documentación actualizada:** CHANGELOG.md v4.1.1
 
 ---
 
