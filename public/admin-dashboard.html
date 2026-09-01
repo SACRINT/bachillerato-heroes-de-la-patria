@@ -1257,6 +1257,12 @@
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tenantCms-tab" data-bs-toggle="pill" data-bs-target="#tenantCms"
+                            type="button" role="tab">
+                            <i class="fas fa-user-tie me-2"></i>CMS Director
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
                         <button class="nav-link" id="reports-tab" data-bs-toggle="pill" data-bs-target="#reports"
                             type="button" role="tab">
                             <i class="fas fa-file-alt me-2"></i>Reportes
@@ -3007,6 +3013,156 @@
                         </div>
                     </div>
 
+                    <!-- Tab CMS del Director (Personal, Timeline, Galería, etc.) -->
+                    <div class="tab-pane fade" id="tenantCms" role="tabpanel">
+                        <div class="row g-4">
+                            <!-- Stats -->
+                            <div class="col-12">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-header bg-gradient" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                        <h5 class="text-white mb-0">
+                                            <i class="fas fa-user-tie me-2"></i>CMS del Director - Contenido del Plantel
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row g-3">
+                                            <div class="col-md-2">
+                                                <div class="card bg-primary text-white text-center">
+                                                    <div class="card-body py-2">
+                                                        <i class="fas fa-users fa-lg mb-1"></i>
+                                                        <h4 class="mb-0" id="tenantCms-staff-count">0</h4>
+                                                        <small>Personal</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="card bg-success text-white text-center">
+                                                    <div class="card-body py-2">
+                                                        <i class="fas fa-clock fa-lg mb-1"></i>
+                                                        <h4 class="mb-0" id="tenantCms-timeline-count">0</h4>
+                                                        <small>Línea Tiempo</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="card bg-info text-white text-center">
+                                                    <div class="card-body py-2">
+                                                        <i class="fas fa-images fa-lg mb-1"></i>
+                                                        <h4 class="mb-0" id="tenantCms-gallery-count">0</h4>
+                                                        <small>Galería</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="card bg-warning text-white text-center">
+                                                    <div class="card-body py-2">
+                                                        <i class="fas fa-quote-right fa-lg mb-1"></i>
+                                                        <h4 class="mb-0" id="tenantCms-testimonials-count">0</h4>
+                                                        <small>Testimonios</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="card bg-danger text-white text-center">
+                                                    <div class="card-body py-2">
+                                                        <i class="fas fa-building fa-lg mb-1"></i>
+                                                        <h4 class="mb-0" id="tenantCms-installations-count">0</h4>
+                                                        <small>Instalaciones</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="card bg-secondary text-white text-center">
+                                                    <div class="card-body py-2">
+                                                        <i class="fas fa-image fa-lg mb-1"></i>
+                                                        <h4 class="mb-0" id="tenantCms-hero-count">0</h4>
+                                                        <small>Hero</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Botones de sección -->
+                            <div class="col-12">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-header bg-light">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-layer-group me-2 text-primary"></i>Secciones del Plantel
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row g-2">
+                                            <div class="col-md-2">
+                                                <button class="btn btn-outline-primary w-100 tenant-cms-section-btn active"
+                                                    data-cms-action="selectSection" data-cms-section="staff">
+                                                    <i class="fas fa-users me-1"></i>Personal
+                                                </button>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button class="btn btn-outline-success w-100 tenant-cms-section-btn"
+                                                    data-cms-action="selectSection" data-cms-section="timeline">
+                                                    <i class="fas fa-clock me-1"></i>Línea Tiempo
+                                                </button>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button class="btn btn-outline-info w-100 tenant-cms-section-btn"
+                                                    data-cms-action="selectSection" data-cms-section="gallery">
+                                                    <i class="fas fa-images me-1"></i>Galería
+                                                </button>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button class="btn btn-outline-warning w-100 tenant-cms-section-btn"
+                                                    data-cms-action="selectSection" data-cms-section="testimonials">
+                                                    <i class="fas fa-quote-right me-1"></i>Testimonios
+                                                </button>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button class="btn btn-outline-danger w-100 tenant-cms-section-btn"
+                                                    data-cms-action="selectSection" data-cms-section="installations">
+                                                    <i class="fas fa-building me-1"></i>Instalaciones
+                                                </button>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button class="btn btn-outline-secondary w-100 tenant-cms-section-btn"
+                                                    data-cms-action="selectSection" data-cms-section="hero">
+                                                    <i class="fas fa-image me-1"></i>Hero
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Botón crear -->
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0 text-muted"><i class="fas fa-list me-2"></i>Elementos existentes</h6>
+                                    <button class="btn btn-primary btn-sm" data-cms-action="create" data-cms-section="staff">
+                                        <i class="fas fa-plus me-1"></i>Nuevo Elemento
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Formulario (oculto por defecto) -->
+                            <div class="col-12" id="tenantCmsFormContainer" style="display: none;"></div>
+
+                            <!-- Lista de elementos -->
+                            <div class="col-12">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-body" id="tenantCmsList">
+                                        <div class="text-center text-muted py-4">
+                                            <i class="fas fa-inbox fa-3x mb-3 opacity-50"></i>
+                                            <p>Seleccione una sección para ver sus elementos.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Tab Reportes -->
                     <div class="tab-pane fade" id="reports" role="tabpanel">
                         <div class="row g-4">
@@ -4048,6 +4204,7 @@
     <!-- Webpack will inject event-calendar.js bundle here -->
     <script src="js/global-search.js?v=20251019" defer></script>
     <script src="js/cms-manager.js?v=20251001"></script>
+    <script src="js/admin-tenant-cms.js?v=20260901"></script>
     <script src="js/icon-check.js?v=20251001"></script>
 
     <!-- 🔌 API Client (CRÍTICO: debe cargarse ANTES de admin-dashboard.js) -->

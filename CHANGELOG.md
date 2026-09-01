@@ -1,5 +1,60 @@
 # CHANGELOG - SIPWEB-BG / EDUZONA EMS
 
+[v4.1.0] - 2026-09-01 (LIMPIEZA DE CÓDIGO MUERTO + CMS DEL DIRECTOR + IMÁGENES DINÁMICAS)
+
+**Tipo:** Code Cleanup / Feature / Multi-Tenant Enhancement
+**Estado:** ✅ COMPLETADO
+
+### Cambios realizados:
+
+1. **LIMPIEZA DE CÓDIGO MUERTO (860 archivos removidos del tracking):**
+   - 191 archivos JavaScript en `public/js/` identificados como muertos (47.8% del total de 400) y movidos a `Documentacion_2026/codigo_muerto_js_2026-09/`
+   - 263 archivos `.d.ts` (TypeScript declarations) removidos del tracking de git
+   - 404 archivos `.map` (source maps) removidos del tracking de git
+   - `.gitignore` actualizado con reglas para `*.d.ts` y `*.map`
+   - Total de archivos tracked reducido de 3,041 a 2,181 (-28.3%)
+
+2. **CMS DEL DIRECTOR - 6 Endpoints Nuevos (`/api/tenant-cms`):**
+   - `GET/POST/PUT/DELETE /api/tenant-cms/staff` → Personal del plantel
+   - `GET/POST/PUT/DELETE /api/tenant-cms/timeline` → Línea del tiempo
+   - `GET/POST/PUT/DELETE /api/tenant-cms/gallery` → Galería de imágenes
+   - `GET/POST/PUT/DELETE /api/tenant-cms/testimonials` → Testimonios de egresados
+   - `GET/POST/PUT/DELETE /api/tenant-cms/installations` → Instalaciones
+   - `GET/POST/PUT/DELETE /api/tenant-cms/hero` → Imágenes del hero
+   - `GET /api/tenant-cms/stats` → Estadísticas consolidadas
+   - `GET /api/tenant-cms/public/:section` → Datos públicos (sin auth)
+   - Auth: requiere rol admin o director
+   - Multi-tenant: cada plantel tiene su propio contenido
+
+3. **BASE DE DATOS - 6 Tablas Nuevas:**
+   - `tenant_staff` → Personal del plantel (nombre, puesto, departamento, foto, bio)
+   - `tenant_timeline` → Línea del tiempo (año, título, descripción, imagen)
+   - `tenant_gallery` → Galería de imágenes (título, URL, categoría, álbum)
+   - `tenant_testimonials` → Testimonios (nombre, año graduación, ocupación, testimonio, rating)
+   - `tenant_installations` → Instalaciones (nombre, descripción, capacidad, equipamiento)
+   - `tenant_hero_images` → Imágenes del hero (URL, título, subtítulo, enlace)
+   - Índices optimizados para consultas por tenant_id
+
+4. **DAOs Creados (6 archivos):**
+   - `backend/data/tenant-staff.dao.js`
+   - `backend/data/tenant-timeline.dao.js`
+   - `backend/data/tenant-gallery.dao.js`
+   - `backend/data/tenant-testimonials.dao.js`
+   - `backend/data/tenant-installations.dao.js`
+   - `backend/data/tenant-hero-images.dao.js`
+
+5. **FRONTEND - Cargador de CMS Dinámico:**
+   - `public/js/tenant-cms-loader.js` → Script que carga contenido del CMS y reemplaza contenido hardcodeado
+   - Soporta: staff, timeline, gallery, testimonials, installations, hero
+   - Caché en sessionStorage con TTL de 30 minutos
+   - Integrado en `conocenos.html`
+
+6. **Archivos Creados/Modificados:**
+   - Nuevos: 10 (6 DAOs + 1 ruta + 1 migración SQL + 1 loader JS + 1 directorio)
+   - Modificados: 4 (.gitignore, server.js, api/index.js, conocenos.html)
+
+---
+
 [v4.0.0] - 2026-09-01 (FASE 0: TRANSFORMACIÓN MULTI-TENANT SAAS — LIMPIEZA WHITE-LABEL, ESTADO VIRGEN Y MOTOR DE BINDEO UNIVERSAL)
 
 **Tipo:** Major Architecture Transformation / Multi-Tenant SaaS / White-Label

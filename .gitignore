@@ -161,6 +161,14 @@ backend/node_modules/
 # NO ignorar este archivo - es esencial para reproducibilidad en CI/CD
 
 # ============================================
+# 🧹 LIMPIEZA SEPTIEMBRE 2026 (Código muerto)
+# ============================================
+
+# TypeScript declarations y source maps (no necesarios en producción)
+*.d.ts
+*.map
+
+# ============================================
 # 🧹 LIMPIEZA ENERO 2026 (Solo local, NO subir a GitHub)
 # ============================================
 
