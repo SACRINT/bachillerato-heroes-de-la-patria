@@ -695,6 +695,178 @@ const DEFAULT_SECTIONS = {
             icon: 'fa-book',
             order: 3
         }
+    ],
+
+    // ============================================
+    // BLOQUE 3: ÚLTIMAS PÁGINAS
+    // ============================================
+    'citas': [
+        {
+            key: 'departamentos_servicios',
+            title: 'Departamentos y Servicios',
+            subtitle: 'Conoce los departamentos disponibles para agendar tu cita',
+            content: '',
+            icon: 'fa-building',
+            order: 1
+        },
+        {
+            key: 'como_funciona',
+            title: 'Cómo Funciona',
+            subtitle: 'Pasos para agendar tu cita escolar',
+            content: '',
+            icon: 'fa-list-ol',
+            order: 2
+        },
+        {
+            key: 'preguntas_frecuentes',
+            title: 'Preguntas Frecuentes',
+            subtitle: 'Dudas comunes sobre el sistema de citas',
+            content: '',
+            icon: 'fa-question-circle',
+            order: 3
+        }
+    ],
+    'pagos': [
+        {
+            key: 'servicios_disponibles',
+            title: 'Servicios Disponibles',
+            subtitle: 'Trámites y servicios que requieren pago',
+            content: '',
+            icon: 'fa-concierge-bell',
+            order: 1
+        },
+        {
+            key: 'metodos_pago',
+            title: 'Métodos de Pago',
+            subtitle: 'Formas de pago aceptadas',
+            content: '',
+            icon: 'fa-credit-card',
+            order: 2
+        },
+        {
+            key: 'ventajas',
+            title: 'Ventajas',
+            subtitle: 'Beneficios del pago en línea',
+            content: '',
+            icon: 'fa-check-circle',
+            order: 3
+        }
+    ],
+    'sitios-interes': [
+        {
+            key: 'recursos_educativos',
+            title: 'Recursos Educativos',
+            subtitle: 'Plataformas y herramientas de aprendizaje',
+            content: '',
+            icon: 'fa-graduation-cap',
+            order: 1
+        },
+        {
+            key: 'universidades',
+            title: 'Universidades',
+            subtitle: 'Instituciones de educación superior',
+            content: '',
+            icon: 'fa-university',
+            order: 2
+        },
+        {
+            key: 'herramientas_productividad',
+            title: 'Herramientas de Productividad',
+            subtitle: 'Aplicaciones y recursos digitales',
+            content: '',
+            icon: 'fa-tools',
+            order: 3
+        },
+        {
+            key: 'sitios_gubernamentales',
+            title: 'Sitios Gubernamentales',
+            subtitle: 'Portales oficiales de la SEP y gobierno',
+            content: '',
+            icon: 'fa-landmark',
+            order: 4
+        }
+    ],
+    'aviso-privacidad': [
+        {
+            key: 'aviso_privacidad',
+            title: 'Aviso de Privacidad',
+            subtitle: 'Términos y condiciones de protección de datos',
+            content: '',
+            icon: 'fa-shield-alt',
+            order: 1
+        }
+    ],
+    'terminos': [
+        {
+            key: 'terminos_condiciones',
+            title: 'Términos y Condiciones',
+            subtitle: 'Lineamientos de uso de la plataforma',
+            content: '',
+            icon: 'fa-file-contract',
+            order: 1
+        }
+    ],
+    'chatbot': [
+        {
+            key: 'como_usar',
+            title: 'Cómo Usar el Chatbot',
+            subtitle: 'Guía para interactuar con nuestro asistente virtual',
+            content: '',
+            icon: 'fa-robot',
+            order: 1
+        },
+        {
+            key: 'funciones_disponibles',
+            title: 'Funciones Disponibles',
+            subtitle: 'Todo lo que puedes hacer con el chatbot',
+            content: '',
+            icon: 'fa-cogs',
+            order: 2
+        },
+        {
+            key: 'preguntas_frecuentes',
+            title: 'Preguntas Frecuentes',
+            subtitle: 'Resolvemos tus dudas sobre el chatbot',
+            content: '',
+            icon: 'fa-question-circle',
+            order: 3
+        }
+    ],
+    'encuestas': [
+        {
+            key: 'encuestas_activas',
+            title: 'Encuestas Activas',
+            subtitle: 'Participa en nuestras encuestas escolares',
+            content: '',
+            icon: 'fa-poll',
+            order: 1
+        },
+        {
+            key: 'info_encuestas',
+            title: 'Información de Encuestas',
+            subtitle: 'Cómo participar y por qué tu opinión importa',
+            content: '',
+            icon: 'fa-info-circle',
+            order: 2
+        }
+    ],
+    'docentes': [
+        {
+            key: 'recursos_docentes',
+            title: 'Recursos Docentes',
+            subtitle: 'Materiales y herramientas para el personal docente',
+            content: '',
+            icon: 'fa-chalkboard-teacher',
+            order: 1
+        },
+        {
+            key: 'comunicados_academia',
+            title: 'Comunicados de Academia',
+            subtitle: 'Avisos oficiales del departamento académico',
+            content: '',
+            icon: 'fa-bullhorn',
+            order: 2
+        }
     ]
 };
 
