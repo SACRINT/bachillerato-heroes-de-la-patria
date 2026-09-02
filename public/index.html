@@ -51,6 +51,10 @@
     <link rel="icon" href="/images/logo-bachillerato-HDLP.webp" type="image/webp">
     <link rel="apple-touch-icon" href="/images/logo-bachillerato-HDLP.webp">
 
+    <!-- EDUZONA Visual Engine - Lenis Smooth Scroll -->
+    <link rel="preconnect" href="https://unpkg.com">
+    <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js" defer></script>
+
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
@@ -313,6 +317,56 @@
                             <div class="feature-highlight mt-3">
                                 <span class="badge bg-danger-subtle text-danger">? Futuro Digital</span>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 📊 Estadísticas Institucionales - Contadores Animados -->
+        <section class="py-5 stats-section" data-section-key="estadisticas">
+            <div class="container">
+                <div class="row text-center mb-5">
+                    <div class="col-12">
+                        <h2 class="display-5 fw-bold text-white mb-3">Nuestros Números Hablan</h2>
+                        <p class="lead text-white-50">El impacto de nuestra comunidad educativa</p>
+                    </div>
+                </div>
+                <div class="row g-4 justify-content-center">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stat-card-glass text-center p-4 rounded-4" data-section-item="stat_planteles">
+                            <div class="stat-icon mb-3">
+                                <i class="fas fa-school fa-3x text-white opacity-75"></i>
+                            </div>
+                            <div class="stat-number display-3 fw-bold text-white mb-2" data-count="1" data-suffix="+">0</div>
+                            <div class="stat-label text-white-50 fs-5">Planteles</div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stat-card-glass text-center p-4 rounded-4" data-section-item="stat_alumnos">
+                            <div class="stat-icon mb-3">
+                                <i class="fas fa-user-graduate fa-3x text-white opacity-75"></i>
+                            </div>
+                            <div class="stat-number display-3 fw-bold text-white mb-2" data-count="4800" data-suffix="+">0</div>
+                            <div class="stat-label text-white-50 fs-5">Alumnos Inscritos</div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stat-card-glass text-center p-4 rounded-4" data-section-item="stat_docentes">
+                            <div class="stat-icon mb-3">
+                                <i class="fas fa-chalkboard-teacher fa-3x text-white opacity-75"></i>
+                            </div>
+                            <div class="stat-number display-3 fw-bold text-white mb-2" data-count="320" data-suffix="+">0</div>
+                            <div class="stat-label text-white-50 fs-5">Docentes</div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stat-card-glass text-center p-4 rounded-4" data-section-item="stat_egresados">
+                            <div class="stat-icon mb-3">
+                                <i class="fas fa-graduation-cap fa-3x text-white opacity-75"></i>
+                            </div>
+                            <div class="stat-number display-3 fw-bold text-white mb-2" data-count="15000" data-suffix="+">0</div>
+                            <div class="stat-label text-white-50 fs-5">Egresados</div>
                         </div>
                     </div>
                 </div>
@@ -2283,6 +2337,79 @@
                     <i class="fas fa-arrow-up"></i>
                 </button>
 
+                <!-- ===== EDUZONA VISUAL ENGINE - FASE 4 ===== -->
+                <style>
+                    /* --- Stats Section with Glassmorphism --- */
+                    .stats-section {
+                        background: linear-gradient(135deg, #1976D2 0%, #0D47A1 50%, #0a2a5e 100%);
+                        position: relative;
+                        overflow: hidden;
+                    }
+                    .stats-section::before {
+                        content: '';
+                        position: absolute;
+                        top: -50%;
+                        left: -50%;
+                        width: 200%;
+                        height: 200%;
+                        background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 60%);
+                        animation: statsPulse 8s ease-in-out infinite;
+                    }
+                    @keyframes statsPulse {
+                        0%, 100% { transform: scale(1); opacity: 0.5; }
+                        50% { transform: scale(1.1); opacity: 0.8; }
+                    }
+                    .stat-card-glass {
+                        background: rgba(255, 255, 255, 0.1);
+                        backdrop-filter: blur(12px);
+                        -webkit-backdrop-filter: blur(12px);
+                        border: 1px solid rgba(255, 255, 255, 0.2);
+                        transition: transform 0.3s ease, box-shadow 0.3s ease;
+                    }
+                    .stat-card-glass:hover {
+                        transform: translateY(-8px);
+                        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+                    }
+
+                    /* --- Feature Cards Micro-Interactions --- */
+                    #why-choose-us .feature-card {
+                        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+                        border: 1px solid transparent;
+                    }
+                    #why-choose-us .feature-card:hover {
+                        transform: translateY(-6px) scale(1.02);
+                        box-shadow: 0 16px 48px rgba(25, 118, 210, 0.15);
+                        border-color: rgba(25, 118, 210, 0.2);
+                    }
+                    #why-choose-us .feature-icon > div {
+                        transition: transform 0.3s ease, box-shadow 0.3s ease;
+                    }
+                    #why-choose-us .feature-card:hover .feature-icon > div {
+                        transform: scale(1.1);
+                        box-shadow: 0 4px 20px rgba(25, 118, 210, 0.3);
+                    }
+
+                    /* --- Quick Access Cards Micro-Interactions --- */
+                    [data-section-key="acceso_rapido"] .card {
+                        transition: transform 0.3s ease, box-shadow 0.3s ease;
+                    }
+                    [data-section-key="acceso_rapido"] .card:hover {
+                        transform: translateY(-6px);
+                        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+                    }
+
+                    /* --- Respect prefers-reduced-motion --- */
+                    @media (prefers-reduced-motion: reduce) {
+                        .stats-section::before { animation: none; }
+                        .stat-card-glass,
+                        #why-choose-us .feature-card,
+                        #why-choose-us .feature-icon > div,
+                        [data-section-key="acceso_rapido"] .card {
+                            transition: none;
+                        }
+                    }
+                </style>
+
                 <!-- ===== BGE FRAMEWORK INICIALIZACIÃƒ"N ===== -->
 
                 <!-- âÅ“â€¦ Inicialización Framework BGE - EXTRACTED TO EXTERNAL FILE FOR CSP COMPLIANCE -->
@@ -2310,6 +2437,77 @@
                 <!-- 🎛️ CMS LOADER - Carga contenido dinámico del CMS del director -->
                 <script src="js/tenant-cms-loader.js" defer></script>
                 <script src="js/page-sections-loader.js" defer></script>
+
+                <!-- 🌊 EDUZONA VISUAL ENGINE - Lenis Smooth Scroll + CountUp.js Animated Counters -->
+                <script src="https://cdn.jsdelivr.net/npm/countup.js@2.8.0/dist/countUp.umd.js" defer></script>
+                <script>
+                (function() {
+                    'use strict';
+
+                    /* --- Lenis Smooth Scroll --- */
+                    function initLenis() {
+                        if (typeof Lenis === 'undefined') return;
+                        var lenis = new Lenis({
+                            duration: 1.2,
+                            easing: function(t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
+                            smoothWheel: true,
+                            wheelMultiplier: 1
+                        });
+                        function raf(time) {
+                            lenis.raf(time);
+                            requestAnimationFrame(raf);
+                        }
+                        requestAnimationFrame(raf);
+                        window._lenis = lenis;
+                        console.log('[VISUAL-ENGINE] Lenis smooth scroll initialized');
+                    }
+
+                    /* --- CountUp.js Animated Counters --- */
+                    function initCounters() {
+                        var counters = document.querySelectorAll('.stat-number[data-count]');
+                        if (!counters.length) return;
+                        if (typeof CountUp === 'undefined' && typeof countUp === 'undefined') {
+                            console.warn('[VISUAL-ENGINE] CountUp.js not loaded yet');
+                            return;
+                        }
+                        var CountUpClass = (typeof CountUp !== 'undefined') ? CountUp : countUp.CountUp;
+                        var observer = new IntersectionObserver(function(entries) {
+                            entries.forEach(function(entry) {
+                                if (entry.isIntersecting) {
+                                    var el = entry.target;
+                                    var endVal = parseInt(el.getAttribute('data-count'), 10);
+                                    var suffix = el.getAttribute('data-suffix') || '';
+                                    var counter = new CountUpClass(el, endVal, {
+                                        duration: 2.5,
+                                        separator: ',',
+                                        suffix: suffix,
+                                        enableScrollSpy: false
+                                    });
+                                    if (!counter.error) {
+                                        counter.start();
+                                    } else {
+                                        console.error('[VISUAL-ENGINE] CountUp error:', counter.error);
+                                    }
+                                    observer.unobserve(el);
+                                }
+                            });
+                        }, { threshold: 0.3 });
+                        counters.forEach(function(c) { observer.observe(c); });
+                        console.log('[VISUAL-ENGINE] CountUp counters initialized (' + counters.length + ')');
+                    }
+
+                    /* --- Initialize on DOM ready --- */
+                    if (document.readyState === 'loading') {
+                        document.addEventListener('DOMContentLoaded', function() {
+                            initLenis();
+                            initCounters();
+                        });
+                    } else {
+                        initLenis();
+                        initCounters();
+                    }
+                })();
+                </script>
 </body>
 
 </html>
