@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -311,20 +311,7 @@
 
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
         <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
-        <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof Swiper === 'undefined') return;
-            new Swiper('.infra-swiper', {
-                slidesPerView: 1,
-                spaceBetween: 20,
-                loop: true,
-                autoplay: { delay: 4000, disableOnInteraction: false },
-                pagination: { el: '.swiper-pagination', clickable: true },
-                navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
-                breakpoints: { 640: { slidesPerView: 2 }, 992: { slidesPerView: 3 } }
-            });
-        });
-        </script>
+        <script src="js/conocenos-infra-swiper.js" defer></script>
         <style>
         .infra-swiper .swiper-slide { height: auto; }
         .infra-swiper .swiper-pagination-bullet-active { background: var(--bs-primary); }
