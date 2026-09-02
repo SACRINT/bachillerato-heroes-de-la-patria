@@ -467,6 +467,234 @@ const DEFAULT_SECTIONS = {
             icon: 'fa-cubes',
             order: 2
         }
+    ],
+
+    // ============================================
+    // BLOQUE 2: PÁGINAS INSTITUCIONALES
+    // ============================================
+    'inicio': [
+        {
+            key: 'por_que_elegirnos',
+            title: '¿Por Qué Elegirnos?',
+            subtitle: 'Razones que nos hacen único en educación',
+            content: '',
+            icon: 'fa-star',
+            order: 1
+        },
+        {
+            key: 'acceso_rapido',
+            title: 'Acceso Rápido',
+            subtitle: 'Encuentra rápidamente la información que necesitas',
+            content: '',
+            icon: 'fa-bolt',
+            order: 2
+        },
+        {
+            key: 'noticias_recientes',
+            title: 'Noticias Recientes',
+            subtitle: 'Mantente al día con las últimas novedades',
+            content: '',
+            icon: 'fa-newspaper',
+            order: 3
+        },
+        {
+            key: 'proximos_eventos',
+            title: 'Próximos Eventos',
+            subtitle: 'No te pierdas las fechas importantes',
+            content: '',
+            icon: 'fa-calendar-alt',
+            order: 4
+        },
+        {
+            key: 'cta_inscripcion',
+            title: '¿Listo para formar parte?',
+            subtitle: 'Conoce nuestro proceso de admisión',
+            content: '',
+            icon: 'fa-user-plus',
+            order: 5
+        }
+    ],
+    'padres': [
+        {
+            key: 'info_padres',
+            title: 'Información para Padres',
+            subtitle: 'Recursos y herramientas para las familias',
+            content: '<p class="text-muted">Accede a información importante para el seguimiento académico de tus hijos.</p>',
+            icon: 'fa-users',
+            order: 1
+        },
+        {
+            key: 'primera_vez',
+            title: 'Primera Vez en la Plataforma',
+            subtitle: 'Guía de registro y primeros pasos',
+            content: '',
+            icon: 'fa-user-plus',
+            order: 2
+        },
+        {
+            key: 'preguntas_frecuentes',
+            title: 'Preguntas Frecuentes',
+            subtitle: 'Resolvemos tus dudas más comunes',
+            content: '',
+            icon: 'fa-question-circle',
+            order: 3
+        }
+    ],
+    'convocatorias': [
+        {
+            key: 'inscripciones',
+            title: 'Inscripciones 2025',
+            subtitle: 'Proceso de admisión y requisitos',
+            content: '',
+            icon: 'fa-clipboard-list',
+            order: 1
+        },
+        {
+            key: 'convocatorias_activas',
+            title: 'Convocatorias Activas',
+            subtitle: 'Oportunidades vigentes para nuestra comunidad',
+            content: '',
+            icon: 'fa-bullhorn',
+            order: 2
+        },
+        {
+            key: 'proximas_convocatorias',
+            title: 'Próximas Convocatorias',
+            subtitle: 'Eventos y oportunidades próximas',
+            content: '',
+            icon: 'fa-clock',
+            order: 3
+        }
+    ],
+    'calendario': [
+        {
+            key: 'ciclo_escolar',
+            title: 'Ciclo Escolar Vigente',
+            subtitle: 'Fechas oficiales del calendario SEP',
+            content: '',
+            icon: 'fa-calendar-check',
+            order: 1
+        },
+        {
+            key: 'periodos_academicos',
+            title: 'Periodos Académicos',
+            subtitle: 'Semestres, cortes y vacaciones',
+            content: '',
+            icon: 'fa-clock',
+            order: 2
+        },
+        {
+            key: 'tipos_eventos',
+            title: 'Tipos de Eventos',
+            subtitle: 'Calendario cívicos, culturales y deportivos',
+            content: '',
+            icon: 'fa-calendar',
+            order: 3
+        }
+    ],
+    'transparencia': [
+        {
+            key: 'informacion_general',
+            title: 'Información General',
+            subtitle: 'Datos institucionales de transparencia',
+            content: '',
+            icon: 'fa-info-circle',
+            order: 1
+        },
+        {
+            key: 'documentos_transparencia',
+            title: 'Documentos de Transparencia',
+            subtitle: 'Informes y documentos oficiales',
+            content: '',
+            icon: 'fa-file-alt',
+            order: 2
+        },
+        {
+            key: 'solicitudes_informacion',
+            title: 'Solicitudes de Información',
+            subtitle: 'Procedimiento para solicitar información pública',
+            content: '',
+            icon: 'fa-file-signature',
+            order: 3
+        },
+        {
+            key: 'documentos_financieros',
+            title: 'Documentos Financieros',
+            subtitle: 'Presupuesto, rendición de cuentas',
+            content: '',
+            icon: 'fa-dollar-sign',
+            order: 4
+        }
+    ],
+    'normatividad': [
+        {
+            key: 'reglamento_escolar',
+            title: 'Reglamento Escolar',
+            subtitle: 'Normatividad interna del plantel',
+            content: '',
+            icon: 'fa-gavel',
+            order: 1
+        },
+        {
+            key: 'resumen_reglamento',
+            title: 'Resumen del Reglamento',
+            subtitle: 'Puntos más importantes del reglamento',
+            content: '',
+            icon: 'fa-list-ol',
+            order: 2
+        },
+        {
+            key: 'normatividad_externa',
+            title: 'Normatividad Externa',
+            subtitle: 'Leyes y lineamientos de la SEP',
+            content: '',
+            icon: 'fa-landmark',
+            order: 3
+        }
+    ],
+    'reglamento': [
+        {
+            key: 'medidas_disciplinarias',
+            title: 'Medidas Disciplinarias',
+            subtitle: 'Faltas y consecuencias establecidas',
+            content: '',
+            icon: 'fa-exclamation-triangle',
+            order: 1
+        },
+        {
+            key: 'notas_explicativas',
+            title: 'Notas Explicativas',
+            subtitle: 'Aclaraciones y observaciones al reglamento',
+            content: '',
+            icon: 'fa-sticky-note',
+            order: 2
+        }
+    ],
+    'descargas': [
+        {
+            key: 'documentos_destacados',
+            title: 'Documentos Destacados',
+            subtitle: 'Formatos y solicitudes más descargados',
+            content: '',
+            icon: 'fa-file-download',
+            order: 1
+        },
+        {
+            key: 'categorias_documentos',
+            title: 'Categorías de Documentos',
+            subtitle: 'Explora por tipo de documento',
+            content: '',
+            icon: 'fa-folder-open',
+            order: 2
+        },
+        {
+            key: 'guia_usuario',
+            title: 'Guía del Usuario',
+            subtitle: 'Cómo descargar y utilizar los formatos',
+            content: '',
+            icon: 'fa-book',
+            order: 3
+        }
     ]
 };
 
