@@ -126,246 +126,170 @@
             </div>
         </section>
 
-        <!-- Servicios Principales -->
-        <section id="servicios-principales" class="py-5" data-section-key="servicios_principales">
+        <!-- Ventanilla Digital Unificada -->
+        <section id="ventanilla-digital" class="py-5" data-section-key="ventanilla_digital">
             <div class="container">
-                <div class="row">
-                    <div class="col-12 text-center mb-5">
-                        <h2 class="fw-bold">Servicios Principales</h2>
-                        <p class="text-muted">Los servicios esenciales que ofrecemos para apoyar tu desarrollo académico
-                        </p>
+                <div class="row text-center mb-5">
+                    <div class="col-12">
+                        <h2 class="fw-bold text-primary mb-3">
+                            <i class="fas fa-building-columns me-2"></i>Ventanilla Digital
+                        </h2>
+                        <p class="lead text-muted">Todos tus trámites en un solo lugar</p>
                     </div>
                 </div>
-                <div class="row g-4">
-                    <!-- Trámites Escolares -->
-                    <div class="col-lg-4 col-md-6">
-                        <div class="card h-100 border-0 shadow-sm hover-lift">
-                            <div class="card-body text-center p-4">
-                                <div class="service-icon mb-4">
-                                    <i class="fas fa-id-card display-4 text-primary" aria-hidden="true"></i>
-                                </div>
-                                <h3 class="card-title h4 mb-3">Trámites Escolares</h3>
-                                <p class="card-text text-muted mb-4">
-                                    Solicita constancias, historiales académicos y credenciales.
-                                    Atención ágil y personalizada para todos tus trámites.
-                                </p>
-                                <ul class="list-unstyled text-start mb-4">
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2" aria-hidden="true"></i>
-                                        Constancias de estudios
-                                    </li>
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2" aria-hidden="true"></i>
-                                        Historiales académicos
-                                    </li>
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2" aria-hidden="true"></i>
-                                        Credenciales estudiantiles
-                                    </li>
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2" aria-hidden="true"></i>
-                                        Certificados parciales
-                                    </li>
-                                </ul>
-                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tramitesModal">
-                                    <i class="fas fa-file-alt me-2" aria-hidden="true"></i>
-                                    Solicitar Trámite
-                                </button>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Orientación Educativa -->
-                    <div class="col-lg-4 col-md-6">
-                        <div class="card h-100 border-0 shadow-sm hover-lift">
-                            <div class="card-body text-center p-4">
-                                <div class="service-icon mb-4">
-                                    <i class="fas fa-user-md display-4 text-success" aria-hidden="true"></i>
-                                </div>
-                                <h3 class="card-title h4 mb-3">Orientación Educativa</h3>
-                                <p class="card-text text-muted mb-4">
-                                    Apoyo psicopedagógico para el desarrollo académico y
-                                    personal de nuestros estudiantes.
-                                </p>
-                                <ul class="list-unstyled text-start mb-4">
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2" aria-hidden="true"></i>
-                                        Orientación vocacional
-                                    </li>
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2" aria-hidden="true"></i>
-                                        Apoyo psicopedagógico
-                                    </li>
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2" aria-hidden="true"></i>
-                                        Técnicas de estudio
-                                    </li>
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2" aria-hidden="true"></i>
-                                        Resolución de conflictos
-                                    </li>
-                                </ul>
-                                <button class="btn btn-success" data-bs-toggle="modal"
-                                    data-bs-target="#orientacionModal">
-                                    <i class="fas fa-comments me-2" aria-hidden="true"></i>
-                                    Solicitar Orientación
+                <div class="row justify-content-center">
+                    <div class="col-lg-10">
+                        <ul class="nav nav-pills nav-fill mb-4 p-2 bg-light rounded-3 shadow-sm" id="ventanillaTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active fw-semibold" id="constancias-tab" data-bs-toggle="pill" data-bs-target="#constancias-pane" type="button" role="tab" aria-controls="constancias-pane" aria-selected="true">
+                                    <i class="fas fa-file-alt me-2"></i>Constancias y Boletas
                                 </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Actividades Extracurriculares -->
-                    <div class="col-lg-4 col-md-6">
-                        <div class="card h-100 border-0 shadow-sm hover-lift">
-                            <div class="card-body text-center p-4">
-                                <div class="service-icon mb-4">
-                                    <i class="fas fa-futbol display-4 text-warning" aria-hidden="true"></i>
-                                </div>
-                                <h3 class="card-title h4 mb-3">Actividades Extracurriculares</h3>
-                                <p class="card-text text-muted mb-4">
-                                    Amplia oferta de talleres deportivos, culturales,
-                                    cívicos y de conocimientos.
-                                </p>
-                                <ul class="list-unstyled text-start mb-4">
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2" aria-hidden="true"></i>
-                                        Deportes y actividad física
-                                    </li>
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2" aria-hidden="true"></i>
-                                        Talleres artísticos
-                                    </li>
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2" aria-hidden="true"></i>
-                                        Actividades cívicas
-                                    </li>
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2" aria-hidden="true"></i>
-                                        Clubs de conocimiento
-                                    </li>
-                                </ul>
-                                <button class="btn btn-warning" data-bs-toggle="modal"
-                                    data-bs-target="#extracurricularesModal">
-                                    <i class="fas fa-calendar-plus me-2" aria-hidden="true"></i>
-                                    Ver Actividades
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link fw-semibold" id="citas-tab" data-bs-toggle="pill" data-bs-target="#citas-pane" type="button" role="tab" aria-controls="citas-pane" aria-selected="false">
+                                    <i class="fas fa-calendar-check me-2"></i>Citas
                                 </button>
-                            </div>
-                        </div>
-                    </div>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link fw-semibold" id="descargas-tab" data-bs-toggle="pill" data-bs-target="#descargas-pane" type="button" role="tab" aria-controls="descargas-pane" aria-selected="false">
+                                    <i class="fas fa-download me-2"></i>Formatos
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link fw-semibold" id="pagos-tab" data-bs-toggle="pill" data-bs-target="#pagos-pane" type="button" role="tab" aria-controls="pagos-pane" aria-selected="false">
+                                    <i class="fas fa-dollar-sign me-2"></i>Cuotas y Pagos
+                                </button>
+                            </li>
+                        </ul>
 
-                    <!-- Biblioteca -->
-                    <div id="biblioteca" class="col-lg-4 col-md-6">
-                        <div class="card h-100 border-0 shadow-sm hover-lift">
-                            <div class="card-body text-center p-4">
-                                <div class="service-icon mb-4">
-                                    <i class="fas fa-book-reader display-4 text-info" aria-hidden="true"></i>
-                                </div>
-                                <h3 class="card-title h4 mb-3">Biblioteca</h3>
-                                <p class="card-text text-muted mb-4">
-                                    Espacio de estudio con amplio acervo bibliográfico
-                                    y recursos digitales para tu desarrollo académico.
-                                </p>
-                                <ul class="list-unstyled text-start mb-4">
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2" aria-hidden="true"></i>
-                                        Acervo especializado
-                                    </li>
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2" aria-hidden="true"></i>
-                                        Espacios de estudio
-                                    </li>
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2" aria-hidden="true"></i>
-                                        Recursos digitales
-                                    </li>
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2" aria-hidden="true"></i>
-                                        Préstamo a domicilio
-                                    </li>
-                                </ul>
-                                <div class="d-grid">
-                                    <span class="text-muted">
-                                        <i class="fas fa-clock me-2" aria-hidden="true"></i>
-                                        Lunes a Viernes<br>8:00 AM - 1:30 PM
-                                    </span>
+                        <div class="tab-content" id="ventanillaTabContent">
+                            <!-- Pestaña 1: Constancias y Boletas -->
+                            <div class="tab-pane fade show active" id="constancias-pane" role="tabpanel" aria-labelledby="constancias-tab">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-body p-4">
+                                        <div class="row align-items-center">
+                                            <div class="col-lg-7">
+                                                <h4 class="fw-bold text-primary mb-3">Solicitud de Constancias</h4>
+                                                <p class="text-muted mb-3">Solicita tu constancia de estudios, boleta de calificaciones o certificado parcial de manera ágil.</p>
+                                                <ul class="list-unstyled mb-4">
+                                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Constancia de estudios vigente</li>
+                                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Boleta de calificaciones por semestre</li>
+                                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Certificado parcial de aprovechamiento</li>
+                                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Carta de no adeudo</li>
+                                                </ul>
+                                                <div class="alert alert-info small mb-0">
+                                                    <i class="fas fa-clock me-1"></i><strong>Tiempo de entrega:</strong> 3 a 5 días hábiles tras solicitud completa.
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-5 text-center mt-3 mt-lg-0">
+                                                <div class="bg-primary-subtle rounded-3 p-4 mb-3">
+                                                    <i class="fas fa-graduation-cap fa-3x text-primary"></i>
+                                                </div>
+                                                <a href="estudiantes.html" class="btn btn-primary btn-lg w-100">
+                                                    <i class="fas fa-external-link-alt me-2"></i>Acceder a SICEP
+                                                </a>
+                                                <small class="text-muted d-block mt-2">Sistema oficial de SEP Puebla</small>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <!-- Laboratorios -->
-                    <div id="laboratorios" class="col-lg-4 col-md-6">
-                        <div class="card h-100 border-0 shadow-sm hover-lift">
-                            <div class="card-body text-center p-4">
-                                <div class="service-icon mb-4">
-                                    <i class="fas fa-microscope display-4 text-danger" aria-hidden="true"></i>
+                            <!-- Pestaña 2: Citas con Dirección y Orientación -->
+                            <div class="tab-pane fade" id="citas-pane" role="tabpanel" aria-labelledby="citas-tab">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-body p-4">
+                                        <div class="row align-items-center">
+                                            <div class="col-lg-7">
+                                                <h4 class="fw-bold text-success mb-3">Agendar una Cita</h4>
+                                                <p class="text-muted mb-3">Programa una cita presencial o virtual con dirección, orientación o servicios escolares.</p>
+                                                <ul class="list-unstyled mb-4">
+                                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Atención con Dirección General</li>
+                                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Orientación Educativa y Psicopedagógica</li>
+                                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Servicios Escolares y Administrativos</li>
+                                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Seguimiento académico individual</li>
+                                                </ul>
+                                                <div class="alert alert-success small mb-0">
+                                                    <i class="fas fa-info-circle me-1"></i>Las citas se confirman por correo electrónico o mensaje de texto.
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-5 text-center mt-3 mt-lg-0">
+                                                <div class="bg-success-subtle rounded-3 p-4 mb-3">
+                                                    <i class="fas fa-calendar-check fa-3x text-success"></i>
+                                                </div>
+                                                <a href="citas.html" class="btn btn-success btn-lg w-100">
+                                                    <i class="fas fa-calendar-plus me-2"></i>Agendar Cita
+                                                </a>
+                                                <small class="text-muted d-block mt-2">Selecciona departamento y horario</small>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <h3 class="card-title h4 mb-3">Laboratorios</h3>
-                                <p class="card-text text-muted mb-4">
-                                    Instalaciones equipadas para prácticas de ciencias
-                                    naturales, cómputo y capacitación para el trabajo.
-                                </p>
-                                <ul class="list-unstyled text-start mb-4">
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2" aria-hidden="true"></i>
-                                        Laboratorio de Ciencias
-                                    </li>
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2" aria-hidden="true"></i>
-                                        Centro de cómputo
-                                    </li>
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2" aria-hidden="true"></i>
-                                        Talleres especializados
-                                    </li>
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2" aria-hidden="true"></i>
-                                        Equipamiento moderno
-                                    </li>
-                                </ul>
-                                <button class="btn btn-danger" data-bs-toggle="modal"
-                                    data-bs-target="#laboratoriosModal">
-                                    <i class="fas fa-flask me-2" aria-hidden="true"></i>
-                                    Conocer Laboratorios
-                                </button>
                             </div>
-                        </div>
-                    </div>
 
-                    <!-- Becas y Apoyos -->
-                    <div id="becas" class="col-lg-4 col-md-6">
-                        <div class="card h-100 border-0 shadow-sm hover-lift">
-                            <div class="card-body text-center p-4">
-                                <div class="service-icon mb-4">
-                                    <i class="fas fa-graduation-cap display-4 text-secondary" aria-hidden="true"></i>
+                            <!-- Pestaña 3: Descarga de Formatos -->
+                            <div class="tab-pane fade" id="descargas-pane" role="tabpanel" aria-labelledby="descargas-tab">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-body p-4">
+                                        <div class="row align-items-center">
+                                            <div class="col-lg-7">
+                                                <h4 class="fw-bold text-info mb-3">Formatos y Justificantes</h4>
+                                                <p class="text-muted mb-3">Descarga los formatos oficiales que necesites para distintos trámites escolares.</p>
+                                                <ul class="list-unstyled mb-4">
+                                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Formato de solicitud de constancia</li>
+                                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Justificante de inasistencia</li>
+                                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Solicitud detransferencia</li>
+                                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Carta de responsabilidad para salidas</li>
+                                                </ul>
+                                                <div class="alert alert-info small mb-0">
+                                                    <i class="fas fa-download me-1"></i>Los formatos están en formato PDF y se pueden imprimir directamente.
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-5 text-center mt-3 mt-lg-0">
+                                                <div class="bg-info-subtle rounded-3 p-4 mb-3">
+                                                    <i class="fas fa-folder-open fa-3x text-info"></i>
+                                                </div>
+                                                <a href="descargas.html" class="btn btn-info btn-lg w-100">
+                                                    <i class="fas fa-download me-2"></i>Ver Formatos
+                                                </a>
+                                                <small class="text-muted d-block mt-2">Descarga gratuita en PDF</small>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <h3 class="card-title h4 mb-3">Becas y Apoyos</h3>
-                                <p class="card-text text-muted mb-4">
-                                    Información y gestión de becas y programas de apoyo
-                                    para estudiantes con necesidades económicas.
-                                </p>
-                                <ul class="list-unstyled text-start mb-4">
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2" aria-hidden="true"></i>
-                                        Becas de aprovechamiento
-                                    </li>
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2" aria-hidden="true"></i>
-                                        Apoyos económicos
-                                    </li>
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2" aria-hidden="true"></i>
-                                        Programas gubernamentales
-                                    </li>
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2" aria-hidden="true"></i>
-                                        Asesoría en trámites
-                                    </li>
-                                </ul>
-                                <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#becasModal">
-                                    <i class="fas fa-hand-holding-usd me-2" aria-hidden="true"></i>
-                                    Información de Becas
-                                </button>
+                            </div>
+
+                            <!-- Pestaña 4: Cuotas Escolares y Procedimiento de Pago -->
+                            <div class="tab-pane fade" id="pagos-pane" role="tabpanel" aria-labelledby="pagos-tab">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-body p-4">
+                                        <div class="row align-items-center">
+                                            <div class="col-lg-7">
+                                                <h4 class="fw-bold text-warning mb-3">Cuotas y Procedimiento de Pago</h4>
+                                                <p class="text-muted mb-3">Consulta las cuotas escolares, conceptos de cobro y formas de pago autorizadas.</p>
+                                                <ul class="list-unstyled mb-4">
+                                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Inscripción y reinscripción</li>
+                                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Colegiatura mensual</li>
+                                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Cuota de mantenimiento</li>
+                                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Actividades extracurriculares</li>
+                                                </ul>
+                                                <div class="alert alert-warning small mb-0">
+                                                    <i class="fas fa-info-circle me-1"></i>Los pagos se realizan en la Tesorería del plantel de lunes a viernes de 9:00 a 13:00 hrs.
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-5 text-center mt-3 mt-lg-0">
+                                                <div class="bg-warning-subtle rounded-3 p-4 mb-3">
+                                                    <i class="fas fa-wallet fa-3x text-warning"></i>
+                                                </div>
+                                                <a href="pagos.html" class="btn btn-warning btn-lg w-100">
+                                                    <i class="fas fa-dollar-sign me-2"></i>Ver Cuotas
+                                                </a>
+                                                <small class="text-muted d-block mt-2">Consulta completa de conceptos</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

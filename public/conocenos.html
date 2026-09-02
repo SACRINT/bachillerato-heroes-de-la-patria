@@ -244,14 +244,92 @@
                         <p data-section-subtitle class="lead text-muted">Instalaciones modernas diseñadas para potenciar el aprendizaje</p>
                     </div>
                 </div>
-                <div data-section-items class="row g-4">
-                    <div class="col-12 text-center py-4">
-                        <i class="fas fa-building fa-3x text-muted mb-3 opacity-50"></i>
-                        <p class="text-muted">Las instalaciones de tu plantel se configuran desde el dashboard del director.</p>
+                <div data-section-items class="swiper infra-swiper mb-4">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-body text-center p-4">
+                                    <div class="rounded-3 bg-primary-subtle d-inline-flex align-items-center justify-content-center mb-3" style="width:80px;height:80px">
+                                        <i class="fas fa-chalkboard-teacher fa-2x text-primary"></i>
+                                    </div>
+                                    <h5 class="card-title fw-bold">Aulas</h5>
+                                    <p class="card-text text-muted small">Espacios amplios y equipados para un aprendizaje cómodo y efectivo.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-body text-center p-4">
+                                    <div class="rounded-3 bg-success-subtle d-inline-flex align-items-center justify-content-center mb-3" style="width:80px;height:80px">
+                                        <i class="fas fa-flask fa-2x text-success"></i>
+                                    </div>
+                                    <h5 class="card-title fw-bold">Laboratorios</h5>
+                                    <p class="card-text text-muted small">Laboratorios de ciencias, cómputo y talleres especializados.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-body text-center p-4">
+                                    <div class="rounded-3 bg-warning-subtle d-inline-flex align-items-center justify-content-center mb-3" style="width:80px;height:80px">
+                                        <i class="fas fa-futbol fa-2x text-warning"></i>
+                                    </div>
+                                    <h5 class="card-title fw-bold">Canchas Deportivas</h5>
+                                    <p class="card-text text-muted small">Instalaciones deportivas para actividades físicas y recreativas.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-body text-center p-4">
+                                    <div class="rounded-3 bg-info-subtle d-inline-flex align-items-center justify-content-center mb-3" style="width:80px;height:80px">
+                                        <i class="fas fa-book fa-2x text-info"></i>
+                                    </div>
+                                    <h5 class="card-title fw-bold">Biblioteca</h5>
+                                    <p class="card-text text-muted small">Acervo bibliográfico y recursos digitales de consulta.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-body text-center p-4">
+                                    <div class="rounded-3 bg-danger-subtle d-inline-flex align-items-center justify-content-center mb-3" style="width:80px;height:80px">
+                                        <i class="fas fa-desktop fa-2x text-danger"></i>
+                                    </div>
+                                    <h5 class="card-title fw-bold">Centro de Cómputo</h5>
+                                    <p class="card-text text-muted small">Equipos de última generación para práctica y aprendizaje digital.</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-pagination"></div>
                 </div>
             </div>
         </section>
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof Swiper === 'undefined') return;
+            new Swiper('.infra-swiper', {
+                slidesPerView: 1,
+                spaceBetween: 20,
+                loop: true,
+                autoplay: { delay: 4000, disableOnInteraction: false },
+                pagination: { el: '.swiper-pagination', clickable: true },
+                navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+                breakpoints: { 640: { slidesPerView: 2 }, 992: { slidesPerView: 3 } }
+            });
+        });
+        </script>
+        <style>
+        .infra-swiper .swiper-slide { height: auto; }
+        .infra-swiper .swiper-pagination-bullet-active { background: var(--bs-primary); }
+        @media (prefers-reduced-motion: reduce) { .infra-swiper .swiper-wrapper { transition: none; } }
+        </style>
 
         <!-- Call to Action -->
         <section class="py-5 bg-primary text-white">
