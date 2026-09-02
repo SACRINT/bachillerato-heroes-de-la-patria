@@ -98,6 +98,7 @@
             vision: 'Visión institucional',
             valores: 'Valores institucionales',
             historia: 'Historia del plantel',
+            sicep_url: 'https://www.siged.sep.gob.mx/SIGED/alumnos.html',
             eslogan: 'Tu futuro comienza aquí',
             config_json: {}
         };

@@ -418,6 +418,38 @@ const DEFAULT_SECTIONS = {
             content: '<p class="text-muted">Consulta la documentación requerida para cada uno de los trámites oficiales.</p>',
             icon: 'fa-list-check',
             order: 3
+        },
+        {
+            key: 'tramites_constancias',
+            title: 'Constancias y Boletas',
+            subtitle: 'Requisitos y tiempos para certificados, constancias y kárdex',
+            content: '<p class="text-muted">Trámite de constancias de estudio, kárdex y certificados escolares.</p>',
+            icon: 'fa-file-alt',
+            order: 4
+        },
+        {
+            key: 'tramites_citas',
+            title: 'Citas de Atención',
+            subtitle: 'Horarios y citas con orientación, dirección y control escolar',
+            content: '<p class="text-muted">Agenda tu cita para trámites que requieren atención presencial.</p>',
+            icon: 'fa-calendar-check',
+            order: 5
+        },
+        {
+            key: 'tramites_descargas',
+            title: 'Formatos y Solicitudes',
+            subtitle: 'Formatos oficiales de descarga para justificaciones y trámites',
+            content: '<p class="text-muted">Descarga de formatos de justificación, solicitud de examen y cartas compromiso.</p>',
+            icon: 'fa-download',
+            order: 6
+        },
+        {
+            key: 'tramites_pagos',
+            title: 'Cuotas y Pagos',
+            subtitle: 'Conceptos de pago y procedimientos administrativos',
+            content: '<p class="text-muted">Información sobre cuotas voluntarias, exámenes extraordinarios y trámites.</p>',
+            icon: 'fa-credit-card',
+            order: 7
         }
     ],
 
