@@ -197,6 +197,14 @@ const DEFAULT_SECTIONS = {
             subtitle: 'Egresados con competencias para la vida universitaria y laboral',
             content: '<p class="text-muted">El egresado de nuestro bachillerato cuenta con las competencias necesarias para continuar sus estudios superiores o incorporarse al mercado laboral con una formación integral que incluye conocimientos, habilidades y valores.</p>',
             icon: 'fa-user-graduate',
+            order: 4
+        },
+        {
+            key: 'capacitacion_trabajo',
+            title: 'Capacitación para el Trabajo',
+            subtitle: 'Habilidades técnicas que te preparan para el mundo laboral',
+            content: '',  // Vacío - cada plantel configura sus especialidades desde el dashboard
+            icon: 'fa-tools',
             order: 3
         },
         {
@@ -205,7 +213,7 @@ const DEFAULT_SECTIONS = {
             subtitle: 'Requisitos y fechas para incorporarse a nuestra comunidad',
             content: '<p class="text-muted">Consulta los requisitos, fechas y procedimientos para el proceso de admisión del ciclo escolar vigente.</p>',
             icon: 'fa-clipboard-check',
-            order: 4
+            order: 5
         }
     ],
 

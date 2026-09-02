@@ -1,5 +1,69 @@
 # CHANGELOG - SIPWEB-BG / EDUZONA EMS
 
+[v4.7.0] - 2026-09-02 (FASE 5 HUB 3: OFERTA EDUCATIVA REDESIGN)
+
+**Tipo:** Feature / Visual / Hub Architecture / UI-UX  
+**Estado:** ✅ HUB 3 COMPLETADO
+
+### Resumen:
+Rediseño completo de la página oferta-educativa.html siguiendo la arquitectura de 7 Hubs de Antigravity. Se reemplazó el accordion de semestres por Nav-Pills tabs, se implementó Bento Grid para capacitaciones, y se modernizaron las tarjetas de perfil de egreso con micro-interacciones. Todos los bindings CMS preservados.
+
+### Cambios Realizados:
+
+1. **Hero Premium:**
+   - Gradiente `linear-gradient(135deg, #1565C0, #0D47A1)` con efecto radial sutil.
+   - Badges de navegación con `translateY(-2px)` hover y `box-shadow`.
+   - `prefers-reduced-motion: reduce` para accesibilidad.
+
+2. **Plan de Estudios - Nav-Pills Tabs:**
+   - Accordion eliminado → 6 Nav-Pills pills (1°-6° semestres).
+   - Pills con `border-radius: 2rem`, `cubic-bezier` transitions, `pill-number` badges.
+   - Tab content con animación `fadeInUp` (respecta `prefers-reduced-motion`).
+   - Cada materia como `materia-chip` con icono, hover `translateX(4px)`.
+
+3. **Capacitación para el Trabajo - Bento Grid:**
+   - Cards `cap-bento-card` con `border-radius: 1rem`, hover `translateY(-6px)`.
+   - Iconos `cap-icon` con `scale(1.08)` en hover.
+   - Badges `cap-badge` con letter-spacing.
+   - Seed entry agregado a `seed-page-sections.js` (order: 3, content vacío para director).
+
+4. **Perfil de Egreso - Bento Cards:**
+   - 2 cards `perfil-bento` reemplazan modal de 300+ líneas.
+   - Iconos `perfil-icon` con `scale(1.1)` en hover.
+   - Sin modal - contenido inline y escaneable.
+
+5. **Proceso de Admisión:**
+   - Cards limpias con iconos circulares inline.
+   - CTA alineado con botones Contactar + Convocatorias.
+
+6. **Seed Update:**
+   - `capacitacion_trabajo` agregado a `DEFAULT_SECTIONS['oferta-educativa']`.
+   - `perfil_egreso` order actualizado a 4.
+   - `proceso_admision` order actualizado a 5.
+
+### Archivos Modificados:
+- `public/oferta-educativa.html` - Rediseño completo (1259→~750 líneas, -40%)
+- `backend/scripts/seed-page-sections.js` - capacitacion_trabajo seed + order updates
+
+### Métricas:
+- Líneas eliminadas: ~500 (accordion verbose, modal 300+ líneas, HTML duplicado)
+- Líneas nuevas: ~250 (Nav-Pills, Bento Grid, chips, CSS premium)
+- Net: -250 líneas (código más limpio y mantenible)
+- CSS inline: ~180 líneas de estilos premium dedicados
+- Micro-interacciones: 6 patrones (hero-badge, pill, materia-chip, cap-bento, perfil-bento, tab-fade)
+- Accesibilidad: `prefers-reduced-motion: reduce` en todos los transitions
+
+### Arquitectura de 7 Hubs (Referencia):
+- Hub 1: Portada (index.html) - ✅ FASE 4.2
+- Hub 2: Identidad (conocenos.html) - ✅ FASE 4.2
+- **Hub 3: Oferta Educativa (oferta-educativa.html) - ✅ FASE 5**
+- Hub 4: Ventanilla Digital (servicios.html) - ✅ FASE 4.2 + 4.3
+- Hub 5: Portal Escolar (estudiantes.html + padres.html) - Pendiente unificación
+- Hub 6: Vida Escolar (calendario.html) - Pendiente
+- Hub 7: Transparencia (contacto.html) - Pendiente
+
+---
+
 [v4.6.0] - 2026-09-02 (FASE 4.2: VISUAL ENGINE - BENTO GRID, SWIPER GALLERY, VENTANILLA DIGITAL)
 
 **Tipo:** Feature / Visual / CMS Integration / Multi-Tenant  

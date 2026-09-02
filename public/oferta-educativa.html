@@ -53,13 +53,215 @@
     <!-- Multi-tenancy Scripts -->
     <script src="js/tenant-config-loader.js"></script>
     <script src="js/tenant-content-binder.js"></script>
-    <!-- tenant-replacer.js removed - functionality handled by tenant-config-loader.js -->
-    <!-- âœ… FIX (18 Nov 2025): Header/Footer styles loaded globally -->
-    <!-- These MUST be in <head> so they apply BEFORE dynamic header/footer injection -->
+    <!-- Header/Footer styles -->
     <link rel="stylesheet" href="css/global-layout.css">
     <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
     <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
 
+    <style>
+        /* ============================================
+           HUB 3 - OFERTA EDUCATIVA PREMIUM STYLES
+           ============================================ */
+
+        /* Hero Gradient */
+        .hub3-hero {
+            background: linear-gradient(135deg, #1565C0 0%, #0D47A1 50%, #1976D2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .hub3-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .hub3-hero .hero-badge {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+        }
+        .hub3-hero .hero-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .hub3-hero .hero-badge { transition: none; }
+        }
+
+        /* Nav-Pills Semestres */
+        .semestre-pills .nav-link {
+            border-radius: 2rem;
+            font-weight: 600;
+            padding: 0.6rem 1.4rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            color: #546e7a;
+        }
+        .semestre-pills .nav-link:hover {
+            background: #e3f2fd;
+            color: #1565C0;
+        }
+        .semestre-pills .nav-link.active {
+            background: linear-gradient(135deg, #1565C0, #1976D2);
+            color: #fff;
+            border-color: #1565C0;
+            box-shadow: 0 4px 15px rgba(21, 101, 192, 0.3);
+        }
+        .semestre-pills .nav-link .pill-number {
+            display: inline-flex;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            margin-right: 0.4rem;
+        }
+        .semestre-pills .nav-link:not(.active) .pill-number {
+            background: #e0e0e0;
+            color: #546e7a;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .semestre-pills .nav-link { transition: none; }
+        }
+
+        /* Materia Cards */
+        .materia-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #f8f9fa;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            border: 1px solid #e8e8e8;
+            transition: all 0.25s ease;
+        }
+        .materia-chip:hover {
+            background: #e8f5e9;
+            border-color: #66bb6a;
+            transform: translateX(4px);
+        }
+        .materia-chip i {
+            color: #43a047;
+            font-size: 0.75rem;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .materia-chip { transition: none; }
+        }
+
+        /* Bento Grid Capacitaciones */
+        .cap-bento-card {
+            border-radius: 1rem;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+        }
+        .cap-bento-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.10);
+        }
+        .cap-bento-card .cap-icon {
+            width: 56px;
+            height: 56px;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .cap-bento-card:hover .cap-icon {
+            transform: scale(1.08);
+        }
+        .cap-bento-card .cap-badge {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .cap-bento-card,
+            .cap-bento-card .cap-icon { transition: none; }
+        }
+
+        /* Perfil de Egreso Bento */
+        .perfil-bento {
+            border-radius: 1rem;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+        .perfil-bento:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.08);
+        }
+        .perfil-bento .perfil-icon {
+            width: 52px;
+            height: 52px;
+            transition: transform 0.3s ease;
+        }
+        .perfil-bento:hover .perfil-icon {
+            transform: scale(1.1);
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .perfil-bento,
+            .perfil-bento .perfil-icon { transition: none; }
+        }
+
+        /* Admision Timeline */
+        .admision-step {
+            position: relative;
+            padding-left: 2.5rem;
+        }
+        .admision-step::before {
+            content: '';
+            position: absolute;
+            left: 0.75rem;
+            top: 2.5rem;
+            bottom: -1rem;
+            width: 2px;
+            background: #e0e0e0;
+        }
+        .admision-step:last-child::before {
+            display: none;
+        }
+        .admision-step .step-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #fff;
+            position: absolute;
+            left: 0;
+            top: 0.2rem;
+        }
+
+        /* Tab Content Animation */
+        .tab-pane .fade-in-up {
+            animation: fadeInUp 0.4s ease forwards;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .tab-pane .fade-in-up { animation: none; opacity: 1; }
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 767.98px) {
+            .semestre-pills .nav-link {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.85rem;
+            }
+            .semestre-pills .nav-link .pill-number {
+                width: 22px;
+                height: 22px;
+                font-size: 0.7rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -87,46 +289,43 @@
         </nav>
 
         <!-- Hero Section -->
-        <section id="hero" class="page-hero bg-gradient-primary text-white py-5">
-            <div class="container">
+        <section id="hero" class="hub3-hero text-white py-5">
+            <div class="container position-relative">
                 <div class="row align-items-center">
                     <div class="col-lg-8">
-                        <h1 class="hero-title display-4 fw-bold mb-3">
-                            <i class="fas fa-graduation-cap me-3" aria-hidden="true"></i>
+                        <h1 class="display-4 fw-bold mb-3">
+                            <i class="fas fa-graduation-cap me-2" aria-hidden="true"></i>
                             Oferta Educativa
                         </h1>
-                        <p class="hero-subtitle lead mb-4">
+                        <p class="lead mb-4 opacity-90">
                             Bachillerato General Estatal con un plan de estudios integral y capacitación para el
                             trabajo
                         </p>
-                        <div class="hero-badges d-flex flex-wrap gap-2 justify-content-start">
-                            <a href="#modelo-educativo" class="badge bg-light text-success fs-6 text-decoration-none">
+                        <div class="d-flex flex-wrap gap-2 justify-content-start">
+                            <a href="#modelo-educativo" class="badge bg-light text-primary fs-6 text-decoration-none hero-badge">
                                 <i class="fas fa-lightbulb me-1" aria-hidden="true"></i>
                                 Modelo Educativo
                             </a>
-                            <a href="#plan-estudios" class="badge bg-light text-primary fs-6 text-decoration-none">
+                            <a href="#plan-estudios" class="badge bg-light text-success fs-6 text-decoration-none hero-badge">
                                 <i class="fas fa-book me-1" aria-hidden="true"></i>
                                 Plan de Estudios
                             </a>
-                            <a href="#capacitacion-trabajo" class="badge bg-light text-info fs-6 text-decoration-none">
+                            <a href="#capacitacion-trabajo" class="badge bg-light text-warning fs-6 text-decoration-none hero-badge">
                                 <i class="fas fa-tools me-1" aria-hidden="true"></i>
-                                Capacitación para el Trabajo
+                                Capacitación
                             </a>
-                            <a href="#perfil-egreso" class="badge bg-light text-success fs-6 text-decoration-none">
+                            <a href="#perfil-egreso" class="badge bg-light text-info fs-6 text-decoration-none hero-badge">
                                 <i class="fas fa-user-graduate me-1" aria-hidden="true"></i>
                                 Perfil de Egreso
                             </a>
-                            <a href="#proceso-admision" class="badge bg-light text-warning fs-6 text-decoration-none">
+                            <a href="#proceso-admision" class="badge bg-light text-danger fs-6 text-decoration-none hero-badge">
                                 <i class="fas fa-clipboard-check me-1" aria-hidden="true"></i>
-                                Proceso de Admisión
+                                Admisión
                             </a>
                         </div>
                     </div>
-                    <div class="col-lg-4 text-center">
-                        <div class="mb-4">
-                            <i class="fas fa-book-open display-1 text-white-50" aria-hidden="true"></i>
-                        </div>
-
+                    <div class="col-lg-4 text-center d-none d-lg-block">
+                        <i class="fas fa-book-open display-1 opacity-25" aria-hidden="true"></i>
                     </div>
                 </div>
             </div>
@@ -136,149 +335,118 @@
         <section id="modelo-educativo" class="py-5 bg-light" data-section-key="modelo_educativo">
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-8 mx-auto">
+                    <div class="col-lg-10 mx-auto">
                         <div class="section-header text-center mb-5">
                             <h2 data-section-title class="section-title">
-                                <i class="fas fa-lightbulb text-primary me-3" aria-hidden="true"></i>
+                                <i class="fas fa-lightbulb text-primary me-2" aria-hidden="true"></i>
                                 Modelo Educativo
                             </h2>
                             <p data-section-subtitle class="section-subtitle text-muted">
-                                Formación integral basada en competencias para el desarrollo del estudiante del siglo
-                                XXI
+                                Formación integral basada en competencias para el desarrollo del estudiante del siglo XXI
                             </p>
                         </div>
 
-                        <div class="card border-0 shadow">
-                            <div class="card-body p-5">
-                                <!-- Enfoque Pedagógico -->
-                                <div class="row g-4 mb-5">
-                                    <div class="col-lg-6">
-                                        <h4 class="text-primary mb-3">
-                                            <i class="fas fa-brain me-2"></i>Enfoque por Competencias
-                                        </h4>
-                                        <p class="text-muted mb-4">
-                                            Nuestro modelo educativo se fundamenta en el desarrollo de competencias
-                                            genéricas,
-                                            disciplinares y profesionales que preparan a los estudiantes para los retos
-                                            del mundo actual.
+                        <!-- Enfoque + Metodología -->
+                        <div class="row g-4 mb-5">
+                            <div class="col-lg-6">
+                                <h4 class="text-primary mb-3">
+                                    <i class="fas fa-brain me-2"></i>Enfoque por Competencias
+                                </h4>
+                                <p class="text-muted mb-3">
+                                    Nuestro modelo educativo se fundamenta en el desarrollo de competencias
+                                    genéricas, disciplinares y profesionales que preparan a los estudiantes para los retos
+                                    del mundo actual.
+                                </p>
+                                <ul class="list-unstyled mb-0">
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Aprendizaje significativo y contextualizado</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Desarrollo del pensamiento crítico</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Formación en valores universales</li>
+                                </ul>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="bg-primary bg-opacity-10 rounded-3 p-4 h-100 d-flex align-items-center">
+                                    <div class="text-center w-100">
+                                        <i class="fas fa-users-cog display-4 text-primary mb-3"></i>
+                                        <h5 class="text-primary">Metodología Activa</h5>
+                                        <p class="text-muted small mb-0">
+                                            El estudiante es protagonista de su aprendizaje a través de
+                                            proyectos, trabajo colaborativo y resolución de problemas reales.
                                         </p>
-                                        <ul class="list-unstyled">
-                                            <li class="mb-2">
-                                                <i class="fas fa-check-circle text-success me-2"></i>
-                                                Aprendizaje significativo y contextualizado
-                                            </li>
-                                            <li class="mb-2">
-                                                <i class="fas fa-check-circle text-success me-2"></i>
-                                                Desarrollo del pensamiento crítico
-                                            </li>
-                                            <li class="mb-2">
-                                                <i class="fas fa-check-circle text-success me-2"></i>
-                                                Formación en valores universales
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div
-                                            class="bg-primary bg-opacity-10 rounded p-4 h-100 d-flex align-items-center">
-                                            <div class="text-center w-100">
-                                                <i class="fas fa-users-cog display-4 text-primary mb-3"></i>
-                                                <h5 class="text-primary">Metodología Activa</h5>
-                                                <p class="text-muted small mb-0">
-                                                    El estudiante es protagonista de su aprendizaje a través de
-                                                    proyectos, trabajo colaborativo y resolución de problemas reales.
-                                                </p>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
 
-                                <!-- Pilares del Modelo -->
-                                <div class="row g-4 mb-5">
-                                    <div class="col-12">
-                                        <h4 class="text-primary text-center mb-4">
-                                            <i class="fas fa-columns me-2"></i>Pilares de Nuestra Educación
-                                        </h4>
+                        <!-- Pilares del Modelo -->
+                        <h4 class="text-primary text-center mb-4">
+                            <i class="fas fa-columns me-2"></i>Pilares de Nuestra Educación
+                        </h4>
+                        <div class="row g-3 mb-5">
+                            <div class="col-6 col-md-3">
+                                <div class="text-center p-3 border rounded-3 h-100 bg-white">
+                                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width:48px;height:48px;">
+                                        <i class="fas fa-book"></i>
                                     </div>
-                                    <div class="col-md-6 col-lg-3">
-                                        <div class="text-center p-3 border rounded h-100">
-                                            <div
-                                                class="pilar-icon bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 pilar-icon-md">
-                                                <i class="fas fa-book fa-lg"></i>
-                                            </div>
-                                            <h6 class="fw-bold text-primary">Excelencia Académica</h6>
-                                            <p class="small text-muted mb-0">Formación rigurosa en las disciplinas
-                                                fundamentales</p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-lg-3">
-                                        <div class="text-center p-3 border rounded h-100">
-                                            <div
-                                                class="pilar-icon bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 pilar-icon-md">
-                                                <i class="fas fa-heart fa-lg"></i>
-                                            </div>
-                                            <h6 class="fw-bold text-success">Formación en Valores</h6>
-                                            <p class="small text-muted mb-0">Desarrollo del carácter y la ética
-                                                personal
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-lg-3">
-                                        <div class="text-center p-3 border rounded h-100">
-                                            <div
-                                                class="pilar-icon bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 pilar-icon-md">
-                                                <i class="fas fa-tools fa-lg"></i>
-                                            </div>
-                                            <h6 class="fw-bold text-warning">Capacitación Laboral</h6>
-                                            <p class="small text-muted mb-0">Preparación práctica para el mundo del
-                                                trabajo</p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-lg-3">
-                                        <div class="text-center p-3 border rounded h-100">
-                                            <div
-                                                class="pilar-icon bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 pilar-icon-md">
-                                                <i class="fas fa-globe fa-lg"></i>
-                                            </div>
-                                            <h6 class="fw-bold text-info">Ciudadanía Global</h6>
-                                            <p class="small text-muted mb-0">Conciencia social y responsabilidad
-                                                comunitaria</p>
-                                        </div>
-                                    </div>
+                                    <h6 class="fw-bold text-primary mb-1">Excelencia Académica</h6>
+                                    <p class="small text-muted mb-0">Formación rigurosa en las disciplinas fundamentales</p>
                                 </div>
-
-                                <!-- Competencias Desarrolladas -->
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div class="bg-light rounded p-4">
-                                            <h5 class="text-primary mb-3 text-center">
-                                                <i class="fas fa-medal me-2"></i>Competencias que Desarrollamos
-                                            </h5>
-                                            <div class="row g-3">
-                                                <div class="col-md-6">
-                                                    <h6 class="fw-bold text-success">Competencias Genéricas:</h6>
-                                                    <ul class="small text-muted mb-0">
-                                                        <li>Autodeterminación y cuidado de sí</li>
-                                                        <li>Expresión y comunicación efectiva</li>
-                                                        <li>Pensamiento crítico y reflexivo</li>
-                                                        <li>Aprendizaje autónomo</li>
-                                                        <li>Trabajo colaborativo</li>
-                                                        <li>Participación social responsable</li>
-                                                    </ul>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <h6 class="fw-bold text-info">Competencias Disciplinares:</h6>
-                                                    <ul class="small text-muted mb-0">
-                                                        <li>Comunicación (Lenguaje y Literatura)</li>
-                                                        <li>Matemáticas y Razonamiento Lógico</li>
-                                                        <li>Ciencias Experimentales</li>
-                                                        <li>Ciencias Sociales y Humanidades</li>
-                                                        <li>Componente de Formación Básica</li>
-                                                        <li>Capacitación para el Trabajo</li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="text-center p-3 border rounded-3 h-100 bg-white">
+                                    <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width:48px;height:48px;">
+                                        <i class="fas fa-heart"></i>
                                     </div>
+                                    <h6 class="fw-bold text-success mb-1">Formación en Valores</h6>
+                                    <p class="small text-muted mb-0">Desarrollo del carácter y la ética personal</p>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="text-center p-3 border rounded-3 h-100 bg-white">
+                                    <div class="bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width:48px;height:48px;">
+                                        <i class="fas fa-tools"></i>
+                                    </div>
+                                    <h6 class="fw-bold text-warning mb-1">Capacitación Laboral</h6>
+                                    <p class="small text-muted mb-0">Preparación práctica para el mundo del trabajo</p>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="text-center p-3 border rounded-3 h-100 bg-white">
+                                    <div class="bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width:48px;height:48px;">
+                                        <i class="fas fa-globe"></i>
+                                    </div>
+                                    <h6 class="fw-bold text-info mb-1">Ciudadanía Global</h6>
+                                    <p class="small text-muted mb-0">Conciencia social y responsabilidad comunitaria</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Competencias -->
+                        <div class="bg-white rounded-3 p-4 border">
+                            <h5 class="text-primary mb-3 text-center">
+                                <i class="fas fa-medal me-2"></i>Competencias que Desarrollamos
+                            </h5>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold text-success">Competencias Genéricas:</h6>
+                                    <ul class="small text-muted mb-0">
+                                        <li>Autodeterminación y cuidado de sí</li>
+                                        <li>Expresión y comunicación efectiva</li>
+                                        <li>Pensamiento crítico y reflexivo</li>
+                                        <li>Aprendizaje autónomo</li>
+                                        <li>Trabajo colaborativo</li>
+                                        <li>Participación social responsable</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold text-info">Competencias Disciplinares:</h6>
+                                    <ul class="small text-muted mb-0">
+                                        <li>Comunicación (Lenguaje y Literatura)</li>
+                                        <li>Matemáticas y Razonamiento Lógico</li>
+                                        <li>Ciencias Experimentales</li>
+                                        <li>Ciencias Sociales y Humanidades</li>
+                                        <li>Componente de Formación Básica</li>
+                                        <li>Capacitación para el Trabajo</li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
@@ -287,333 +455,182 @@
             </div>
         </section>
 
-        <!-- Plan de Estudios Section -->
+        <!-- Plan de Estudios - Nav-Pills Semestres -->
         <section id="plan-estudios" class="py-5" data-section-key="plan_estudios">
             <div class="container">
-                <div class="row">
-                    <div class="col-lg-8 mx-auto">
-                        <div class="section-header text-center mb-5">
-                            <h2 data-section-title class="section-title">
-                                <i class="fas fa-book text-primary me-3" aria-hidden="true"></i>
-                                Plan de Estudios
-                            </h2>
-                            <p data-section-subtitle class="section-subtitle text-muted">
-                                Malla curricular de 6 semestres con enfoque por competencias
-                            </p>
-                        </div>
-                    </div>
+                <div class="section-header text-center mb-4">
+                    <h2 data-section-title class="section-title">
+                        <i class="fas fa-book text-primary me-2" aria-hidden="true"></i>
+                        Plan de Estudios
+                    </h2>
+                    <p data-section-subtitle class="section-subtitle text-muted">
+                        Malla curricular de 6 semestres con enfoque por competencias
+                    </p>
                 </div>
 
-                <!-- Semestres Accordion -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="accordion" id="semestresAccordion">
-                            <!-- Semestre 1 -->
-                            <div class="accordion-item mb-3 border-0 shadow-sm">
-                                <h3 class="accordion-header" id="semestre1">
-                                    <button class="accordion-button collapsed fw-bold" type="button"
-                                        data-bs-toggle="collapse" data-bs-target="#collapseSemestre1"
-                                        aria-expanded="false" aria-controls="collapseSemestre1">
-                                        <i class="fas fa-book me-3 text-primary" aria-hidden="true"></i>
-                                        Primer Semestre
-                                    </button>
-                                </h3>
-                                <div id="collapseSemestre1" class="accordion-collapse collapse"
-                                    aria-labelledby="semestre1" data-bs-parent="#semestresAccordion">
-                                    <div class="accordion-body">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <ul class="list-unstyled materias-list">
-                                                    <li><i class="fas fa-atom text-success me-2"
-                                                            aria-hidden="true"></i>La Materia y sus Interacciones</li>
-                                                    <li><i class="fas fa-calculator text-success me-2"
-                                                            aria-hidden="true"></i>Pensamiento Matemático I</li>
-                                                    <li><i class="fas fa-user-graduate text-success me-2"
-                                                            aria-hidden="true"></i>Humanidades I</li>
-                                                    <li><i class="fas fa-comments text-success me-2"
-                                                            aria-hidden="true"></i>Lenguaje y Comunicación I</li>
-                                                    <li><i class="fas fa-globe text-success me-2"
-                                                            aria-hidden="true"></i>Inglés I</li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <ul class="list-unstyled materias-list">
-                                                    <li><i class="fas fa-laptop text-success me-2"
-                                                            aria-hidden="true"></i>Cultura Digital I</li>
-                                                    <li><i class="fas fa-microscope text-success me-2"
-                                                            aria-hidden="true"></i>Laboratorio de Investigación</li>
-                                                    <li><i class="fas fa-users text-success me-2"
-                                                            aria-hidden="true"></i>Ciencias Sociales I</li>
-                                                    <li><i class="fas fa-palette text-success me-2"
-                                                            aria-hidden="true"></i>Actividades Artísticas y Culturales
-                                                        I
-                                                    </li>
-                                                    <li><i class="fas fa-running text-success me-2"
-                                                            aria-hidden="true"></i>Actividades Físicas y Deportivas I
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
+                <!-- Nav-Pills Semestres -->
+                <ul class="nav nav-pills semestre-pills justify-content-center flex-wrap mb-4" id="semestreTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="sem1-tab" data-bs-toggle="pill" data-bs-target="#sem1"
+                            type="button" role="tab" aria-controls="sem1" aria-selected="true">
+                            <span class="pill-number">1°</span> Semestre
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="sem2-tab" data-bs-toggle="pill" data-bs-target="#sem2"
+                            type="button" role="tab" aria-controls="sem2" aria-selected="false">
+                            <span class="pill-number">2°</span> Semestre
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="sem3-tab" data-bs-toggle="pill" data-bs-target="#sem3"
+                            type="button" role="tab" aria-controls="sem3" aria-selected="false">
+                            <span class="pill-number">3°</span> Semestre
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="sem4-tab" data-bs-toggle="pill" data-bs-target="#sem4"
+                            type="button" role="tab" aria-controls="sem4" aria-selected="false">
+                            <span class="pill-number">4°</span> Semestre
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="sem5-tab" data-bs-toggle="pill" data-bs-target="#sem5"
+                            type="button" role="tab" aria-controls="sem5" aria-selected="false">
+                            <span class="pill-number">5°</span> Semestre
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="sem6-tab" data-bs-toggle="pill" data-bs-target="#sem6"
+                            type="button" role="tab" aria-controls="sem6" aria-selected="false">
+                            <span class="pill-number">6°</span> Semestre
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- Tab Content -->
+                <div class="tab-content" id="semestreContent">
+                    <!-- Semestre 1 -->
+                    <div class="tab-pane fade show active" id="sem1" role="tabpanel" aria-labelledby="sem1-tab">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <h5 class="text-primary mb-3"><i class="fas fa-atom me-2"></i>Primer Semestre</h5>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="materia-chip"><i class="fas fa-atom"></i>La Materia y sus Interacciones</span>
+                                    <span class="materia-chip"><i class="fas fa-calculator"></i>Pensamiento Matemático I</span>
+                                    <span class="materia-chip"><i class="fas fa-user-graduate"></i>Humanidades I</span>
+                                    <span class="materia-chip"><i class="fas fa-comments"></i>Lenguaje y Comunicación I</span>
+                                    <span class="materia-chip"><i class="fas fa-globe"></i>Inglés I</span>
+                                    <span class="materia-chip"><i class="fas fa-laptop"></i>Cultura Digital I</span>
+                                    <span class="materia-chip"><i class="fas fa-microscope"></i>Laboratorio de Investigación</span>
+                                    <span class="materia-chip"><i class="fas fa-users"></i>Ciencias Sociales I</span>
+                                    <span class="materia-chip"><i class="fas fa-palette"></i>Actividades Artísticas y Culturales I</span>
+                                    <span class="materia-chip"><i class="fas fa-running"></i>Actividades Físicas y Deportivas I</span>
                                 </div>
                             </div>
+                        </div>
+                    </div>
 
-                            <!-- Semestre 2 -->
-                            <div class="accordion-item mb-3 border-0 shadow-sm">
-                                <h3 class="accordion-header" id="semestre2">
-                                    <button class="accordion-button collapsed fw-bold" type="button"
-                                        data-bs-toggle="collapse" data-bs-target="#collapseSemestre2"
-                                        aria-expanded="false" aria-controls="collapseSemestre2">
-                                        <i class="fas fa-book me-3 text-primary" aria-hidden="true"></i>
-                                        Segundo Semestre
-                                    </button>
-                                </h3>
-                                <div id="collapseSemestre2" class="accordion-collapse collapse"
-                                    aria-labelledby="semestre2" data-bs-parent="#semestresAccordion">
-                                    <div class="accordion-body">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <ul class="list-unstyled materias-list">
-                                                    <li><i class="fas fa-dna text-success me-2"
-                                                            aria-hidden="true"></i>Conservación de la Energía y sus
-                                                        Interacciones con la Materia</li>
-                                                    <li><i class="fas fa-calculator text-success me-2"
-                                                            aria-hidden="true"></i>Pensamiento Matemático II</li>
-                                                    <li><i class="fas fa-user-graduate text-success me-2"
-                                                            aria-hidden="true"></i>Humanidades II</li>
-                                                    <li><i class="fas fa-comments text-success me-2"
-                                                            aria-hidden="true"></i>Lenguaje y Comunicación II</li>
-                                                    <li><i class="fas fa-globe text-success me-2"
-                                                            aria-hidden="true"></i>Inglés II</li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <ul class="list-unstyled materias-list">
-                                                    <li><i class="fas fa-laptop text-success me-2"
-                                                            aria-hidden="true"></i>Cultura Digital II</li>
-                                                    <li><i class="fas fa-seedling text-success me-2"
-                                                            aria-hidden="true"></i>Taller de Ciencias I</li>
-                                                    <li><i class="fas fa-users text-success me-2"
-                                                            aria-hidden="true"></i>Ciencias Sociales II</li>
-                                                    <li><i class="fas fa-palette text-success me-2"
-                                                            aria-hidden="true"></i>Actividades Artísticas y Culturales
-                                                        II</li>
-                                                    <li><i class="fas fa-running text-success me-2"
-                                                            aria-hidden="true"></i>Actividades Físicas y Deportivas II
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
+                    <!-- Semestre 2 -->
+                    <div class="tab-pane fade" id="sem2" role="tabpanel" aria-labelledby="sem2-tab">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <h5 class="text-primary mb-3"><i class="fas fa-dna me-2"></i>Segundo Semestre</h5>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="materia-chip"><i class="fas fa-dna"></i>Conservación de la Energía y sus Interacciones con la Materia</span>
+                                    <span class="materia-chip"><i class="fas fa-calculator"></i>Pensamiento Matemático II</span>
+                                    <span class="materia-chip"><i class="fas fa-user-graduate"></i>Humanidades II</span>
+                                    <span class="materia-chip"><i class="fas fa-comments"></i>Lenguaje y Comunicación II</span>
+                                    <span class="materia-chip"><i class="fas fa-globe"></i>Inglés II</span>
+                                    <span class="materia-chip"><i class="fas fa-laptop"></i>Cultura Digital II</span>
+                                    <span class="materia-chip"><i class="fas fa-seedling"></i>Taller de Ciencias I</span>
+                                    <span class="materia-chip"><i class="fas fa-users"></i>Ciencias Sociales II</span>
+                                    <span class="materia-chip"><i class="fas fa-palette"></i>Actividades Artísticas y Culturales II</span>
+                                    <span class="materia-chip"><i class="fas fa-running"></i>Actividades Físicas y Deportivas II</span>
                                 </div>
                             </div>
+                        </div>
+                    </div>
 
-                            <!-- Semestre 3 -->
-                            <div class="accordion-item mb-3 border-0 shadow-sm">
-                                <h3 class="accordion-header" id="semestre3">
-                                    <button class="accordion-button collapsed fw-bold" type="button"
-                                        data-bs-toggle="collapse" data-bs-target="#collapseSemestre3"
-                                        aria-expanded="false" aria-controls="collapseSemestre3">
-                                        <i class="fas fa-book me-3 text-primary" aria-hidden="true"></i>
-                                        Tercer Semestre
-                                    </button>
-                                </h3>
-                                <div id="collapseSemestre3" class="accordion-collapse collapse"
-                                    aria-labelledby="semestre3" data-bs-parent="#semestresAccordion">
-                                    <div class="accordion-body">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <ul class="list-unstyled materias-list">
-                                                    <li><i class="fas fa-atom text-success me-2"
-                                                            aria-hidden="true"></i>Ecosistemas: Interacciones, Energía
-                                                        Y
-                                                        Dinámica</li>
-                                                    <li><i class="fas fa-calculator text-success me-2"
-                                                            aria-hidden="true"></i>Pensamiento Matemático III</li>
-                                                    <li><i class="fas fa-user-graduate text-success me-2"
-                                                            aria-hidden="true"></i>Humanidades III</li>
-                                                    <li><i class="fas fa-microscope text-success me-2"
-                                                            aria-hidden="true"></i>Taller de Ciencias II</li>
-                                                    <li><i class="fas fa-globe text-success me-2"
-                                                            aria-hidden="true"></i>Inglés III</li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <ul class="list-unstyled materias-list">
-                                                    <li><i class="fas fa-heart text-success me-2"
-                                                            aria-hidden="true"></i>Educación para la Salud</li>
-                                                    <li><i class="fas fa-comments text-success me-2"
-                                                            aria-hidden="true"></i>Lengua y Comunicación III</li>
-                                                    <li><i class="fas fa-tools text-success me-2"
-                                                            aria-hidden="true"></i>Formación Laboral "A"</li>
-                                                    <li><i class="fas fa-tools text-success me-2"
-                                                            aria-hidden="true"></i>Formación Laboral "B"</li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
+                    <!-- Semestre 3 -->
+                    <div class="tab-pane fade" id="sem3" role="tabpanel" aria-labelledby="sem3-tab">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <h5 class="text-primary mb-3"><i class="fas fa-atom me-2"></i>Tercer Semestre</h5>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="materia-chip"><i class="fas fa-atom"></i>Ecosistemas: Interacciones, Energía y Dinámica</span>
+                                    <span class="materia-chip"><i class="fas fa-calculator"></i>Pensamiento Matemático III</span>
+                                    <span class="materia-chip"><i class="fas fa-user-graduate"></i>Humanidades III</span>
+                                    <span class="materia-chip"><i class="fas fa-microscope"></i>Taller de Ciencias II</span>
+                                    <span class="materia-chip"><i class="fas fa-globe"></i>Inglés III</span>
+                                    <span class="materia-chip"><i class="fas fa-heart"></i>Educación para la Salud</span>
+                                    <span class="materia-chip"><i class="fas fa-comments"></i>Lengua y Comunicación III</span>
+                                    <span class="materia-chip"><i class="fas fa-tools"></i>Formación Laboral "A"</span>
+                                    <span class="materia-chip"><i class="fas fa-tools"></i>Formación Laboral "B"</span>
                                 </div>
                             </div>
+                        </div>
+                    </div>
 
-                            <!-- Semestre 4 -->
-                            <div class="accordion-item mb-3 border-0 shadow-sm">
-                                <h3 class="accordion-header" id="semestre4">
-                                    <button class="accordion-button collapsed fw-bold" type="button"
-                                        data-bs-toggle="collapse" data-bs-target="#collapseSemestre4"
-                                        aria-expanded="false" aria-controls="collapseSemestre4">
-                                        <i class="fas fa-book me-3 text-primary" aria-hidden="true"></i>
-                                        Cuarto Semestre
-                                    </button>
-                                </h3>
-                                <div id="collapseSemestre4" class="accordion-collapse collapse"
-                                    aria-labelledby="semestre4" data-bs-parent="#semestresAccordion">
-                                    <div class="accordion-body">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <ul class="list-unstyled materias-list">
-                                                    <li><i class="fas fa-atom text-success me-2"
-                                                            aria-hidden="true"></i>Reacciones Químicas</li>
-                                                    <li><i class="fas fa-history text-success me-2"
-                                                            aria-hidden="true"></i>Conciencia Histórica I</li>
-                                                    <li><i class="fas fa-laptop text-success me-2"
-                                                            aria-hidden="true"></i>Taller de Cultura Digital</li>
-                                                    <li><i class="fas fa-calculator text-success me-2"
-                                                            aria-hidden="true"></i>Temas Selectos de Matemáticas I</li>
-                                                    <li><i class="fas fa-book text-success me-2"
-                                                            aria-hidden="true"></i>Pensamiento Literario</li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <ul class="list-unstyled materias-list">
-                                                    <li><i class="fas fa-globe text-success me-2"
-                                                            aria-hidden="true"></i>Inglés IV</li>
-                                                    <li><i class="fas fa-map text-success me-2"
-                                                            aria-hidden="true"></i>Espacio y Sociedad</li>
-                                                    <li><i class="fas fa-users text-success me-2"
-                                                            aria-hidden="true"></i>Ciencias Sociales III</li>
-                                                    <li><i class="fas fa-venus-mars text-success me-2"
-                                                            aria-hidden="true"></i>Educación Integral en Sexualidad y
-                                                        Genero</li>
-                                                    <li><i class="fas fa-tools text-success me-2"
-                                                            aria-hidden="true"></i>Formación Laboral "A"</li>
-                                                    <li><i class="fas fa-tools text-success me-2"
-                                                            aria-hidden="true"></i>Formación Laboral "B"</li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
+                    <!-- Semestre 4 -->
+                    <div class="tab-pane fade" id="sem4" role="tabpanel" aria-labelledby="sem4-tab">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <h5 class="text-primary mb-3"><i class="fas fa-flask me-2"></i>Cuarto Semestre</h5>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="materia-chip"><i class="fas fa-atom"></i>Reacciones Químicas</span>
+                                    <span class="materia-chip"><i class="fas fa-history"></i>Conciencia Histórica I</span>
+                                    <span class="materia-chip"><i class="fas fa-laptop"></i>Taller de Cultura Digital</span>
+                                    <span class="materia-chip"><i class="fas fa-calculator"></i>Temas Selectos de Matemáticas I</span>
+                                    <span class="materia-chip"><i class="fas fa-book"></i>Pensamiento Literario</span>
+                                    <span class="materia-chip"><i class="fas fa-globe"></i>Inglés IV</span>
+                                    <span class="materia-chip"><i class="fas fa-map"></i>Espacio y Sociedad</span>
+                                    <span class="materia-chip"><i class="fas fa-users"></i>Ciencias Sociales III</span>
+                                    <span class="materia-chip"><i class="fas fa-venus-mars"></i>Educación Integral en Sexualidad y Género</span>
+                                    <span class="materia-chip"><i class="fas fa-tools"></i>Formación Laboral "A"</span>
+                                    <span class="materia-chip"><i class="fas fa-tools"></i>Formación Laboral "B"</span>
                                 </div>
                             </div>
+                        </div>
+                    </div>
 
-                            <!-- Semestre 5 -->
-                            <div class="accordion-item mb-3 border-0 shadow-sm">
-                                <h3 class="accordion-header" id="semestre5">
-                                    <button class="accordion-button collapsed fw-bold" type="button"
-                                        data-bs-toggle="collapse" data-bs-target="#collapseSemestre5"
-                                        aria-expanded="false" aria-controls="collapseSemestre5">
-                                        <i class="fas fa-book me-3 text-primary" aria-hidden="true"></i>
-                                        Quinto Semestre
-                                    </button>
-                                </h3>
-                                <div id="collapseSemestre5" class="accordion-collapse collapse"
-                                    aria-labelledby="semestre5" data-bs-parent="#semestresAccordion">
-                                    <div class="accordion-body">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <ul class="list-unstyled materias-list">
-                                                    <li><i class="fas fa-dna text-success me-2"
-                                                            aria-hidden="true"></i>La Energía en los Procesos de la
-                                                        Vida
-                                                        Diaria</li>
-                                                    <li><i class="fas fa-history text-success me-2"
-                                                            aria-hidden="true"></i>Conciencia Histórica II. México
-                                                        Durante el Expansionismo Capitalista</li>
-                                                    <li><i class="fas fa-brain text-success me-2"
-                                                            aria-hidden="true"></i>Taller de Habilidades del Pensamiento
-                                                    </li>
-                                                    <li><i class="fas fa-book text-success me-2"
-                                                            aria-hidden="true"></i>Formación Fundamental Extendida
-                                                        (Recurso Sociocognitivo) "A"</li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <ul class="list-unstyled materias-list">
-                                                    <li><i class="fas fa-book text-success me-2"
-                                                            aria-hidden="true"></i>Formación Fundamental Extendida
-                                                        (Recurso Sociocognitivo) "B"</li>
-                                                    <li><i class="fas fa-atom text-success me-2"
-                                                            aria-hidden="true"></i>Formación Fundamental Extendida
-                                                        (Área del Conocimiento) "A"</li>
-                                                    <li><i class="fas fa-atom text-success me-2"
-                                                            aria-hidden="true"></i>Formación Fundamental Extendida
-                                                        (Área del Conocimiento) "B"</li>
-                                                    <li><i class="fas fa-hands-helping text-success me-2"
-                                                            aria-hidden="true"></i>Práctica y Colaboración Ciudadana.
-                                                    </li>
-                                                    <li><i class="fas fa-tools text-success me-2"
-                                                            aria-hidden="true"></i>Formación Laboral "A"</li>
-                                                    <li><i class="fas fa-tools text-success me-2"
-                                                            aria-hidden="true"></i>Formación Laboral "B"</li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
+                    <!-- Semestre 5 -->
+                    <div class="tab-pane fade" id="sem5" role="tabpanel" aria-labelledby="sem5-tab">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <h5 class="text-primary mb-3"><i class="fas fa-dna me-2"></i>Quinto Semestre</h5>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="materia-chip"><i class="fas fa-dna"></i>La Energía en los Procesos de la Vida Diaria</span>
+                                    <span class="materia-chip"><i class="fas fa-history"></i>Conciencia Histórica II. México Durante el Expansionismo Capitalista</span>
+                                    <span class="materia-chip"><i class="fas fa-brain"></i>Taller de Habilidades del Pensamiento</span>
+                                    <span class="materia-chip"><i class="fas fa-book"></i>Formación Fundamental Extendida (Recurso Sociocognitivo) "A"</span>
+                                    <span class="materia-chip"><i class="fas fa-book"></i>Formación Fundamental Extendida (Recurso Sociocognitivo) "B"</span>
+                                    <span class="materia-chip"><i class="fas fa-atom"></i>Formación Fundamental Extendida (Área del Conocimiento) "A"</span>
+                                    <span class="materia-chip"><i class="fas fa-atom"></i>Formación Fundamental Extendida (Área del Conocimiento) "B"</span>
+                                    <span class="materia-chip"><i class="fas fa-hands-helping"></i>Práctica y Colaboración Ciudadana</span>
+                                    <span class="materia-chip"><i class="fas fa-tools"></i>Formación Laboral "A"</span>
+                                    <span class="materia-chip"><i class="fas fa-tools"></i>Formación Laboral "B"</span>
                                 </div>
                             </div>
+                        </div>
+                    </div>
 
-                            <!-- Semestre 6 -->
-                            <div class="accordion-item mb-3 border-0 shadow-sm">
-                                <h3 class="accordion-header" id="semestre6">
-                                    <button class="accordion-button collapsed fw-bold" type="button"
-                                        data-bs-toggle="collapse" data-bs-target="#collapseSemestre6"
-                                        aria-expanded="false" aria-controls="collapseSemestre6">
-                                        <i class="fas fa-book me-3 text-primary" aria-hidden="true"></i>
-                                        Sexto Semestre
-                                    </button>
-                                </h3>
-                                <div id="collapseSemestre6" class="accordion-collapse collapse"
-                                    aria-labelledby="semestre6" data-bs-parent="#semestresAccordion">
-                                    <div class="accordion-body">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <ul class="list-unstyled materias-list">
-                                                    <li><i class="fas fa-dna text-success me-2"
-                                                            aria-hidden="true"></i>Organismos, Estructuras y Procesos.
-                                                        Herencia y Evolución Biológica</li>
-                                                    <li><i class="fas fa-history text-success me-2"
-                                                            aria-hidden="true"></i>Conciencia Histórica III. La
-                                                        Realidad
-                                                        Actual en Perspectiva Histórica</li>
-                                                    <li><i class="fas fa-calculator text-success me-2"
-                                                            aria-hidden="true"></i>Temas Selectos de Matemáticas II
-                                                    </li>
-                                                    <li><i class="fas fa-book text-success me-2"
-                                                            aria-hidden="true"></i>Formación Fundamental Extendida
-                                                        (Recurso Sociocognitivo) "A"</li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <ul class="list-unstyled materias-list">
-                                                    <li><i class="fas fa-book text-success me-2"
-                                                            aria-hidden="true"></i>Formación Fundamental Extendida
-                                                        (Recurso Sociocognitivo) "B"</li>
-                                                    <li><i class="fas fa-atom text-success me-2"
-                                                            aria-hidden="true"></i>Formación Fundamental Extendida
-                                                        (Área del Conocimiento) "A"</li>
-                                                    <li><i class="fas fa-atom text-success me-2"
-                                                            aria-hidden="true"></i>Formación Fundamental Extendida
-                                                        (Área del Conocimiento) "B"</li>
-                                                    <li><i class="fas fa-venus-mars text-success me-2"
-                                                            aria-hidden="true"></i>Educación Integral en Sexualidad y
-                                                        Genero</li>
-                                                    <li><i class="fas fa-tools text-success me-2"
-                                                            aria-hidden="true"></i>Formación Laboral "A"</li>
-                                                    <li><i class="fas fa-tools text-success me-2"
-                                                            aria-hidden="true"></i>Formación Laboral "B"</li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
+                    <!-- Semestre 6 -->
+                    <div class="tab-pane fade" id="sem6" role="tabpanel" aria-labelledby="sem6-tab">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <h5 class="text-primary mb-3"><i class="fas fa-dna me-2"></i>Sexto Semestre</h5>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="materia-chip"><i class="fas fa-dna"></i>Organismos, Estructuras y Procesos. Herencia y Evolución Biológica</span>
+                                    <span class="materia-chip"><i class="fas fa-history"></i>Conciencia Histórica III. La Realidad Actual en Perspectiva Histórica</span>
+                                    <span class="materia-chip"><i class="fas fa-calculator"></i>Temas Selectos de Matemáticas II</span>
+                                    <span class="materia-chip"><i class="fas fa-book"></i>Formación Fundamental Extendida (Recurso Sociocognitivo) "A"</span>
+                                    <span class="materia-chip"><i class="fas fa-book"></i>Formación Fundamental Extendida (Recurso Sociocognitivo) "B"</span>
+                                    <span class="materia-chip"><i class="fas fa-atom"></i>Formación Fundamental Extendida (Área del Conocimiento) "A"</span>
+                                    <span class="materia-chip"><i class="fas fa-atom"></i>Formación Fundamental Extendida (Área del Conocimiento) "B"</span>
+                                    <span class="materia-chip"><i class="fas fa-venus-mars"></i>Educación Integral en Sexualidad y Género</span>
+                                    <span class="materia-chip"><i class="fas fa-tools"></i>Formación Laboral "A"</span>
+                                    <span class="materia-chip"><i class="fas fa-tools"></i>Formación Laboral "B"</span>
                                 </div>
                             </div>
                         </div>
@@ -622,12 +639,12 @@
             </div>
         </section>
 
-        <!-- Capacitación para el Trabajo (Placeholder — cada plantel configura sus especialidades) -->
+        <!-- Capacitación para el Trabajo - Bento Grid -->
         <section id="capacitacion-trabajo" class="py-5 bg-light" data-section-key="capacitacion_trabajo">
             <div class="container">
                 <div class="section-header text-center mb-5">
                     <h2 data-section-title class="section-title">
-                        <i class="fas fa-tools text-primary me-3" aria-hidden="true"></i>
+                        <i class="fas fa-tools text-primary me-2" aria-hidden="true"></i>
                         Capacitación para el Trabajo
                     </h2>
                     <p data-section-subtitle class="section-subtitle text-muted">
@@ -643,12 +660,12 @@
             </div>
         </section>
 
-        <!-- Perfil de Egreso -->
+        <!-- Perfil de Egreso - Bento Cards -->
         <section id="perfil-egreso" class="py-5" data-section-key="perfil_egreso">
             <div class="container">
                 <div class="section-header text-center mb-5">
                     <h2 data-section-title class="section-title">
-                        <i class="fas fa-user-graduate text-primary me-3" aria-hidden="true"></i>
+                        <i class="fas fa-user-graduate text-primary me-2" aria-hidden="true"></i>
                         Perfil de Egreso
                     </h2>
                     <p data-section-subtitle class="section-subtitle text-muted">
@@ -657,72 +674,44 @@
                 </div>
 
                 <div class="row g-4">
+                    <!-- Competencias Académicas -->
                     <div class="col-lg-6">
-                        <div class="card border-0 bg-primary-subtle h-100">
+                        <div class="card border-0 perfil-bento h-100">
                             <div class="card-body p-4">
-                                <h3 class="card-title text-primary mb-4">
-                                    <i class="fas fa-brain me-2" aria-hidden="true"></i>
-                                    Competencias Académicas
-                                </h3>
-                                <ul class="list-unstyled">
-                                    <li class="mb-3">
-                                        <i class="fas fa-check-circle text-success me-2" aria-hidden="true"></i>
-                                        Pensamiento crítico y analítico
-                                    </li>
-                                    <li class="mb-3">
-                                        <i class="fas fa-check-circle text-success me-2" aria-hidden="true"></i>
-                                        Comunicación efectiva oral y escrita
-                                    </li>
-                                    <li class="mb-3">
-                                        <i class="fas fa-check-circle text-success me-2" aria-hidden="true"></i>
-                                        Competencia matemática y científica
-                                    </li>
-                                    <li class="mb-3">
-                                        <i class="fas fa-check-circle text-success me-2" aria-hidden="true"></i>
-                                        Competencia digital y tecnológica
-                                    </li>
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="perfil-icon bg-primary-subtle text-primary rounded-3 d-flex align-items-center justify-content-center me-3">
+                                        <i class="fas fa-brain fa-lg"></i>
+                                    </div>
+                                    <h3 class="card-title text-primary mb-0 fs-5 fw-bold">Competencias Académicas</h3>
+                                </div>
+                                <ul class="list-unstyled mb-0">
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Pensamiento crítico y analítico</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Comunicación efectiva oral y escrita</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Competencia matemática y científica</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Competencia digital y tecnológica</li>
                                 </ul>
                             </div>
                         </div>
                     </div>
 
+                    <!-- Competencias Socioemocionales -->
                     <div class="col-lg-6">
-                        <div class="card border-0 bg-success-subtle h-100">
+                        <div class="card border-0 perfil-bento h-100">
                             <div class="card-body p-4">
-                                <h3 class="card-title text-success mb-4">
-                                    <i class="fas fa-heart me-2" aria-hidden="true"></i>
-                                    Competencias Socioemocionales
-                                </h3>
-                                <ul class="list-unstyled">
-                                    <li class="mb-3">
-                                        <i class="fas fa-check-circle text-primary me-2" aria-hidden="true"></i>
-                                        Trabajo colaborativo y liderazgo
-                                    </li>
-                                    <li class="mb-3">
-                                        <i class="fas fa-check-circle text-primary me-2" aria-hidden="true"></i>
-                                        Responsabilidad social y ciudadana
-                                    </li>
-                                    <li class="mb-3">
-                                        <i class="fas fa-check-circle text-primary me-2" aria-hidden="true"></i>
-                                        Adaptabilidad y resiliencia
-                                    </li>
-                                    <li class="mb-3">
-                                        <i class="fas fa-check-circle text-primary me-2" aria-hidden="true"></i>
-                                        Valores éticos y morales sólidos
-                                    </li>
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="perfil-icon bg-success-subtle text-success rounded-3 d-flex align-items-center justify-content-center me-3">
+                                        <i class="fas fa-heart fa-lg"></i>
+                                    </div>
+                                    <h3 class="card-title text-success mb-0 fs-5 fw-bold">Competencias Socioemocionales</h3>
+                                </div>
+                                <ul class="list-unstyled mb-0">
+                                    <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i>Trabajo colaborativo y liderazgo</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i>Responsabilidad social y ciudadana</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i>Adaptabilidad y resiliencia</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i>Valores éticos y morales sólidos</li>
                                 </ul>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Botón para ver perfil completo -->
-                <div class="row">
-                    <div class="col-12 text-center mt-4">
-                        <button class="btn btn-primary btn-lg" data-bs-toggle="modal"
-                            data-bs-target="#perfilEgresoModal">
-                            <i class="fas fa-file-alt me-2"></i>Ver Perfil Completo de Egreso
-                        </button>
                     </div>
                 </div>
             </div>
@@ -734,11 +723,10 @@
                 <div class="row">
                     <div class="col-lg-8 mx-auto text-center mb-5">
                         <h2 data-section-title class="fw-bold text-primary mb-3">
-                            <i class="fas fa-clipboard-check me-3"></i>
+                            <i class="fas fa-clipboard-check me-2"></i>
                             Proceso de Admisión
                         </h2>
-                        <p data-section-subtitle class="lead text-muted">Todo lo que necesitas saber para formar parte de nuestra comunidad
-                            educativa</p>
+                        <p data-section-subtitle class="lead text-muted">Todo lo que necesitas saber para formar parte de nuestra comunidad educativa</p>
                     </div>
                 </div>
 
@@ -748,37 +736,18 @@
                         <div class="card h-100 border-0 shadow-sm">
                             <div class="card-body p-4">
                                 <div class="d-flex align-items-center mb-3">
-                                    <div class="feature-icon bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3"
-                                        class="rounded-circle me-3 w-h-50px">
+                                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width:48px;height:48px;">
                                         <i class="fas fa-file-alt"></i>
                                     </div>
                                     <h5 class="card-title mb-0 text-primary fw-bold">Requisitos y Documentos</h5>
                                 </div>
-                                <ul class="list-unstyled">
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2"></i>
-                                        Cédula de Registro y Actualización de Datos (CRAD)
-                                    </li>
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2"></i>
-                                        Acta de Nacimiento (Original y copia)
-                                    </li>
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2"></i>
-                                        Certificado de Educación Secundaria (Original y copia)
-                                    </li>
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2"></i>
-                                        Seis fotografías tamaño infantil (B/N, características específicas)
-                                    </li>
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2"></i>
-                                        Copia de CURP y Comprobante de Domicilio
-                                    </li>
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2"></i>
-                                        Número de Identificación del Alumno (NIA)
-                                    </li>
+                                <ul class="list-unstyled mb-0">
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Cédula de Registro y Actualización de Datos (CRAD)</li>
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Acta de Nacimiento (Original y copia)</li>
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Certificado de Educación Secundaria (Original y copia)</li>
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Seis fotografías tamaño infantil (B/N)</li>
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Copia de CURP y Comprobante de Domicilio</li>
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Número de Identificación del Alumno (NIA)</li>
                                 </ul>
                             </div>
                         </div>
@@ -789,13 +758,12 @@
                         <div class="card h-100 border-0 shadow-sm">
                             <div class="card-body p-4">
                                 <div class="d-flex align-items-center mb-3">
-                                    <div class="feature-icon bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3"
-                                        class="rounded-circle me-3 w-h-50px">
+                                    <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width:48px;height:48px;">
                                         <i class="fas fa-calendar-alt"></i>
                                     </div>
                                     <h5 class="card-title mb-0 text-primary fw-bold">Fechas Importantes</h5>
                                 </div>
-                                <div class="mb-4">
+                                <div class="mb-3">
                                     <div class="d-flex align-items-center mb-2">
                                         <i class="fas fa-calendar text-primary me-2"></i>
                                         <strong>Preinscripciones:</strong> Febrero
@@ -805,19 +773,16 @@
                                         <strong>Inscripciones:</strong> Agosto
                                     </div>
                                 </div>
-
                                 <div class="border-top pt-3">
                                     <div class="d-flex align-items-center mb-2">
-                                        <div class="feature-icon bg-warning text-white rounded-circle d-flex align-items-center justify-content-center me-3"
-                                            class="rounded-circle me-3 w-h-40px">
+                                        <div class="bg-warning text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width:36px;height:36px;">
                                             <i class="fas fa-award"></i>
                                         </div>
                                         <h6 class="mb-0 text-primary fw-bold">Becas Disponibles</h6>
                                     </div>
                                     <p class="text-muted mb-0">
                                         <i class="fas fa-star text-warning me-2"></i>
-                                        Todos nuestros estudiantes inscritos pueden acceder a la <strong>Beca Benito
-                                            Juárez</strong>.
+                                        Todos nuestros estudiantes inscritos pueden acceder a la <strong>Beca Benito Juárez</strong>.
                                     </p>
                                 </div>
                             </div>
@@ -826,14 +791,14 @@
                 </div>
 
                 <!-- Call to Action -->
-                <div class="row mt-5">
+                <div class="row mt-4">
                     <div class="col-12 text-center">
-                        <div class="alert alert-info d-inline-flex align-items-center" role="alert">
+                        <div class="alert alert-info d-inline-flex align-items-center rounded-3" role="alert">
                             <i class="fas fa-info-circle me-2"></i>
                             Para más detalles sobre el proceso, contáctanos o visita la escuela.
                         </div>
                         <div class="mt-3">
-                            <a href="contacto.html" class="btn btn-primary btn-lg me-3">
+                            <a href="contacto.html" class="btn btn-primary btn-lg me-2">
                                 <i class="fas fa-envelope me-2"></i>Contactar
                             </a>
                             <a href="convocatorias.html" class="btn btn-outline-primary btn-lg">
@@ -846,14 +811,13 @@
         </section>
 
         <!-- CTA Section -->
-        <section class="cta-section bg-gradient-primary text-white py-5">
+        <section class="py-5 text-white" style="background: linear-gradient(135deg, #1565C0, #0D47A1);">
             <div class="container">
                 <div class="row justify-content-center text-center">
                     <div class="col-lg-8">
                         <h2 class="display-5 fw-bold mb-4">¿Listo para formar parte de nuestra comunidad?</h2>
-                        <p class="lead mb-4">
-                            Conoce más sobre nuestros procesos de admisión y comienza tu camino hacia la excelencia
-                            educativa
+                        <p class="lead mb-4 opacity-90">
+                            Conoce más sobre nuestros procesos de admisión y comienza tu camino hacia la excelencia educativa
                         </p>
                         <div class="d-grid gap-2 d-md-flex justify-content-md-center">
                             <a href="servicios.html" class="btn btn-light btn-lg me-md-2">
@@ -869,326 +833,6 @@
                 </div>
             </div>
         </section>
-
-        <!-- Modal Perfil de Egreso -->
-        <div class="modal fade" id="perfilEgresoModal" tabindex="-1" aria-labelledby="perfilEgresoModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-xl">
-                <div class="modal-content">
-                    <div class="modal-header bg-info text-white">
-                        <h5 class="modal-title" id="perfilEgresoModalLabel">
-                            <i class="fas fa-user-graduate me-2"></i>Perfil Completo de Egreso
-                        </h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body modal-body-scrollable">
-                        <p class="lead">Al concluir sus estudios, nuestros alumnos habrán desarrollado:</p>
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <p><i class="fas fa-check-circle text-success me-2"></i>Competencias disciplinares
-                                    (matemáticas, ciencias, humanidades)</p>
-                                <p><i class="fas fa-check-circle text-success me-2"></i>Habilidades socioemocionales
-                                    (trabajo en equipo, resiliencia)</p>
-                            </div>
-                            <div class="col-md-6">
-                                <p><i class="fas fa-check-circle text-success me-2"></i>Capacidad emprendedora
-                                    (iniciativa para generar soluciones)</p>
-                                <p><i class="fas fa-check-circle text-success me-2"></i>Conciencia social (compromiso
-                                    con su entorno)</p>
-                            </div>
-                        </div>
-
-                        <h4 class="text-primary">A) CURRICULUM FUNDAMENTAL</h4>
-                        <h5>I. Recursos sociocognitivos:</h5>
-
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="card border-primary mb-3">
-                                    <div class="card-header bg-primary text-white text-center">
-                                        <i class="fas fa-comments me-2"></i>1. Lengua y comunicación
-                                    </div>
-                                    <div class="card-body small">
-                                        <p><strong>Lengua y comunicación:</strong> Valora discursos y expresiones
-                                            provenientes de múltiples fuentes, situaciones y contextos para comprender,
-                                            interactuar y explicar la realidad en la que vive; así como tomar
-                                            decisiones
-                                            pertinentes en lo individual y social. Valora la información y toma una
-                                            postura ante la información de diversos tipos de textos para ampliar sus
-                                            conocimientos, perspectivas, críticas y experiencias, que proporciona
-                                            elementos para decidir sobre su vida personal, profesional y social.
-                                            Trasmite conocimientos, cuestionamientos y experiencias a través de
-                                            manifestaciones verbales y no verbales, de acuerdo con la situación,
-                                            contexto e interlocutor, con el propósito de comprender, explicar su
-                                            realidad y transformarla. Indaga sobre una situación, fenómeno o
-                                            problemática y divulga los resultados de su investigación para beneficio
-                                            de
-                                            sí mismo o el medio que le rodea.</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="card border-success mb-3">
-                                    <div class="card-header bg-success text-white text-center">
-                                        <i class="fas fa-calculator me-2"></i>2. Pensamiento matemático
-                                    </div>
-                                    <div class="card-body small">
-                                        <p><strong>Pensamiento matemático:</strong> Valora la aplicación de
-                                            procedimientos automáticos y de algoritmos para anticipar, encontrar y
-                                            validar soluciones a problemas (matemáticos, de las ciencias naturales,
-                                            experimentales y tecnología, sociales, humanidades y de la vida cotidiana).
-                                            Adapta procesos de razonamiento matemático que permiten relacionar
-                                            información y obtener conclusiones de problemas (matemáticos, de las
-                                            ciencias naturales, experimentales y tecnología, sociales, humanidades, y
-                                            de
-                                            la vida cotidiana). Modela y propone soluciones a problemas (matemáticos,
-                                            de
-                                            las ciencias naturales, experimentales y tecnología, sociales, humanidades
-                                            y
-                                            de la vida cotidiana) empleando lenguaje y técnicas matemáticas. Explica
-                                            la
-                                            solución de problemas en el contexto que le dio origen, empleando lenguaje
-                                            matemático y lo valora como relevante y cercano a su vida.</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="card border-info mb-3">
-                                    <div class="card-header bg-info text-white text-center">
-                                        <i class="fas fa-history me-2"></i>3. Conciencia histórica
-                                    </div>
-                                    <div class="card-body small">
-                                        <p><strong>Conciencia histórica:</strong> Promueve la formación de pensamiento
-                                            crítico a partir de la valoración de lo que aportó a su vida el análisis
-                                            de
-                                            las etapas y coyunturas históricas estudiadas. Argumenta las razones de su
-                                            presente a partir de la influencia de los hechos históricos en su vida
-                                            personal y familiar, para orientar las aspiraciones de su futuro. Asume que
-                                            toda idea, creencia, ideología, objetos y realidades existentes en el
-                                            tiempo
-                                            actual se construyen a lo largo de la historia. Esto permitirá crear sus
-                                            propias interpretaciones a partir de la crítica de fuentes, así como del
-                                            análisis de diversas interpretaciones. Asume que se encuentra inmerso en un
-                                            proceso histórico, lo cual le posibilita a responsabilizarse de la
-                                            construcción del futuro, tanto en lo individual como en lo social.</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="card border-warning mb-3">
-                                    <div class="card-header bg-warning text-dark text-center">
-                                        <i class="fas fa-laptop me-2"></i>4. Cultura digital
-                                    </div>
-                                    <div class="card-body small">
-                                        <p><strong>Cultura digital:</strong> Se asume como ciudadano digital con una
-                                            postura crítica e informada que le permite adaptarse a la disponibilidad de
-                                            recursos y diversidad de contextos. Usa herramientas digitales para
-                                            comunicarse y colaborar en el desarrollo de proyectos y actividades de
-                                            acuerdo con sus necesidades y contextos. Soluciona problemas de su entorno
-                                            utilizando el pensamiento y lenguaje algorítmico. Diseña y elabora
-                                            contenidos digitales mediante técnicas, métodos y recursos tecnológicos
-                                            para
-                                            fortalecer su creatividad e innovar en su vida cotidiana.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <h5 class="mt-4">II. Áreas de conocimiento:</h5>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="card border-primary mb-3">
-                                    <div class="card-header bg-primary text-white text-center">
-                                        <i class="fas fa-atom me-2"></i>Ciencias Naturales
-                                    </div>
-                                    <div class="card-body small">
-                                        <p>Comprensión de la materia, energía, ecosistemas y sistemas biológicos.
-                                            Aplicaciones tecnológicas en medicina, nutrición y sustentabilidad.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="card border-success mb-3">
-                                    <div class="card-header bg-success text-white text-center">
-                                        <i class="fas fa-users me-2"></i>Ciencias Sociales
-                                    </div>
-                                    <div class="card-body small">
-                                        <p>Construcción de explicaciones sociales, participación ciudadana, análisis
-                                            de
-                                            estructuras e interacciones sociales.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="card border-warning mb-3">
-                                    <div class="card-header bg-warning text-dark text-center">
-                                        <i class="fas fa-brain me-2"></i>Humanidades
-                                    </div>
-                                    <div class="card-body small">
-                                        <p>Cuestionamiento crítico de significados culturales, políticos e históricos
-                                            para fortalecer la experiencia individual y colectiva.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <h4 class="text-success mt-4">B) CURRÍCULUM LABORAL</h4>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="card border-info mb-3">
-                                    <div class="card-header bg-info text-white text-center">
-                                        <i class="fas fa-palette me-2"></i>Comunicación Gráfica
-                                    </div>
-                                    <div class="card-body small">
-                                        <p>Elaboración de bocetos, ilustración, diseño digital, uso de herramientas
-                                            para
-                                            vectorización y composición visual.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="card border-success mb-3">
-                                    <div class="card-header bg-success text-white text-center">
-                                        <i class="fas fa-utensils me-2"></i>Alimentos Artesanales
-                                    </div>
-                                    <div class="card-body small">
-                                        <p>Transformación artesanal de alimentos con técnicas tradicionales
-                                            regionales,
-                                            conservación y preparación.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="card border-warning mb-3">
-                                    <div class="card-header bg-warning text-dark text-center">
-                                        <i class="fas fa-wrench me-2"></i>Instalaciones Residenciales
-                                    </div>
-                                    <div class="card-body small">
-                                        <p>Interpretación de croquis, instalaciones básicas de vivienda, manejo de
-                                            materiales y normas de seguridad.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <h4 class="text-warning mt-4">C) CURRÍCULUM AMPLIADO</h4>
-                        <h5>Ámbitos de formación socioemocional:</h5>
-
-                        <div class="row g-3">
-                            <!-- Práctica y colaboración ciudadana -->
-                            <div class="col-lg-6">
-                                <div class="card border-primary mb-3">
-                                    <div class="card-header bg-primary text-white text-center">
-                                        <i class="fas fa-hands-helping me-2"></i>Práctica y Colaboración Ciudadana
-                                    </div>
-                                    <div class="card-body small">
-                                        <p><strong>Proyectos de apoyo y transformación:</strong> Alfabetización,
-                                            cuidado
-                                            del medio ambiente, convivencia, manejo de desechos, tutorías entre pares,
-                                            trabajo con adultos mayores.</p>
-                                        <p><strong>Formación sociocívica:</strong> Debates, deliberación, círculos
-                                            de
-                                            discusión, talleres comunitarios con metodología socio-afectiva.</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Educación para la salud -->
-                            <div class="col-lg-6">
-                                <div class="card border-danger mb-3">
-                                    <div class="card-header bg-danger text-white text-center">
-                                        <i class="fas fa-heartbeat me-2"></i>Educación para la Salud
-                                    </div>
-                                    <div class="card-body small">
-                                        <p><strong>ábitos saludables:</strong> Modelamiento en todos los espacios del
-                                            plantel, descansos activos, ejercicios de regulación emocional.</p>
-                                        <p><strong>Proyectos de salud:</strong> Jornadas de limpieza, campañas de
-                                            sensibilización, ferias de la salud, construcción de comedores escolares.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Actividades físicas y deportivas -->
-                            <div class="col-lg-6">
-                                <div class="card border-success mb-3">
-                                    <div class="card-header bg-success text-white text-center">
-                                        <i class="fas fa-running me-2"></i>Actividades Físicas y Deportivas
-                                    </div>
-                                    <div class="card-body small">
-                                        <p><strong>Desarrollo físico:</strong> Juegos deportivos, colectivos y
-                                            cooperativos, juegos metafóricos, actividades autóctonas y tradicionales.
-                                        </p>
-                                        <p><strong>Proyectos colaborativos:</strong> Olimpiadas escolares, campañas de
-                                            activación física, recuperación de espacios deportivos comunitarios.</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Educación integral en sexualidad y género -->
-                            <div class="col-lg-6">
-                                <div class="card border-info mb-3">
-                                    <div class="card-header bg-info text-white text-center">
-                                        <i class="fas fa-venus-mars me-2"></i>Educación Integral en Sexualidad y
-                                        Género
-                                    </div>
-                                    <div class="card-body small">
-                                        <p><strong>Derechos sexuales:</strong> Talleres y campañas para promover el
-                                            análisis y ejercicio de derechos sexuales y reproductivos.</p>
-                                        <p><strong>Equidad de género:</strong> Erradicación de estereotipos,
-                                            desarrollo
-                                            de confianza y autoestima, proyectos con enfoque interseccional.</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Actividades artísticas y culturales -->
-                            <div class="col-lg-6">
-                                <div class="card border-warning mb-3">
-                                    <div class="card-header bg-warning text-dark text-center">
-                                        <i class="fas fa-palette me-2"></i>Actividades Artísticas y Culturales
-                                    </div>
-                                    <div class="card-body small">
-                                        <p><strong>Expresión creativa:</strong> Actividades autobiográficas creativas,
-                                            visualización creativa, proyectos artísticos colectivos y cooperativos.
-                                        </p>
-                                        <p><strong>Patrimonio cultural:</strong> Proyectos de apropiación social del
-                                            patrimonio cultural, vinculación interdisciplinar con el currículum
-                                            fundamental.</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Recursos socioemocionales -->
-                            <div class="col-lg-6">
-                                <div class="card border-secondary mb-3">
-                                    <div class="card-header bg-secondary text-white text-center">
-                                        <i class="fas fa-heart me-2"></i>Recursos Socioemocionales
-                                    </div>
-                                    <div class="card-body small">
-                                        <p><strong>Responsabilidad social:</strong> Promoción de derechos, valores,
-                                            combate a la desigualdad, inclusión y respeto a la diversidad.</p>
-                                        <p><strong>Bienestar integral:</strong> Cuidado físico corporal, bienestar
-                                            emocional-afectivo, construcción de vínculos saludables y proyecto de
-                                            vida.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                        <a href="contacto.html" class="btn btn-info">
-                            <i class="fas fa-envelope me-2"></i>Más Información
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
     </main>
 
     <!-- Footer -->
@@ -1199,8 +843,6 @@
         <i class="fas fa-moon"></i>
     </button>
 
-
-
     <!-- Back to Top -->
     <button id="back-to-top" class="btn btn-primary rounded-circle position-fixed d-none"
         class="btn btn-primary rounded-circle position-fixed d-none back-to-top-custom" aria-label="Volver arriba"
@@ -1208,50 +850,36 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
-    <!-- 🚀 BGE FRAMEWORK MODULAR - PÁGINA OFERTA EDUCATIVA -->
-
-    <!-- Bootstrap JS -->
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
-    <!-- 🔒 DOMPurify XSS Protection -->
+    <!-- DOMPurify XSS Protection -->
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
     <script src="js/dompurify-config.js"></script>
 
-    <!-- 📌§ MAIN.JS - CARGA DINÁMICA DE HEADER Y FOOTER -->
-    <!-- 📌§ MAIN.JS - CARGA DINÁMICA DE HEADER Y FOOTER (MIGRADO) -->
+    <!-- MAIN.JS - Dynamic Header/Footer -->
     <script src="js/main.js"></script>
     <link rel="stylesheet" href="dist/assets/main.css">
     <script type="module" src="dist/assets/main.js"></script>
 
-    <!-- 📌§ SISTEMA CORE (OBLIGATORIO) -->
-    <script src="js/context-manager.js"></script> <!-- 📌"™ Base del sistema -->
-    <script src="js/config.js?v=2024091401"></script> <!-- 📌§ Configuración global -->
-    <script src="js/theme-manager.js"></script> <!-- 🎨 Gestión de temas -->
-    <!-- <script src="js/script.js"></script> --> <!-- 📌"™ Script principal (Migrado a TS) -->
+    <!-- Core System -->
+    <script src="js/context-manager.js"></script>
+    <script src="js/config.js?v=2024091401"></script>
+    <script src="js/theme-manager.js"></script>
 
-    <!-- 🎯 BGE FRAMEWORK CORE -->
+    <!-- BGE Framework Core -->
     <script src="js/bge-framework-core.js"></script>
-    <script src="js/bge-security-module.js"></script> <!-- 📌"™ Seguridad y autenticación admin -->
+    <script src="js/bge-security-module.js"></script>
 
-    <!-- 📊 MÓDULOS BGE PARA OFERTA EDUCATIVA -->
-    <!-- 📌"™ Seguridad y autenticación -->
-    <!-- ⚡ Performance optimizado --><!-- 📊 Analytics tracking --><!-- 🎓 Funciones educativas --><!-- 📱 PWA features -->
-
-    <!-- 📌§ FUNCIONALIDADES ESPECÍFICAS DE OFERTA EDUCATIVA -->
-    <script src="js/chatbot.js"></script> <!-- 🤖 Chatbot soporte -->
-    <script src="js/search-simple.js"></script> <!-- 📌 Búsqueda -->
-
-    <!-- ðŸŒ™ Dark Mode Script - EXTRACTED TO EXTERNAL FILE FOR CSP COMPLIANCE -->
+    <!-- Page-Specific -->
+    <script src="js/chatbot.js"></script>
+    <script src="js/search-simple.js"></script>
     <script src="js/dark-mode-simple.js?v=2025111801"></script>
-
-    <!-- 🎯 REFACTORIZACIÓN CSP: Event Listeners Centralizados -->
     <script defer src="js/oferta-educativa-events.js"></script>
 
-    <!-- 📌"™ AUTENTICACIÓN ADMIN (INCLUIDA EN BGE SECURITY MODULE) -->
-    <!-- 🚀¢ TENANT CONFIG LOADER - Carga configuración multi-tenancy desde BD -->
+    <!-- Tenant Config + Page Sections -->
     <script src="js/tenant-config-loader.js" defer></script>
-    <!-- 📄 PAGE SECTIONS LOADER - Carga contenido dinámico de secciones -->
     <script src="js/page-sections-loader.js" defer></script>
 
 </body>
