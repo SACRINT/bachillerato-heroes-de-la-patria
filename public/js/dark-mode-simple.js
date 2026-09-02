@@ -10,10 +10,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const darkModeToggle = document.getElementById('darkModeToggle');
     const body = document.body;
 
-    if (!darkModeToggle) {
-        void 0;
+    if (!darkModeToggle || darkModeToggle.dataset.dmBound) {
         return;
     }
+    darkModeToggle.dataset.dmBound = 'true';
 
     // Check for saved dark mode preference
     if (localStorage.getItem('darkMode') === 'enabled') {

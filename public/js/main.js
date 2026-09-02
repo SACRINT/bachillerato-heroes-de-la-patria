@@ -13,6 +13,30 @@
 (function() {
     'use strict';
 
+    // 🛡️ 0. SANITIZADOR UNIVERSAL SEGURO
+    if (typeof window.sanitizeHTML !== 'function') {
+        window.sanitizeHTML = function (str) {
+            if (typeof DOMPurify !== 'undefined' && typeof DOMPurify.sanitize === 'function') {
+                return DOMPurify.sanitize(str);
+            }
+            const temp = document.createElement('div');
+            temp.textContent = str || '';
+            return temp.innerHTML;
+        };
+    }
+
+    // 🌙 APLICACIÓN TEMPRANA DEL TEMA (Previene destello blanco)
+    function applySavedTheme() {
+        try {
+            const isDark = localStorage.getItem('darkMode') === 'enabled' || localStorage.getItem('theme') === 'dark';
+            if (isDark) {
+                if (document.documentElement) document.documentElement.classList.add('dark-mode');
+                if (document.body) document.body.classList.add('dark-mode');
+            }
+        } catch (e) {}
+    }
+    applySavedTheme();
+
     // ========================================
     // 1. CARGAR HEADER Y FOOTER DINÁMICAMENTE
     // ========================================
@@ -181,12 +205,17 @@
     // ========================================
 
     async function init() {
+        applySavedTheme();
         await loadHeaderFooter();
         const session = restoreUserSession();
         if (session) {
             updateUserUIInHeader(session.user, true);
             window.currentUserSession = session;
         }
+        initDarkMode();
+        initBackToTop();
+        initHashTabs();
+        initChatbotLoader();
     }
 
     // ========================================
@@ -215,6 +244,121 @@
         }
     });
 
+    // ========================================
+    // 6. MODO OSCURO CENTRALIZADO
+    // ========================================
+    function initDarkMode() {
+        applySavedTheme();
+        const isDark = (document.body && document.body.classList.contains('dark-mode')) ||
+                       (localStorage.getItem('darkMode') === 'enabled') ||
+                       (localStorage.getItem('theme') === 'dark');
+
+        let btn = document.getElementById('darkModeToggle');
+        if (!btn && document.body) {
+            btn = document.createElement('button');
+            btn.className = 'dark-mode-toggle';
+            btn.id = 'darkModeToggle';
+            btn.setAttribute('aria-label', 'Alternar modo oscuro');
+            btn.setAttribute('title', isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
+            btn.innerHTML = `<i class="fas ${isDark ? 'fa-sun' : 'fa-moon'}"></i>`;
+            document.body.appendChild(btn);
+        } else if (btn) {
+            const icon = btn.querySelector('i');
+            if (icon) icon.className = `fas ${isDark ? 'fa-sun' : 'fa-moon'}`;
+            btn.setAttribute('title', isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
+        }
+
+        if (btn && !btn.dataset.dmBound) {
+            btn.dataset.dmBound = 'true';
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.body.classList.toggle('dark-mode');
+                if (document.documentElement) document.documentElement.classList.toggle('dark-mode');
+                const active = document.body.classList.contains('dark-mode');
+                localStorage.setItem('darkMode', active ? 'enabled' : 'disabled');
+                localStorage.setItem('theme', active ? 'dark' : 'light');
+
+                const icon = btn.querySelector('i');
+                if (icon) {
+                    icon.className = active ? 'fas fa-sun' : 'fas fa-moon';
+                }
+                btn.setAttribute('title', active ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
+                window.dispatchEvent(new CustomEvent('darkModeChanged', { detail: { darkMode: active } }));
+            });
+        }
+    }
+
+    // ========================================
+    // 7. BOTÓN VOLVER ARRIBA (BACK-TO-TOP)
+    // ========================================
+    function initBackToTop() {
+        let btn = document.getElementById('backToTop') || document.getElementById('back-to-top');
+        if (!btn && document.body) {
+            btn = document.createElement('button');
+            btn.id = 'backToTop';
+            btn.className = 'back-to-top';
+            btn.setAttribute('aria-label', 'Volver arriba');
+            btn.setAttribute('title', 'Volver arriba');
+            btn.innerHTML = '<i class="fas fa-arrow-up"></i>';
+            document.body.appendChild(btn);
+        }
+
+        if (btn && !btn.dataset.bttBound) {
+            btn.dataset.bttBound = 'true';
+            btn.addEventListener('click', function() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 300) {
+                    btn.classList.add('visible');
+                    btn.style.display = 'flex';
+                } else {
+                    btn.classList.remove('visible');
+                    btn.style.display = 'none';
+                }
+            }, { passive: true });
+        }
+    }
+
+    // ========================================
+    // 8. SOPORTE UNIVERSAL DE PESTAÑAS POR HASH
+    // ========================================
+    function initHashTabs() {
+        if (!window.location.hash) return;
+        const hash = window.location.hash.substring(1);
+        const tabBtn = document.querySelector(`[data-bs-target="#${hash}"], [data-bs-target="#pills-${hash}"], [data-bs-target="#tab-${hash}"], [id="tab-${hash}-btn"]`);
+        if (tabBtn && typeof bootstrap !== 'undefined' && bootstrap.Tab) {
+            try {
+                const tab = new bootstrap.Tab(tabBtn);
+                tab.show();
+            } catch (e) {}
+        }
+    }
+
+    // ========================================
+    // 9. CARGA Y GARANTÍA CENTRAL DEL CHATBOT
+    // ========================================
+    function initChatbotLoader() {
+        if (window.BGE_CHATBOT_LOADED) return;
+        const pathname = window.location.pathname.toLowerCase();
+        // Evitar cargar chatbot en áreas de login, registro o dashboards administrativos
+        if (pathname.includes('login') || pathname.includes('register') || pathname.includes('admin-') || pathname.includes('dashboard')) {
+            return;
+        }
+
+        // Si ya hay una etiqueta script cargando chatbot.js, no duplicar
+        const existingScript = document.querySelector('script[src*="chatbot.js"]');
+        if (existingScript) return;
+
+        const script = document.createElement('script');
+        script.src = 'js/chatbot.js';
+        script.defer = true;
+        document.body.appendChild(script);
+    }
+
+    window.addEventListener('hashchange', initHashTabs);
+
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {
@@ -224,6 +368,9 @@
     window.mainJS = {
         restoreUserSession,
         updateUserUIInHeader,
-        loadHeaderFooter
+        loadHeaderFooter,
+        initDarkMode,
+        initBackToTop,
+        initChatbotLoader
     };
 })();

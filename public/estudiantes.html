@@ -1028,18 +1028,7 @@
     <script src="js/page-sections-loader.js" defer></script>
 
     <!-- Auto-activate "Padres" tab from hash -->
-    <script>
-        (function() {
-            'use strict';
-            if (window.location.hash === '#padres') {
-                var padresBtn = document.getElementById('tab-padres-btn');
-                if (padresBtn) {
-                    var tab = new bootstrap.Tab(padresBtn);
-                    tab.show();
-                }
-            }
-        })();
-    </script>
+    <script src="js/portal-escolar-tabs.js"></script>
 </body>
 
 </html>

@@ -8,6 +8,31 @@
 if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
     window.BGE_CHATBOT_LOADED = true;
 
+    // 🛡️ Sanitizador seguro universal (evita ReferenceError si sanitizeHTML o DOMPurify no están definidos)
+    if (typeof window.sanitizeHTML !== 'function') {
+        window.sanitizeHTML = function (str) {
+            if (typeof DOMPurify !== 'undefined' && typeof DOMPurify.sanitize === 'function') {
+                return DOMPurify.sanitize(str);
+            }
+            const temp = document.createElement('div');
+            temp.textContent = str || '';
+            return temp.innerHTML;
+        };
+    }
+
+    function safeSanitize(content) {
+        if (!content) return '';
+        if (typeof DOMPurify !== 'undefined' && typeof DOMPurify.sanitize === 'function') {
+            return DOMPurify.sanitize(content);
+        }
+        if (typeof window.sanitizeHTML === 'function') {
+            return window.sanitizeHTML(content);
+        }
+        const temp = document.createElement('div');
+        temp.textContent = content;
+        return temp.innerHTML;
+    }
+
     // 🔧 Configuración de API Backend
     const API_CONFIG = {
         // Auto-detectar baseURL según el entorno
@@ -325,28 +350,50 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
 
             // === PERSONAL Y ORGANIZACIÓN ===
             'director': {
-                keywords: ['director', 'samuel', 'cruz', 'responsable', 'quien', 'quienes', 'quien dirige', 'lider', 'autoridad'],
+                keywords: ['director', 'directora', 'responsable', 'quien', 'quienes', 'quien dirige', 'lider', 'autoridad', 'director general', 'directora general', 'quien manda', 'encargado', 'directivo'],
                 response: {
-                    title: '👨‍💼 Nuestro Director',
+                    title: '👨‍💼 Dirección del Plantel',
                     content: [
                         {
-                            subtitle: '🎯 Director del Plantel',
-                            text: '<strong>Director General</strong><br>• Liderazgo educativo<br>• Gestión institucional'
+                            subtitle: '🎯 Director(a) del Plantel',
+                            text: () => {
+                                const name = (typeof window.getTenantValue === 'function')
+                                    ? window.getTenantValue('director_name', null)
+                                    : null;
+                                return name 
+                                    ? `<strong>${name}</strong><br>Director(a) de la Institución` 
+                                    : '<strong>Dirección del Plantel</strong><br>Liderazgo educativo y gestión institucional';
+                            }
                         },
                         {
-                            subtitle: '📧 Contacto Directo',
-                            text: '21ebh0200x.sep@gmail.com'
+                            subtitle: '📧 Contacto Institucional',
+                            text: () => {
+                                const email = (typeof window.getTenantValue === 'function')
+                                    ? (window.getTenantValue('email', null) || window.getTenantValue('email_institucional', 'contacto@bachillerato.edu.mx'))
+                                    : 'contacto@bachillerato.edu.mx';
+                                return `<a href="mailto:${email}" class="text-primary">${email}</a>`;
+                            }
+                        },
+                        {
+                            subtitle: '📞 Teléfono y Citas',
+                            text: () => {
+                                const tel = (typeof window.getTenantValue === 'function')
+                                    ? window.getTenantValue('telefono', 'Ver sección de contacto')
+                                    : 'Ver sección de contacto';
+                                return `Teléfono: <strong>${tel}</strong><br>Horario de atención: Lunes a Viernes de 8:00 AM a 1:30 PM`;
+                            }
                         },
                         {
                             subtitle: '💭 Filosofía Educativa',
-                            text: '<em>"Formando líderes con propósito y preparando estudiantes integrales para los desafíos del siglo XXI"</em>'
-                        },
-                        {
-                            subtitle: '🎯 Visión de Liderazgo',
-                            text: 'Comprometido con la excelencia educativa y el desarrollo integral de cada estudiante.'
+                            text: '<em>"Formando líderes con propósito y preparando estudiantes integrales para los desafíos del futuro."</em>'
                         }
                     ],
-                    footer: 'Un líder educativo comprometido con tu formación integral.'
+                    footer: () => {
+                        const school = (typeof window.getTenantValue === 'function')
+                            ? window.getTenantValue('school_name', 'Bachillerato General Estatal')
+                            : 'Bachillerato General Estatal';
+                        return `Compromiso y excelencia educativa | ${school}`;
+                    }
                 }
             },
 
@@ -763,7 +810,8 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
 
             // Título principal
             if (responseData.title) {
-                html += `<div class="response-title">${responseData.title}</div>`;
+                const titleVal = typeof responseData.title === 'function' ? responseData.title() : responseData.title;
+                html += `<div class="response-title">${titleVal}</div>`;
             }
 
             // Contenido estructurado
@@ -772,10 +820,12 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
                 responseData.content.forEach(item => {
                     html += `<div class="response-section">`;
                     if (item.subtitle) {
-                        html += `<div class="response-subtitle">${item.subtitle}</div>`;
+                        const subVal = typeof item.subtitle === 'function' ? item.subtitle() : item.subtitle;
+                        html += `<div class="response-subtitle">${subVal}</div>`;
                     }
                     if (item.text) {
-                        html += `<div class="response-text">${item.text}</div>`;
+                        const textVal = typeof item.text === 'function' ? item.text() : item.text;
+                        html += `<div class="response-text">${textVal}</div>`;
                     }
                     html += `</div>`;
                 });
@@ -784,7 +834,8 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
 
             // Footer/conclusión
             if (responseData.footer) {
-                html += `<div class="response-footer">${responseData.footer}</div>`;
+                const footerVal = typeof responseData.footer === 'function' ? responseData.footer() : responseData.footer;
+                html += `<div class="response-footer">${footerVal}</div>`;
             }
 
             html += `</div>`;
@@ -1188,7 +1239,7 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
 
             if (chatbotOpen) {
                 container.style.display = 'flex';
-                toggle.innerHTML = DOMPurify.sanitize(sanitizeHTML('<i class="fas fa-times"></i>', 'simple'));
+                toggle.innerHTML = '<i class="fas fa-times"></i>';
 
                 // Limpiar mensajes anteriores si es necesario
                 const messagesContainer = document.getElementById('chatbotMessages');
@@ -1212,7 +1263,7 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
 
             } else {
                 container.style.display = 'none';
-                toggle.innerHTML = DOMPurify.sanitize(sanitizeHTML('<i class="fas fa-comments"></i>', 'simple'));
+                toggle.innerHTML = '<i class="fas fa-comments"></i>';
             }
         }
 
@@ -1223,11 +1274,12 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
         // ✉️ FUNCIÓN PARA AGREGAR MENSAJES CON ANIMACIÓN
         function addMessage(sender, message) {
             const messagesContainer = document.getElementById('chatbotMessages');
+            if (!messagesContainer) return;
             const messageDiv = document.createElement('div');
             messageDiv.className = `chatbot-message ${sender}`;
 
-            // Usar innerHTML para renderizar HTML formateado
-            messageDiv.innerHTML = DOMPurify.sanitize(sanitizeHTML(message, 'ugc'));
+            // Usar innerHTML seguro
+            messageDiv.innerHTML = safeSanitize(message);
 
             // Animación de entrada
             messageDiv.style.opacity = '0';
@@ -1420,7 +1472,7 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
             const messagesContainer = document.getElementById('chatbotMessages');
             const feedbackDiv = document.createElement('div');
             feedbackDiv.className = 'feedback-container';
-            feedbackDiv.innerHTML = sanitizeHTML(`
+            feedbackDiv.innerHTML = safeSanitize(`
         <div class="feedback-question">
             <small>¿Te fue útil esta respuesta?</small>
         </div>
@@ -1449,7 +1501,7 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
                     const lastFeedback = feedbackContainers[feedbackContainers.length - 1];
 
                     if (lastFeedback) {
-                        lastFeedback.innerHTML = sanitizeHTML(`
+                        lastFeedback.innerHTML = safeSanitize(`
                     <div class="feedback-thanks">
                         <small>✅ ¡Gracias por tu feedback!</small>
                     </div>
@@ -1512,7 +1564,7 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
             if (!document.getElementById('chatbot-widget-styles')) {
                 const widgetStyles = document.createElement('style');
                 widgetStyles.id = 'chatbot-widget-styles';
-                widgetStyles.textContent = '.chatbot-toggle{position:fixed;bottom:20px;right:20px;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#1976D2 0%,#42A5F5 100%);color:white;border:none;cursor:pointer;box-shadow:0 4px 20px rgba(25,118,210,0.4);z-index:10000;font-size:24px;display:flex;align-items:center;justify-content:center;transition:all 0.3s ease}.chatbot-toggle:hover{transform:scale(1.1);box-shadow:0 6px 25px rgba(25,118,210,0.5)}.chatbot-container{position:fixed;bottom:150px;right:50px;width:370px;height:520px;background:white;border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,0.2);z-index:10001;display:flex;flex-direction:column;overflow:hidden}.chatbot-header{background:linear-gradient(135deg,#0D47A1 0%,#1976D2 100%);color:white;padding:16px;display:flex;justify-content:space-between;align-items:center}.chatbot-header-content{display:flex;align-items:center;gap:12px}.chatbot-avatar{font-size:28px}.chatbot-title-wrapper{display:flex;flex-direction:column}.chatbot-title{margin:0;font-size:16px;font-weight:600}.chatbot-status{font-size:12px;opacity:0.9}.chatbot-status.online::before{content:"";display:inline-block;width:8px;height:8px;background:#4CAF50;border-radius:50%;margin-right:6px}.chatbot-close{background:rgba(255,255,255,0.1);border:none;color:white;width:32px;height:32px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}.chatbot-close:hover{background:rgba(255,255,255,0.2)}.chatbot-messages{flex:1;overflow-y:auto;padding:16px;background:#f8f9fa;display:flex;flex-direction:column;gap:12px}.chatbot-input-area{padding:12px 16px;background:white;border-top:1px solid #eee}.chatbot-input-wrapper{display:flex;gap:8px}#chatbotInput{flex:1;border:1px solid #ddd;border-radius:24px;padding:12px 20px;font-size:14px;outline:none}#chatbotInput:focus{border-color:#1976D2}.chatbot-send-btn{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#1976D2 0%,#42A5F5 100%);color:white;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}.chatbot-footer{padding:8px 16px;background:#f5f5f5;text-align:center;color:#666;border-top:1px solid #eee}.typing-indicator{display:flex;gap:4px;padding:8px 0}.typing-indicator span{width:8px;height:8px;background:#1976D2;border-radius:50%;animation:bounce 1.4s infinite ease-in-out}.typing-indicator span:nth-child(1){animation-delay:-0.32s}.typing-indicator span:nth-child(2){animation-delay:-0.16s}@keyframes bounce{0%,80%,100%{transform:scale(0)}40%{transform:scale(1)}}@media(max-width:480px){.chatbot-container{width:calc(100vw - 40px);height:calc(100vh - 120px);bottom:80px}}body.dark-mode .chatbot-container{background:#2d2d2d}body.dark-mode .chatbot-messages{background:#1a1a1a}body.dark-mode .chatbot-message.bot{background:#3d3d3d;color:#eee}body.dark-mode .chatbot-input-area{background:#2d2d2d;border-top-color:#444}body.dark-mode #chatbotInput{background:#3d3d3d;border-color:#555;color:#eee}body.dark-mode .chatbot-footer{background:#2d2d2d;border-top-color:#444;color:#aaa}';
+                widgetStyles.textContent = '.chatbot-toggle{position:fixed;bottom:9rem;right:1.5rem;width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#1976D2 0%,#42A5F5 100%);color:white;border:none;cursor:pointer;box-shadow:0 4px 20px rgba(25,118,210,0.4);z-index:10000;font-size:22px;display:flex;align-items:center;justify-content:center;transition:all 0.3s ease}.chatbot-toggle:hover{transform:scale(1.1);box-shadow:0 6px 25px rgba(25,118,210,0.5)}.chatbot-container{position:fixed;bottom:150px;right:25px;width:370px;height:520px;background:white;border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,0.2);z-index:10001;display:flex;flex-direction:column;overflow:hidden}.chatbot-header{background:linear-gradient(135deg,#0D47A1 0%,#1976D2 100%);color:white;padding:16px;display:flex;justify-content:space-between;align-items:center}.chatbot-header-content{display:flex;align-items:center;gap:12px}.chatbot-avatar{font-size:28px}.chatbot-title-wrapper{display:flex;flex-direction:column}.chatbot-title{margin:0;font-size:16px;font-weight:600}.chatbot-status{font-size:12px;opacity:0.9}.chatbot-status.online::before{content:"";display:inline-block;width:8px;height:8px;background:#4CAF50;border-radius:50%;margin-right:6px}.chatbot-close{background:rgba(255,255,255,0.1);border:none;color:white;width:32px;height:32px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}.chatbot-close:hover{background:rgba(255,255,255,0.2)}.chatbot-messages{flex:1;overflow-y:auto;padding:16px;background:#f8f9fa;display:flex;flex-direction:column;gap:12px}.chatbot-input-area{padding:12px 16px;background:white;border-top:1px solid #eee}.chatbot-input-wrapper{display:flex;gap:8px}#chatbotInput{flex:1;border:1px solid #ddd;border-radius:24px;padding:12px 20px;font-size:14px;outline:none}#chatbotInput:focus{border-color:#1976D2}.chatbot-send-btn{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#1976D2 0%,#42A5F5 100%);color:white;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}.chatbot-footer{padding:8px 16px;background:#f5f5f5;text-align:center;color:#666;border-top:1px solid #eee}.typing-indicator{display:flex;gap:4px;padding:8px 0}.typing-indicator span{width:8px;height:8px;background:#1976D2;border-radius:50%;animation:bounce 1.4s infinite ease-in-out}.typing-indicator span:nth-child(1){animation-delay:-0.32s}.typing-indicator span:nth-child(2){animation-delay:-0.16s}@keyframes bounce{0%,80%,100%{transform:scale(0)}40%{transform:scale(1)}}@media(max-width:480px){.chatbot-container{width:calc(100vw - 40px);height:calc(100vh - 120px);bottom:80px}}body.dark-mode .chatbot-container{background:#2d2d2d}body.dark-mode .chatbot-messages{background:#1a1a1a}body.dark-mode .chatbot-message.bot{background:#3d3d3d;color:#eee}body.dark-mode .chatbot-input-area{background:#2d2d2d;border-top-color:#444}body.dark-mode #chatbotInput{background:#3d3d3d;border-color:#555;color:#eee}body.dark-mode .chatbot-footer{background:#2d2d2d;border-top-color:#444;color:#aaa}';
                 document.head.appendChild(widgetStyles);
             }
         }
