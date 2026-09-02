@@ -314,12 +314,68 @@ const DEFAULT_SECTIONS = {
             order: 2
         },
         {
-            key: 'recursos_academicos',
-            title: 'Recursos Académicos & Plan Inteligente',
-            subtitle: 'Materiales didácticos, guías de estudio y apoyo académico',
-            content: '<p class="text-muted">Accede a recursos de apoyo, guías y biblioteca digital.</p>',
-            icon: 'fa-book-open',
+            key: 'horarios',
+            title: 'Horarios',
+            subtitle: 'Consulta los horarios de clases del plantel',
+            content: '',
+            icon: 'fa-clock',
             order: 3
+        },
+        {
+            key: 'examenes_parciales',
+            title: 'Calendario de Exámenes Parciales',
+            subtitle: 'Fechas importantes del ciclo escolar vigente',
+            content: '<p class="text-muted">Consulta las fechas de los períodos de evaluación del ciclo escolar actual.</p>',
+            icon: 'fa-calendar-check',
+            order: 4
+        },
+        {
+            key: 'becas',
+            title: 'Becas Benito Juárez',
+            subtitle: 'Apoyo económico para estudiantes de educación media superior',
+            content: '<p class="text-muted">Todos nuestros estudiantes inscritos pueden acceder a la Beca Benito Juárez del Gobierno Federal.</p>',
+            icon: 'fa-award',
+            order: 5
+        },
+        {
+            key: 'info_padres',
+            title: 'Información para Padres',
+            subtitle: 'Recursos y herramientas para las familias',
+            content: '<p class="text-muted">Accede a información importante para el seguimiento académico de tus hijos.</p>',
+            icon: 'fa-users',
+            order: 6
+        },
+        {
+            key: 'citas_orientacion',
+            title: 'Citas con Orientación Vocacional',
+            subtitle: 'Agende una cita para recibir asesoría personalizada',
+            content: '',
+            icon: 'fa-calendar-alt',
+            order: 7
+        },
+        {
+            key: 'apoyo_escolar',
+            title: 'Recomendaciones de Apoyo Escolar',
+            subtitle: 'Estrategias para apoyar el aprendizaje en casa',
+            content: '',
+            icon: 'fa-hands-helping',
+            order: 8
+        },
+        {
+            key: 'directorio_tutores',
+            title: 'Directorio de Tutores',
+            subtitle: 'Contacte directamente al personal de apoyo académico',
+            content: '',
+            icon: 'fa-address-book',
+            order: 9
+        },
+        {
+            key: 'preguntas_frecuentes',
+            title: 'Preguntas Frecuentes',
+            subtitle: 'Resolvemos tus dudas más comunes',
+            content: '',
+            icon: 'fa-question-circle',
+            order: 10
         }
     ],
 
@@ -549,27 +605,11 @@ const DEFAULT_SECTIONS = {
     'padres': [
         {
             key: 'info_padres',
-            title: 'Información para Padres',
-            subtitle: 'Recursos y herramientas para las familias',
-            content: '<p class="text-muted">Accede a información importante para el seguimiento académico de tus hijos.</p>',
+            title: 'Portal de Padres de Familia',
+            subtitle: 'Redirigido al Portal Escolar Unificado (estudiantes.html#padres)',
+            content: '<p class="text-muted">El Portal de Padres ahora forma parte del Portal Escolar Unificado. Serás redirigido automáticamente.</p>',
             icon: 'fa-users',
             order: 1
-        },
-        {
-            key: 'primera_vez',
-            title: 'Primera Vez en la Plataforma',
-            subtitle: 'Guía de registro y primeros pasos',
-            content: '',
-            icon: 'fa-user-plus',
-            order: 2
-        },
-        {
-            key: 'preguntas_frecuentes',
-            title: 'Preguntas Frecuentes',
-            subtitle: 'Resolvemos tus dudas más comunes',
-            content: '',
-            icon: 'fa-question-circle',
-            order: 3
         }
     ],
     'convocatorias': [

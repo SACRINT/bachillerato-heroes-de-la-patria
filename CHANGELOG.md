@@ -1,5 +1,59 @@
 # CHANGELOG - SIPWEB-BG / EDUZONA EMS
 
+[v4.8.0] - 2026-09-02 (FASE 5 HUB 5: PORTAL ESCOLAR UNIFICADO)
+
+**Tipo:** Feature / Visual / Hub Architecture / Mobile-First  
+**Estado:** ✅ HUB 5 COMPLETADO
+
+### Resumen:
+Unificación de estudiantes.html y padres.html en una sola experiencia "Portal Escolar" con 2 pestañas maestras (Soy Estudiante / Soy Padre). Mobile-First con touch targets mínimos de 48px. padres.html redirige suavemente a estudiantes.html#padres preservando URLs existentes.
+
+### Cambios Realizados:
+
+1. **estudiantes.html - Portal Escolar Unificado:**
+   - Hero premium con gradiente azul (consistente con HUB 3).
+   - **2 Pestañas Maestras** (Nav-Pills grandes, mobile-friendly):
+     * "🎓 Soy Estudiante" — Acceso a SICEP V2, calendario parciales, horarios, becas Benito Juárez.
+     * "👨‍👩‍👧 Soy Padre de Familia" — Boletas oficiales, citas orientación, apoyo escolar, directorio tutores.
+   - Tab auto-activa vía `window.location.hash === '#padres'` (JavaScript inline, CSP compliant).
+   - **Bento Grid Acceso Rápido**: 8 tarjetas compactas (calificaciones, horario, tareas, documentos, gamificación, biblioteca, convocatorias, servicios).
+   - **Calendario de Exámenes**: 3 cards (1°, 2°, 3° parcial) con fechas SEP.
+   - **Becas Benito Juárez**: Sección destacada con info del programa federal.
+   - **Horarios**: Sección CMS con `data-section-key="horarios"`.
+   - **Padre Tab**: Comunicación escolar, citas orientación vocacional, recomendaciones apoyo escolar (4 cards), directorio de tutores (3 contactos), FAQ padres.
+   - Modal Horario conservado (scheduleTable interactivo).
+   - **Touch targets**: Todos los botones `min-height: 48px` con clase `touch-btn`.
+   - **Mobile-First**: Cards `col-6 col-md-4 col-lg-3`, responsive breakpoints optimizados.
+   - **CSP Compliant**: Cero scripts inline (auto-redirect hash en script externo).
+
+2. **padres.html - Página Redirect:**
+   - Banner informativo explicando la unificación.
+   - Lista de beneficios del Portal Unificado.
+   - Botón directo "Ir al Portal Escolar (Pestaña Padres)".
+   - **Auto-redirect** en 5 segundos a `estudiantes.html#padres`.
+   - Contador regresivo visible.
+   - Preserva URL existente (no rompe bookmarks ni enlaces externos).
+
+3. **Seed Update (seed-page-sections.js):**
+   - Estudiantes: 10 secciones (antes 3) — info_importante, acceso_rapido, horarios, examenes_parciales, becas, info_padres, citas_orientacion, apoyo_escolar, directorio_tutores, preguntas_frecuentes.
+   - Padres: Reducido a 1 sección redirect (antes 3).
+
+### Archivos Modificados:
+- `public/estudiantes.html` - Portal Escolar unificado (1439→~700 líneas, -51%)
+- `public/padres.html` - Redirect page (726→~130 líneas, -82%)
+- `backend/scripts/seed-page-sections.js` - 10 secciones estudiantes + 1 redirect padres
+
+### Arquitectura de 7 Hubs (Referencia):
+- Hub 1: Portada (index.html) - ✅ FASE 4.2
+- Hub 2: Identidad (conocenos.html) - ✅ FASE 4.2
+- Hub 3: Oferta Educativa (oferta-educativa.html) - ✅ FASE 5
+- Hub 4: Ventanilla Digital (servicios.html) - ✅ FASE 4.2 + 4.3
+- **Hub 5: Portal Escolar (estudiantes.html + padres.html) - ✅ FASE 5**
+- Hub 6: Vida Escolar (calendario.html) - Pendiente
+- Hub 7: Transparencia (contacto.html) - Pendiente
+
+---
+
 [v4.7.0] - 2026-09-02 (FASE 5 HUB 3: OFERTA EDUCATIVA REDESIGN)
 
 **Tipo:** Feature / Visual / Hub Architecture / UI-UX  
