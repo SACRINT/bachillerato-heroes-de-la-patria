@@ -13,7 +13,7 @@
  * CAMBIOS v2.1.0:
  * - conocenos: Secciones vacías (el director llena desde su dashboard)
  * - oferta-educativa: Incluye secciones SEP generales (sin Currículum Laboral)
- * - Se agregó plan_estudios y capacitacion_trabajo (excluida del seed)
+ * - Se agregó plan_estudios. capacitacion_trabajo EXCLUIDA del seed (cada plantel tiene diferentes especialidades)
  */
 
 const path = require('path');
@@ -192,20 +192,12 @@ const DEFAULT_SECTIONS = {
             order: 2
         },
         {
-            key: 'capacitacion_trabajo',
-            title: 'Capacitación para el Trabajo',
-            subtitle: 'Desarrolla habilidades técnicas específicas para el ámbito laboral',
-            content: '',  // Vacío - cada bachillerato configura sus talleres y especialidades
-            icon: 'fa-tools',
-            order: 3
-        },
-        {
             key: 'perfil_egreso',
             title: 'Perfil de Egreso',
             subtitle: 'Egresados con competencias para la vida universitaria y laboral',
             content: '<p class="text-muted">El egresado de nuestro bachillerato cuenta con las competencias necesarias para continuar sus estudios superiores o incorporarse al mercado laboral con una formación integral que incluye conocimientos, habilidades y valores.</p>',
             icon: 'fa-user-graduate',
-            order: 4
+            order: 3
         },
         {
             key: 'proceso_admision',
@@ -213,7 +205,7 @@ const DEFAULT_SECTIONS = {
             subtitle: 'Requisitos y fechas para incorporarse a nuestra comunidad',
             content: '<p class="text-muted">Consulta los requisitos, fechas y procedimientos para el proceso de admisión del ciclo escolar vigente.</p>',
             icon: 'fa-clipboard-check',
-            order: 5
+            order: 4
         }
     ],
 

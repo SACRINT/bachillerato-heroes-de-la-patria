@@ -78,7 +78,7 @@ function getDefaultConfig(hostname) {
     };
 }
 
-module.exports = function handler(req, res) {
+module.exports = async function handler(req, res) {
     try {
         // Solo GET permitido
         if (req.method !== 'GET') {
