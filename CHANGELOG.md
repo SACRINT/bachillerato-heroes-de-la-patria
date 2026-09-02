@@ -1,5 +1,185 @@
 # CHANGELOG - SIPWEB-BG / EDUZONA EMS
 
+[v4.5.0] - 2026-09-01 (FASE 2: MOTOR DE PLANTILLAS Y ADAPTACIÓN DE PÁGINAS PÚBLICAS)
+
+**Tipo:** Feature / CMS / Frontend / Multi-Tenant  
+**Estado:** ✅ FASE 2 COMPLETADA (10 Páginas Adaptadas, Seed Sincronizado, CMS Restaurado)
+
+### Resumen:
+Los directores de cada plantel ahora disponen de un Gestor de Páginas y Secciones completamente dinámico e integrado en el CMS. Se adaptaron 10 páginas clave (`conocenos.html`, `oferta-educativa.html`, `bolsa-trabajo.html`, `comunidad.html`, `estudiantes.html`, `egresados.html`, `contacto.html`, `servicios.html`, `gamification-center.html`, `ar-vr-lab.html`) con `data-section-key` y cargador asíncrono resiliente.
+
+### Archivos Modificados:
+
+1. **public/js/page-sections-loader.js** (v2.2.0):
+   - 5 plantillas especializadas (`timeline`, `valores-grid`, `infraestructura`, `staff-cards`, `generic-card`).
+   - Resiliencia selectora: detecta `[data-section-title]`, `.section-title`, `h2`, `h3`, `[data-section-subtitle]`, `.section-subtitle`, `p.lead`.
+   - Protección de layouts existentes mediante verificación profunda de elementos hijos.
+
+2. **backend/scripts/seed-page-sections.js** (v2.2.0):
+   - 27 páginas registradas en `PAGE_CONFIGS` (incluyendo `gamification-center` y `ar-vr-lab`).
+   - Sincronización completa de `DEFAULT_SECTIONS` con las 39 claves de sección correspondientes a las 10 páginas adaptadas.
+   - Respeto de reglas de negocio: `conocenos` y `bolsa-trabajo` como plantillas vírgenes, `oferta-educativa` con contenido general SEP excepto `capacitacion_trabajo`.
+
+3. **public/js/admin-tenant-cms.js** (v2.2.0):
+   - Restauración de métodos esenciales (`loadStats`, `loadSection`, `renderList`, `getTableHeaders`, `getTableRow`).
+   - Soporte para 7 secciones: Personal, Línea Tiempo, Galería, Testimonios, Instalaciones, Hero y Gestor de Páginas/Secciones.
+
+4. **public/admin-dashboard.html**:
+   - Agregado botón responsivo para la sección "Páginas y Secciones" dentro del panel CMS del director.
+
+5. **10 Páginas Públicas Adaptadas**:
+   - `conocenos.html`, `oferta-educativa.html`, `bolsa-trabajo.html`, `comunidad.html`, `estudiantes.html`, `egresados.html`, `contacto.html`, `servicios.html`, `gamification-center.html`, `ar-vr-lab.html` vinculadas con `data-section-key` y `js/page-sections-loader.js`.
+
+### Acciones Requeridas por el Usuario:
+
+1. **Neon Console:** Ejecutar SQL script:
+   ```sql
+   -- Copiar contenido de backend/scripts/create-page-sections-tables.sql
+   ```
+
+2. **Neon Console o Node.js:** Ejecutar seed:
+   ```bash
+   node backend/scripts/seed-page-sections.js 1
+   ```
+
+3. **Vercel:** Push para redeploy con nuevos endpoints
+
+---
+
+[v4.4.0] - 2026-09-01 (FASE 2: GESTOR DE PÁGINAS Y SECCIONES CONFIGURABLES)
+
+**Tipo:** Feature / CMS / Frontend / Multi-Tenant
+**Estado:** ✅ FASE 2 PASOS 1-4 COMPLETADOS
+
+### Resumen:
+Los directores de cada plantel ahora pueden activar/desactivar páginas y editar el contenido de cada sección directamente desde el dashboard admin. El sistema carga automáticamente el contenido desde la base de datos.
+
+### Archivos Modificados:
+
+1. **public/js/page-sections-loader.js** (v2.1.0, 514 líneas):
+   - 5 plantillas especializadas: `timeline`, `valores-grid`, `infraestructura`, `staff-cards`, `generic-card`
+   - Eliminada plantilla `mision-vision` (misión y visión son secciones separadas)
+   - Método `getSectionTemplate()` con soporte para `data-section-template`
+   - 5 plantillas de items especializados: `timelineItemTemplate`, `valoresItemTemplate`, `infraestructuraItemTemplate`, `staffItemTemplate`, `genericItemTemplate`
+   - **FIX CRÍTICO:** `renderSections()` verifica `hasExistingChildren` antes de reemplazar innerHTML
+   - Manejo de `IMG` y contenedores `div` para `data-item-image`
+
+2. **backend/scripts/seed-page-sections.js** (v2.1.0):
+   - `conocenos`: 8 secciones vacías (mision, vision, historia, valores, infraestructura, video_institucional, mensaje_director, organigrama)
+   - `oferta-educativa`: 6 secciones con contenido SEP (modelo_educativo, pilares, competencias, plan_estudios, perfil_egreso, proceso_admision)
+   - **EXCLUIDO:** "Capacitación para el Trabajo" del seed (cada escuela tiene diferentes especialidades)
+   - `comunidad`, `estudiantes`, `contacto`, `egresados`: Secciones base con contenido placeholder
+
+3. **public/js/admin-tenant-cms.js** (v2.1.0):
+   - Sección `pages` agregada al gestor de contenido
+   - `pageSectionsApiBase` para conexión con API de page-sections
+   - Métodos nuevos: `loadPages()`, `renderPagesList()`, `togglePage()`, `editPageSections()`, `renderPageSectionsEditor()`, `editSectionContent()`, `renderSectionEditor()`, `saveSectionContent()`, `cancelPageEdit()`
+   - Event delegation para acciones: togglePage, editPageSections, editSectionContent, saveSectionContent, cancelPageEdit
+
+4. **public/conocenos.html**:
+   - Reemplazado contenido hardcodeado con placeholder ("Contenido en proceso de actualización por la dirección del plantel")
+   - Split `mision-vision` en secciones separadas: `data-section-key="mision"` y `data-section-key="vision"`
+   - Agregados: `data-section-key="historia"`, `data-section-key="valores"`, `data-section-key="infraestructura"`, `data-section-key="video_institucional"`, `data-section-key="mensaje_director"`, `data-section-key="organigrama"`
+   - Agregados atributos: `data-section-title`, `data-section-subtitle`, `data-section-content`, `data-section-items`, `data-section-icon`, `data-section-image`
+   - Navegación hero actualizada: links separados Misión/Visión + link Organigrama
+   - Script `page-sections-loader.js` agregado antes de `tenant-config-loader`
+
+5. **public/oferta-educativa.html**:
+   - Agregados `data-section-key` a: `modelo_educativo`, `plan_estudios`, `capacitacion_trabajo`, `perfil_egreso`, `proceso_admision`
+   - Agregados `data-section-title` y `data-section-subtitle` a encabezados de sección
+   - Script `page-sections-loader.js` agregado antes de `</body>`
+
+### Acciones Requeridas por el Usuario:
+
+1. **Neon Console:** Ejecutar SQL script:
+   ```sql
+   -- Copiar contenido de backend/scripts/create-page-sections-tables.sql
+   ```
+
+2. **Neon Console o Node.js:** Ejecutar seed:
+   ```bash
+   node backend/scripts/seed-page-sections.js 1
+   ```
+
+3. **Vercel:** Push para redeploy con nuevos endpoints
+
+---
+
+[v4.3.0] - 2026-09-01 (SISTEMA DE PLANTILLAS CONFIGURABLES PARA DIRECTORES)
+
+**Tipo:** Architecture / Multi-Tenant / CMS / Frontend
+**Estado:** ✅ FASE DE INFRAESTRUCTURA COMPLETADA
+
+### Nuevas Tablas en BD:
+
+1. **tenant_page_configs** - Control de páginas activas por tenant
+   - page_slug, page_title, is_active, sort_order, config_json
+   - UNIQUE constraint en (tenant_id, page_slug)
+
+2. **tenant_page_sections** - Secciones dentro de cada página
+   - section_key, section_title, section_subtitle, section_content
+   - section_image_url, section_icon, is_active, sort_order, config_json
+   - UNIQUE constraint en (tenant_id, page_slug, section_key)
+
+3. **tenant_section_items** - Items dinámicos para secciones con listas
+   - item_key, item_title, item_content, item_image_url, item_icon
+   - item_link, is_active, sort_order, config_json
+
+### Scripts Creados:
+
+1. **backend/scripts/create-page-sections-tables.sql** - Schema completo con:
+   - 3 tablas nuevas con índices optimizados
+   - Triggers para auto-actualizar updated_at
+   - Función get_page_full_config() para obtener configuración completa
+
+2. **backend/scripts/seed-page-sections.js** - Script de población con:
+   - 26 páginas configuradas (activas por defecto)
+   - Secciones pre-pobladas para: oferta-educativa, comunidad, estudiantes, contacto, egresados
+   - Datos generales SEP editables por el director
+
+### Backend API:
+
+1. **backend/routes/page-sections.js** - 12 endpoints:
+   - GET /api/page-sections/config - Todas las páginas del tenant
+   - GET /api/page-sections/config/:page - Config completa de una página
+   - PUT /api/page-sections/config/:page - Activar/desactivar página
+   - GET /api/page-sections/sections/:page - Secciones de una página
+   - POST /api/page-sections/sections - Crear sección
+   - PUT /api/page-sections/sections/:id - Actualizar sección
+   - DELETE /api/page-sections/sections/:id - Eliminar sección
+   - GET/POST/PUT/DELETE /api/page-sections/items - CRUD de items
+   - GET /api/page-sections/public/:page - Endpoint público (sin auth)
+
+### Frontend:
+
+1. **public/js/page-sections-loader.js** - Loader dinámico que:
+   - Detecta la página actual por URL
+   - Hace fetch a /api/page-sections/public/{page}
+   - Renderiza secciones en contenedores data-section-key
+   - Soporta items anidados
+
+### Acciones Requeridas por el Usuario:
+
+1. **Neon Console:** Ejecutar SQL script:
+   ```sql
+   -- Copiar contenido de backend/scripts/create-page-sections-tables.sql
+   ```
+
+2. **Neon Console o Node.js:** Ejecutar seed:
+   ```bash
+   node backend/scripts/seed-page-sections.js 1
+   ```
+
+3. **Vercel:** Push para redeploy con nuevos endpoints
+
+### Próximos Pasos (FASE 2):
+- Actualizar HTML de conocenos.html para usar page-sections-loader
+- Actualizar HTML de oferta-educativa.html
+- Crear dashboard del director para gestionar páginas
+- Actualizar las 26 páginas restantes
+
+---
+
 [v4.2.0] - 2026-09-01 (REBRAND COMPLETO - DOMINIO + BASE DE DATOS)
 
 **Tipo:** Infrastructure / Rebrand / Domain Migration

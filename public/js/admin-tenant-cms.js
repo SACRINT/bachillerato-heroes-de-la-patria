@@ -1,20 +1,25 @@
 /**
- * ADMIN TENANT CMS - Gestión de Contenido del Director
+ * ADMIN TENANT CMS v2.1.0 - Gestión de Contenido del Director
  * CRUD completo para las 6 secciones: Personal, Timeline, Galería,
  * Testimonios, Instalaciones, Imágenes del Hero
+ * 
+ * NUEVO v2.1.0: Gestor de Páginas y Secciones
  */
 
 class AdminTenantCMS {
     constructor() {
         this.apiBase = '/api/tenant-cms';
+        this.pageSectionsApiBase = '/api/page-sections';
         this.currentSection = 'staff';
+        this.currentPageSlug = null;
         this.sections = {
             staff: { name: 'Personal', icon: 'fa-users', endpoint: 'staff', color: 'primary' },
             timeline: { name: 'Línea del Tiempo', icon: 'fa-clock', endpoint: 'timeline', color: 'success' },
             gallery: { name: 'Galería', icon: 'fa-images', endpoint: 'gallery', color: 'info' },
             testimonials: { name: 'Testimonios', icon: 'fa-quote-right', endpoint: 'testimonials', color: 'warning' },
             installations: { name: 'Instalaciones', icon: 'fa-building', endpoint: 'installations', color: 'danger' },
-            hero: { name: 'Imágenes Hero', icon: 'fa-image', endpoint: 'hero', color: 'secondary' }
+            hero: { name: 'Imágenes Hero', icon: 'fa-image', endpoint: 'hero', color: 'secondary' },
+            pages: { name: 'Páginas y Secciones', icon: 'fa-file-alt', endpoint: 'pages', color: 'dark' }
         };
         this.pagination = {};
         Object.keys(this.sections).forEach(s => {
@@ -49,6 +54,12 @@ class AdminTenantCMS {
                 case 'saveNew': this.saveNew(section); break;
                 case 'saveEdit': this.saveEdit(section, id); break;
                 case 'cancelForm': this.cancelForm(); break;
+                // Acciones para páginas
+                case 'togglePage': this.togglePage(id); break;
+                case 'editPageSections': this.editPageSections(id); break;
+                case 'editSectionContent': this.editSectionContent(id); break;
+                case 'saveSectionContent': this.saveSectionContent(); break;
+                case 'cancelPageEdit': this.cancelPageEdit(); break;
             }
         });
 
@@ -98,6 +109,34 @@ class AdminTenantCMS {
         }
     }
 
+    async fetchPageSectionsAPI(endpoint, method = 'GET', data = null) {
+        try {
+            const options = {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${this.getToken()}`
+                }
+            };
+            if (data) options.body = JSON.stringify(data);
+
+            const response = await fetch(`${this.pageSectionsApiBase}/${endpoint}`, options);
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || `Error ${response.status}`);
+            }
+            return result;
+        } catch (error) {
+            console.error(`[AdminTenantCMS] Error PageSections API ${endpoint}:`, error);
+            throw error;
+        }
+    }
+
+    // ============================================
+    // SECCIONES CMS GENERALES (Staff, Timeline, etc.)
+    // ============================================
+
     async loadStats() {
         try {
             const result = await this.fetchAPI('stats');
@@ -120,12 +159,23 @@ class AdminTenantCMS {
 
     async loadSection(section) {
         this.currentSection = section;
-        const sectionInfo = this.sections[section];
 
         document.querySelectorAll('.tenant-cms-section-btn').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.cmsSection === section);
         });
 
+        // Ocultar o mostrar botón "Nuevo Elemento" según la sección
+        const newBtn = document.querySelector('[data-cms-action="create"]');
+        if (newBtn) {
+            newBtn.style.display = section === 'pages' ? 'none' : 'inline-block';
+            newBtn.dataset.cmsSection = section;
+        }
+
+        if (section === 'pages') {
+            return this.loadPages();
+        }
+
+        const sectionInfo = this.sections[section];
         const container = document.getElementById('tenantCmsList');
         if (!container) return;
 
@@ -259,6 +309,316 @@ class AdminTenantCMS {
             default:
                 return '';
         }
+    }
+
+    // ============================================
+    // GESTIÓN DE PÁGINAS Y SECCIONES
+    // ============================================
+
+    async loadPages() {
+        this.currentSection = 'pages';
+        const container = document.getElementById('tenantCmsList');
+        if (!container) return;
+
+        container.innerHTML = `
+            <div class="text-center py-4">
+                <div class="spinner-border text-dark" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+                <p class="mt-2 text-muted">Cargando páginas...</p>
+            </div>`;
+
+        try {
+            const result = await this.fetchPageSectionsAPI('config');
+            if (result.success && result.data) {
+                this.renderPagesList(result.data);
+            } else {
+                container.innerHTML = `<div class="alert alert-warning">No se pudieron cargar las páginas.</div>`;
+            }
+        } catch (error) {
+            container.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+        }
+    }
+
+    renderPagesList(pages) {
+        const container = document.getElementById('tenantCmsList');
+        if (!container) return;
+
+        let html = `
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Página</th>
+                        <th>Slug</th>
+                        <th class="text-center">Estado</th>
+                        <th class="text-center">Secciones</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+
+        for (const page of pages) {
+            const statusBadge = page.is_active
+                ? '<span class="badge bg-success">Activa</span>'
+                : '<span class="badge bg-secondary">Inactiva</span>';
+
+            html += `
+                <tr>
+                    <td><strong>${this.esc(page.page_title || page.page_slug)}</strong></td>
+                    <td><code>${page.page_slug}</code></td>
+                    <td class="text-center">${statusBadge}</td>
+                    <td class="text-center">${page.section_count || 0}</td>
+                    <td class="text-center">
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-${page.is_active ? 'warning' : 'success'}" 
+                                data-cms-action="togglePage" data-cms-id="${page.page_slug}" 
+                                title="${page.is_active ? 'Desactivar' : 'Activar'}">
+                                <i class="fas fa-${page.is_active ? 'toggle-on' : 'toggle-off'}"></i>
+                            </button>
+                            <button class="btn btn-outline-primary" data-cms-action="editPageSections" 
+                                data-cms-id="${page.page_slug}" title="Editar secciones">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>`;
+        }
+
+        html += '</tbody></table>';
+        container.innerHTML = html;
+    }
+
+    async togglePage(pageSlug) {
+        try {
+            const configResult = await this.fetchPageSectionsAPI(`config/${pageSlug}`);
+            if (!configResult.success || !configResult.data) {
+                throw new Error('No se pudo obtener la configuración de la página');
+            }
+
+            const currentPage = configResult.data;
+            const newActiveState = !currentPage.is_active;
+
+            const result = await this.fetchPageSectionsAPI(`config/${pageSlug}`, 'PUT', {
+                is_active: newActiveState
+            });
+
+            if (result.success) {
+                this.showToast(`Página ${pageSlug} ${newActiveState ? 'activada' : 'desactivada'}`);
+                this.loadPages();
+            }
+        } catch (error) {
+            alert('Error al cambiar estado: ' + error.message);
+        }
+    }
+
+    async editPageSections(pageSlug) {
+        this.currentPageSlug = pageSlug;
+        const container = document.getElementById('tenantCmsList');
+        if (!container) return;
+
+        container.innerHTML = `
+            <div class="text-center py-4">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+                <p class="mt-2 text-muted">Cargando secciones de ${pageSlug}...</p>
+            </div>`;
+
+        try {
+            const result = await this.fetchPageSectionsAPI(`config/${pageSlug}`);
+            if (result.success && result.data) {
+                this.renderPageSectionsEditor(result.data);
+            }
+        } catch (error) {
+            container.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+        }
+    }
+
+    renderPageSectionsEditor(pageData) {
+        const container = document.getElementById('tenantCmsList');
+        if (!container) return;
+
+        let html = `
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h6 class="mb-0">
+                    <i class="fas fa-edit me-2"></i>Secciones de: <strong>${this.esc(pageData.page_title || pageData.page_slug)}</strong>
+                </h6>
+                <button class="btn btn-outline-secondary btn-sm" data-cms-action="selectSection" data-cms-section="pages">
+                    <i class="fas fa-arrow-left me-1"></i>Volver a páginas
+                </button>
+            </div>`;
+
+        if (!pageData.sections || pageData.sections.length === 0) {
+            html += `
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Esta página no tiene secciones configuradas. Ejecuta el script de seed para crear las secciones por defecto.
+                </div>`;
+        } else {
+            for (const section of pageData.sections) {
+                const sectionStatus = section.is_active
+                    ? '<span class="badge bg-success">Activa</span>'
+                    : '<span class="badge bg-secondary">Inactiva</span>';
+
+                html += `
+                <div class="card mb-3">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas ${section.section_icon || 'fa-cog'} me-2"></i>
+                            <strong>${this.esc(section.section_title || section.section_key)}</strong>
+                            ${sectionStatus}
+                        </div>
+                        <button class="btn btn-outline-primary btn-sm" 
+                            data-cms-action="editSectionContent" data-cms-id="${section.id}">
+                            <i class="fas fa-edit me-1"></i>Editar
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <small class="text-muted">Clave:</small><br>
+                                <code>${section.section_key}</code>
+                            </div>
+                            <div class="col-md-4">
+                                <small class="text-muted">Contenido:</small><br>
+                                <span class="text-truncate d-inline-block" style="max-width: 200px;">
+                                    ${section.section_content ? this.esc(section.section_content.substring(0, 80)) + '...' : '<em>Sin contenido</em>'}
+                                </span>
+                            </div>
+                            <div class="col-md-4">
+                                <small class="text-muted">Items:</small><br>
+                                <span>${section.items ? section.items.length : 0} elementos</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            }
+        }
+
+        container.innerHTML = html;
+    }
+
+    async editSectionContent(sectionId) {
+        const container = document.getElementById('tenantCmsList');
+        if (!container) return;
+
+        container.innerHTML = `
+            <div class="text-center py-4">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+                <p class="mt-2 text-muted">Cargando sección...</p>
+            </div>`;
+
+        try {
+            const result = await this.fetchPageSectionsAPI(`sections/${sectionId}`);
+            if (result.success && result.data) {
+                this.renderSectionEditor(result.data);
+            }
+        } catch (error) {
+            container.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+        }
+    }
+
+    renderSectionEditor(section) {
+        const container = document.getElementById('tenantCmsList');
+        if (!container) return;
+
+        let html = `
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h6 class="mb-0">
+                    <i class="fas fa-edit me-2"></i>Editar Sección: <strong>${this.esc(section.section_title || section.section_key)}</strong>
+                </h6>
+                <button class="btn btn-outline-secondary btn-sm" data-cms-action="editPageSections" 
+                    data-cms-id="${this.currentPageSlug}">
+                    <i class="fas fa-arrow-left me-1"></i>Volver
+                </button>
+            </div>
+            <form id="sectionEditForm">
+                <div class="card">
+                    <div class="card-body">
+                        <input type="hidden" name="section_id" value="${section.id}">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Título de la sección</label>
+                                <input type="text" class="form-control" name="section_title" 
+                                    value="${this.esc(section.section_title || '')}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Subtítulo</label>
+                                <input type="text" class="form-control" name="section_subtitle" 
+                                    value="${this.esc(section.section_subtitle || '')}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Icono (FontAwesome class)</label>
+                                <input type="text" class="form-control" name="section_icon" 
+                                    value="${this.esc(section.section_icon || '')}" placeholder="fa-bullseye">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Estado</label>
+                                <select class="form-select" name="is_active">
+                                    <option value="true" ${section.is_active !== false ? 'selected' : ''}>Activo</option>
+                                    <option value="false" ${section.is_active === false ? 'selected' : ''}>Inactivo</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Contenido HTML</label>
+                                <textarea class="form-control" name="section_content" rows="8">${this.esc(section.section_content || '')}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-primary" data-cms-action="saveSectionContent">
+                            <i class="fas fa-save me-1"></i>Guardar Cambios
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary ms-2" data-cms-action="editPageSections" 
+                            data-cms-id="${this.currentPageSlug}">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            </form>`;
+
+        container.innerHTML = html;
+
+        // Bind form submit
+        const form = document.getElementById('sectionEditForm');
+        if (form) {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.saveSectionContent();
+            });
+        }
+    }
+
+    async saveSectionContent() {
+        const form = document.getElementById('sectionEditForm');
+        if (!form) return;
+
+        const formData = new FormData(form);
+        const sectionId = formData.get('section_id');
+        const data = {
+            section_title: formData.get('section_title'),
+            section_subtitle: formData.get('section_subtitle'),
+            section_icon: formData.get('section_icon'),
+            section_content: formData.get('section_content'),
+            is_active: formData.get('is_active') === 'true'
+        };
+
+        try {
+            const result = await this.fetchPageSectionsAPI(`sections/${sectionId}`, 'PUT', data);
+            if (result.success) {
+                this.showToast('Sección actualizada exitosamente');
+                this.editPageSections(this.currentPageSlug);
+            }
+        } catch (error) {
+            alert('Error al guardar: ' + error.message);
+        }
+    }
+
+    cancelPageEdit() {
+        this.currentPageSlug = null;
+        this.loadPages();
     }
 
     esc(str) {

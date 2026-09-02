@@ -165,6 +165,8 @@ try { mountRouteSafe('/api/tenants', require('../backend/routes/tenants.js')); }
 try { mountRouteSafe('/api/admin/tenants', require('../backend/routes/tenants.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/admin/tenants:', e.stack || e); }
 try { mountRouteSafe('/api/tenant-cms', require('../backend/routes/tenant-cms.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/tenant-cms:', e.stack || e); }
 
+try { mountRouteSafe('/api/page-sections', require('../backend/routes/page-sections.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/page-sections:', e.stack || e); }
+
 // 2. Portales y Usuarios
 try { mountRouteSafe('/api/students', require('../backend/routes/students.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/students:', e.stack || e); }
 try { mountRouteSafe('/api/teachers', require('../backend/routes/teachers.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/teachers:', e.stack || e); }

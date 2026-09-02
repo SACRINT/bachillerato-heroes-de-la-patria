@@ -104,27 +104,31 @@
                     </p>
                     <!-- Hero Navigation Badges -->
                     <div class="hero-badges d-flex flex-wrap gap-2 justify-content-start mb-4">
-                        <a href="#mision-vision" class="badge bg-light text-primary fs-6 text-decoration-none">
+                        <a href="#mision" class="badge bg-light text-primary fs-6 text-decoration-none">
                             <i class="fas fa-bullseye me-1" aria-hidden="true"></i>
-                            Misión y Visión
+                            Misión
                         </a>
-                        <a href="#historia" class="badge bg-light text-success fs-6 text-decoration-none">
+                        <a href="#vision" class="badge bg-light text-success fs-6 text-decoration-none">
+                            <i class="fas fa-eye me-1" aria-hidden="true"></i>
+                            Visión
+                        </a>
+                        <a href="#historia" class="badge bg-light text-info fs-6 text-decoration-none">
                             <i class="fas fa-history me-1" aria-hidden="true"></i>
                             Nuestra Historia
                         </a>
-                        <a href="#infraestructura" class="badge bg-light text-info fs-6 text-decoration-none">
+                        <a href="#infraestructura" class="badge bg-light text-warning fs-6 text-decoration-none">
                             <i class="fas fa-building me-1" aria-hidden="true"></i>
                             Infraestructura
                         </a>
-                        <a href="#video-institucional" class="badge bg-light text-warning fs-6 text-decoration-none">
+                        <a href="#video-institucional" class="badge bg-light text-secondary fs-6 text-decoration-none">
                             <i class="fas fa-video me-1" aria-hidden="true"></i>
                             Video Institucional
                         </a>
-                        <a href="#mensaje-director" class="badge bg-light text-secondary fs-6 text-decoration-none">
+                        <a href="#mensaje-director" class="badge bg-light text-dark fs-6 text-decoration-none">
                             <i class="fas fa-user-tie me-1" aria-hidden="true"></i>
                             Mensaje del Director
                         </a>
-                        <a href="#organigrama" class="badge bg-light text-dark fs-6 text-decoration-none">
+                        <a href="#organigrama" class="badge bg-light text-primary fs-6 text-decoration-none">
                             <i class="fas fa-sitemap me-1" aria-hidden="true"></i>
                             Organigrama
                         </a>
@@ -142,52 +146,48 @@
 
     <!-- Main Content -->
     <main id="main-content">
-        <!-- Misión y Visión -->
-        <section id="mision-vision" class="py-5">
+        <!-- Misión -->
+        <section id="mision" class="py-5" data-section-key="mision">
             <div class="container">
                 <div class="row g-4 align-items-center">
-                    <div class="col-lg-6">
+                    <div class="col-lg-6 mx-auto">
                         <div class="card h-100 border-0 shadow-sm">
                             <div class="card-body p-4">
                                 <div class="text-center mb-4">
                                     <div
                                         class="feature-icon bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 feature-icon-lg">
-                                        <i class="fas fa-bullseye fa-2x"></i>
+                                        <i data-section-icon class="fas fa-bullseye fa-2x"></i>
                                     </div>
-                                    <h3 class="card-title text-primary fw-bold">Nuestra Misión</h3>
+                                    <h3 data-section-title class="card-title text-primary fw-bold">Nuestra Misión</h3>
                                 </div>
-                                <p class="card-text lead text-muted text-center">
-                                    Somos una institución de educación media superior comprometida con la formación
-                                    integral
-                                    de jóvenes competentes, críticos y emprendedores, mediante un modelo educativo
-                                    basado en
-                                    competencias que les proporcione los conocimientos, habilidades, actitudes y valores
-                                    necesarios para su desarrollo personal y profesional, contribuyendo así al progreso
-                                    de su comunidad, estado y país, con un enfoque de responsabilidad social y
-                                    sustentabilidad.
+                                <p data-section-content class="card-text lead text-muted text-center">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    <em>Contenido en proceso de actualización por la dirección del plantel.</em>
                                 </p>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                </div>
+            </div>
+        </section>
+
+        <!-- Visión -->
+        <section id="vision" class="py-5 bg-light" data-section-key="vision">
+            <div class="container">
+                <div class="row g-4 align-items-center">
+                    <div class="col-lg-6 mx-auto">
                         <div class="card h-100 border-0 shadow-sm">
                             <div class="card-body p-4">
                                 <div class="text-center mb-4">
                                     <div
                                         class="feature-icon bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 feature-icon-lg">
-                                        <i class="fas fa-eye fa-2x"></i>
+                                        <i data-section-icon class="fas fa-eye fa-2x"></i>
                                     </div>
-                                    <h3 class="card-title text-success fw-bold">Nuestra Visión</h3>
+                                    <h3 data-section-title class="card-title text-success fw-bold">Nuestra Visión</h3>
                                 </div>
-                                <p class="card-text lead text-muted text-center">
-                                    Ser una institución líder en educación media superior reconocida a nivel estatal
-                                    y nacional por la excelencia académica, la innovación educativa y la formación
-                                    integral
-                                    de ciudadanos competentes que contribuyan al desarrollo económico, social,
-                                    científico,
-                                    tecnológico y cultural de México, siendo un referente de calidad educativa que
-                                    inspire
-                                    a otras instituciones del sistema educativo nacional.
+                                <p data-section-content class="card-text lead text-muted text-center">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    <em>Contenido en proceso de actualización por la dirección del plantel.</em>
                                 </p>
                             </div>
                         </div>
@@ -197,479 +197,57 @@
         </section>
 
         <!-- Historia -->
-        <section id="historia" class="py-5 bg-light">
+        <section id="historia" class="py-5" data-section-key="historia">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 mx-auto">
                         <div class="text-center mb-5">
-                            <h2 class="fw-bold text-primary mb-3">Nuestra Historia</h2>
-                            <p class="lead text-muted">Más de tres décadas formando generaciones de estudiantes
-                                exitosos
+                            <h2 data-section-title class="fw-bold text-primary mb-3">Nuestra Historia</h2>
+                            <p data-section-subtitle class="lead text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                <em>Contenido en proceso de actualización por la dirección del plantel.</em>
                             </p>
                         </div>
                     </div>
                 </div>
-
-                <div class="row g-4 align-items-center">
-                    <div class="col-lg-6">
-                        <div class="history-image">
-                            <picture>
-                                <source srcset="images/historia/fundacion.webp" type="image/webp">
-                                <img src="images/historia/fundacion.jpg"
-                                    alt="Fundación del Bachillerato <span data-tenant-field="school_short_name">nuestro plantel</span>"
-                                    class="img-fluid rounded shadow" loading="lazy" width="600" height="400">
-                            </picture>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="history-timeline">
-                            <!-- 1996 - Fundación -->
-                            <div class="timeline-item mb-4">
-                                <div class="d-flex">
-                                    <div class="timeline-year bg-primary text-white rounded px-3 py-2 me-3">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 1998 - Primeros Egresados -->
-                            <div class="timeline-item mb-4">
-                                <div class="d-flex">
-                                    <div class="timeline-year bg-success text-white rounded px-3 py-2 me-3">
-                                        <strong>2000</strong>
-                                    </div>
-                                    <div>
-                                        <h5 class="fw-bold text-dark">Primera Generación de Egresados</h5>
-                                        <p class="text-muted mb-2">
-                                            Se gradúa la primera generación del bachillerato, marcando el inicio
-                                            de nuestro legado educativo en la región. Establecimiento de vínculos
-                                            con universidades locales para la continuidad académica.
-                                        </p>
-                                        <small class="text-success fw-semibold">
-                                            <i class="fas fa-graduation-cap me-1"></i>85% de egresados continuaron
-                                            estudios superiores
-                                        </small>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 2002 - Ampliación -->
-                            <div class="timeline-item mb-4">
-                                <div class="d-flex">
-                                    <div class="timeline-year bg-info text-white rounded px-3 py-2 me-3">
-                                        <strong>2002</strong>
-                                    </div>
-                                    <div>
-                                        <h5 class="fw-bold text-dark">Ampliación de Instalaciones</h5>
-                                        <p class="text-muted mb-2">
-                                            Construcción del edificio de laboratorios y talleres especializados.
-                                            Implementación de las primeras especialidades de capacitación para el
-                                            trabajo:
-                                            Informática y Preparación de Alimentos Artesanales.
-                                        </p>
-                                        <small class="text-info fw-semibold">
-                                            <i class="fas fa-building me-1"></i>Duplicación de la capacidad estudiantil
-                                        </small>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 2006 - Reconocimientos -->
-                            <div class="timeline-item mb-4">
-                                <div class="d-flex">
-                                    <div class="timeline-year bg-warning text-white rounded px-3 py-2 me-3">
-                                        <strong>2006</strong>
-                                    </div>
-                                    <div>
-                                        <h5 class="fw-bold text-dark">Reconocimiento de Calidad Educativa</h5>
-                                        <p class="text-muted mb-2">
-                                            Obtención del primer reconocimiento estatal por excelencia académica.
-                                            Integración al Sistema Nacional de Bachillerato (SNB) cumpliendo con
-                                            los estándares de calidad establecidos por la SEP.
-                                        </p>
-                                        <small class="text-warning fw-semibold">
-                                            <i class="fas fa-medal me-1"></i>Certificación SNB nivel inicial
-                                        </small>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 2010 - Diversificación -->
-                            <div class="timeline-item mb-4">
-                                <div class="d-flex">
-                                    <div class="timeline-year bg-danger text-white rounded px-3 py-2 me-3">
-                                        <strong>2010</strong>
-                                    </div>
-                                    <div>
-                                        <h5 class="fw-bold text-dark">Diversificación Académica</h5>
-                                        <p class="text-muted mb-2">
-                                            Incorporación de nuevas especialidades: Comunicación Gráfica, Alimentos e
-                                            Instalaciones Residenciales y fortalecimiento de los programas de
-                                            capacitación. Implementación
-                                            del enfoque por competencias según la Reforma Integral de la EMS.
-                                        </p>
-                                        <small class="text-danger fw-semibold">
-                                            <i class="fas fa-palette me-1"></i>3 especialidades técnicas disponibles
-                                        </small>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 2015 - Modernización Tecnológica -->
-                            <div class="timeline-item mb-4">
-                                <div class="d-flex">
-                                    <div class="timeline-year bg-dark text-white rounded px-3 py-2 me-3">
-                                        <strong>2015</strong>
-                                    </div>
-                                    <div>
-                                        <h5 class="fw-bold text-dark">Era Digital</h5>
-                                        <p class="text-muted mb-2">
-                                            Modernización completa de laboratorios de cómputo e implementación
-                                            de tecnologías educativas. Introducción de aulas inteligentes y
-                                            plataformas digitales para el aprendizaje.
-                                        </p>
-                                        <small class="text-dark fw-semibold">
-                                            <i class="fas fa-laptop me-1"></i>100% de aulas equipadas tecnológicamente
-                                        </small>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 2018 - Infraestructura -->
-                            <div class="timeline-item mb-4">
-                                <div class="d-flex">
-                                    <div class="timeline-year bg-secondary text-white rounded px-3 py-2 me-3">
-                                        <strong>2018</strong>
-                                    </div>
-                                    <div>
-                                        <h5 class="fw-bold text-dark">Renovación Integral</h5>
-                                        <p class="text-muted mb-2">
-                                            Remodelación completa de instalaciones: biblioteca digital,
-                                            cafetería ampliada, áreas recreativas mejoradas e implementación
-                                            de medidas de seguridad y accesibilidad universal.
-                                        </p>
-                                        <small class="text-secondary fw-semibold">
-                                            <i class="fas fa-tools me-1"></i>Infraestructura del siglo XXI
-                                        </small>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 2020 - Pandemia -->
-                            <div class="timeline-item mb-4">
-                                <div class="d-flex">
-                                    <div class="timeline-year bg-purple text-white rounded px-3 py-2 me-3">
-                                        <strong>2020</strong>
-                                    </div>
-                                    <div>
-                                        <h5 class="fw-bold text-dark">Adaptación y Resiliencia</h5>
-                                        <p class="text-muted mb-2">
-                                            Transición exitosa a la educación a distancia durante la pandemia
-                                            COVID-19.
-                                            Implementación de plataformas virtuales y estrategias innovadoras para
-                                            mantener la calidad educativa en modalidad remota.
-                                        </p>
-                                        <small class="fw-semibold text-purple">
-                                            <i class="fas fa-wifi me-1"></i>100% de estudiantes con acceso virtual
-                                        </small>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 2022 - Retorno Presencial -->
-                            <div class="timeline-item mb-4">
-                                <div class="d-flex">
-                                    <div class="timeline-year bg-teal text-white rounded px-3 py-2 me-3">
-                                        <strong>2022</strong>
-                                    </div>
-                                    <div>
-                                        <h5 class="fw-bold text-dark">Modelo Híbrido</h5>
-                                        <p class="text-muted mb-2">
-                                            Regreso a clases presenciales con modelo educativo híbrido que combina
-                                            lo mejor de la educación tradicional y digital. Fortalecimiento de
-                                            protocolos de salud y bienestar estudiantil.
-                                        </p>
-                                        <small class="fw-semibold text-teal">
-                                            <i class="fas fa-shield-alt me-1"></i>Educación segura e innovadora
-                                        </small>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 2024 - Actualidad -->
-                            <div class="timeline-item">
-                                <div class="d-flex">
-                                    <div class="timeline-year bg-gradient-primary text-white rounded px-3 py-2 me-3">
-                                        <strong>2024</strong>
-                                    </div>
-                                    <div>
-                                        <h5 class="fw-bold text-dark">Excelencia Consolidada</h5>
-                                        <p class="text-muted mb-2">
-                                            Con más de 28 años de trayectoria, somos una institución líder en
-                                            educación media superior. Continuamos adaptándonos a las demandas
-                                            del siglo XXI, formando ciudadanos íntegros y competentes bajo la
-                                            dirección del Ing. Samuel Cruz Interial.
-                                        </p>
-                                        <small class="text-primary fw-semibold">
-                                            <i class="fas fa-trophy me-1"></i>28 años de excelencia educativa
-                                        </small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div data-section-content class="text-center py-4">
+                    <i class="fas fa-history fa-3x text-muted mb-3 opacity-50"></i>
+                    <p class="text-muted">La historia de este plantel se configure desde el dashboard del director.</p>
                 </div>
             </div>
         </section>
 
         <!-- Valores -->
-        <section id="valores" class="py-5">
+        <section id="valores" class="py-5 bg-light" data-section-key="valores">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 mx-auto text-center mb-5">
-                        <h2 class="fw-bold text-primary mb-3">Nuestros Valores</h2>
-                        <p class="lead text-muted">Los principios que guían nuestro quehacer educativo diario</p>
+                        <h2 data-section-title class="fw-bold text-primary mb-3">Nuestros Valores</h2>
+                        <p data-section-subtitle class="lead text-muted">Los principios que guían nuestro quehacer educativo diario</p>
                     </div>
                 </div>
-
-                <div class="row g-4">
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card h-100 border-0 shadow-sm text-center">
-                            <div class="card-body p-4">
-                                <div
-                                    class="value-icon bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 value-icon-md">
-                                    <i class="fas fa-heart fa-2x"></i>
-                                </div>
-                                <h5 class="card-title fw-bold text-dark">Respeto</h5>
-                                <p class="card-text text-muted">
-                                    Reconocemos la dignidad inherente de cada persona, promoviendo un ambiente de
-                                    tolerancia,
-                                    inclusión y valoración de la diversidad cultural, social e individual de nuestra
-                                    comunidad educativa.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card h-100 border-0 shadow-sm text-center">
-                            <div class="card-body p-4">
-                                <div
-                                    class="value-icon bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 value-icon-md">
-                                    <i class="fas fa-handshake fa-2x"></i>
-                                </div>
-                                <h5 class="card-title fw-bold text-dark">Honestidad</h5>
-                                <p class="card-text text-muted">
-                                    Actuamos con transparencia, autenticidad e integridad en todos nuestros procesos,
-                                    promoviendo la confianza, la verdad y la ética como pilares fundamentales de
-                                    nuestra
-                                    institución.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card h-100 border-0 shadow-sm text-center">
-                            <div class="card-body p-4">
-                                <div
-                                    class="value-icon bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 value-icon-md">
-                                    <i class="fas fa-trophy fa-2x"></i>
-                                </div>
-                                <h5 class="card-title fw-bold text-dark">Excelencia</h5>
-                                <p class="card-text text-muted">
-                                    Nos comprometemos con la calidad, la mejora continua y el alto desempeño en todos
-                                    los ámbitos
-                                    educativos, buscando siempre superar estándares y expectativas para ofrecer la
-                                    mejor
-                                    educación posible.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card h-100 border-0 shadow-sm text-center">
-                            <div class="card-body p-4">
-                                <div
-                                    class="value-icon bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 value-icon-md">
-                                    <i class="fas fa-users fa-2x"></i>
-                                </div>
-                                <h5 class="card-title fw-bold text-dark">Colaboración</h5>
-                                <p class="card-text text-muted">
-                                    Fomentamos el trabajo colaborativo, el intercambio de ideas y la construcción
-                                    colectiva del conocimiento,
-                                    reconociendo que juntos alcanzamos mejores resultados que individualmente.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card h-100 border-0 shadow-sm text-center">
-                            <div class="card-body p-4">
-                                <div
-                                    class="value-icon bg-danger text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 value-icon-md">
-                                    <i class="fas fa-seedling fa-2x"></i>
-                                </div>
-                                <h5 class="card-title fw-bold text-dark">Responsabilidad</h5>
-                                <p class="card-text text-muted">
-                                    Asumimos con compromiso nuestras obligaciones académicas, sociales y ambientales,
-                                    contribuyendo activamente al desarrollo sustentable de nuestra comunidad y sociedad.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card h-100 border-0 shadow-sm text-center">
-                            <div class="card-body p-4">
-                                <div
-                                    class="value-icon bg-secondary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 value-icon-md">
-                                    <i class="fas fa-lightbulb fa-2x"></i>
-                                </div>
-                                <h5 class="card-title fw-bold text-dark">Innovación</h5>
-                                <p class="card-text text-muted">
-                                    Promovemos la creatividad, el pensamiento crítico y la adopción de metodologías
-                                    educativas
-                                    vanguardistas que preparen a nuestros estudiantes para los desafíos del futuro.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card h-100 border-0 shadow-sm text-center">
-                            <div class="card-body p-4">
-                                <div
-                                    class="value-icon bg-purple text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 value-icon-md">
-                                    <i class="fas fa-handshake-angle fa-2x"></i>
-                                </div>
-                                <h5 class="card-title fw-bold text-dark">Compromiso</h5>
-                                <p class="card-text text-muted">
-                                    Nos comprometemos plenamente con la misión educativa, asumiendo con dedicación y
-                                    perseverancia nuestras responsabilidades hacia la formación integral de nuestros
-                                    estudiantes.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card h-100 border-0 shadow-sm text-center">
-                            <div class="card-body p-4">
-                                <div
-                                    class="value-icon bg-teal text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 value-icon-md">
-                                    <i class="fas fa-shield-heart fa-2x"></i>
-                                </div>
-                                <h5 class="card-title fw-bold text-dark">Lealtad</h5>
-                                <p class="card-text text-muted">
-                                    Mantenemos fidelidad a nuestros principios institucionales, a nuestra comunidad
-                                    educativa
-                                    y al compromiso de servir con honor a la sociedad en la formación de futuras
-                                    generaciones.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card h-100 border-0 shadow-sm text-center">
-                            <div class="card-body p-4">
-                                <div
-                                    class="value-icon bg-indigo text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 value-icon-md">
-                                    <i class="fas fa-certificate fa-2x"></i>
-                                </div>
-                                <h5 class="card-title fw-bold text-dark">Confianza</h5>
-                                <p class="card-text text-muted">
-                                    Generamos un ambiente de confianza mutua basado en la credibilidad, la consistencia
-                                    y el cumplimiento de nuestras promesas educativas hacia estudiantes, familias y
-                                    comunidad.
-                                </p>
-                            </div>
-                        </div>
+                <div data-section-items class="row g-4">
+                    <div class="col-12 text-center py-4">
+                        <i class="fas fa-heart fa-3x text-muted mb-3 opacity-50"></i>
+                        <p class="text-muted">Los valores de tu plantel se configuran desde el dashboard del director.</p>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Infraestructura -->
-        <section id="infraestructura" class="py-5 bg-light">
+        <section id="infraestructura" class="py-5" data-section-key="infraestructura">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 mx-auto text-center mb-5">
-                        <h2 class="fw-bold text-primary mb-3">Nuestra Infraestructura</h2>
-                        <p class="lead text-muted">Instalaciones modernas diseñadas para potenciar el aprendizaje</p>
+                        <h2 data-section-title class="fw-bold text-primary mb-3">Nuestra Infraestructura</h2>
+                        <p data-section-subtitle class="lead text-muted">Instalaciones modernas diseñadas para potenciar el aprendizaje</p>
                     </div>
                 </div>
-
-                <div class="row g-4">
-                    <div class="col-lg-4 col-md-6">
-                        <div class="facility-card card border-0 shadow-sm overflow-hidden">
-                            <div class="facility-image position-relative">
-                                <picture>
-                                    <source srcset="images/instalaciones/aulas.webp" type="image/webp">
-                                    <img src="images/instalaciones/aulas.jpg" alt="Aulas modernas" class="img-fluid"
-                                        loading="lazy" width="400" height="250">
-                                </picture>
-                                <div
-                                    class="facility-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
-                                    <i class="fas fa-chalkboard-teacher fa-3x text-white"></i>
-                                </div>
-                            </div>
-                            <div class="card-body p-4 text-center">
-                                <h5 class="card-title fw-bold">Aulas Equipadas</h5>
-                                <p class="card-text text-muted">
-                                    Espacios de aprendizaje con tecnología moderna, mobiliario ergonómico y
-                                    condiciones óptimas de iluminación y ventilación.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-4 col-md-6">
-                        <div class="facility-card card border-0 shadow-sm overflow-hidden">
-                            <div class="facility-image position-relative">
-                                <picture>
-                                    <source srcset="images/instalaciones/laboratorios.webp" type="image/webp">
-                                    <img src="images/instalaciones/laboratorios.jpg" alt="Laboratorios especializados"
-                                        class="img-fluid" loading="lazy" width="400" height="250">
-                                </picture>
-                                <div
-                                    class="facility-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
-                                    <i class="fas fa-microscope fa-3x text-white"></i>
-                                </div>
-                            </div>
-                            <div class="card-body p-4 text-center">
-                                <h5 class="card-title fw-bold">Laboratorios</h5>
-                                <p class="card-text text-muted">
-                                    Laboratorios de ciencias, cómputo y especialidades técnicas equipados
-                                    con herramientas de última generación.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-4 col-md-6">
-                        <div class="facility-card card border-0 shadow-sm overflow-hidden">
-                            <div class="facility-image position-relative">
-                                <picture>
-                                    <source srcset="images/instalaciones/biblioteca.webp" type="image/webp">
-                                    <img src="images/instalaciones/biblioteca.jpg" alt="Biblioteca" class="img-fluid"
-                                        loading="lazy" width="400" height="250">
-                                </picture>
-                                <div
-                                    class="facility-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
-                                    <i class="fas fa-book fa-3x text-white"></i>
-                                </div>
-                            </div>
-                            <div class="card-body p-4 text-center">
-                                <h5 class="card-title fw-bold">Biblioteca</h5>
-                                <p class="card-text text-muted">
-                                    Amplio acervo bibliográfico, espacios de estudio silenciosos y
-                                    acceso a recursos digitales especializados.
-                                </p>
-                            </div>
-                        </div>
+                <div data-section-items class="row g-4">
+                    <div class="col-12 text-center py-4">
+                        <i class="fas fa-building fa-3x text-muted mb-3 opacity-50"></i>
+                        <p class="text-muted">Las instalaciones de tu plantel se configuran desde el dashboard del director.</p>
                     </div>
                 </div>
             </div>
@@ -699,12 +277,12 @@
             </div>
         </section>
         <!-- Video Institucional -->
-        <section id="video-institucional" class="pt-2 pb-3 bg-light">
+        <section id="video-institucional" class="pt-2 pb-3 bg-light" data-section-key="video_institucional">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 mx-auto text-center mb-1">
-                        <h2 class="fw-bold text-primary mb-1">Nuestro Video Institucional</h2>
-                        <p class="lead text-muted mb-0">Conoce más sobre nuestra institución a través de este
+                        <h2 data-section-title class="fw-bold text-primary mb-1">Nuestro Video Institucional</h2>
+                        <p data-section-subtitle class="lead text-muted mb-0">Conoce más sobre nuestra institución a través de este
                             recorrido
                             visual</p>
                     </div>
@@ -712,34 +290,15 @@
 
                 <div class="row justify-content-center">
                     <div class="col-lg-10 col-xl-8">
-                        <div class="ratio ratio-16x9 rounded shadow-sm overflow-hidden">
-                            <!-- Video institucional placeholder mejorado -->
+                        <div data-section-content class="ratio ratio-16x9 rounded shadow-sm overflow-hidden">
                             <div
                                 class="d-flex align-items-center justify-content-center bg-gradient rounded position-relative video-placeholder-bg">
                                 <div class="text-center text-white">
                                     <i class="fas fa-video fa-4x mb-3"></i>
                                     <h5 class="mb-3">Video Institucional</h5>
-                                    <p class="mb-4">Conoce nuestras instalaciones y comunidad educativa</p>
-                                    <button class="btn btn-light btn-lg rounded-pill shadow-custom-btn"
-                                        data-action="agregarVideo">
-                                        <i class="fas fa-play me-2"></i>Ver Video
-                                    </button>
-                                    <div class="mt-3">
-                                        <small class="opacity-75">Administrador:
-                                            <a href="#" class="text-white text-decoration-underline"
-                                                data-action="mostrarFormularioVideo">
-                                                Agregar Video
-                                            </a>
-                                        </small>
-                                    </div>
+                                    <p class="mb-4"><em>El video se configura desde el dashboard del director.</em></p>
                                 </div>
                             </div>
-
-                            <!-- Para cuando se agregue video real:
-                            <iframe src="https://www.youtube.com/embed/VIDEO_ID" 
-                                    title="Video Institucional Bachillerato <span data-tenant-field="school_short_name">nuestro plantel</span>" 
-                                    allowfullscreen></iframe>
-                            -->
                         </div>
                     </div>
                 </div>
@@ -747,56 +306,32 @@
         </section>
 
         <!-- Mensaje del Director -->
-        <section id="mensaje-director" class="py-5">
+        <section id="mensaje-director" class="py-5" data-section-key="mensaje_director">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 mx-auto text-center mb-5">
-                        <h2 class="fw-bold text-primary mb-3">Mensaje del Director</h2>
-                        <p class="lead text-muted">Palabras de bienvenida de nuestra máxima autoridad educativa</p>
+                        <h2 data-section-title class="fw-bold text-primary mb-3">Mensaje del Director</h2>
+                        <p data-section-subtitle class="lead text-muted">Palabras de bienvenida de nuestra máxima autoridad educativa</p>
                     </div>
                 </div>
 
                 <div class="row g-4 align-items-center">
                     <div class="col-lg-4 text-center">
                         <div class="director-photo mb-4">
-                            <picture>
-                                <source srcset="/images/equipo/Director.webp" type="image/webp">
-                                <img src="/images/equipo/Director.jpg" alt="Director del Bachillerato"
-                                    class="img-fluid rounded-circle shadow director-photo-img" loading="lazy">
-                            </picture>
+                            <div data-section-image class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 200px; height: 200px;">
+                                <i class="fas fa-user-tie fa-5x"></i>
+                            </div>
                         </div>
-                        <h4 class="fw-bold text-dark">Ing. Samuel Cruz Interial</h4>
+                        <h4 data-section-title class="fw-bold text-dark">Director del Plantel</h4>
                         <p class="text-primary">Director General</p>
                     </div>
                     <div class="col-lg-8">
                         <div class="director-message bg-light rounded p-4">
                             <blockquote class="blockquote mb-0">
-                                para enfrentar
-                                los retos del siglo XXI. A través de nuestro modelo educativo basado en
-                                competencias,
-                                preparamos a nuestros estudiantes no solo para continuar sus estudios superiores,
-                                sino también para ser agentes de cambio positivo en sus familias y en la sociedad."
+                                <p data-section-content class="mb-0">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    <em>El mensaje del director se configura desde el dashboard del administrador del plantel.</em>
                                 </p>
-                                <p>
-                                    "Como institución, nos enorgullece contar con un equipo docente altamente
-                                    calificado,
-                                    instalaciones modernas y una propuesta educativa innovadora que incluye
-                                    especialidades
-                                    de capacitación para el trabajo, preparando a nuestros jóvenes para insertarse
-                                    exitosamente
-                                    en el mundo laboral o continuar su formación académica."
-                                </p>
-                                <p class="mb-0">
-                                    "Los invito a conocer más sobre nuestra propuesta educativa y a formar parte de
-                                    esta
-                                    gran familia
-                                    académica, donde cada estudiante es valorado, respetado y apoyado en su crecimiento
-                                    personal
-                                    y profesional. Juntos construimos el futuro de México, un joven a la vez."
-                                </p>
-                                <footer class="blockquote-footer mt-3">
-                                    <cite title="Director General">Ing. Samuel Cruz Interial</cite>
-                                </footer>
                             </blockquote>
                         </div>
                     </div>
@@ -805,17 +340,17 @@
         </section>
 
         <!-- Organigrama / Nuestro Equipo -->
-        <section id="organigrama" class="py-5 bg-light">
+        <section id="organigrama" class="py-5 bg-light" data-section-key="organigrama">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 mx-auto text-center mb-5">
-                        <h2 class="fw-bold text-primary mb-3">Nuestro Equipo</h2>
-                        <p class="lead text-muted">Conoce a los profesionales comprometidos con tu formación académica
+                        <h2 data-section-title class="fw-bold text-primary mb-3">Nuestro Equipo</h2>
+                        <p data-section-subtitle class="lead text-muted">Conoce a los profesionales comprometidos con tu formación académica
                         </p>
                     </div>
                 </div>
 
-                <div class="organigrama-grid">
+                <div data-section-items class="organigrama-grid">
                     <!-- Toggle para vista -->
                     <div class="row mb-4">
                         <div class="col-12 text-center">
@@ -2676,6 +2211,8 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
     </style>
+    <!-- 📄 PAGE SECTIONS LOADER - Carga contenido dinámico de secciones -->
+    <script src="js/page-sections-loader.js" defer></script>
     <!-- Ã°Å¸ÂÂ¢ TENANT CONFIG LOADER - Carga configuración multi-tenancy desde BD -->
     <script src="js/tenant-config-loader.js" defer></script>
     <!-- 🎛️ CMS LOADER - Carga contenido dinámico del CMS del director -->

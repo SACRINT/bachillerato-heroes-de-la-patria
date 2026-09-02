@@ -133,16 +133,16 @@
         </section>
 
         <!-- Modelo Educativo Section -->
-        <section id="modelo-educativo" class="py-5 bg-light">
+        <section id="modelo-educativo" class="py-5 bg-light" data-section-key="modelo_educativo">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 mx-auto">
                         <div class="section-header text-center mb-5">
-                            <h2 class="section-title">
+                            <h2 data-section-title class="section-title">
                                 <i class="fas fa-lightbulb text-primary me-3" aria-hidden="true"></i>
                                 Modelo Educativo
                             </h2>
-                            <p class="section-subtitle text-muted">
+                            <p data-section-subtitle class="section-subtitle text-muted">
                                 Formación integral basada en competencias para el desarrollo del estudiante del siglo
                                 XXI
                             </p>
@@ -288,19 +288,17 @@
         </section>
 
         <!-- Plan de Estudios Section -->
-        <section id="plan-estudios" class="py-5">
+        <section id="plan-estudios" class="py-5" data-section-key="plan_estudios">
             <div class="container">
                 <div class="row">
-                    <div class="col-12">
+                    <div class="col-lg-8 mx-auto">
                         <div class="section-header text-center mb-5">
-                            <h2 class="section-title">
-                                <i class="fas fa-book-open text-primary me-3" aria-hidden="true"></i>
+                            <h2 data-section-title class="section-title">
+                                <i class="fas fa-book text-primary me-3" aria-hidden="true"></i>
                                 Plan de Estudios
                             </h2>
-                            <p class="section-subtitle text-muted">
-                                Nuestro plan de estudios está diseñado para proporcionar una formación básica
-                                sólida
-                                y prepararte para los retos del futuro
+                            <p data-section-subtitle class="section-subtitle text-muted">
+                                Malla curricular de 6 semestres con enfoque por competencias
                             </p>
                         </div>
                     </div>
@@ -625,14 +623,14 @@
         </section>
 
         <!-- Capacitación para el Trabajo -->
-        <section id="capacitacion-trabajo" class="py-5 bg-light">
+        <section id="capacitacion-trabajo" class="py-5 bg-light" data-section-key="capacitacion_trabajo">
             <div class="container">
                 <div class="section-header text-center mb-5">
-                    <h2 class="section-title">
+                    <h2 data-section-title class="section-title">
                         <i class="fas fa-tools text-primary me-3" aria-hidden="true"></i>
                         Capacitación para el Trabajo
                     </h2>
-                    <p class="section-subtitle text-muted">
+                    <p data-section-subtitle class="section-subtitle text-muted">
                         Desarrolla habilidades técnicas específicas que te preparen para el mundo laboral
                     </p>
                 </div>
@@ -721,14 +719,14 @@
         </section>
 
         <!-- Perfil de Egreso -->
-        <section id="perfil-egreso" class="py-5">
+        <section id="perfil-egreso" class="py-5" data-section-key="perfil_egreso">
             <div class="container">
                 <div class="section-header text-center mb-5">
-                    <h2 class="section-title">
+                    <h2 data-section-title class="section-title">
                         <i class="fas fa-user-graduate text-primary me-3" aria-hidden="true"></i>
                         Perfil de Egreso
                     </h2>
-                    <p class="section-subtitle text-muted">
+                    <p data-section-subtitle class="section-subtitle text-muted">
                         Al concluir el bachillerato, nuestros egresados demuestran las siguientes competencias
                     </p>
                 </div>
@@ -806,15 +804,15 @@
         </section>
 
         <!-- Proceso de Admisión -->
-        <section id="proceso-admision" class="py-5 bg-light">
+        <section id="proceso-admision" class="py-5 bg-light" data-section-key="proceso_admision">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 mx-auto text-center mb-5">
-                        <h2 class="fw-bold text-primary mb-3">
+                        <h2 data-section-title class="fw-bold text-primary mb-3">
                             <i class="fas fa-clipboard-check me-3"></i>
                             Proceso de Admisión
                         </h2>
-                        <p class="lead text-muted">Todo lo que necesitas saber para formar parte de nuestra comunidad
+                        <p data-section-subtitle class="lead text-muted">Todo lo que necesitas saber para formar parte de nuestra comunidad
                             educativa</p>
                     </div>
                 </div>
@@ -1936,6 +1934,8 @@
     <!-- Ã°Å¸â€â€™ AUTENTICACIÃƒâ€œN ADMIN (INCLUIDA EN BGE SECURITY MODULE) -->
     <!-- Ã°Å¸ÂÂ¢ TENANT CONFIG LOADER - Carga configuración multi-tenancy desde BD -->
     <script src="js/tenant-config-loader.js" defer></script>
+    <!-- 📄 PAGE SECTIONS LOADER - Carga contenido dinámico de secciones -->
+    <script src="js/page-sections-loader.js" defer></script>
 
 </body>
 
