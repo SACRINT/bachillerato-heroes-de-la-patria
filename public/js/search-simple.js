@@ -12,7 +12,7 @@
         { title: "Historia Institucional", desc: "Historia desde 1996 hasta la actualidad", url: "conocenos.html#historia", keywords: "historia fundación 1996 trayectoria institucional años evolución" },
         { title: "Misión y Visión", desc: "Misión, visión y valores institucionales", url: "conocenos.html#mision-vision", keywords: "misión visión valores objetivo meta propósito filosofía" },
         { title: "Organigrama", desc: "Estructura organizacional y jerarquías administrativas", url: "conocenos.html#organigrama", keywords: "organigrama estructura organizacional jerarquías administrativas organización personal" },
-        { title: "Mensaje del Director", desc: "Mensaje oficial del Ing. Samuel Cruz Interial", url: "conocenos.html#mensaje-director", keywords: "director samuel cruz interial mensaje bienvenida líder" },
+        { title: "Mensaje del Director", desc: "Mensaje oficial del director del plantel", url: "conocenos.html#mensaje-director", keywords: "director mensaje bienvenida líder" },
         { title: "Infraestructura", desc: "Instalaciones, aulas, laboratorios y espacios del plantel", url: "conocenos.html#infraestructura", keywords: "infraestructura instalaciones aulas laboratorios espacios edificios plantel" },
         { title: "Video Institucional", desc: "Video oficial de presentación de la institución", url: "conocenos.html#video-institucional", keywords: "video institucional multimedia presentación oficial" },
         

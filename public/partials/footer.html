@@ -14,13 +14,15 @@
                                     alt="Logo del Bachillerato" width="45" height="45" class="footer-logo">
                             </div>
                             <div>
-                                <h5 class="footer-title fw-bold mb-1">Bachillerato General</h5>
+                                <h5 class="footer-title fw-bold mb-1" data-tenant-field="school_name">Bachillerato General</h5>
                                 <!-- 🏢 TENANT-AWARE: Nombre de escuela dinámico desde config -->
                                 <h6 class="footer-subtitle mb-0" data-tenant="school-name" data-tenant-field="school_short_name">BGE</h6>
                             </div>
                         </div>
                     </div>
-                    <p class="footer-description mb-2">
+                    <p class="footer-description mb-2"
+                        data-tenant-field="footer_description"
+                        data-tenant-default="Formamos jóvenes íntegros con excelencia académica y valores sólidos, preparándolos para el éxito universitario y profesional.">
                         <i class="fas fa-quote-left text-primary me-2"></i>
                         Formamos jóvenes íntegros con excelencia académica y valores sólidos, preparándolos para el
                         éxito universitario y profesional.
@@ -170,7 +172,7 @@
                     </p>
                     <p class="footer-sub-copyright mb-0">
                         <span class="developer-credit">
-                            Desarrollado por: <strong>Ing. Samuel Cruz Interial</strong>
+                            Desarrollado por: <strong>SACRINT</strong>
                         </span>
                     </p>
                 </div>

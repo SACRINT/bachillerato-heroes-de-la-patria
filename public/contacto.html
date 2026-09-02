@@ -22,20 +22,20 @@
     <meta name="description" id="page-description" data-tenant-field="mision" content="Bachillerato General - Educación media superior de calidad."
         >
     <meta name="keywords"
-        content="contacto bachillerato, dirección escuela, teléfono BGE, correo bachillerato, <span data-tenant-field="direccion">Dirección del plantel</span>">
-    <meta name="author" content="BGE <span data-tenant-field="school_short_name">nuestro plantel</span>">
+        content="contacto bachillerato, dirección escuela, teléfono BGE, correo bachillerato">
+    <meta name="author" content="BGE">
 
     <!-- Open Graph -->
-    <meta property="og:title" content="Contacto - BGE <span data-tenant-field="school_short_name">nuestro plantel</span>">
+    <meta property="og:title" content="Contacto - BGE">
     <meta property="og:description"
         content="Ponte en contacto con nosotros. Información de ubicación, horarios y formulario de contacto">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://ejemplo.edu.mx/contacto.html">
-    <meta property="og:image" content="https://ejemplo.edu.mx/images/hero/fachada1.webp">
+    <meta property="og:image" content="https://ejemplo.edu.mx/images/logo-bge.webp">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Contacto - BGE <span data-tenant-field="school_short_name">nuestro plantel</span>">
+    <meta name="twitter:title" content="Contacto - BGE">
     <meta name="twitter:description" content="Información de contacto y ubicación del bachillerato">
 
     <!-- Preconnects -->
@@ -52,7 +52,7 @@
             "name": "Bachillerato General",
             "address": {
                 "@type": "PostalAddress",
-                "streetAddress": "C. Manuel Ávila Camacho #7, Col. Centro",
+                "streetAddress": "Dirección del plantel",
                 "addressLocality": "Municipio",
                 "addressRegion": "Puebla",
                 "postalCode": "73030",
@@ -62,7 +62,7 @@
                 "@type": "ContactPoint",
                 "telephone": "+52-XXX-XXX-XXXX",
                 "contactType": "customer service",
-                "email": "<span data-tenant-field="email_institucional">contacto@ejemplo.edu.mx</span>",
+                "email": "contacto@ejemplo.edu.mx",
                 "availableLanguage": "Spanish",
                 "hoursAvailable": "Mo-Fr 08:00-13:30"
             }
@@ -164,9 +164,8 @@
                                         <div>
                                             <h5 class="mb-2">Dirección</h5>
                                             <p class="text-muted mb-0">
-                                                C. Manuel Ávila Camacho #7, Col. Centro<br>
                                                 <span data-tenant-field="direccion">Dirección del plantel</span><br>
-                                                Puebla, México
+                                                <span data-tenant-field="municipio">Municipio</span>, Puebla, México
                                             </p>
                                         </div>
                                     </div>
@@ -180,7 +179,7 @@
                                         <div>
                                             <h5 class="mb-2">Correo Electrónico</h5>
                                             <p class="text-muted mb-0">
-                                                <a data-tenant="contact-email" href="mailto:<span data-tenant-field="email_institucional">contacto@ejemplo.edu.mx</span>"
+                                                <a data-tenant-href="email_institucional" href="mailto:contacto@ejemplo.edu.mx"
                                                     class="text-decoration-none">
                                                     <span data-tenant-field="email_institucional">contacto@ejemplo.edu.mx</span>
                                                 </a>
@@ -369,13 +368,13 @@
                                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3767.2!2d-97.8736!3d19.0435!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cfc0a123b456c7%3A0x9876543210abcdef!2sCoronel%20Tito%20Hern%C3%A1ndez%2C%20Venustiano%20Carranza%2C%20Puebla%2C%20M%C3%A9xico!5e0!3m2!1ses!2smx!4v1694561234567!5m2!1ses!2smx"
                                         width="100%" height="400" allowfullscreen="" loading="lazy"
                                         referrerpolicy="no-referrer-when-downgrade"
-                                        title="Ubicación del Bachillerato General Estatal <span data-tenant-field="school_short_name">nuestro plantel</span>">
+                                        title="Ubicación del Bachillerato General">
                                     </iframe>
 
                                     <!-- Overlay de controles del mapa -->
                                     <div class="map-controls position-absolute">
                                         <div class="btn-group-vertical shadow-sm" role="group">
-                                            <a href="https://maps.google.com/?q=Coronel+Tito+Hernández+Venustiano+Carranza+Puebla+Bachillerato+Héroes+de+la+Patria"
+                                            <a href="https://maps.google.com/?q=Bachillerato+General"
                                                 target="_blank" class="btn btn-primary btn-sm" rel="noopener noreferrer"
                                                 title="Abrir en Google Maps">
                                                 <i class="fas fa-external-link-alt"></i>
@@ -436,7 +435,7 @@
                                     </h6>
                                     <p class="text-muted small">
                                         Cerca del centro de <span data-tenant-field="direccion">Dirección del plantel</span>,
-                                        Col. Centro, sobre la calle Manuel Ávila Camacho.
+                                        Col. Centro, sobre la calle principal.
                                     </p>
                                 </div>
 
@@ -474,7 +473,7 @@
                                     <i class="fas fa-user-tie display-4 text-primary" aria-hidden="true"></i>
                                 </div>
                                 <h5 class="card-title">Dirección General</h5>
-                                <p class="card-subtitle text-muted mb-3">Ing. Samuel Cruz Interial</p>
+                                <p class="card-subtitle text-muted mb-3" data-tenant-field="director_name">Nombre del Director</p>
                                 <p class="card-text small">
                                     Atención a padres de familia, asuntos administrativos
                                     y gestión institucional.
@@ -687,14 +686,14 @@
                                     </p>
                                     <p class="mb-0 small text-muted">
                                         <i class="fas fa-phone me-1"></i>
-                                        (222) 123-4567 |
+                                        <span data-tenant-field="telefono">(222) 123-4567</span> |
                                         <i class="fas fa-envelope me-1"></i>
-                                        contacto@ejemplo.edu.mx
+                                        <span data-tenant-field="email_institucional">contacto@ejemplo.edu.mx</span>
                                     </p>
                                 </div>
                                 <div class="col-md-4 text-end">
                                     <div class="btn-group" role="group">
-                                        <a href="https://maps.google.com/?q=Coronel+Tito+Hernández+Venustiano+Carranza+Puebla+Bachillerato+Héroes+de+la+Patria"
+                                        <a href="https://maps.google.com/?q=Bachillerato+General"
                                             target="_blank" class="btn btn-primary btn-sm" rel="noopener noreferrer">
                                             <i class="fas fa-external-link-alt me-1"></i>
                                             Abrir en Maps

@@ -6,22 +6,10 @@
 (function() {
     'use strict';
 
-    /* --- Lenis Smooth Scroll --- */
+    /* --- Lenis Smooth Scroll Removed (Causes scrolljacking, input lag, and wheel delay) --- */
     function initLenis() {
-        if (typeof Lenis === 'undefined') return;
-        var lenis = new Lenis({
-            duration: 1.2,
-            easing: function(t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
-            smoothWheel: true,
-            wheelMultiplier: 1
-        });
-        function raf(time) {
-            lenis.raf(time);
-            requestAnimationFrame(raf);
-        }
-        requestAnimationFrame(raf);
-        window._lenis = lenis;
-        console.log('[VISUAL-ENGINE] Lenis smooth scroll initialized');
+        // Native GPU-composited scrolling is used instead for instant responsiveness
+        return;
     }
 
     /* --- CountUp.js Animated Counters --- */

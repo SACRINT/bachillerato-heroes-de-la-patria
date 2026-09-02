@@ -21,13 +21,11 @@ class TinyMCEManager {
             language: 'es',
             language_url: 'https://cdn.jsdelivr.net/npm/tinymce-i18n@23.10.9/langs6/es.min.js',
 
-            // 🔧 SOLUCIÓN DEFINITIVA: Usar URL ABSOLUTA del CDN con API key
-            // CRÍTICO: Rutas relativas NO funcionan porque se resuelven al dominio actual
-            // window.TINYMCE_API_KEY es expuesta por admin-dashboard.html antes de cargar este script
-            // base_url: window.TINYMCE_API_KEY
-            //     ? `https://cdn.tiny.cloud/1/${window.TINYMCE_API_KEY}/tinymce/6`
-            //     : 'https://cdn.tiny.cloud/1/9eomuls0jgbqziqkahugmesowt48tellxulfspshp9pa03bi/tinymce/6',
-            // suffix: '.min',
+            // FIX: URL ABSOLUTA del CDN con API key - SIN ESTO TinyMCE no carga themes/plugins y queda readonly
+            base_url: window.TINYMCE_API_KEY
+                ? `https://cdn.tiny.cloud/1/${window.TINYMCE_API_KEY}/tinymce/6`
+                : 'https://cdn.tiny.cloud/1/9eomuls0jgbqziqkahugmesowt48tellxulfspshp9pa03bi/tinymce/6',
+            suffix: '.min',
 
             // Plugins
             plugins: [
@@ -102,15 +100,17 @@ class TinyMCEManager {
             contextmenu: 'link image table',
             convert_urls: false,
 
-            // 🔐 FIX CRÍTICO: Callback cuando el editor está listo
+            // FIX CRÍTICO: Callback cuando el editor está listo
             setup: (editor) => {
                 editor.on('init', () => {
-                    
-
-                    // VERIFICAR Y FORZAR MODO EDITABLE
-                    if (editor.mode && editor.mode.get() === 'readonly') {
-                        void 0;
-                        editor.mode.set('design');
+                    // Forzar modo editable al iniciar
+                    try {
+                        if (editor.mode && editor.mode.get() === 'readonly') {
+                            editor.mode.set('design');
+                        }
+                        if (editor.setMode) editor.setMode('design');
+                    } catch (e) {
+                        // Ignorar - init_instance_callback también lo intenta
                     }
                 });
 
@@ -123,24 +123,28 @@ class TinyMCEManager {
                 });
             },
 
-            // 🔐 FIX CRÍTICO: Callback de inicialización completa
+            // FIX CRÍTICO: Callback de inicialización completa - forzar modo editable
             init_instance_callback: (editor) => {
-                
-
-                // FORZAR MODO EDITABLE EXPLÍCITAMENTE
-                if (editor.mode) {
-                    editor.mode.set('design');
+                // SOLUCIÓN ROBUSTA: Forzar modo editable después de que TinyMCE carga todo
+                try {
+                    // Método 1: setMode (más confiable)
+                    if (editor.setMode) editor.setMode('design');
+                    // Método 2: mode.set
+                    if (editor.mode && editor.mode.set) editor.mode.set('design');
+                    // Método 3: Quitar readonly attribute del DOM
+                    const iframe = editor.iframeElement;
+                    if (iframe) iframe.removeAttribute('data-mce-readonly');
+                    // Método 4: onInit event
+                    editor.on('init', () => {
+                        if (editor.setMode) editor.setMode('design');
+                    });
+                } catch (e) {
+                    console.warn('[TINYMCE] No se pudo forzar design mode:', e.message);
                 }
-                if (editor.setMode) {
-                    editor.setMode('design');
-                }
 
-                // Verificar estado final
                 const mode = editor.mode ? editor.mode.get() : 'unknown';
-                
-
                 if (mode === 'readonly') {
-                    console.error(`❌ [TINYMCE] ADVERTENCIA: Editor #${editor.id} sigue en readonly a pesar de los intentos de cambio.`);
+                    console.error(`[TINYMCE] Editor #${editor.id} en readonly - verificar base_url/suffix`);
                 }
             }
         };

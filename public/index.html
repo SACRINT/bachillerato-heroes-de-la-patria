@@ -14,7 +14,7 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
 
     <!-- Preload critical resources -->
-    <link rel="preload" href="images/hero/fachada1.webp" as="image" type="image/webp">
+    <link rel="preload" href="images/logo-bge.webp" as="image" type="image/webp">
     <link rel="preload" href="css/style.css" as="style">
 
     <!-- Meta tags -->
@@ -50,10 +50,6 @@
     <!-- Icons -->
     <link rel="icon" href="/images/logo-bachillerato-HDLP.webp" type="image/webp">
     <link rel="apple-touch-icon" href="/images/logo-bachillerato-HDLP.webp">
-
-    <!-- EDUZONA Visual Engine - Lenis Smooth Scroll -->
-    <link rel="preconnect" href="https://unpkg.com">
-    <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js" defer></script>
 
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -111,9 +107,8 @@
                         <div class="hero-image position-relative">
                             <div class="image-wrapper hero-image-hover">
                                 <picture>
-                                    <source srcset="images/hero/fachada1.webp" type="image/webp">
-                                    <img data-tenant-src="logo_url" data-tenant-src="logo_url" src="/images/logo-bachillerato-HDLP.webp"
-                                        alt="Logo del Bachillerato"
+                                    <img data-tenant-src="hero_image_url" src="/images/logo-bge.webp"
+                                        alt="Imagen institucional del bachillerato"
                                         class="img-fluid w-100 h-100 object-fit-cover rounded-3 shadow-lg"
                                         loading="eager" width="800" height="600">
                                 </picture>
@@ -143,32 +138,48 @@
                                     data-tenant-field="school_short_name">BGE</span>
                             </h1>
 
-                            <p class="fs-5 text-white-50 mb-4 lh-lg">
-                                ?? <strong>Formamos líderes del mañana</strong> con educación integral, valores
+                            <p class="fs-5 text-white-50 mb-4 lh-lg"
+                                data-tenant-field="hero_description"
+                                data-tenant-default="Formamos líderes del mañana con educación integral, valores sólidos y preparación universitaria de excelencia.">
+                                <strong>Formamos líderes del mañana</strong> con educación integral, valores
                                 sólidos
                                 y
                                 preparación universitaria de excelencia. Tu futuro comienza aquí.
                             </p>
 
-                            <!-- Success Metrics -->
+                            <!-- Success Metrics - Dynamic from tenant config -->
                             <div class="row g-3 mb-4">
                                 <div class="col-4">
                                     <div class="text-center p-3 rounded-3">
-                                        <h3 class="display-6 fw-bold text-warning mb-1 counter" data-target="27">0</h3>
-                                        <small class="text-white">Años de experiencia</small>
+                                        <h3 class="display-6 fw-bold text-warning mb-1 counter"
+                                            data-target="27"
+                                            data-tenant-field="stat_1_value"
+                                            data-tenant-field-label="stat_1_label">0</h3>
+                                        <small class="text-white"
+                                            data-tenant-field="stat_1_label"
+                                            data-tenant-default="Años de experiencia">Años de experiencia</small>
                                     </div>
                                 </div>
                                 <div class="col-4">
                                     <div class="text-center p-3 rounded-3">
-                                        <h3 class="display-6 fw-bold text-warning mb-1 counter" data-target="+1000">0
-                                        </h3>
-                                        <small class="text-white">Egresados exitosos</small>
+                                        <h3 class="display-6 fw-bold text-warning mb-1 counter"
+                                            data-target="1000"
+                                            data-tenant-field="stat_2_value"
+                                            data-tenant-field-label="stat_2_label">0</h3>
+                                        <small class="text-white"
+                                            data-tenant-field="stat_2_label"
+                                            data-tenant-default="Egresados exitosos">Egresados exitosos</small>
                                     </div>
                                 </div>
                                 <div class="col-4">
                                     <div class="text-center p-3 rounded-3">
-                                        <h3 class="display-6 fw-bold text-warning mb-1 counter" data-target="97">0</h3>
-                                        <small class="text-white">% Aprobación</small>
+                                        <h3 class="display-6 fw-bold text-warning mb-1 counter"
+                                            data-target="97"
+                                            data-tenant-field="stat_3_value"
+                                            data-tenant-field-label="stat_3_label">0</h3>
+                                        <small class="text-white"
+                                            data-tenant-field="stat_3_label"
+                                            data-tenant-default="% Aprobación">% Aprobación</small>
                                     </div>
                                 </div>
                             </div>
@@ -1407,10 +1418,8 @@
                                 </div>
                                 <h5 class="card-title">Dirección</h5>
                                 <p class="card-text text-muted">
-                                    C. Manuel Ávila Camacho #7, Col. Centro<br>
                                     <span data-tenant-field="direccion">Dirección del plantel</span><br>
-                                    <span data-tenant-field="municipio">Municipio</span>, Puebla<br>
-                                    C.P. 73030
+                                    <span data-tenant-field="municipio">Municipio</span>, Puebla
                                 </p>
                             </div>
                         </div>

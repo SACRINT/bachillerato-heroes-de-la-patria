@@ -64,7 +64,7 @@
         {
             id: 'mensaje-director',
             title: "Mensaje del Director",
-            desc: "Mensaje oficial del Ing. Samuel Cruz Interial",
+            desc: "Mensaje oficial del director del plantel",
             url: "conocenos.html#mensaje-director",
             keywords: "director samuel cruz interial mensaje bienvenida líder autoridades",
             category: "institucional",

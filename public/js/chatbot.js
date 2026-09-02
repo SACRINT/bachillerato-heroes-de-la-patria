@@ -142,7 +142,7 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
                             text: 'En el BGE "Héroes de la Patria" creemos en la oportunidad para todos. No aplicamos examen de selección; tu ingreso es directo con documentación completa.'
                         }
                     ],
-                    footer: 'Visítanos en C. Manuel Ávila Camacho #7 para iniciar tu trámite.'
+                    footer: 'Visítanos en nuestra dirección para iniciar tu trámite.'
                 }
             },
 
@@ -330,8 +330,8 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
                     title: '👨‍💼 Nuestro Director',
                     content: [
                         {
-                            subtitle: '🎯 Ing. Samuel Cruz Interial',
-                            text: '<strong>Director General</strong><br>• Más de 23 años de experiencia en educación<br>• 7 años en liderazgo educativo<br>• Ingeniero en Electrónica y Comunicaciones<br>• Especialista en gestión educativa'
+                            subtitle: '🎯 Director del Plantel',
+                            text: '<strong>Director General</strong><br>• Liderazgo educativo<br>• Gestión institucional'
                         },
                         {
                             subtitle: '📧 Contacto Directo',
