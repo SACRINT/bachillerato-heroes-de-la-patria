@@ -1,5 +1,66 @@
 # CHANGELOG - SIPWEB-BG / EDUZONA EMS
 
+[v4.6.0] - 2026-09-02 (FASE 4.2: VISUAL ENGINE - BENTO GRID, SWIPER GALLERY, VENTANILLA DIGITAL)
+
+**Tipo:** Feature / Visual / CMS Integration / Multi-Tenant  
+**Estado:** ✅ FASE 4.2 COMPLETADA
+
+### Resumen:
+Se implementaron las 3 tareas de la FASE 4.2 del Visual Engine: Bento Grid premium con micro-interacciones en index.html, galería táctil Swiper.js en conocenos.html, y Ventanilla Digital unificada con 4 Nav-Pills en servicios.html. Todos los enlaces SICEP ahora son dinámicos vía `data-tenant-href` para soporte multi-tenant.
+
+### Cambios Realizados:
+
+1. **index.html - Bento Grid Premium:**
+   - 4 tarjetas de acceso rápido rediseñadas con links a Hubs: Oferta Educativa, Portal Alumnos (SICEP), Ventanilla Digital, Calendario.
+   - Micro-interacciones: `translateY(-6px)`, `scale(1.08)` en iconos, bordes sutiles con `rgba`.
+   - CSS dedicado con `cubic-bezier` y `prefers-reduced-motion: reduce`.
+   - Enlace SICEP FAQ actualizado con `data-tenant-href="sicep_url"`.
+
+2. **conocenos.html - Galería Táctil Swiper.js:**
+   - Sección `infraestructura` reemplazada con carrusel Swiper v11 (CDN jsdelivr).
+   - 5 slides: Aulas, Laboratorios, Canchas, Biblioteca, Centro de Cómputo.
+   - Touch-swipe en móviles, flechas + paginación de puntos, autoplay 4s.
+   - Script inline extraído a `conocenos-infra-swiper.js` (CSP compliant).
+
+3. **servicios.html - Ventanilla Digital Unificada:**
+   - 4 Nav-Pills tabs: Constancias y Boletas, Citas, Formatos, Cuotas y Pagos.
+   - Cada pestaña con `data-section-key` y `data-section-items` para CMS:
+     * `tramites_constancias` - Constancias, boletas, certificados
+     * `tramites_citas` - Citas con dirección y orientación
+     * `tramites_descargas` - Formatos y justificantes
+     * `tramites_pagos` - Cuotas escolares y procedimientos
+   - Enlace SICEP en pestaña Constancias usa `data-tenant-href="sicep_url"`.
+
+4. **SICEP V2 Dynamic Links:**
+   - `tenant-config-loader.js`: Agregado `sicep_url` a DEFAULT_CONFIG con fallback a SIGED oficial.
+   - `estudiantes.html`: Botón SIGED usa `data-tenant-href="sicep_url"`.
+   - `padres.html`: Botón SIGED usa `data-tenant-href="sicep_url"`.
+   - `chatbot.js`: Respuesta SICEP usa `window.TENANT_CONFIG.sicep_url`.
+   - `index.html`: FAQ SICEP usa `data-tenant-href="sicep_url"`.
+
+5. **CSP Compliance (commit 766268b):**
+   - Script inline de Swiper en conocenos.html extraído a `conocenos-infra-swiper.js`.
+   - Tags unclosed en servicios.html corregidos.
+   - Divs desbalanceados en index.html corregidos.
+
+### Archivos Modificados:
+- `public/index.html` - Bento Grid + SICEP dynamic link
+- `public/conocenos.html` - Swiper gallery
+- `public/servicios.html` - Ventanilla Digital unificada + CMS containers
+- `public/js/tenant-config-loader.js` - sicep_url default
+- `public/js/chatbot.js` - SICEP dynamic link
+- `public/js/conocenos-infra-swiper.js` (NEW) - Swiper init CSP-compliant
+- `public/estudiantes.html` - SICEP dynamic link
+- `public/padres.html` - SICEP dynamic link
+
+### Reglas de Oro Cumplidas:
+- CERO scrolljacking (Lenis prohibido).
+- Solo transiciones CSS en `transform` y `opacity`.
+- `prefers-reduced-motion: reduce` respetado.
+- Scripts inline eliminados (CSP compliant).
+
+---
+
 [v4.5.0] - 2026-09-02 (FASE 2: MOTOR DE PLANTILLAS Y ADAPTACIÓN DE PÁGINAS PÚBLICAS)
 
 **Tipo:** Feature / CMS / Frontend / Multi-Tenant  

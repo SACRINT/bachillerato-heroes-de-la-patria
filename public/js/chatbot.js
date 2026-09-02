@@ -255,7 +255,7 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
                     content: [
                         {
                             subtitle: '🔗 Portal SICEP',
-                            text: 'Ingresa a: <a href="http://sisep.seppue.gob.mx/sicepconsulta/" target="_blank">sisep.seppue.gob.mx/sicepconsulta/</a>'
+                            text: `Ingresa a: <a href="${(window.TENANT_CONFIG && window.TENANT_CONFIG.sicep_url) || 'https://www.siged.sep.gob.mx/SIGED/alumnos.html'}" target="_blank">Portal SICEP - SIGED</a>`
                         },
                         {
                             subtitle: '📝 Datos Necesarios',

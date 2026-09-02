@@ -57,6 +57,7 @@
         director_phone: '(XXX) XXX-XXXX',
         director_photo_url: '',
         director_message: 'Bienvenidos a nuestra institución educativa.',
+        sicep_url: 'https://www.siged.sep.gob.mx/SIGED/alumnos.html',
         mision: 'Misión institucional',
         vision: 'Visión institucional',
         valores: 'Valores institucionales',
