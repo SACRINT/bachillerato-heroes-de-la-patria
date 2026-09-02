@@ -90,8 +90,8 @@ function verifyAccessToken(token) {
 
     try {
         return jwt.verify(token, secret, {
-            issuer: 'bachillerato-heroes',
-            audience: 'api'
+            issuer: ['sipweb-bg', 'bachillerato-heroes', 'bge-heroes-de-la-patria'],
+            audience: ['sipweb-users', 'bge-users', 'api']
         });
     } catch (error) {
         return null;
@@ -106,8 +106,8 @@ function verifyRefreshToken(token) {
 
     try {
         return jwt.verify(token, secret, {
-            issuer: 'bachillerato-heroes',
-            audience: 'refresh'
+            issuer: ['sipweb-bg', 'bachillerato-heroes', 'bge-heroes-de-la-patria'],
+            audience: ['sipweb-users', 'bge-users', 'refresh']
         });
     } catch (error) {
         return null;

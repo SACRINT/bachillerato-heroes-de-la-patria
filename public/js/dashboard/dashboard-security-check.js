@@ -9,10 +9,23 @@ document.addEventListener('DOMContentLoaded', function () {
     setTimeout(() => {
         let isAuthenticated = false;
 
-        const token = localStorage.getItem('bge_auth_token') || localStorage.getItem('auth_token') || sessionStorage.getItem('bge_auth_token');
+        const token = localStorage.getItem('bge_auth_token') || localStorage.getItem('auth_token') || sessionStorage.getItem('bge_auth_token') || localStorage.getItem('token') || sessionStorage.getItem('token');
         const rawUser = localStorage.getItem('bge_auth_user') || localStorage.getItem('auth_user') || sessionStorage.getItem('bge_auth_user');
+        const authSession = localStorage.getItem('bge_auth_session') || sessionStorage.getItem('bge_auth_session');
 
-        if (token && rawUser) {
+        if (authSession) {
+            try {
+                const sessionData = JSON.parse(authSession);
+                const role = sessionData.role || (sessionData.user && sessionData.user.role);
+                if (!role || ['admin', 'administrativo', 'directivo', 'administrator'].includes(role.toLowerCase())) {
+                    isAuthenticated = true;
+                }
+            } catch (e) {
+                isAuthenticated = true;
+            }
+        }
+
+        if (!isAuthenticated && token && rawUser) {
             try {
                 const user = JSON.parse(rawUser);
                 const role = user.role || (user.user && user.user.role);

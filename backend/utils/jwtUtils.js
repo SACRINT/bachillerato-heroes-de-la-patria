@@ -17,9 +17,9 @@ class JWTUtils {
         this.refreshTokenExpiry = process.env.JWT_REFRESH_EXPIRES_IN || '7d';
         this.rememberMeExpiry = process.env.REMEMBER_ME_EXPIRY || '30d';
 
-        // Configuración de emisor
-        this.issuer = 'sipweb-bg';
-        this.audience = 'bge-users';
+        // Configuración de emisor y audiencia resiliente (SIPWEB-BG y BGE)
+        this.issuer = ['sipweb-bg', 'bge-heroes-de-la-patria'];
+        this.audience = ['sipweb-users', 'bge-users'];
 
         // Blacklist de tokens (en memoria, en producción usar Redis)
         this.tokenBlacklist = new Set();

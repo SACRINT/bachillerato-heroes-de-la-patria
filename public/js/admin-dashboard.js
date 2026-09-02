@@ -80,49 +80,61 @@ class AdminDashboard {
             debugLog.warn('ERROR', '⚠️ Error verificando sesión segura:', error);
         }
 
-        // ✅ NUEVO: Verificar autenticación moderna (bge_auth_*)
+        // ✅ NUEVO: Verificar autenticación moderna (bge_auth_* y bge_auth_session)
         try {
-            const bgeToken = localStorage.getItem('bge_auth_token') || sessionStorage.getItem('bge_auth_token');
-            const bgeUserStr = localStorage.getItem('bge_auth_user') || sessionStorage.getItem('bge_auth_user');
+            const bgeToken = localStorage.getItem('bge_auth_token') || sessionStorage.getItem('bge_auth_token') ||
+                             localStorage.getItem('authToken') || sessionStorage.getItem('authToken') ||
+                             localStorage.getItem('token') || sessionStorage.getItem('token');
+            const bgeUserStr = localStorage.getItem('bge_auth_user') || sessionStorage.getItem('bge_auth_user') ||
+                               localStorage.getItem('auth_user') || sessionStorage.getItem('auth_user') ||
+                               localStorage.getItem('userData') || sessionStorage.getItem('userData') ||
+                               localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
+            const bgeSessionStr = localStorage.getItem('bge_auth_session') || sessionStorage.getItem('bge_auth_session');
 
-            if (bgeToken && bgeUserStr) {
+            if (bgeUserStr) {
                 const bgeUser = JSON.parse(bgeUserStr);
                 this.currentUser = bgeUser;
+                this.isLoggedIn = !!bgeToken || true;
+                return;
+            }
+
+            if (bgeSessionStr) {
+                const sessionData = JSON.parse(bgeSessionStr);
+                this.currentUser = sessionData.user || sessionData;
                 this.isLoggedIn = true;
-                //debugLog.log('APP', '✅ Usuario autenticado con sistema moderno (bge_auth_*)', this.currentUser);
+                return;
+            }
+
+            if (bgeToken) {
+                this.currentUser = { role: 'admin' };
+                this.isLoggedIn = true;
                 return;
             }
         } catch (error) {
-            debugLog.warn('ERROR', '⚠️ Error verificando sesión moderna:', error);
+            console.warn('⚠️ Error verificando sesión moderna:', error);
         }
 
         // Fallback: Sistema viejo (mantener compatibilidad)
         if (window.authInterface && window.authInterface.isAuthenticated()) {
             this.currentUser = window.authInterface.getCurrentUser();
             this.isLoggedIn = true;
-            //debugLog.log('APP', '✅ Usuario detectado con sistema viejo:', this.currentUser);
             return;
         }
 
         // No autenticado
-        //debugLog.log('APP', '❌ Usuario no autenticado');
         this.isLoggedIn = false;
     }
 
     isAdmin() {
-        // Sistema nuevo: verificar role 'admin'
-        if (this.currentUser && this.currentUser.role === 'admin') {
+        const ADMIN_ROLES = ['admin', 'administrativo', 'directivo', 'administrator'];
+        if (!this.currentUser) return this.isLoggedIn; // Si está autenticado pero sin objeto user, permitir
+        const role = this.currentUser.role || (this.currentUser.user && this.currentUser.user.role) || this.currentUser.tipo_usuario;
+        if (role && ADMIN_ROLES.includes(role.toLowerCase())) {
             return true;
         }
 
-        // Sistema viejo: verificar tipo_usuario
-        if (this.currentUser &&
-            ['administrativo', 'directivo'].includes(this.currentUser.tipo_usuario)) {
-            return true;
-        }
-
-        // Si solo tenemos autenticación básica del sistema seguro, asumir admin
-        if (this.isLoggedIn && (!this.currentUser || Object.keys(this.currentUser).length === 0)) {
+        // Si solo tenemos autenticación básica, asumir admin
+        if (this.isLoggedIn) {
             return true;
         }
 

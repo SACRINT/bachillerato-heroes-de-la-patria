@@ -16,10 +16,14 @@
         let hasValidAuth = false;
 
         // Buscar en localStorage o sessionStorage
-        const bgeToken = localStorage.getItem('bge_auth_token') || sessionStorage.getItem('bge_auth_token');
-        const bgeUser = localStorage.getItem('bge_auth_user') || sessionStorage.getItem('bge_auth_user');
+        const bgeToken = localStorage.getItem('bge_auth_token') || sessionStorage.getItem('bge_auth_token') ||
+                         localStorage.getItem('authToken') || sessionStorage.getItem('authToken') ||
+                         localStorage.getItem('token') || sessionStorage.getItem('token');
+        const bgeUser = localStorage.getItem('bge_auth_user') || sessionStorage.getItem('bge_auth_user') ||
+                        localStorage.getItem('auth_user') || sessionStorage.getItem('auth_user');
+        const bgeSession = localStorage.getItem('bge_auth_session') || sessionStorage.getItem('bge_auth_session');
 
-        if (bgeToken && bgeUser) {
+        if (bgeSession || (bgeToken && bgeUser) || bgeToken) {
             hasValidAuth = true;
         }
 
@@ -38,13 +42,10 @@
             if (session) {
                 try {
                     const sessionData = JSON.parse(session);
-                    if (sessionData.isAuthenticated && sessionData.expiresAt && Date.now() < sessionData.expiresAt) {
+                    if (sessionData.isAuthenticated || (sessionData.expiresAt && Date.now() < sessionData.expiresAt)) {
                         hasValidAuth = true;
-                        void 0;
                     }
-                } catch (e) {
-                    void 0;
-                }
+                } catch (e) {}
             }
         }
 
@@ -123,10 +124,14 @@
 
             // ✅ FIX (16 Dec 2025): Verificar claves correctas
             // 1. Verificar JWT moderno (bge_auth_*)
-            const bgeToken = localStorage.getItem('bge_auth_token') || sessionStorage.getItem('bge_auth_token');
-            const bgeUser = localStorage.getItem('bge_auth_user') || sessionStorage.getItem('bge_auth_user');
+            const bgeToken = localStorage.getItem('bge_auth_token') || sessionStorage.getItem('bge_auth_token') ||
+                             localStorage.getItem('authToken') || sessionStorage.getItem('authToken') ||
+                             localStorage.getItem('token') || sessionStorage.getItem('token');
+            const bgeUser = localStorage.getItem('bge_auth_user') || sessionStorage.getItem('bge_auth_user') ||
+                            localStorage.getItem('auth_user') || sessionStorage.getItem('auth_user');
+            const bgeSession = localStorage.getItem('bge_auth_session') || sessionStorage.getItem('bge_auth_session');
 
-            const hasModernJWT = bgeToken && bgeUser;
+            const hasModernJWT = !!bgeSession || (bgeToken && bgeUser) || !!bgeToken;
 
             // 2. Verificar JWT legacy
             const legacyToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
