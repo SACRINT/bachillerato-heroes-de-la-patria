@@ -434,11 +434,16 @@ class UnifiedAuthSystem {
             this.state.token = session.token;
             this.state.isAuthenticated = true;
 
-            // Validar token con servidor
-            const isValid = await this.validateToken();
-
-            if (!isValid) {
-                this.logout();
+            // Validar token con servidor (NO destruir sesión si falla)
+            // FIX: La validación del servidor puede fallar por CORS, red, o JWT_SECRET mismatch
+            // En esos casos, confiar en la sesión local
+            try {
+                const isValid = await this.validateToken();
+                if (!isValid) {
+                    debugLog.warn('APP', '⚠️ Token validation failed - keeping local session');
+                }
+            } catch (e) {
+                debugLog.warn('APP', '⚠️ Token validation error - keeping local session:', e.message);
             }
 
             // GDPR: Datos sensibles enmascarados

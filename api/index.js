@@ -25,6 +25,9 @@ if (!process.env.NODE_ENV) {
 
 console.log('[VERCEL-API] Iniciando handler en NODE_ENV:', process.env.NODE_ENV);
 
+// JWT_SECRET: Usar SIEMPRE la misma constante para sign y verify
+const JWT_DEFAULT_SECRET = 'sipweb-bg-jwt-secret-2026-prod';
+
 // Importar directamente los componentes de server.js SIN ejecutar .listen()
 const express = require('express');
 const cors = require('cors');
@@ -698,7 +701,7 @@ app.post('/api/auth/login', async (req, res) => {
                 permissions: getPermissionsForRole(user.role)
             };
 
-            const jwtSecret = process.env.JWT_SECRET || 'sipweb-bg-jwt-secret-2026-production';
+            const jwtSecret = process.env.JWT_SECRET || JWT_DEFAULT_SECRET;
 
             const accessToken = jwt.sign(
                 { ...userPayload, type: 'access' },
@@ -944,7 +947,7 @@ app.get('/api/wallet', async (req, res) => {
 
         // Decodificar token para obtener userId
         const jwt = require('jsonwebtoken');
-        const jwtSecret = process.env.JWT_SECRET || 'vercel-secret-key-change-in-production';
+        const jwtSecret = process.env.JWT_SECRET || JWT_DEFAULT_SECRET;
 
         let decoded;
         try {
@@ -1101,7 +1104,7 @@ app.get('/api/iacoins/balance', async (req, res) => {
         }
 
         const jwt = require('jsonwebtoken');
-        const jwtSecret = process.env.JWT_SECRET || 'vercel-secret-key-change-in-production';
+        const jwtSecret = process.env.JWT_SECRET || JWT_DEFAULT_SECRET;
 
         let decoded;
         try {
@@ -1171,7 +1174,7 @@ app.get('/api/iacoins/achievements', async (req, res) => {
         }
 
         const jwt = require('jsonwebtoken');
-        const jwtSecret = process.env.JWT_SECRET || 'vercel-secret-key-change-in-production';
+        const jwtSecret = process.env.JWT_SECRET || JWT_DEFAULT_SECRET;
 
         let decoded;
         try {
@@ -1269,7 +1272,7 @@ app.get('/api/iacoins/challenges', async (req, res) => {
         }
 
         const jwt = require('jsonwebtoken');
-        const jwtSecret = process.env.JWT_SECRET || 'vercel-secret-key-change-in-production';
+        const jwtSecret = process.env.JWT_SECRET || JWT_DEFAULT_SECRET;
 
         let decoded;
         try {
@@ -1444,7 +1447,7 @@ app.get('/api/iacoins/transactions', async (req, res) => {
         }
 
         const jwt = require('jsonwebtoken');
-        const jwtSecret = process.env.JWT_SECRET || 'vercel-secret-key-change-in-production';
+        const jwtSecret = process.env.JWT_SECRET || JWT_DEFAULT_SECRET;
 
         let decoded;
         try {
@@ -1581,7 +1584,7 @@ app.get('/api/auth/profile', async (req, res) => {
         }
 
         const jwt = require('jsonwebtoken');
-        const jwtSecret = process.env.JWT_SECRET || 'vercel-secret-key-change-in-production';
+        const jwtSecret = process.env.JWT_SECRET || JWT_DEFAULT_SECRET;
 
         let decoded;
         try {
@@ -1724,7 +1727,7 @@ app.get('/api/students-auth/check', async (req, res) => {
         }
 
         const jwt = require('jsonwebtoken');
-        const jwtSecret = process.env.JWT_SECRET || 'vercel-secret-key-change-in-production';
+        const jwtSecret = process.env.JWT_SECRET || JWT_DEFAULT_SECRET;
 
         let decoded;
         try {
@@ -2411,7 +2414,7 @@ app.post('/api/teachers-portal/auth/login', async (req, res) => {
 
         // Demo: Aceptar cualquier email con contraseña válida
         const jwt = require('jsonwebtoken');
-        const jwtSecret = process.env.JWT_SECRET || 'vercel-secret-key-change-in-production';
+        const jwtSecret = process.env.JWT_SECRET || JWT_DEFAULT_SECRET;
 
         const token = jwt.sign(
             {
