@@ -1,5 +1,64 @@
 # CHANGELOG - SIPWEB-BG / EDUZONA EMS
 
+[v4.9.0] - 2026-09-02 (FASE 6 HUB 6: VIDA ESCOLAR - CALENDARIO + CONVOCATORIAS)
+
+**Tipo:** Feature / Visual / Hub Architecture / Mobile-First  
+**Estado:** ✅ HUB 6 COMPLETADO
+
+### Resumen:
+Unificación de calendario.html y convocatorias.html en una sola experiencia "Vida Escolar" con 3 pestañas maestras (Calendario, Convocatorias, Eventos). Bento Grid moderno, Mobile-First con touch targets mínimos de 48px. convocatorias.html redirige suavemente a calendario.html#convocatorias preservando URLs existentes.
+
+### Cambios Realizados:
+
+1. **calendario.html - Portal de Vida Escolar Unificado:**
+   - Hero premium con gradiente azul (consistente con HUB 3 y HUB 5).
+   - **3 Pestañas Maestras** (Nav-Pills grandes, mobile-friendly):
+     * "📅 Calendario" — Ciclo escolar 2024-2025, períodos académicos (4 cards), calendario interactivo (mes/lista), leyenda, acciones rápidas (descargar PDF, Google Calendar, compartir, recordatorios).
+     * "📢 Convocatorias" — Inscripciones destacadas (alert-primary), 6 convocatorias activas (Beca Excelencia, Concurso CTIM, Intercambio, Servicio Social, Talleres, Curso de Verano), 4 próximas convocatorias, formulario suscripción notificaciones.
+     * "⭐ Eventos" — 6 tipos de eventos (académicos, sociales, cívicos, administrativos, suspensiones, mantenimiento), 6 eventos próximos (ceremonia cívica, festival cultural, olimpiada conocimiento, torneo intergrupos, festival primavera, graduación).
+   - **Bento Grid**: Tarjetas modernas con iconos de color, bordes redondeados 1rem, sombras sutiles, hover effects.
+   - **Touch targets**: Todos los botones `min-height: 48px` con clase `touch-btn`.
+   - **Mobile-First**: Bento Grid responsive con `minmax(280px, 1fr)`, breakpoints tablet/desktop.
+   - **CMS bindings**: `data-section-key` en cada sección (ciclo_escolar, periodos_academicos, calendario_interactivo, inscripciones, convocatorias_activas, proximas_convocatorias, tipos_eventos, eventos_proximos).
+   - **Modales conservados**: Evento detallado + Recordatorios (reutilizados del calendario original).
+   - **CSP Compliant**: Cero scripts inline, todos los handlers en `calendario-hub.js`.
+
+2. **convocatorias.html - Página Redirect:**
+   - Banner informativo con icono y countdown.
+   - Contador regresivo visible (5 segundos).
+   - Botón directo "Ir ahora a Convocatorias".
+   - **Auto-redirect** a `calendario.html#convocatorias`.
+   - Preserva URL existente (no rompe bookmarks ni enlaces externos).
+   - Estilo consistente con padres.html.
+
+3. **JS Externos (CSP Compliant):**
+   - `calendario-hub.js` — Tab switching por hash, event delegation (data-action), quick actions (downloadCalendar, exportToGoogle, shareCalendar, setReminders, addToPersonalCalendar, saveReminders), hash change listener.
+   - `convocatorias-redirect.js` — Countdown visual y auto-redirect.
+
+4. **Seed Update (seed-page-sections.js):**
+   - Calendario: 8 secciones (antes 3) — ciclo_escolar, periodos_academicos, calendario_interactivo, inscripciones, convocatorias_activas, proximas_convocatorias, tipos_eventos, eventos_proximos.
+   - Convocatorias: Reducido a 1 sección redirect (antes 3).
+
+### Archivos Modificados:
+- `public/calendario.html` - Portal Vida Escolar unificado (815→~750 líneas, redesigned)
+- `public/convocatorias.html` - Redirect page (1048→~130 líneas, -88%)
+- `backend/scripts/seed-page-sections.js` - 8 secciones calendario + 1 redirect convocatorias
+
+### Archivos Creados:
+- `public/js/calendario-hub.js` — Tab switching + event handlers (CSP compliant)
+- `public/js/convocatorias-redirect.js` — Countdown + auto-redirect (CSP compliant)
+
+### Arquitectura de 7 Hubs (Referencia):
+- Hub 1: Portada (index.html) - ✅ FASE 4.2
+- Hub 2: Identidad (conocenos.html) - ✅ FASE 4.2
+- Hub 3: Oferta Educativa (oferta-educativa.html) - ✅ FASE 5
+- Hub 4: Ventanilla Digital (servicios.html) - ✅ FASE 4.2 + 4.3
+- Hub 5: Portal Escolar (estudiantes.html + padres.html) - ✅ FASE 5
+- **Hub 6: Vida Escolar (calendario.html + convocatorias.html) - ✅ FASE 6**
+- Hub 7: Transparencia (contacto.html) - Pendiente
+
+---
+
 [v4.8.0] - 2026-09-02 (FASE 5 HUB 5: PORTAL ESCOLAR UNIFICADO)
 
 **Tipo:** Feature / Visual / Hub Architecture / Mobile-First  
@@ -49,7 +108,7 @@ Unificación de estudiantes.html y padres.html en una sola experiencia "Portal E
 - Hub 3: Oferta Educativa (oferta-educativa.html) - ✅ FASE 5
 - Hub 4: Ventanilla Digital (servicios.html) - ✅ FASE 4.2 + 4.3
 - **Hub 5: Portal Escolar (estudiantes.html + padres.html) - ✅ FASE 5**
-- Hub 6: Vida Escolar (calendario.html) - Pendiente
+- **Hub 6: Vida Escolar (calendario.html + convocatorias.html) - ✅ FASE 6**
 - Hub 7: Transparencia (contacto.html) - Pendiente
 
 ---
@@ -113,7 +172,7 @@ Rediseño completo de la página oferta-educativa.html siguiendo la arquitectura
 - **Hub 3: Oferta Educativa (oferta-educativa.html) - ✅ FASE 5**
 - Hub 4: Ventanilla Digital (servicios.html) - ✅ FASE 4.2 + 4.3
 - Hub 5: Portal Escolar (estudiantes.html + padres.html) - Pendiente unificación
-- Hub 6: Vida Escolar (calendario.html) - Pendiente
+- **Hub 6: Vida Escolar (calendario.html + convocatorias.html) - ✅ FASE 6**
 - Hub 7: Transparencia (contacto.html) - Pendiente
 
 ---

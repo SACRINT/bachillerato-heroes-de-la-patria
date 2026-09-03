@@ -4,26 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title" data-base-title="Calendario Escolar Interactivo" data-tenant-field="school_name">Calendario Escolar - Bachillerato General</title>
+    <title id="page-title" data-base-title="Vida Escolar" data-tenant-field="school_name">Vida Escolar - Bachillerato General</title>
 
     <!-- SEO Meta Tags -->
     <meta name="description" id="page-description" data-tenant-field="mision"
-        content="Calendario escolar interactivo del bachillerato. Consulta fechas importantes, eventos, evaluaciones y actividades del ciclo escolar.">
+        content="Calendario escolar interactivo, convocatorias y eventos del bachillerato. Consulta fechas importantes, oportunidades y actividades del ciclo escolar.">
     <meta name="keywords"
-        content="calendario escolar, fechas importantes, eventos académicos, evaluaciones, actividades escolares, bachillerato">
+        content="calendario escolar, convocatorias, eventos, becas, inscripciones, actividades escolares, bachillerato">
     <meta name="author" content="Bachillerato General">
 
     <!-- Open Graph -->
-    <meta property="og:title" content="Calendario Escolar - Bachillerato General">
-    <meta property="og:description" content="Calendario interactivo con todas las fechas importantes del ciclo escolar">
+    <meta property="og:title" content="Vida Escolar - Bachillerato General">
+    <meta property="og:description" content="Calendario, convocatorias y eventos del bachillerato">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://ejemplo.edu.mx/calendario.html">
-    <meta property="og:image" content="https://ejemplo.edu.mx/images/logo-bge.webp">
-
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Calendario Escolar - Bachillerato General">
-    <meta name="twitter:description" content="Consulta el calendario escolar interactivo con todos los eventos del año">
 
     <!-- Preconnects -->
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
@@ -45,40 +38,193 @@
     <link rel="apple-touch-icon" href="/images/logo-bachillerato-HDLP.webp">
     <meta name="theme-color" content="#1976D2">
 
-    <!-- Breadcrumb Schema -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-            {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Inicio",
-                "item": "https://ejemplo.edu.mx/"
-            },
-            {
-                "@type": "ListItem",
-                "position": 2,
-                "name": "Información Institucional",
-                "item": "https://ejemplo.edu.mx/transparencia.html"
-            },
-            {
-                "@type": "ListItem",
-                "position": 3,
-                "name": "Calendario Escolar",
-                "item": "https://ejemplo.edu.mx/calendario.html"
-            }
-        ]
-    }
-    </script>
-    <script src="js/meta-updater.js" defer></script>
-    <!-- ✅ FIX (18 Nov 2025): Header/Footer styles loaded globally -->
-    <!-- These MUST be in <head> so they apply BEFORE dynamic header/footer injection -->
+    <!-- Header/Footer Styles -->
     <link rel="stylesheet" href="css/global-layout.css">
     <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
     <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
 
+    <script src="js/meta-updater.js" defer></script>
+
+    <style>
+        /* HUB 6 - Vida Escolar Styles */
+
+        /* Nav-Pills master tabs */
+        .nav-pills-master {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.25rem;
+            background: var(--bs-light, #f8f9fa);
+            border-radius: 1rem;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .nav-pills-master .nav-link {
+            flex: 1;
+            min-width: 0;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            transition: background 0.2s ease, color 0.2s ease;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .nav-pills-master .nav-link.active {
+            background: var(--bs-primary);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
+        }
+
+        /* Bento Grid */
+        .bento-grid {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        }
+        @media (min-width: 768px) {
+            .bento-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (min-width: 992px) {
+            .bento-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        .bento-card {
+            background: #fff;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: none;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            min-height: 48px;
+        }
+        .bento-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        .bento-card .bento-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: #fff;
+            margin-bottom: 1rem;
+            flex-shrink: 0;
+        }
+        .bento-card .bento-title {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .bento-card .bento-text {
+            color: var(--bs-secondary-color, #6c757d);
+            font-size: 0.875rem;
+            line-height: 1.5;
+            flex: 1;
+        }
+
+        /* Touch buttons */
+        .touch-btn {
+            min-height: 48px;
+            min-width: 48px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Period cards */
+        .period-card {
+            background: #fff;
+            border-radius: 1rem;
+            border: none;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+            transition: transform 0.2s ease;
+        }
+        .period-card:hover {
+            transform: translateY(-2px);
+        }
+        .period-card .period-header {
+            padding: 1rem 1.5rem;
+            color: #fff;
+            font-weight: 700;
+        }
+        .period-card .period-body {
+            padding: 1.25rem 1.5rem;
+        }
+        .period-card .period-body li {
+            padding: 0.35rem 0;
+            font-size: 0.875rem;
+        }
+
+        /* Event modal */
+        .modal-event-date {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--bs-primary);
+            color: #fff;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        /* Subscription form */
+        .subscription-card {
+            background: linear-gradient(135deg, var(--bs-primary), #1565c0);
+            border-radius: 1rem;
+            color: #fff;
+        }
+        .subscription-card .form-control,
+        .subscription-card .form-select {
+            border-radius: 0.75rem;
+            min-height: 48px;
+        }
+
+        /* Quick actions */
+        .quick-action-btn {
+            border-radius: 1rem;
+            padding: 1rem;
+            min-height: 48px;
+            border: 2px solid var(--bs-primary);
+            background: transparent;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+        .quick-action-btn:hover {
+            background: var(--bs-primary);
+            color: #fff;
+        }
+
+        /* Calendar legend */
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        /* Dark mode */
+        body.dark-mode .bento-card,
+        body.dark-mode .period-card {
+            background: #2d2d2d;
+            border-color: #404040;
+        }
+        body.dark-mode .nav-pills-master {
+            background: #2d2d2d;
+        }
+        body.dark-mode .nav-pills-master .nav-link:not(.active) {
+            color: #adb5bd;
+        }
+    </style>
 </head>
 
 <body>
@@ -100,10 +246,7 @@
                             <span class="visually-hidden">Inicio</span>
                         </a>
                     </li>
-                    <li class="breadcrumb-item">
-                        <a href="transparencia.html">Información Institucional</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">Calendario Escolar</li>
+                    <li class="breadcrumb-item active" aria-current="page">Vida Escolar</li>
                 </ol>
             </div>
         </nav>
@@ -115,481 +258,703 @@
                     <div class="col-lg-8">
                         <h1 class="hero-title display-4 fw-bold mb-3">
                             <i class="fas fa-calendar-alt me-3" aria-hidden="true"></i>
-                            Calendario Escolar Interactivo
+                            Vida Escolar
                         </h1>
                         <p class="hero-subtitle lead mb-4">
-                            Explora las fechas importantes del ciclo escolar 2024-2025 con nuestro calendario
-                            interactivo.
-                            Filtra eventos, consulta detalles y mantente actualizado.
+                            Calendario interactivo, convocatorias vigentes y eventos de nuestra comunidad educativa.
+                            Mantente informado de todo lo que sucede en el bachillerato.
                         </p>
                         <div class="hero-badges d-flex flex-wrap gap-2 justify-content-start">
-                            <a href="#ciclo-escolar" class="badge bg-light text-primary fs-6 text-decoration-none">
+                            <span class="badge bg-light text-primary fs-6">
                                 <i class="fas fa-calendar-check me-1" aria-hidden="true"></i>
-                                Ciclo Escolar 2024-2025
-                            </a>
-                            <a href="#periodos-academicos"
-                                class="badge bg-light text-primary fs-6 text-decoration-none">
-                                <i class="fas fa-clock me-1" aria-hidden="true"></i>
-                                Períodos Académicos
-                            </a>
-                            <a href="#tipos-eventos" class="badge bg-light text-primary fs-6 text-decoration-none">
-                                <i class="fas fa-tags me-1" aria-hidden="true"></i>
-                                Tipos de Eventos
-                            </a>
-                            <a href="#calendario-interactivo"
-                                class="badge bg-light text-primary fs-6 text-decoration-none">
-                                <i class="fas fa-calendar-alt me-1" aria-hidden="true"></i>
-                                Calendario Interactivo
-                            </a>
-                            <a href="#informacion-general"
-                                class="badge bg-light text-primary fs-6 text-decoration-none">
-                                <i class="fas fa-info-circle me-1" aria-hidden="true"></i>
-                                Información General
-                            </a>
+                                Ciclo 2024-2025
+                            </span>
+                            <span class="badge bg-light text-success fs-6">
+                                <i class="fas fa-bullhorn me-1" aria-hidden="true"></i>
+                                Convocatorias Activas
+                            </span>
+                            <span class="badge bg-light text-warning fs-6">
+                                <i class="fas fa-star me-1" aria-hidden="true"></i>
+                                Eventos Próximos
+                            </span>
                         </div>
                     </div>
-                    <div class="col-lg-4 text-center">
+                    <div class="col-lg-4 text-center d-none d-lg-block">
                         <div class="hero-icon display-1 text-white-50">
-                            <i class="fas fa-calendar-week" aria-hidden="true"></i>
+                            <i class="fas fa-school" aria-hidden="true"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Información General del Ciclo Escolar -->
-        <section id="ciclo-escolar" class="py-5" data-section-key="ciclo_escolar">
+        <!-- Master Navigation Tabs -->
+        <section class="py-4 bg-light sticky-top" style="z-index: 1020;">
             <div class="container">
-                <div class="row">
-                    <div class="col-12 text-center mb-5">
-                        <h2 class="fw-bold">Ciclo Escolar 2024-2025</h2>
-                        <p class="text-muted">Información general y fechas importantes del año académico</p>
+                <nav aria-label="Navegación principal de Vida Escolar">
+                    <div class="nav-pills-master" id="masterTabs" role="tablist">
+                        <button class="nav-link active" id="tab-calendario" data-bs-toggle="pill"
+                            data-bs-target="#panel-calendario" type="button" role="tab"
+                            aria-controls="panel-calendario" aria-selected="true">
+                            <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                            <span>Calendario</span>
+                        </button>
+                        <button class="nav-link" id="tab-convocatorias" data-bs-toggle="pill"
+                            data-bs-target="#panel-convocatorias" type="button" role="tab"
+                            aria-controls="panel-convocatorias" aria-selected="false">
+                            <i class="fas fa-bullhorn" aria-hidden="true"></i>
+                            <span>Convocatorias</span>
+                        </button>
+                        <button class="nav-link" id="tab-eventos" data-bs-toggle="pill"
+                            data-bs-target="#panel-eventos" type="button" role="tab"
+                            aria-controls="panel-eventos" aria-selected="false">
+                            <i class="fas fa-star" aria-hidden="true"></i>
+                            <span>Eventos</span>
+                        </button>
                     </div>
-                </div>
-                <div class="row g-4">
-                    <div class="col-lg-4">
-                        <div class="card h-100 border-0 shadow-sm">
-                            <div class="card-body text-center p-4">
-                                <div class="mb-3">
-                                    <i class="fas fa-play-circle fa-3x text-success"></i>
-                                </div>
-                                <h5 class="card-title">Inicio de Clases</h5>
-                                <p class="card-text">28 de Agosto de 2024</p>
-                                <small class="text-muted">Primer día del ciclo escolar</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="card h-100 border-0 shadow-sm">
-                            <div class="card-body text-center p-4">
-                                <div class="mb-3">
-                                    <i class="fas fa-graduation-cap fa-3x text-primary"></i>
-                                </div>
-                                <h5 class="card-title">Fin de Clases</h5>
-                                <p class="card-text">15 de Julio de 2025</p>
-                                <small class="text-muted">Término del año académico</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="card h-100 border-0 shadow-sm">
-                            <div class="card-body text-center p-4">
-                                <div class="mb-3">
-                                    <i class="fas fa-calendar-check fa-3x text-warning"></i>
-                                </div>
-                                <h5 class="card-title">Días ábiles</h5>
-                                <p class="card-text">200 días</p>
-                                <small class="text-muted">Días efectivos de clase</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                </nav>
             </div>
         </section>
 
-        <!-- Períodos Académicos -->
-        <section id="periodos-academicos" class="py-5 bg-light" data-section-key="periodos_academicos">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12 text-center mb-5">
-                        <h2 class="fw-bold">Períodos Académicos</h2>
-                        <p class="text-muted">División del año escolar en períodos de evaluación</p>
-                    </div>
-                </div>
-                <div class="row g-4">
-                    <div class="col-md-6 col-lg-3">
-                        <div class="card border-0 shadow-sm h-100">
-                            <div class="card-header bg-primary text-white text-center">
-                                <h5 class="mb-0">1er Parcial</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="text-center mb-3">
-                                    <i class="fas fa-calendar-alt fa-2x text-primary"></i>
-                                </div>
-                                <ul class="list-unstyled">
-                                    <li><strong>Inicio:</strong> 28 Ago 2024</li>
-                                    <li><strong>Fin:</strong> 11 Oct 2024</li>
-                                    <li><strong>Evaluaciones:</strong> 7-11 Oct</li>
-                                    <li><strong>Entrega:</strong> 18 Oct 2024</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-3">
-                        <div class="card border-0 shadow-sm h-100">
-                            <div class="card-header bg-success text-white text-center">
-                                <h5 class="mb-0">2do Parcial</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="text-center mb-3">
-                                    <i class="fas fa-calendar-alt fa-2x text-success"></i>
-                                </div>
-                                <ul class="list-unstyled">
-                                    <li><strong>Inicio:</strong> 14 Oct 2024</li>
-                                    <li><strong>Fin:</strong> 29 Nov 2024</li>
-                                    <li><strong>Evaluaciones:</strong> 25-29 Nov</li>
-                                    <li><strong>Entrega:</strong> 6 Dic 2024</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-3">
-                        <div class="card border-0 shadow-sm h-100">
-                            <div class="card-header bg-warning text-dark text-center">
-                                <h5 class="mb-0">3er Parcial</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="text-center mb-3">
-                                    <i class="fas fa-calendar-alt fa-2x text-warning"></i>
-                                </div>
-                                <ul class="list-unstyled">
-                                    <li><strong>Inicio:</strong> 7 Ene 2025</li>
-                                    <li><strong>Fin:</strong> 21 Feb 2025</li>
-                                    <li><strong>Evaluaciones:</strong> 17-21 Feb</li>
-                                    <li><strong>Entrega:</strong> 28 Feb 2025</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-3">
-                        <div class="card border-0 shadow-sm h-100">
-                            <div class="card-header bg-info text-white text-center">
-                                <h5 class="mb-0">Evaluación Final</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="text-center mb-3">
-                                    <i class="fas fa-calendar-check fa-2x text-info"></i>
-                                </div>
-                                <ul class="list-unstyled">
-                                    <li><strong>Inicio:</strong> 3 Mar 2025</li>
-                                    <li><strong>Fin:</strong> 15 Jul 2025</li>
-                                    <li><strong>Evaluaciones:</strong> 7-11 Jul</li>
-                                    <li><strong>Entrega:</strong> 15 Jul 2025</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        <!-- Tab Panels -->
+        <div class="tab-content">
 
-        <!-- Tipos de Eventos -->
-        <section id="tipos-eventos" class="py-5" data-section-key="tipos_eventos">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12 text-center mb-5">
-                        <h2 class="fw-bold">Tipos de Eventos</h2>
-                        <p class="text-muted">Conoce los diferentes tipos de actividades programadas</p>
+            <!-- ==================== PANEL 1: CALENDARIO ESCOLAR ==================== -->
+            <div class="tab-pane fade show active" id="panel-calendario" role="tabpanel"
+                aria-labelledby="tab-calendario">
+
+                <!-- Ciclo Escolar Info -->
+                <section id="ciclo-escolar" class="py-5" data-section-key="ciclo_escolar">
+                    <div class="container">
+                        <div class="text-center mb-4">
+                            <h2 class="fw-bold">Ciclo Escolar 2024-2025</h2>
+                            <p class="text-muted">Información general del año académico</p>
+                        </div>
+                        <div class="bento-grid">
+                            <div class="bento-card">
+                                <div class="bento-icon bg-success"><i class="fas fa-play-circle"></i></div>
+                                <div class="bento-title">Inicio de Clases</div>
+                                <div class="bento-text">28 de Agosto de 2024</div>
+                            </div>
+                            <div class="bento-card">
+                                <div class="bento-icon bg-primary"><i class="fas fa-graduation-cap"></i></div>
+                                <div class="bento-title">Fin de Clases</div>
+                                <div class="bento-text">15 de Julio de 2025</div>
+                            </div>
+                            <div class="bento-card">
+                                <div class="bento-icon bg-warning"><i class="fas fa-calendar-day"></i></div>
+                                <div class="bento-title">Días Ábiles</div>
+                                <div class="bento-text">200 días de clase efectivos</div>
+                            </div>
+                            <div class="bento-card">
+                                <div class="bento-icon bg-info"><i class="fas fa-clipboard-check"></i></div>
+                                <div class="bento-title">Evaluaciones</div>
+                                <div class="bento-text">3 parciales + evaluación final</div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="row g-4">
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card border-0 shadow-sm h-100 text-center">
-                            <div class="card-body p-4">
-                                <div class="mb-3">
-                                    <span class="badge bg-primary fs-5 p-3 rounded-circle">
-                                        <i class="fas fa-book-open"></i>
+                </section>
+
+                <!-- Períodos Académicos -->
+                <section id="periodos-academicos" class="py-5 bg-light" data-section-key="periodos_academicos">
+                    <div class="container">
+                        <div class="text-center mb-4">
+                            <h2 class="fw-bold">Períodos Académicos</h2>
+                            <p class="text-muted">División del año escolar en períodos de evaluación</p>
+                        </div>
+                        <div class="row g-4">
+                            <div class="col-md-6 col-lg-3">
+                                <div class="period-card h-100">
+                                    <div class="period-header bg-primary text-center">1er Parcial</div>
+                                    <div class="period-body">
+                                        <ul class="list-unstyled mb-0">
+                                            <li><strong>Inicio:</strong> 28 Ago 2024</li>
+                                            <li><strong>Fin:</strong> 11 Oct 2024</li>
+                                            <li><strong>Evaluaciones:</strong> 7-11 Oct</li>
+                                            <li><strong>Entrega:</strong> 18 Oct 2024</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-3">
+                                <div class="period-card h-100">
+                                    <div class="period-header bg-success text-center">2do Parcial</div>
+                                    <div class="period-body">
+                                        <ul class="list-unstyled mb-0">
+                                            <li><strong>Inicio:</strong> 14 Oct 2024</li>
+                                            <li><strong>Fin:</strong> 29 Nov 2024</li>
+                                            <li><strong>Evaluaciones:</strong> 25-29 Nov</li>
+                                            <li><strong>Entrega:</strong> 6 Dic 2024</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-3">
+                                <div class="period-card h-100">
+                                    <div class="period-header bg-warning text-dark text-center">3er Parcial</div>
+                                    <div class="period-body">
+                                        <ul class="list-unstyled mb-0">
+                                            <li><strong>Inicio:</strong> 7 Ene 2025</li>
+                                            <li><strong>Fin:</strong> 21 Feb 2025</li>
+                                            <li><strong>Evaluaciones:</strong> 17-21 Feb</li>
+                                            <li><strong>Entrega:</strong> 28 Feb 2025</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-3">
+                                <div class="period-card h-100">
+                                    <div class="period-header bg-info text-center">Evaluación Final</div>
+                                    <div class="period-body">
+                                        <ul class="list-unstyled mb-0">
+                                            <li><strong>Inicio:</strong> 3 Mar 2025</li>
+                                            <li><strong>Fin:</strong> 15 Jul 2025</li>
+                                            <li><strong>Evaluaciones:</strong> 7-11 Jul</li>
+                                            <li><strong>Entrega:</strong> 15 Jul 2025</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Calendario Interactivo -->
+                <section id="calendario-interactivo" class="py-5">
+                    <div class="container">
+                        <div class="text-center mb-4">
+                            <h2 class="fw-bold">Calendario Interactivo</h2>
+                            <p class="text-muted">Explora las fechas importantes del ciclo escolar</p>
+                        </div>
+
+                        <!-- Calendar Controls -->
+                        <div class="row align-items-center mb-4 g-3">
+                            <div class="col-lg-6">
+                                <div class="d-flex align-items-center flex-wrap gap-3">
+                                    <div class="d-flex align-items-center">
+                                        <button class="btn btn-outline-primary touch-btn me-2" id="prevMonth"
+                                            aria-label="Mes anterior">
+                                            <i class="fas fa-chevron-left"></i>
+                                        </button>
+                                        <h4 class="mb-0 mx-2" id="currentMonthYear">Septiembre 2024</h4>
+                                        <button class="btn btn-outline-primary touch-btn ms-2" id="nextMonth"
+                                            aria-label="Mes siguiente">
+                                            <i class="fas fa-chevron-right"></i>
+                                        </button>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-sm btn-primary touch-btn active" data-view="month"
+                                            id="monthViewBtn">
+                                            <i class="fas fa-calendar-alt me-1"></i>Mes
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-primary touch-btn" data-view="list"
+                                            id="listViewBtn">
+                                            <i class="fas fa-list me-1"></i>Lista
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 offset-lg-2">
+                                <select class="form-select touch-btn" id="eventFilter"
+                                    aria-label="Filtrar eventos por tipo">
+                                    <option value="">Todos los eventos</option>
+                                    <option value="academic">Académicos</option>
+                                    <option value="holiday">Vacaciones</option>
+                                    <option value="evaluation">Evaluaciones</option>
+                                    <option value="cultural">Culturales</option>
+                                    <option value="sports">Deportivos</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Calendar Grid -->
+                        <div id="interactiveCalendar" class="mb-4"></div>
+
+                        <!-- List View -->
+                        <div id="listView" class="d-none">
+                            <div id="eventsList"></div>
+                        </div>
+
+                        <!-- Legend -->
+                        <div class="d-flex flex-wrap justify-content-center gap-3 mt-4">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="legend-dot bg-info"></span>
+                                <small>Académicos</small>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="legend-dot bg-success"></span>
+                                <small>Vacaciones</small>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="legend-dot bg-warning"></span>
+                                <small>Evaluaciones</small>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="legend-dot bg-danger"></span>
+                                <small>Cívicos</small>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="legend-dot bg-secondary"></span>
+                                <small>Culturales</small>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="legend-dot bg-dark"></span>
+                                <small>Deportivos</small>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Acciones Rápidas -->
+                <section class="py-5 bg-light">
+                    <div class="container">
+                        <div class="text-center mb-4">
+                            <h3 class="fw-bold">Acciones Rápidas</h3>
+                        </div>
+                        <div class="row g-3 justify-content-center">
+                            <div class="col-6 col-md-3">
+                                <button class="btn quick-action-btn w-100 touch-btn" data-action="downloadCalendar">
+                                    <i class="fas fa-download fa-2x d-block mb-2"></i>
+                                    <strong>Descargar</strong>
+                                    <small class="d-block text-muted">Calendario PDF</small>
+                                </button>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <button class="btn quick-action-btn w-100 touch-btn" data-action="exportToGoogle">
+                                    <i class="fab fa-google fa-2x d-block mb-2"></i>
+                                    <strong>Google Calendar</strong>
+                                    <small class="d-block text-muted">Sincronizar eventos</small>
+                                </button>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <button class="btn quick-action-btn w-100 touch-btn" data-action="shareCalendar">
+                                    <i class="fas fa-share-alt fa-2x d-block mb-2"></i>
+                                    <strong>Compartir</strong>
+                                    <small class="d-block text-muted">Enviar a contactos</small>
+                                </button>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <button class="btn quick-action-btn w-100 touch-btn" data-action="setReminders">
+                                    <i class="fas fa-bell fa-2x d-block mb-2"></i>
+                                    <strong>Recordatorios</strong>
+                                    <small class="d-block text-muted">Configurar alertas</small>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- ==================== PANEL 2: CONVOCATORIAS Y AVISOS ==================== -->
+            <div class="tab-pane fade" id="panel-convocatorias" role="tabpanel"
+                aria-labelledby="tab-convocatorias">
+
+                <!-- Inscripciones Destacadas -->
+                <section id="inscripciones-2025" class="py-5" data-section-key="inscripciones">
+                    <div class="container">
+                        <div class="alert alert-primary border-0 shadow-sm" role="alert">
+                            <div class="row align-items-center">
+                                <div class="col-auto d-none d-sm-block">
+                                    <i class="fas fa-bullhorn fa-3x"></i>
+                                </div>
+                                <div class="col">
+                                    <h4 class="alert-heading mb-2">
+                                        <i class="fas fa-star me-2"></i>¡Convocatoria Destacada!
+                                    </h4>
+                                    <h3 class="fw-bold mb-2">Proceso de Inscripción Ciclo 2025-2026</h3>
+                                    <p class="mb-3">
+                                        ¡Ya están abiertas las inscripciones para el nuevo ciclo escolar!
+                                        Forma parte de la familia
+                                        <span data-tenant-field="school_name">"Héroes de la Patria"</span>
+                                        y construye tu futuro académico con nosotros.
+                                    </p>
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        <span class="badge bg-white text-primary fs-6">
+                                            <i class="fas fa-calendar me-1"></i>Fecha límite: 31 Agosto 2025
+                                        </span>
+                                        <span class="badge bg-white text-primary fs-6">
+                                            <i class="fas fa-users me-1"></i>Cupos disponibles
+                                        </span>
+                                        <span class="badge bg-white text-primary fs-6">
+                                            <i class="fas fa-check me-1"></i>Sin examen de admisión
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <a href="oferta-educativa.html#admisiones"
+                                        class="btn btn-light btn-lg fw-bold touch-btn">
+                                        <i class="fas fa-arrow-right me-2"></i>Ver Detalles
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Convocatorias Activas -->
+                <section id="convocatorias-activas" class="py-5 bg-light" data-section-key="convocatorias_activas">
+                    <div class="container">
+                        <div class="text-center mb-4">
+                            <h2 class="fw-bold text-primary mb-3">Convocatorias Activas</h2>
+                            <p class="lead text-muted">Oportunidades disponibles para nuestra comunidad</p>
+                        </div>
+                        <div class="bento-grid">
+                            <!-- Beca de Excelencia -->
+                            <div class="bento-card">
+                                <div class="bento-icon bg-success"><i class="fas fa-medal"></i></div>
+                                <div class="bento-title">Beca de Excelencia</div>
+                                <div class="bento-text">Para estudiantes destacados con promedio 9.0+. 50% descuento en cuotas.</div>
+                                <div class="mt-2">
+                                    <small class="text-muted"><i class="fas fa-calendar me-1"></i>Vigencia: 15 Sept 2025</small>
+                                </div>
+                                <a href="documents/convocatoria-beca-excelencia.pdf" target="_blank" rel="noopener"
+                                    class="btn btn-success btn-sm mt-3 touch-btn">
+                                    <i class="fas fa-download me-2"></i>Descargar
+                                </a>
+                            </div>
+
+                            <!-- Concurso CTIM -->
+                            <div class="bento-card">
+                                <div class="bento-icon bg-info"><i class="fas fa-flask"></i></div>
+                                <div class="bento-title">Concurso CTIM</div>
+                                <div class="bento-text">Feria de Ciencias y Tecnología. Premios hasta $10,000 pesos.</div>
+                                <div class="mt-2">
+                                    <small class="text-muted"><i class="fas fa-calendar me-1"></i>Registro: 30 Oct 2025</small>
+                                </div>
+                                <a href="documents/convocatoria-concurso-ciencias.pdf" target="_blank" rel="noopener"
+                                    class="btn btn-info btn-sm mt-3 touch-btn">
+                                    <i class="fas fa-download me-2"></i>Descargar
+                                </a>
+                            </div>
+
+                            <!-- Intercambio Académico -->
+                            <div class="bento-card">
+                                <div class="bento-icon bg-warning"><i class="fas fa-plane"></i></div>
+                                <div class="bento-title">Intercambio Cultural</div>
+                                <div class="bento-text">Programa de intercambio internacional. Requisito: promedio 8.5+.</div>
+                                <div class="mt-2">
+                                    <small class="text-muted"><i class="fas fa-calendar me-1"></i>Aplicación: 15 Nov 2025</small>
+                                </div>
+                                <a href="documents/convocatoria-intercambio.pdf" target="_blank" rel="noopener"
+                                    class="btn btn-warning btn-sm mt-3 touch-btn">
+                                    <i class="fas fa-download me-2"></i>Descargar
+                                </a>
+                            </div>
+
+                            <!-- Servicio Social -->
+                            <div class="bento-card">
+                                <div class="bento-icon bg-primary"><i class="fas fa-hands-helping"></i></div>
+                                <div class="bento-title">Servicio Social</div>
+                                <div class="bento-text">Programa comunitario. 240 horas mínimo. Carta oficial de reconocimiento.</div>
+                                <div class="mt-2">
+                                    <small class="text-muted"><i class="fas fa-clock me-1"></i>Permanente todo el año</small>
+                                </div>
+                                <a href="documents/convocatoria-servicio-social.pdf" target="_blank" rel="noopener"
+                                    class="btn btn-primary btn-sm mt-3 touch-btn">
+                                    <i class="fas fa-download me-2"></i>Descargar
+                                </a>
+                            </div>
+
+                            <!-- Talleres Extracurriculares -->
+                            <div class="bento-card">
+                                <div class="bento-icon bg-danger"><i class="fas fa-palette"></i></div>
+                                <div class="bento-title">Talleres Extracurriculares</div>
+                                <div class="bento-text">Arte, música, danza, teatro, deportes y más. Gratuitos.</div>
+                                <div class="mt-2">
+                                    <small class="text-muted"><i class="fas fa-calendar me-1"></i>Inicio: Cada semestre</small>
+                                </div>
+                                <a href="documents/convocatoria-talleres.pdf" target="_blank" rel="noopener"
+                                    class="btn btn-danger btn-sm mt-3 touch-btn">
+                                    <i class="fas fa-download me-2"></i>Descargar
+                                </a>
+                            </div>
+
+                            <!-- Curso de Verano -->
+                            <div class="bento-card">
+                                <div class="bento-icon bg-success"><i class="fas fa-sun"></i></div>
+                                <div class="bento-title">Curso de Verano</div>
+                                <div class="bento-text">Reforzar conocimientos en vacaciones. $500 por materia.</div>
+                                <div class="mt-2">
+                                    <small class="text-muted"><i class="fas fa-calendar me-1"></i>Julio - Agosto 2025</small>
+                                </div>
+                                <a href="documents/convocatoria-curso-verano.pdf" target="_blank" rel="noopener"
+                                    class="btn btn-success btn-sm mt-3 touch-btn">
+                                    <i class="fas fa-download me-2"></i>Descargar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Próximas Convocatorias -->
+                <section id="proximas-convocatorias" class="py-5" data-section-key="proximas_convocatorias">
+                    <div class="container">
+                        <div class="text-center mb-4">
+                            <h2 class="fw-bold text-primary mb-3">Próximas Convocatorias</h2>
+                            <p class="lead text-muted">Mantente atento a estas oportunidades próximas</p>
+                        </div>
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="bento-card h-100">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="bento-icon bg-warning"><i class="fas fa-award"></i></div>
+                                        <div class="ms-3">
+                                            <div class="bento-title mb-0">Olimpiada de Matemáticas</div>
+                                            <small class="text-muted">Próximamente en 2025</small>
+                                        </div>
+                                    </div>
+                                    <div class="bento-text">Competencia estatal de matemáticas. Clasificación a competencia nacional.</div>
+                                    <span class="badge bg-warning text-dark mt-3">
+                                        <i class="fas fa-clock me-1"></i>En preparación
                                     </span>
                                 </div>
-                                <h5 class="card-title">Académicos</h5>
-                                <p class="card-text text-muted">Evaluaciones, entregas de calificaciones, juntas
-                                    académicas</p>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="bento-card h-100">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="bento-icon bg-info"><i class="fas fa-microphone"></i></div>
+                                        <div class="ms-3">
+                                            <div class="bento-title mb-0">Concurso de Oratoria</div>
+                                            <small class="text-muted">Marzo 2025</small>
+                                        </div>
+                                    </div>
+                                    <div class="bento-text">Desarrolla tus habilidades de comunicación. Premios en efectivo.</div>
+                                    <span class="badge bg-info mt-3">
+                                        <i class="fas fa-calendar me-1"></i>Próximamente
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="bento-card h-100">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="bento-icon bg-success"><i class="fas fa-leaf"></i></div>
+                                        <div class="ms-3">
+                                            <div class="bento-title mb-0">Proyecto Ambiental</div>
+                                            <small class="text-muted">Abril 2025</small>
+                                        </div>
+                                    </div>
+                                    <div class="bento-text">Proyectos de sustentabilidad. Financiamiento disponible.</div>
+                                    <span class="badge bg-success mt-3">
+                                        <i class="fas fa-seedling me-1"></i>En planificación
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="bento-card h-100">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="bento-icon bg-primary"><i class="fas fa-graduation-cap"></i></div>
+                                        <div class="ms-3">
+                                            <div class="bento-title mb-0">Beca Universitaria</div>
+                                            <small class="text-muted">Mayo 2025</small>
+                                        </div>
+                                    </div>
+                                    <div class="bento-text">Programa de becas para egresados destacados.</div>
+                                    <span class="badge bg-primary mt-3">
+                                        <i class="fas fa-star me-1"></i>Muy pronto
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card border-0 shadow-sm h-100 text-center">
-                            <div class="card-body p-4">
-                                <div class="mb-3">
-                                    <span class="badge bg-success fs-5 p-3 rounded-circle">
-                                        <i class="fas fa-users"></i>
-                                    </span>
-                                </div>
-                                <h5 class="card-title">Sociales</h5>
-                                <p class="card-text text-muted">Festivales, ceremonias, eventos culturales y recreativos
+                </section>
+
+                <!-- Suscripción a Notificaciones -->
+                <section id="notificaciones" class="py-5 bg-light">
+                    <div class="container">
+                        <div class="row align-items-center g-4">
+                            <div class="col-lg-6">
+                                <h3 class="fw-bold text-primary mb-3">¡No te pierdas ninguna oportunidad!</h3>
+                                <p class="lead text-muted mb-4">
+                                    Suscríbete a nuestras notificaciones y mantente informado sobre nuevas convocatorias
+                                    y fechas límite.
                                 </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card border-0 shadow-sm h-100 text-center">
-                            <div class="card-body p-4">
-                                <div class="mb-3">
-                                    <span class="badge bg-warning fs-5 p-3 rounded-circle">
-                                        <i class="fas fa-flag"></i>
-                                    </span>
+                                <div class="mb-4">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <i class="fas fa-check-circle text-success me-2"></i>
+                                        <span>Notificaciones por email de nuevas convocatorias</span>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-2">
+                                        <i class="fas fa-check-circle text-success me-2"></i>
+                                        <span>Recordatorios de fechas límite importantes</span>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-2">
+                                        <i class="fas fa-check-circle text-success me-2"></i>
+                                        <span>Acceso prioritario a información exclusiva</span>
+                                    </div>
                                 </div>
-                                <h5 class="card-title">Cívicos</h5>
-                                <p class="card-text text-muted">Ceremonias patrias, honores a la bandera,
-                                    conmemoraciones</p>
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card border-0 shadow-sm h-100 text-center">
-                            <div class="card-body p-4">
-                                <div class="mb-3">
-                                    <span class="badge bg-info fs-5 p-3 rounded-circle">
-                                        <i class="fas fa-clipboard-list"></i>
-                                    </span>
+                            <div class="col-lg-6">
+                                <div class="subscription-card p-4">
+                                    <h5 class="fw-bold text-center mb-4">Suscríbete a Notificaciones</h5>
+                                    <form class="notification-form" method="POST"
+                                        action="/api/subscriptions/subscribe">
+                                        <input type="hidden" name="form_type" value="Suscripción Newsletter">
+                                        <input type="hidden" name="name" value="Suscriptor">
+                                        <input type="hidden" name="message"
+                                            value="Solicitud de suscripción a notificaciones de convocatorias">
+                                        <div class="mb-3">
+                                            <label for="sub-email" class="form-label">Correo Electrónico</label>
+                                            <input type="email" class="form-control" id="sub-email" name="email"
+                                                placeholder="tu@email.com" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="sub-category" class="form-label">Categoría de Interés</label>
+                                            <select class="form-select" id="sub-category" name="subject">
+                                                <option value="Todas las convocatorias">Todas las convocatorias</option>
+                                                <option value="Solo becas y apoyos">Solo becas y apoyos</option>
+                                                <option value="Solo concursos académicos">Solo concursos académicos</option>
+                                                <option value="Solo intercambios">Solo intercambios</option>
+                                                <option value="Solo talleres y cursos">Solo talleres y cursos</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3 form-check">
+                                            <input type="checkbox" class="form-check-input" id="acceptTerms" required>
+                                            <label class="form-check-label small" for="acceptTerms">
+                                                Acepto recibir notificaciones conforme a la
+                                                <a href="transparencia.html" class="text-white">política de privacidad</a>
+                                            </label>
+                                        </div>
+                                        <button type="submit" class="btn btn-light w-100 touch-btn fw-bold">
+                                            <i class="fas fa-bell me-2"></i>Suscribirme
+                                        </button>
+                                    </form>
                                 </div>
-                                <h5 class="card-title">Administrativos</h5>
-                                <p class="card-text text-muted">Inscripciones, reuniones, procesos internos</p>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card border-0 shadow-sm h-100 text-center">
-                            <div class="card-body p-4">
-                                <div class="mb-3">
-                                    <span class="badge bg-danger fs-5 p-3 rounded-circle">
-                                        <i class="fas fa-calendar-times"></i>
-                                    </span>
+                </section>
+            </div>
+
+            <!-- ==================== PANEL 3: EVENTOS Y COMUNIDAD ==================== -->
+            <div class="tab-pane fade" id="panel-eventos" role="tabpanel" aria-labelledby="tab-eventos">
+
+                <!-- Tipos de Eventos -->
+                <section id="tipos-eventos" class="py-5" data-section-key="tipos_eventos">
+                    <div class="container">
+                        <div class="text-center mb-4">
+                            <h2 class="fw-bold">Tipos de Eventos</h2>
+                            <p class="text-muted">Conoce los diferentes tipos de actividades programadas</p>
+                        </div>
+                        <div class="bento-grid">
+                            <div class="bento-card text-center">
+                                <div class="bento-icon bg-primary mx-auto"><i class="fas fa-book-open"></i></div>
+                                <div class="bento-title">Académicos</div>
+                                <div class="bento-text">Evaluaciones, entregas de calificaciones, juntas académicas</div>
+                            </div>
+                            <div class="bento-card text-center">
+                                <div class="bento-icon bg-success mx-auto"><i class="fas fa-users"></i></div>
+                                <div class="bento-title">Sociales</div>
+                                <div class="bento-text">Festivales, ceremonias, eventos culturales y recreativos</div>
+                            </div>
+                            <div class="bento-card text-center">
+                                <div class="bento-icon bg-warning mx-auto"><i class="fas fa-flag"></i></div>
+                                <div class="bento-title">Cívicos</div>
+                                <div class="bento-text">Ceremonias patrias, honores a la bandera, conmemoraciones</div>
+                            </div>
+                            <div class="bento-card text-center">
+                                <div class="bento-icon bg-info mx-auto"><i class="fas fa-clipboard-list"></i></div>
+                                <div class="bento-title">Administrativos</div>
+                                <div class="bento-text">Inscripciones, reuniones, procesos internos</div>
+                            </div>
+                            <div class="bento-card text-center">
+                                <div class="bento-icon bg-danger mx-auto"><i class="fas fa-calendar-times"></i></div>
+                                <div class="bento-title">Suspensiones</div>
+                                <div class="bento-text">Días feriados, vacaciones, suspensiones oficiales</div>
+                            </div>
+                            <div class="bento-card text-center">
+                                <div class="bento-icon bg-secondary mx-auto"><i class="fas fa-tools"></i></div>
+                                <div class="bento-title">Mantenimiento</div>
+                                <div class="bento-text">Trabajos de infraestructura, mejoras de instalaciones</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Eventos Próximos -->
+                <section class="py-5 bg-light">
+                    <div class="container">
+                        <div class="text-center mb-4">
+                            <h2 class="fw-bold">Eventos Próximos</h2>
+                            <p class="text-muted">No te pierdas estas actividades de nuestra comunidad</p>
+                        </div>
+                        <div class="row g-4">
+                            <div class="col-md-6 col-lg-4">
+                                <div class="bento-card h-100">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="bento-icon bg-danger"><i class="fas fa-flag"></i></div>
+                                        <div class="ms-3">
+                                            <div class="bento-title mb-0">Ceremonia Cívica</div>
+                                            <small class="text-muted">16 de Septiembre</small>
+                                        </div>
+                                    </div>
+                                    <div class="bento-text">Conmemoración del Día de la Independencia con participación de toda la comunidad escolar.</div>
                                 </div>
-                                <h5 class="card-title">Suspensiones</h5>
-                                <p class="card-text text-muted">Días feriados, vacaciones, suspensiones oficiales</p>
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card border-0 shadow-sm h-100 text-center">
-                            <div class="card-body p-4">
-                                <div class="mb-3">
-                                    <span class="badge bg-secondary fs-5 p-3 rounded-circle">
-                                        <i class="fas fa-tools"></i>
-                                    </span>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="bento-card h-100">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="bento-icon bg-secondary"><i class="fas fa-music"></i></div>
+                                        <div class="ms-3">
+                                            <div class="bento-title mb-0">Festival Cultural</div>
+                                            <small class="text-muted">20 de Marzo</small>
+                                        </div>
+                                    </div>
+                                    <div class="bento-text">Presentaciones artísticas, música, danza y teatro por parte de los estudiantes.</div>
                                 </div>
-                                <h5 class="card-title">Mantenimiento</h5>
-                                <p class="card-text text-muted">Trabajos de infraestructura, mejoras de instalaciones
-                                </p>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="bento-card h-100">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="bento-icon bg-success"><i class="fas fa-trophy"></i></div>
+                                        <div class="ms-3">
+                                            <div class="bento-title mb-0">Olimpiada del Conocimiento</div>
+                                            <small class="text-muted">7-11 Abril</small>
+                                        </div>
+                                    </div>
+                                    <div class="bento-text">Competencia académica interescolar en diversas disciplinas.</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="bento-card h-100">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="bento-icon bg-primary"><i class="fas fa-futbol"></i></div>
+                                        <div class="ms-3">
+                                            <div class="bento-title mb-0">Torneo Intergrupos</div>
+                                            <small class="text-muted">14-25 Octubre</small>
+                                        </div>
+                                    </div>
+                                    <div class="bento-text">Competencia deportiva entre grupos del bachillerato.</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="bento-card h-100">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="bento-icon bg-warning"><i class="fas fa-sun"></i></div>
+                                        <div class="ms-3">
+                                            <div class="bento-title mb-0">Festival de Primavera</div>
+                                            <small class="text-muted">20-21 Marzo</small>
+                                        </div>
+                                    </div>
+                                    <div class="bento-text">Celebración cultural y artística de la primavera.</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="bento-card h-100">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="bento-icon bg-info"><i class="fas fa-graduation-cap"></i></div>
+                                        <div class="ms-3">
+                                            <div class="bento-title mb-0">Ceremonia de Graduación</div>
+                                            <small class="text-muted">15 de Julio</small>
+                                        </div>
+                                    </div>
+                                    <div class="bento-text">Ceremonia de graduación de la generación 2022-2025.</div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </section>
             </div>
-        </section>
-
-        <!-- Controles del Calendario -->
-        <section class="py-4 bg-light">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-lg-8">
-                        <div class="calendar-controls d-flex align-items-center flex-wrap gap-3">
-                            <div class="calendar-nav d-flex align-items-center">
-                                <button class="btn btn-outline-primary me-2" id="prevMonth" aria-label="Mes anterior">
-                                    <i class="fas fa-chevron-left"></i>
-                                </button>
-                                <h4 class="current-month mb-0 mx-3" id="currentMonthYear">Septiembre 2024</h4>
-                                <button class="btn btn-outline-primary ms-2" id="nextMonth" aria-label="Mes siguiente">
-                                    <i class="fas fa-chevron-right"></i>
-                                </button>
-                            </div>
-                            <div class="view-controls ms-auto d-flex gap-2">
-                                <button class="btn btn-sm btn-primary active" data-view="month" id="monthViewBtn">
-                                    <i class="fas fa-calendar-alt me-1"></i>Mes
-                                </button>
-                                <button class="btn btn-sm btn-outline-primary" data-view="list" id="listViewBtn">
-                                    <i class="fas fa-list me-1"></i>Lista
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="event-filters">
-                            <select class="form-select" id="eventFilter" aria-label="Filtrar eventos por tipo">
-                                <option value="">Todos los eventos</option>
-                                <option value="academic">Académicos</option>
-                                <option value="holiday">Vacaciones</option>
-                                <option value="evaluation">Evaluaciones</option>
-                                <option value="cultural">Culturales</option>
-                                <option value="sports">Deportivos</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Vista de Calendario -->
-        <section class="py-5" id="calendario-interactivo">
-            <div class="container">
-                <div class="text-center mb-4">
-                    <h2 class="fw-bold">Calendario Interactivo</h2>
-                    <p class="text-muted">Explora las fechas importantes del ciclo escolar</p>
-                </div>
-                <div class="calendar-container">
-                    <div id="interactiveCalendar">
-                        <!-- El calendario se generará aquí dinámicamente -->
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Vista de Lista -->
-        <section class="py-5 d-none" id="listView">
-            <div class="container">
-                <div id="eventsList">
-                    <!-- Los eventos en lista se generarán aquí -->
-                </div>
-            </div>
-        </section>
-
-        <!-- Leyenda de Eventos -->
-        <section class="py-4 bg-light">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <h5 class="mb-3 text-center">
-                            <i class="fas fa-info-circle text-primary me-2"></i>
-                            Leyenda de Eventos
-                        </h5>
-                        <div class="legend-container d-flex flex-wrap justify-content-center gap-3">
-                            <div class="legend-item d-flex align-items-center">
-                                <span class="legend-color bg-info me-2"></span>
-                                <span>Eventos Académicos</span>
-                            </div>
-                            <div class="legend-item d-flex align-items-center">
-                                <span class="legend-color bg-success me-2"></span>
-                                <span>Vacaciones</span>
-                            </div>
-                            <div class="legend-item d-flex align-items-center">
-                                <span class="legend-color bg-warning me-2"></span>
-                                <span>Evaluaciones</span>
-                            </div>
-                            <div class="legend-item d-flex align-items-center">
-                                <span class="legend-color bg-danger me-2"></span>
-                                <span>Eventos Cívicos</span>
-                            </div>
-                            <div class="legend-item d-flex align-items-center">
-                                <span class="legend-color bg-secondary me-2"></span>
-                                <span>Actividades Culturales</span>
-                            </div>
-                            <div class="legend-item d-flex align-items-center">
-                                <span class="legend-color bg-dark me-2"></span>
-                                <span>Deportivos</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Información del Ciclo Escolar -->
-        <section id="informacion-general" class="py-5">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-8 mx-auto text-center mb-5">
-                        <h2 class="section-title">
-                            <i class="fas fa-graduation-cap text-primary me-3"></i>
-                            Información General del Ciclo Escolar
-                        </h2>
-                        <p class="section-subtitle text-muted">
-                            Datos importantes del período académico 2024-2025
-                        </p>
-                    </div>
-                </div>
-
-                <div class="row g-4">
-                    <div class="col-md-6 col-lg-3">
-                        <div class="info-card text-center">
-                            <div class="info-icon bg-primary text-white rounded-circle mx-auto mb-3">
-                                <i class="fas fa-play fa-2x"></i>
-                            </div>
-                            <h5 class="card-title">Inicio de Clases</h5>
-                            <p class="card-text">26 de Agosto 2024</p>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-3">
-                        <div class="info-card text-center">
-                            <div class="info-icon bg-success text-white rounded-circle mx-auto mb-3">
-                                <i class="fas fa-flag-checkered fa-2x"></i>
-                            </div>
-                            <h5 class="card-title">Fin de Ciclo</h5>
-                            <p class="card-text">11 de Julio 2025</p>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-3">
-                        <div class="info-card text-center">
-                            <div class="info-icon bg-warning text-white rounded-circle mx-auto mb-3">
-                                <i class="fas fa-calendar-day fa-2x"></i>
-                            </div>
-                            <h5 class="card-title">Días ábiles</h5>
-                            <p class="card-text">200 días</p>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-3">
-                        <div class="info-card text-center">
-                            <div class="info-icon bg-info text-white rounded-circle mx-auto mb-3">
-                                <i class="fas fa-clipboard-check fa-2x"></i>
-                            </div>
-                            <h5 class="card-title">Evaluaciones</h5>
-                            <p class="card-text">3 Parciales</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Acciones Rápidas -->
-        <section class="py-5 bg-light">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-8 mx-auto text-center mb-4">
-                        <h3 class="section-title">Acciones Rápidas</h3>
-                    </div>
-                </div>
-                <div class="row g-3 justify-content-center">
-                    <div class="col-md-6 col-lg-3">
-                        <button class="btn btn-outline-primary w-100 p-3" data-action="downloadCalendar()">
-                            <i class="fas fa-download fa-2x d-block mb-2"></i>
-                            <strong>Descargar</strong>
-                            <small class="d-block text-muted">Calendario PDF</small>
-                        </button>
-                    </div>
-                    <div class="col-md-6 col-lg-3">
-                        <button class="btn btn-outline-success w-100 p-3" data-action="exportToGoogle()">
-                            <i class="fab fa-google fa-2x d-block mb-2"></i>
-                            <strong>Google Calendar</strong>
-                            <small class="d-block text-muted">Sincronizar eventos</small>
-                        </button>
-                    </div>
-                    <div class="col-md-6 col-lg-3">
-                        <button class="btn btn-outline-info w-100 p-3" data-action="shareCalendar()">
-                            <i class="fas fa-share-alt fa-2x d-block mb-2"></i>
-                            <strong>Compartir</strong>
-                            <small class="d-block text-muted">Enviar a contactos</small>
-                        </button>
-                    </div>
-                    <div class="col-md-6 col-lg-3">
-                        <button class="btn btn-outline-warning w-100 p-3" data-action="setReminders()">
-                            <i class="fas fa-bell fa-2x d-block mb-2"></i>
-                            <strong>Recordatorios</strong>
-                            <small class="d-block text-muted">Configurar alertas</small>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
+        </div>
     </main>
 
     <!-- Modal de Evento -->
@@ -603,15 +968,12 @@
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
-                <div class="modal-body" id="eventModalBody">
-                    <!-- Contenido del evento se cargará aquí -->
-                </div>
+                <div class="modal-body" id="eventModalBody"></div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-primary" data-action="addToPersonalCalendar()">
-                        <i class="fas fa-plus me-2"></i>
-                        Añadir a mi Calendario
+                    <button type="button" class="btn btn-outline-primary touch-btn" data-action="addToPersonalCalendar">
+                        <i class="fas fa-plus me-2"></i>Añadir a mi Calendario
                     </button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-secondary touch-btn" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
         </div>
@@ -629,7 +991,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="mb-4">Selecciona los tipos de eventos para los que deseas recibir notificaciones:</p>
+                    <p class="mb-4">Selecciona los tipos de eventos para recibir notificaciones:</p>
                     <div class="form-check mb-3">
                         <input class="form-check-input" type="checkbox" id="remindEvaluations" checked>
                         <label class="form-check-label" for="remindEvaluations">
@@ -647,7 +1009,7 @@
                     <div class="form-check mb-3">
                         <input class="form-check-input" type="checkbox" id="remindEvents" checked>
                         <label class="form-check-label" for="remindEvents">
-                            <i class="fas fa-calendar-star text-info me-2"></i>
+                            <i class="fas fa-star text-info me-2"></i>
                             Eventos especiales
                         </label>
                     </div>
@@ -668,10 +1030,9 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-warning" data-action="saveReminders()">
-                        <i class="fas fa-save me-2"></i>
-                        Guardar Recordatorios
+                    <button type="button" class="btn btn-secondary touch-btn" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-warning touch-btn" data-action="saveReminders">
+                        <i class="fas fa-save me-2"></i>Guardar Recordatorios
                     </button>
                 </div>
             </div>
@@ -681,135 +1042,38 @@
     <!-- Footer -->
     <footer id="main-footer"></footer>
 
-    <!-- Dark Mode Toggle -->
-    <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Alternar modo oscuro">
-        <i class="fas fa-moon"></i>
-    </button>
-
-
-
-    <!-- Back to Top -->
-    <button id="back-to-top" class="btn btn-primary rounded-circle position-fixed d-none" aria-label="Volver arriba"
-        title="Volver arriba">
-        <i class="fas fa-arrow-up"></i>
-    </button>
-
-    <!-- 🏷š€ BGE FRAMEWORK MODULAR - PÁGINA CALENDARIO -->
-
-    <!-- Bootstrap JS -->
+    <!-- Scripts (CSP Compliant - ALL external) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
-    <!-- 🔒 DOMPurify XSS Protection -->
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
     <script src="js/dompurify-config.js"></script>
 
-    <!-- 🏷”§ MAIN.JS - CARGA DINÁMICA DE HEADER Y FOOTER -->
-    <!-- 🏷”§ MAIN.JS - CARGA DINÁMICA DE HEADER Y FOOTER (MIGRADO) -->
+    <!-- Main JS -->
     <script src="js/main.js"></script>
-    <link rel="stylesheet" href="dist/assets/main.css">
-    <script type="module" src="dist/assets/main.js"></script>
 
-    <!-- 🏷”§ SISTEMA CORE (OBLIGATORIO) -->
-    <script src="js/context-manager.js"></script> <!-- 🏷”’ Base del sistema -->
-    <script src="js/config.js?v=2024091401"></script> <!-- 🏷”§ Configuración global -->
-    <script src="js/theme-manager.js"></script> <!-- 🏷Ž¨ Gestión de temas -->
-    <!-- <script src="js/script.js"></script> --> <!-- 🏷”’ Script principal (Migrado a TS) -->
+    <!-- Core Scripts -->
+    <script src="js/context-manager.js"></script>
+    <script src="js/config.js?v=2024091401"></script>
+    <script src="js/theme-manager.js"></script>
 
-    <!-- 🏷Ž¯ BGE FRAMEWORK CORE -->
+    <!-- BGE Framework -->
     <script src="js/bge-framework-core.js"></script>
-    <script src="js/bge-security-module.js"></script> <!-- 🏷”’ Seguridad y autenticación admin -->
+    <script src="js/bge-security-module.js"></script>
 
-    <!-- 🏷“Š MÓDULOS BGE PARA CALENDARIO -->
-    <!-- âš¡ Performance optimizado --><!-- 🏷“Š Analytics calendario -->
-    <!-- 🏷”’ Auth y seguridad --><!-- 🏷“± PWA features -->
+    <!-- Calendario Hub - Tab switching + event handlers -->
+    <script src="js/calendario-hub.js"></script>
 
-    <!-- 🏷”§ FUNCIONALIDADES ESPECÍFICAS DE CALENDARIO -->
+    <!-- Calendar Libraries -->
+    <script src="js/search-simple.js"></script>
+    <script src="js/interactive-calendar.js"></script>
+    <script src="js/integrated-calendar-manager.js?v=20251015"></script>
 
-    <script src="js/search-simple.js"></script> <!-- 🏷” Búsqueda -->
-    <!-- <script src="js/api-client.js"></script> --> <!-- 🏷”— Cliente API (Reemplazado por Bundle) -->
-    <script src="js/interactive-calendar.js"></script> <!-- 🏷“… Calendario interactivo -->
-    <script src="js/integrated-calendar-manager.js?v=20251015"></script> <!-- 🏷“… Gestor calendario -->
-
-    <!-- Contenedor para Sistema Integrado de Calendario -->
-    <div id="integrated-calendar-container" class="d-none"></div>
-
-    <!-- Inicialización del Sistema de Calendario Avanzado -->
-    <script src="js/inline/calendario-inline-1.js"></script>
-
-    <!-- Dark Mode Styles & Script -->
-    <style>
-        .dark-mode-toggle {
-            position: fixed;
-            bottom: 6rem;
-            right: 2rem;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--bs-primary);
-            color: white;
-            border: none;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .dark-mode-toggle:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-        }
-
-        body.dark-mode {
-            background-color: #1a1a1a !important;
-            color: #ffffff !important;
-        }
-
-        body.dark-mode .bg-light {
-            background-color: #2d2d2d !important;
-        }
-
-        body.dark-mode .card {
-            background-color: #2d2d2d !important;
-            border-color: #404040 !important;
-            color: #ffffff !important;
-        }
-
-        body.dark-mode .text-muted {
-            color: #b0b0b0 !important;
-        }
-
-        body.dark-mode .text-dark {
-            color: #ffffff !important;
-        }
-
-        body.dark-mode .table {
-            background-color: #2d2d2d !important;
-            color: #ffffff !important;
-        }
-
-        body.dark-mode .table td,
-        body.dark-mode .table th {
-            border-color: #404040 !important;
-        }
-
-        body.dark-mode .calendar-day {
-            background-color: #2d2d2d !important;
-            border-color: #404040 !important;
-            color: #ffffff !important;
-        }
-    </style>
-
-    <!-- Dark mode handled by global script.js -->
-    <!-- 🏷¢ TENANT CONFIG LOADER - Carga configuración multi-tenancy desde BD -->
+    <!-- Tenant Config -->
     <script src="js/tenant-config-loader.js"></script>
     <script src="js/tenant-content-binder.js"></script>
     <script src="js/chatbot.js"></script>
     <script src="js/page-sections-loader.js" defer></script>
-
 </body>
 
 </html>

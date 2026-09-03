@@ -614,28 +614,12 @@ const DEFAULT_SECTIONS = {
     ],
     'convocatorias': [
         {
-            key: 'inscripciones',
-            title: 'Inscripciones 2025',
-            subtitle: 'Proceso de admisión y requisitos',
-            content: '',
-            icon: 'fa-clipboard-list',
-            order: 1
-        },
-        {
-            key: 'convocatorias_activas',
-            title: 'Convocatorias Activas',
-            subtitle: 'Oportunidades vigentes para nuestra comunidad',
-            content: '',
+            key: 'redirect_convocatorias',
+            title: 'Convocatorias (Unificada)',
+            subtitle: 'Redirigido al Portal de Vida Escolar (calendario.html#convocatorias)',
+            content: '<p class="text-muted">Las Convocatorias ahora forman parte del Portal de Vida Escolar. Serás redirigido automáticamente.</p>',
             icon: 'fa-bullhorn',
-            order: 2
-        },
-        {
-            key: 'proximas_convocatorias',
-            title: 'Próximas Convocatorias',
-            subtitle: 'Eventos y oportunidades próximas',
-            content: '',
-            icon: 'fa-clock',
-            order: 3
+            order: 1
         }
     ],
     'calendario': [
@@ -656,12 +640,52 @@ const DEFAULT_SECTIONS = {
             order: 2
         },
         {
+            key: 'calendario_interactivo',
+            title: 'Calendario Interactivo',
+            subtitle: 'Explora fechas importantes del ciclo escolar',
+            content: '',
+            icon: 'fa-calendar-alt',
+            order: 3
+        },
+        {
+            key: 'inscripciones',
+            title: 'Inscripciones',
+            subtitle: 'Proceso de admisión y requisitos',
+            content: '',
+            icon: 'fa-clipboard-list',
+            order: 4
+        },
+        {
+            key: 'convocatorias_activas',
+            title: 'Convocatorias Activas',
+            subtitle: 'Oportunidades vigentes para nuestra comunidad',
+            content: '',
+            icon: 'fa-bullhorn',
+            order: 5
+        },
+        {
+            key: 'proximas_convocatorias',
+            title: 'Próximas Convocatorias',
+            subtitle: 'Eventos y oportunidades próximas',
+            content: '',
+            icon: 'fa-clock',
+            order: 6
+        },
+        {
             key: 'tipos_eventos',
             title: 'Tipos de Eventos',
             subtitle: 'Calendario cívicos, culturales y deportivos',
             content: '',
             icon: 'fa-calendar',
-            order: 3
+            order: 7
+        },
+        {
+            key: 'eventos_proximos',
+            title: 'Eventos Próximos',
+            subtitle: 'No te pierdas estas actividades',
+            content: '',
+            icon: 'fa-star',
+            order: 8
         }
     ],
     'transparencia': [
