@@ -951,10 +951,11 @@ const labStyles = document.createElement('style');
 labStyles.textContent = `
     .labs-activation {
         position: fixed;
-        bottom: 210px;
-        right: 20px;
-        width: 60px;
-        height: 60px;
+        bottom: 5.5rem;
+        left: 1.5rem;
+        right: auto;
+        width: 56px;
+        height: 56px;
         background: linear-gradient(135deg, #4ECDC4, #44A08D);
         border-radius: 50%;
         display: flex;

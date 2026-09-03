@@ -163,95 +163,187 @@
 /* SECCIÓN 4: BOTONES FLOTANTES GLOBALES                                     */
 /* ═══════════════════════════════════════════════════════════════════════════ */
 
-/* Dark Mode Toggle */
-.dark-mode-toggle {
-    position: fixed;
-    bottom: 5rem;
-    right: 1.5rem;
+/* ═══════════════════════════════════════════════════════════════════════════ */
+/* SECCIÓN 4: BOTONES FLOTANTES GLOBALES (SINGLE SOURCE OF TRUTH)            */
+/* ═══════════════════════════════════════════════════════════════════════════ */
+
+/* 1. Dark Mode Toggle (Nivel Inferior: bottom: 1.5rem) */
+.dark-mode-toggle,
+#darkModeToggle {
+    position: fixed !important;
+    bottom: 1.5rem !important;
+    right: 1.5rem !important;
     z-index: 10000 !important;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #FFB300 0%, #FF9500 100%);
-    border: none;
-    color: white;
-    font-size: 1.3rem;
-    cursor: pointer;
-    transition: all var(--transition-normal);
-    box-shadow: 0 4px 15px rgba(255, 179, 0, 0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 50% !important;
+    background: linear-gradient(135deg, #FFB300 0%, #FF9500 100%) !important;
+    border: none !important;
+    color: #ffffff !important;
+    font-size: 1.3rem !important;
+    cursor: pointer !important;
+    transition: all var(--transition-normal) !important;
+    box-shadow: 0 4px 15px rgba(255, 179, 0, 0.4) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    line-height: 1 !important;
 }
 
-.dark-mode .dark-mode-toggle {
-    background: linear-gradient(135deg, #475569 0%, #1e293b 100%);
-    color: #f59e0b;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+.dark-mode .dark-mode-toggle,
+[data-theme="dark"] .dark-mode-toggle,
+.dark-mode #darkModeToggle,
+[data-theme="dark"] #darkModeToggle {
+    background: linear-gradient(135deg, #374151 0%, #1f2937 100%) !important;
+    color: #fbbf24 !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
 }
 
-.dark-mode-toggle:hover {
-    transform: translateY(-3px) scale(1.1);
-    box-shadow: 0 6px 20px rgba(255, 179, 0, 0.4);
+.dark-mode-toggle:hover,
+#darkModeToggle:hover {
+    transform: translateY(-3px) scale(1.08) !important;
+    box-shadow: 0 6px 20px rgba(255, 179, 0, 0.5) !important;
 }
 
-.dark-mode .dark-mode-toggle:hover {
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
+.dark-mode .dark-mode-toggle:hover,
+[data-theme="dark"] .dark-mode-toggle:hover,
+.dark-mode #darkModeToggle:hover,
+[data-theme="dark"] #darkModeToggle:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8) !important;
 }
 
-.dark-mode-toggle:active {
-    transform: translateY(-1px) scale(1.05);
+.dark-mode-toggle:active,
+#darkModeToggle:active {
+    transform: translateY(-1px) scale(1.02) !important;
 }
 
-/* Chatbot Toggle */
-.chatbot-toggle {
-    position: fixed;
-    bottom: 9rem;
-    right: 1.5rem;
-    z-index: 1030;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-    border: none;
-    color: white;
-    font-size: 1.3rem;
-    cursor: pointer;
-    transition: all var(--transition-normal);
-    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* 2. Chatbot Toggle (Nivel Medio: bottom: 5.5rem) */
+.chatbot-toggle,
+.chatbot-toggle-btn,
+#chatbotToggle {
+    position: fixed !important;
+    bottom: 5.5rem !important;
+    right: 1.5rem !important;
+    z-index: 10000 !important;
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 50% !important;
+    background: linear-gradient(135deg, #1976D2 0%, #0D47A1 100%) !important;
+    border: none !important;
+    color: #ffffff !important;
+    font-size: 1.3rem !important;
+    cursor: pointer !important;
+    transition: all var(--transition-normal) !important;
+    box-shadow: 0 4px 15px rgba(25, 118, 210, 0.4) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    line-height: 1 !important;
 }
 
-.chatbot-toggle:hover {
-    transform: translateY(-3px) scale(1.1);
-    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+.dark-mode .chatbot-toggle,
+[data-theme="dark"] .chatbot-toggle,
+.dark-mode #chatbotToggle,
+[data-theme="dark"] #chatbotToggle {
+    background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5) !important;
 }
 
-.chatbot-toggle:active {
-    transform: translateY(-1px) scale(1.05);
+.chatbot-toggle:hover,
+.chatbot-toggle-btn:hover,
+#chatbotToggle:hover {
+    transform: translateY(-3px) scale(1.08) !important;
+    box-shadow: 0 6px 20px rgba(25, 118, 210, 0.5) !important;
 }
 
-/* Floating Buttons Responsive */
+.chatbot-toggle:active,
+.chatbot-toggle-btn:active,
+#chatbotToggle:active {
+    transform: translateY(-1px) scale(1.02) !important;
+}
+
+/* Chatbot Container Modal */
+#chatbotContainer,
+.chatbot-container {
+    z-index: 10005 !important;
+}
+
+/* 3. Back to Top Button (Nivel Superior: bottom: 9.5rem) */
+#backToTop,
+#back-to-top {
+    position: fixed !important;
+    bottom: 9.5rem !important;
+    right: 1.5rem !important;
+    z-index: 10000 !important;
+    width: 46px !important;
+    height: 46px !important;
+    border-radius: 50% !important;
+    background: linear-gradient(135deg, #64748b 0%, #475569 100%) !important;
+    border: none !important;
+    color: #ffffff !important;
+    font-size: 1.1rem !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 12px rgba(71, 85, 105, 0.3) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px) scale(0.9);
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease, background 0.3s ease !important;
+}
+
+#backToTop.show,
+#back-to-top.show,
+#backToTop.visible,
+#back-to-top.visible {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) scale(1) !important;
+}
+
+#backToTop:hover,
+#back-to-top:hover {
+    transform: translateY(-3px) scale(1.08) !important;
+    background: linear-gradient(135deg, #475569 0%, #334155 100%) !important;
+    box-shadow: 0 6px 16px rgba(51, 65, 85, 0.4) !important;
+}
+
+/* Floating Buttons Responsive (Mismo orden vertical inmutable en móviles) */
 @media (max-width: 768px) {
-
     .dark-mode-toggle,
-    .chatbot-toggle {
-        width: 45px;
-        height: 45px;
-        font-size: 1.1rem;
-        bottom: auto;
-        right: 1rem;
+    #darkModeToggle {
+        width: 44px !important;
+        height: 44px !important;
+        font-size: 1.1rem !important;
+        bottom: 1rem !important;
+        right: 1rem !important;
     }
 
-    .dark-mode-toggle {
-        bottom: 4.5rem;
+    .chatbot-toggle,
+    .chatbot-toggle-btn,
+    #chatbotToggle {
+        width: 44px !important;
+        height: 44px !important;
+        font-size: 1.1rem !important;
+        bottom: 4.5rem !important;
+        right: 1rem !important;
     }
 
-    .chatbot-toggle {
-        bottom: 8rem;
+    #backToTop,
+    #back-to-top {
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 0.95rem !important;
+        bottom: 8rem !important;
+        right: 1rem !important;
     }
 }
 

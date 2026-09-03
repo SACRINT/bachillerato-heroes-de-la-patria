@@ -152,8 +152,18 @@
                 }
             }
 
-            // Cargar footer si existe el contenedor y está vacío
-            const footerElement = document.getElementById('main-footer');
+            // Cargar footer si existe el contenedor y está vacío, o autocrearlo si falta en páginas estándar
+            let footerElement = document.getElementById('main-footer');
+            if (!footerElement && document.body) {
+                const pathname = window.location.pathname.toLowerCase();
+                const isMinimalPage = pathname.includes('login') || pathname.includes('register') || pathname.includes('test-login');
+                if (!isMinimalPage) {
+                    footerElement = document.createElement('footer');
+                    footerElement.id = 'main-footer';
+                    document.body.appendChild(footerElement);
+                }
+            }
+
             if (footerElement && !footerElement.innerHTML.trim()) {
                 const footerResponse = await fetch('/partials/footer.html');
                 if (footerResponse.ok) {
@@ -293,46 +303,37 @@
             updateUserUIInHeader(session.user, true);
             window.currentUserSession = session;
         }
+        initFloatingControls();
+        initHashTabs();
+    }
+
+    // ========================================
+    // 5. GESTOR CENTRALIZADO DE BOTONES FLOTANTES
+    // ========================================
+    function initFloatingControls() {
         initDarkMode();
         initBackToTop();
-        initHashTabs();
         initChatbotLoader();
     }
 
     // ========================================
-    // 5. ESCUCHAR EVENTOS DE CAMBIO DE SESIÓN
-    // ========================================
-
-    document.addEventListener('bge-user-logged-in', (event) => {
-        if (event.detail && event.detail.user) {
-            updateUserUIInHeader(event.detail.user, true);
-            window.currentUserSession = {
-                user: event.detail.user,
-                token: sessionStorage.getItem('bge_auth_token') || localStorage.getItem('bge_auth_token')
-            };
-        }
-    });
-
-    document.addEventListener('bge-user-logged-out', () => {
-        updateUserUIInHeader(null, false);
-        window.currentUserSession = null;
-    });
-
-    document.addEventListener('pagechange', () => {
-        const session = restoreUserSession();
-        if (session) {
-            updateUserUIInHeader(session.user, true);
-        }
-    });
-
-    // ========================================
-    // 6. MODO OSCURO CENTRALIZADO
+    // 6. MODO OSCURO CENTRALIZADO (Nivel Inferior)
     // ========================================
     function initDarkMode() {
         applySavedTheme();
         const isDark = (getSavedTheme() === 'dark');
 
-        let btn = document.getElementById('darkModeToggle');
+        // Limpiar posibles botones duplicados en el HTML estático
+        const allToggles = document.querySelectorAll('.dark-mode-toggle, #darkModeToggle');
+        let btn = null;
+        if (allToggles.length > 0) {
+            btn = allToggles[0];
+            // Eliminar duplicados si los hubiere
+            for (let i = 1; i < allToggles.length; i++) {
+                allToggles[i].remove();
+            }
+        }
+
         if (!btn && document.body) {
             btn = document.createElement('button');
             btn.className = 'dark-mode-toggle';
@@ -340,12 +341,16 @@
             btn.setAttribute('aria-label', isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
             btn.setAttribute('title', isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
             btn.innerHTML = `<i class="fas ${isDark ? 'fa-sun' : 'fa-moon'}"></i>`;
-            btn.style.zIndex = '10000';
             document.body.appendChild(btn);
         } else if (btn) {
-            btn.style.zIndex = '10000';
+            btn.id = 'darkModeToggle';
+            btn.className = 'dark-mode-toggle';
             const icon = btn.querySelector('i');
-            if (icon) icon.className = `fas ${isDark ? 'fa-sun' : 'fa-moon'}`;
+            if (icon) {
+                icon.className = `fas ${isDark ? 'fa-sun' : 'fa-moon'}`;
+            } else {
+                btn.innerHTML = `<i class="fas ${isDark ? 'fa-sun' : 'fa-moon'}"></i>`;
+            }
             btn.setAttribute('title', isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
             btn.setAttribute('aria-label', isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
         }
@@ -361,10 +366,18 @@
     }
 
     // ========================================
-    // 7. BOTÓN VOLVER ARRIBA (BACK-TO-TOP)
+    // 7. BOTÓN VOLVER ARRIBA (Nivel Superior)
     // ========================================
     function initBackToTop() {
-        let btn = document.getElementById('backToTop') || document.getElementById('back-to-top');
+        const allBtt = document.querySelectorAll('#backToTop, #back-to-top, .back-to-top');
+        let btn = null;
+        if (allBtt.length > 0) {
+            btn = allBtt[0];
+            for (let i = 1; i < allBtt.length; i++) {
+                allBtt[i].remove();
+            }
+        }
+
         if (!btn && document.body) {
             btn = document.createElement('button');
             btn.id = 'backToTop';
@@ -373,6 +386,11 @@
             btn.setAttribute('title', 'Volver arriba');
             btn.innerHTML = '<i class="fas fa-arrow-up"></i>';
             document.body.appendChild(btn);
+        } else if (btn) {
+            btn.id = 'backToTop';
+            if (!btn.querySelector('i')) {
+                btn.innerHTML = '<i class="fas fa-arrow-up"></i>';
+            }
         }
 
         if (btn && !btn.dataset.bttBound) {
@@ -381,15 +399,17 @@
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
 
-            window.addEventListener('scroll', function() {
+            const onScroll = function() {
                 if (window.scrollY > 300) {
                     btn.classList.add('visible');
-                    btn.style.display = 'flex';
+                    btn.classList.add('show');
                 } else {
                     btn.classList.remove('visible');
-                    btn.style.display = 'none';
+                    btn.classList.remove('show');
                 }
-            }, { passive: true });
+            };
+            window.addEventListener('scroll', onScroll, { passive: true });
+            onScroll();
         }
     }
 
@@ -409,23 +429,43 @@
     }
 
     // ========================================
-    // 9. CARGA Y GARANTÍA CENTRAL DEL CHATBOT
+    // 9. CARGA Y GARANTÍA CENTRAL DEL CHATBOT (Nivel Medio)
     // ========================================
     function initChatbotLoader() {
-        if (window.BGE_CHATBOT_LOADED) return;
         const pathname = window.location.pathname.toLowerCase();
-        // Evitar cargar chatbot en áreas de login, registro o dashboards administrativos
-        if (pathname.includes('login') || pathname.includes('register') || pathname.includes('admin-') || pathname.includes('dashboard')) {
+        // Evitar cargar chatbot únicamente en login, registro y dashboards de superadministración
+        const isExcluded = pathname.includes('login.html') || 
+                           pathname.includes('register.html') || 
+                           pathname.includes('super-admin-dashboard') || 
+                           pathname.includes('tenants-admin');
+        if (isExcluded) return;
+
+        // Si chatbot.js ya está en memoria y expone su inicializador, ejecutarlo
+        if (typeof window.initChatbotSystem === 'function') {
+            window.initChatbotSystem();
             return;
         }
 
-        // Si ya hay una etiqueta script cargando chatbot.js, no duplicar
+        // Si ya hay una etiqueta script cargando chatbot.js, asegurar callback onload
         const existingScript = document.querySelector('script[src*="chatbot.js"]');
-        if (existingScript) return;
+        if (existingScript) {
+            existingScript.addEventListener('load', function() {
+                if (typeof window.initChatbotSystem === 'function') {
+                    window.initChatbotSystem();
+                }
+            });
+            return;
+        }
 
+        // Cargar dinámicamente chatbot.js y disparar inicialización al completar
         const script = document.createElement('script');
         script.src = 'js/chatbot.js';
         script.defer = true;
+        script.onload = function() {
+            if (typeof window.initChatbotSystem === 'function') {
+                window.initChatbotSystem();
+            }
+        };
         document.body.appendChild(script);
     }
 

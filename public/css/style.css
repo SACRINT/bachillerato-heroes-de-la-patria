@@ -1,4 +1,4 @@
-﻿/*
+/*
 ==============================================================================
 BACHILLERATO HÃ‰ROES DE LA PATRIA - CUSTOM THEME FOR BOOTSTRAP 5
 ==============================================================================
@@ -1922,13 +1922,7 @@ body.dark-mode .chatbot-message.bot,
     right: 15px !important;
 }
 
-.chatbot-toggle-btn {
-    bottom: 2rem !important;
-    right: 2rem !important;
-    width: 50px !important;
-    height: 50px !important;
-    z-index: 990 !important;
-}
+/* .chatbot-toggle-btn centralizado en global-layout.css */
 
 .chatbot-subtitle {
     font-size: 12px !important;
@@ -2247,16 +2241,7 @@ body .analytics-dashboard-toggle {
 /* Responsive: Mantener posiciones originales y organizar horizontalmente */
 @media (max-width: 768px) {
 
-    /* POSICIONES ORIGINALES - No mover */
-    body .chatbot-toggle {
-        bottom: 85px !important;
-        right: 15px !important;
-    }
-
-    body .dark-mode-toggle {
-        bottom: 145px !important;
-        right: 15px !important;
-    }
+    /* Floating buttons unificados en global-layout.css */
 
     /* LÃNEA HORIZONTAL INFERIOR - MÃ¡s espacio entre botones en mÃ³vil */
     body .ia-floating-button {
@@ -2884,30 +2869,7 @@ body {
     width: 85%;
 }
 
-/* Dark Mode Toggle Styles */
-.dark-mode-toggle {
-    position: fixed;
-    bottom: 6rem;
-    right: 2rem;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: var(--bs-primary);
-    color: white;
-    border: none;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.dark-mode-toggle:hover {
-    transform: scale(1.1);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-}
+/* Dark Mode Toggle centralizado en global-layout.css */
 
 body.dark-mode {
     background-color: #1a1a1a !important;
@@ -3288,27 +3250,7 @@ body.dark-mode .accordion-body {
    but it seems this might be a duplicate of global styles. 
    I will add it as specific to be safe or check if it's already global. 
    The inline style block had specific positioning. */
-
-.dark-mode-toggle {
-    position: fixed;
-    bottom: 100px;
-    right: 20px;
-    z-index: 1000;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: none;
-    background-color: #1976d2;
-    color: white;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-.dark-mode-toggle:hover {
-    background-color: #1565c0;
-    transform: scale(1.1);
-}
+/* Dark Mode Toggle centralizado en global-layout.css */
 
 /* Hero badges dark mode */
 body.dark-mode .hero-badges .badge:hover {
@@ -3390,29 +3332,7 @@ body.dark-mode .privacidad-table-dark .table-primary th {
 /* ==========================================================================
    PAGOS PAGE STYLES
    ========================================================================== */
-.dark-mode-toggle {
-    position: fixed;
-    bottom: 6rem;
-    right: 2rem;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: var(--bs-primary);
-    color: white;
-    border: none;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.dark-mode-toggle:hover {
-    transform: scale(1.1);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-}
+/* Dark Mode Toggle centralizado en global-layout.css */
 
 body.dark-mode {
     background-color: #1a1a1a !important;

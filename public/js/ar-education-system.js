@@ -1433,10 +1433,11 @@ const arStyles = document.createElement('style');
 arStyles.textContent = `
     .ar-activation {
         position: fixed;
-        bottom: 30px;
-        right: 90px;
-        width: 60px;
-        height: 60px;
+        bottom: 1.5rem;
+        left: 1.5rem;
+        right: auto;
+        width: 56px;
+        height: 56px;
         background: linear-gradient(135deg, #ff1744 0%, #f50057 50%, #c51162 100%);
         border-radius: 50%;
         display: flex;
