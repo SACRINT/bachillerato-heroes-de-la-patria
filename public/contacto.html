@@ -4,7 +4,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title" data-base-title="Contacto" data-tenant-field="school_name">Contacto - Bachillerato General</title>
+    <title id="page-title" data-base-title="Transparencia y Contacto" data-tenant-field="school_name">Transparencia y Contacto - Bachillerato General</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" id="page-description" data-tenant-field="mision"
+        content="Portal institucional de Transparencia, Rendición de Cuentas, Directorio, Ubicación y Buzón Escolar del Bachillerato General.">
+    <meta name="keywords"
+        content="contacto bachillerato, transparencia sep, buzon escolar, quejas y sugerencias, directorio escolar, ubicacion bachillerato puebla">
+    <meta name="author" content="Bachillerato General Estatal">
+    <meta name="theme-color" content="#1976D2">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Transparencia y Contacto - Bachillerato General">
+    <meta property="og:description"
+        content="Comunícate con nosotros, consulta la información pública institucional y da seguimiento a tus solicitudes escolares.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="/images/logo-bachillerato-HDLP.webp">
+
+    <!-- Preconnects -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -12,734 +31,1057 @@
 
     <!-- Custom Styles -->
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/themes.css">
     <link rel="stylesheet" href="css/global-layout.css">
     <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
     <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
 
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <meta name="description" id="page-description" data-tenant-field="mision" content="Bachillerato General - Educación media superior de calidad."
-        >
-    <meta name="keywords"
-        content="contacto bachillerato, dirección escuela, teléfono BGE, correo bachillerato">
-    <meta name="author" content="BGE">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
 
-    <!-- Open Graph -->
-    <meta property="og:title" content="Contacto - BGE">
-    <meta property="og:description"
-        content="Ponte en contacto con nosotros. Información de ubicación, horarios y formulario de contacto">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://ejemplo.edu.mx/contacto.html">
-    <meta property="og:image" content="https://ejemplo.edu.mx/images/logo-bge.webp">
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="/images/logo-bachillerato-HDLP.webp" type="image/webp">
+    <link rel="apple-touch-icon" href="/images/logo-bachillerato-HDLP.webp">
 
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Contacto - BGE">
-    <meta name="twitter:description" content="Información de contacto y ubicación del bachillerato">
+    <script src="js/meta-updater.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
 
-    <!-- Preconnects -->
-    <link rel="preconnect" href="https://cdn.jsdelivr.net">
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-
-    <!-- Structured Data -->
+    <!-- Schema.org ContactPage -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "ContactPage",
-        "mainEntity": {
+        "name": "Portal de Transparencia y Contacto",
+        "description": "Canales oficiales de atención ciudadana, transparencia y rendición de cuentas del Bachillerato General Estatal.",
+        "provider": {
             "@type": "EducationalOrganization",
-            "name": "Bachillerato General",
-            "address": {
-                "@type": "PostalAddress",
-                "streetAddress": "Dirección del plantel",
-                "addressLocality": "Municipio",
-                "addressRegion": "Puebla",
-                "postalCode": "73030",
-                "addressCountry": "MX"
-            },
-            "contactPoint": {
-                "@type": "ContactPoint",
-                "telephone": "+52-XXX-XXX-XXXX",
-                "contactType": "customer service",
-                "email": "contacto@ejemplo.edu.mx",
-                "availableLanguage": "Spanish",
-                "hoursAvailable": "Mo-Fr 08:00-13:30"
-            }
-        },
-        "breadcrumb": {
-            "@type": "BreadcrumbList",
-            "itemListElement": [
-                {
-                    "@type": "ListItem",
-                    "position": 1,
-                    "name": "Inicio",
-                    "item": "https://ejemplo.edu.mx/"
-                },
-                {
-                    "@type": "ListItem",
-                    "position": 2,
-                    "name": "Contacto",
-                    "item": "https://ejemplo.edu.mx/contacto.html"
-                }
-            ]
+            "name": "Bachillerato General Estatal"
         }
     }
     </script>
 
-    <!-- DOMPurify for XSS protection -->
-    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+    <style>
+        /* Nav-Pills Master Hub 7 */
+        .nav-pills-master-container {
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 70px;
+            z-index: 1020;
+            padding: 0.75rem 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .nav-pills-master {
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 2px;
+        }
+
+        .nav-pills-master .nav-link {
+            flex: 1;
+            min-width: 200px;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            color: #475569;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+        }
+
+        .nav-pills-master .nav-link:hover {
+            color: var(--bs-primary, #1976D2);
+            background: #f1f5f9;
+        }
+
+        .nav-pills-master .nav-link.active {
+            background: var(--bs-primary, #1976D2);
+            color: #ffffff;
+            border-color: var(--bs-primary, #1976D2);
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.25);
+        }
+
+        /* Bento Grid */
+        .bento-grid {
+            display: grid;
+            gap: 1.25rem;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        }
+
+        @media (min-width: 768px) {
+            .bento-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 992px) {
+            .bento-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .bento-card {
+            background: #ffffff;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bento-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .bento-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            flex-shrink: 0;
+        }
+
+        .touch-btn {
+            min-height: 48px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Map Embed Container */
+        .map-responsive-wrapper {
+            position: relative;
+            width: 100%;
+            height: 380px;
+            border-radius: 1rem;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        .map-responsive-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* Dark Mode Adjustments */
+        body.dark-mode .nav-pills-master-container {
+            background: #0f172a;
+            border-color: #1e293b;
+        }
+
+        body.dark-mode .nav-pills-master .nav-link {
+            background: #1e293b;
+            border-color: #334155;
+            color: #cbd5e1;
+        }
+
+        body.dark-mode .nav-pills-master .nav-link:hover {
+            background: #334155;
+            color: #ffffff;
+        }
+
+        body.dark-mode .nav-pills-master .nav-link.active {
+            background: #2563eb;
+            color: #ffffff;
+            border-color: #2563eb;
+        }
+
+        body.dark-mode .bento-card {
+            background: #1e293b;
+            border-color: #334155;
+            color: #f8fafc;
+        }
+
+        body.dark-mode .bento-card h4,
+        body.dark-mode .bento-card h5 {
+            color: #f8fafc;
+        }
+
+        body.dark-mode .bento-card p,
+        body.dark-mode .bento-card .text-muted {
+            color: #94a3b8 !important;
+        }
+
+        body.dark-mode .map-responsive-wrapper {
+            border-color: #334155;
+        }
+    </style>
 </head>
 
 <body>
     <!-- Skip Links -->
     <a href="#main-content" class="skip-link visually-hidden-focusable">Saltar al contenido principal</a>
 
-    <!-- Header -->
+    <!-- Header dinámico -->
     <header id="main-header"></header>
 
     <!-- Main Content -->
     <main id="main-content" class="main-content">
-
 
         <!-- Hero Section -->
         <section id="hero" class="page-hero bg-gradient-primary text-white py-5">
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-lg-8">
-                        <h1 class="hero-title display-4 fw-bold mb-3">
-                            <i class="fas fa-phone me-3" aria-hidden="true"></i>
-                            Contacto
+                        <nav aria-label="breadcrumb" class="mb-3">
+                            <ol class="breadcrumb mb-0">
+                                <li class="breadcrumb-item"><a href="index.html" class="text-white-50 text-decoration-none">Inicio</a></li>
+                                <li class="breadcrumb-item active text-white" aria-current="page">Transparencia y Contacto</li>
+                            </ol>
+                        </nav>
+                        <h1 class="hero-title display-5 fw-bold mt-2 mb-3">
+                            <i class="fas fa-university me-3" aria-hidden="true"></i>Portal de Transparencia & Contacto
                         </h1>
                         <p class="hero-subtitle lead mb-4">
-                            Estamos para servirte. Ponte en contacto con nosotros o visítanos
+                            Canales de atención directa, rendición de cuentas, información pública institucional y buzón ciudadano escolar.
                         </p>
-                        <!-- Hero Navigation Badges -->
-                        <div class="hero-badges d-flex flex-wrap gap-2 justify-content-start mb-4">
-                            <a href="#info-contacto" class="badge bg-light text-primary fs-6 text-decoration-none">
-                                <i class="fas fa-info-circle me-1" aria-hidden="true"></i>
-                                Nuestra Información
+                        <!-- Quick Badges -->
+                        <div class="hero-badges d-flex flex-wrap gap-2">
+                            <a href="#contacto" class="badge bg-white text-primary text-decoration-none py-2 px-3 fs-6 rounded-pill shadow-sm">
+                                <i class="fas fa-phone-alt me-1" aria-hidden="true"></i>Contacto Directo
                             </a>
-                            <a href="#contactForm" class="badge bg-light text-success fs-6 text-decoration-none">
-                                <i class="fas fa-paper-plane me-1" aria-hidden="true"></i>
-                                Envíanos un Mensaje
+                            <a href="#directorio" class="badge bg-white text-primary text-decoration-none py-2 px-3 fs-6 rounded-pill shadow-sm">
+                                <i class="fas fa-address-book me-1" aria-hidden="true"></i>Directorio Escolar
                             </a>
-                            <a href="#ubicacion" class="badge bg-light text-info fs-6 text-decoration-none">
-                                <i class="fas fa-map me-1" aria-hidden="true"></i>
-                                Nuestra Ubicación
+                            <a href="#transparencia" class="badge bg-white text-primary text-decoration-none py-2 px-3 fs-6 rounded-pill shadow-sm">
+                                <i class="fas fa-file-invoice me-1" aria-hidden="true"></i>Normatividad & Cuentas
                             </a>
-                            <a href="#directorio" class="badge bg-light text-warning fs-6 text-decoration-none">
-                                <i class="fas fa-address-book me-1" aria-hidden="true"></i>
-                                Directorio de Contactos
+                            <a href="#buzon" class="badge bg-white text-primary text-decoration-none py-2 px-3 fs-6 rounded-pill shadow-sm">
+                                <i class="fas fa-inbox me-1" aria-hidden="true"></i>Buzón Ciudadano con Folio
                             </a>
                         </div>
                     </div>
-                    <div class="col-lg-4 text-center">
+                    <div class="col-lg-4 text-center d-none d-lg-block">
                         <div class="hero-icon display-1 text-white-50">
-                            <i class="fas fa-building" aria-hidden="true"></i>
+                            <i class="fas fa-landmark" aria-hidden="true"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Información de Contacto -->
-        <section id="info-contacto" class="py-5" data-section-key="info_contacto">
+        <!-- Nav-Pills Maestras Sticky (Touch Target >= 48px) -->
+        <nav class="nav-pills-master-container" aria-label="Secciones de Transparencia y Contacto">
             <div class="container">
-                <div class="row g-4">
-                    <!-- Información General -->
-                    <div class="col-lg-6">
-                        <div class="card border-0 shadow-sm h-100">
-                            <div class="card-body p-4">
-                                <h3 class="card-title text-primary mb-4">
-                                    <i class="fas fa-info-circle me-3" aria-hidden="true"></i>
-                                    Nuestra Información
-                                </h3>
+                <ul class="nav nav-pills nav-pills-master" id="hubTabs" role="tablist">
+                    <li class="nav-item flex-fill" role="presentation">
+                        <button class="nav-link active w-100 touch-btn" id="tab-contacto-btn" data-bs-toggle="pill"
+                            data-bs-target="#tab-contacto" type="button" role="tab" aria-controls="tab-contacto" aria-selected="true">
+                            <i class="fas fa-phone-alt me-2" aria-hidden="true"></i>1. Contacto & Ubicación
+                        </button>
+                    </li>
+                    <li class="nav-item flex-fill" role="presentation">
+                        <button class="nav-link w-100 touch-btn" id="tab-transparencia-btn" data-bs-toggle="pill"
+                            data-bs-target="#tab-transparencia" type="button" role="tab" aria-controls="tab-transparencia" aria-selected="false">
+                            <i class="fas fa-balance-scale me-2" aria-hidden="true"></i>2. Transparencia & Cuentas
+                        </button>
+                    </li>
+                    <li class="nav-item flex-fill" role="presentation">
+                        <button class="nav-link w-100 touch-btn" id="tab-buzon-btn" data-bs-toggle="pill"
+                            data-bs-target="#tab-buzon" type="button" role="tab" aria-controls="tab-buzon" aria-selected="false">
+                            <i class="fas fa-envelope-open-text me-2" aria-hidden="true"></i>3. Buzón Escolar (Folios)
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </nav>
 
-                                <div class="contact-info-item mb-4">
-                                    <div class="d-flex align-items-start">
-                                        <div class="contact-icon me-3">
-                                            <i class="fas fa-map-marker-alt text-danger" aria-hidden="true"></i>
-                                        </div>
-                                        <div>
-                                            <h5 class="mb-2">Dirección</h5>
-                                            <p class="text-muted mb-0">
-                                                <span data-tenant-field="direccion">Dirección del plantel</span><br>
-                                                <span data-tenant-field="municipio">Municipio</span>, Puebla, México
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
+        <!-- Tab Content -->
+        <div class="tab-content py-4" id="hubTabContent">
 
-                                <div class="contact-info-item mb-4">
-                                    <div class="d-flex align-items-start">
-                                        <div class="contact-icon me-3">
-                                            <i class="fas fa-envelope text-success" aria-hidden="true"></i>
-                                        </div>
-                                        <div>
-                                            <h5 class="mb-2">Correo Electrónico</h5>
-                                            <p class="text-muted mb-0">
-                                                <a data-tenant-href="email_institucional" href="mailto:contacto@ejemplo.edu.mx"
-                                                    class="text-decoration-none">
-                                                    <span data-tenant-field="email_institucional">contacto@ejemplo.edu.mx</span>
-                                                </a>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
+            <!-- ============================================ -->
+            <!-- PESTAÑA 1: CONTACTO & UBICACIÓN              -->
+            <!-- ============================================ -->
+            <div class="tab-pane fade show active" id="tab-contacto" role="tabpanel" aria-labelledby="tab-contacto-btn">
+                <div class="container">
 
-                                <div class="contact-info-item mb-4">
-                                    <div class="d-flex align-items-start">
-                                        <div class="contact-icon me-3">
-                                            <i class="fas fa-clock text-warning" aria-hidden="true"></i>
-                                        </div>
-                                        <div>
-                                            <h5 class="mb-2">Horario de Atención</h5>
-                                            <p class="text-muted mb-0">
-                                                Lunes a Viernes de 8:00 AM a 1:30 PM
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
+                    <!-- Información de Canales Oficiales -->
+                    <section id="info-contacto" class="mb-5" data-section-key="info_contacto">
+                        <div class="text-center mb-4">
+                            <span class="badge bg-primary-subtle text-primary fw-semibold px-3 py-2 rounded-pill mb-2">Canales Oficiales</span>
+                            <h2 class="h3 fw-bold text-dark mb-1">Información de Contacto</h2>
+                            <p class="text-muted">Atención directa para aspirantes, alumnos, padres de familia y comunidad escolar.</p>
+                        </div>
 
-                                <div class="contact-info-item mb-4">
-                                    <div class="d-flex align-items-start">
-                                        <div class="contact-icon me-3">
-                                            <i class="fas fa-id-badge text-info" aria-hidden="true"></i>
-                                        </div>
-                                        <div>
-                                            <h5 class="mb-2">CCT (Clave de Centro de Trabajo)</h5>
-                                            <p class="text-muted mb-0"><span data-tenant-field="cct">21EBHXXXXX</span></p>
-                                        </div>
-                                    </div>
+                        <div class="bento-grid mb-4">
+                            <!-- Dirección -->
+                            <div class="bento-card">
+                                <div class="bento-icon bg-danger shadow-sm">
+                                    <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
                                 </div>
+                                <h5 class="fw-bold mb-2">Domicilio del Plantel</h5>
+                                <p class="text-muted small mb-3 flex-grow-1">
+                                    <span data-tenant-field="direccion">Dirección del plantel educativo</span><br>
+                                    <span data-tenant-field="municipio">Municipio</span>, Puebla, México.
+                                </p>
+                                <button type="button" class="btn btn-outline-danger btn-sm touch-btn w-100" data-action="getDirections">
+                                    <i class="fas fa-route me-1" aria-hidden="true"></i>Cómo llegar con GPS
+                                </button>
+                            </div>
 
-                                <div class="social-links-contact">
-                                    <h5 class="mb-3">Síguenos en Redes Sociales</h5>
-                                    <a href="#1" target="_blank"
-                                        class="btn btn-outline-primary me-2" rel="noopener noreferrer"
-                                        aria-label="Facebook">
-                                        <i class="fab fa-facebook-f me-2" aria-hidden="true"></i>
-                                        Visítanos en Facebook
-                                    </a>
+                            <!-- Correo Institucional -->
+                            <div class="bento-card">
+                                <div class="bento-icon bg-success shadow-sm">
+                                    <i class="fas fa-envelope" aria-hidden="true"></i>
                                 </div>
+                                <h5 class="fw-bold mb-2">Correo Institucional</h5>
+                                <p class="text-muted small mb-3 flex-grow-1">
+                                    Canal formal de comunicación para solicitudes oficiales:<br>
+                                    <strong class="text-dark" data-tenant-field="email_institucional">contacto@ejemplo.edu.mx</strong>
+                                </p>
+                                <a data-tenant-href="email_institucional" href="mailto:contacto@ejemplo.edu.mx" class="btn btn-outline-success btn-sm touch-btn w-100">
+                                    <i class="fas fa-paper-plane me-1" aria-hidden="true"></i>Redactar Correo
+                                </a>
+                            </div>
+
+                            <!-- Horarios y Teléfono -->
+                            <div class="bento-card">
+                                <div class="bento-icon bg-primary shadow-sm">
+                                    <i class="fas fa-clock" aria-hidden="true"></i>
+                                </div>
+                                <h5 class="fw-bold mb-2">Horario & Atención</h5>
+                                <p class="text-muted small mb-3 flex-grow-1">
+                                    Lunes a Viernes: <strong>8:00 AM a 1:30 PM</strong><br>
+                                    Teléfono: <span data-tenant-field="telefono">(222) 123-4567</span><br>
+                                    CCT: <span class="badge bg-secondary" data-tenant-field="cct">21EBHXXXXX</span>
+                                </p>
+                                <button type="button" class="btn btn-outline-primary btn-sm touch-btn w-100" data-action="shareLocation">
+                                    <i class="fas fa-share-alt me-1" aria-hidden="true"></i>Compartir Datos
+                                </button>
                             </div>
                         </div>
-                    </div>
+                    </section>
 
-                    <!-- Formulario de Contacto -->
-                    <div class="col-lg-6">
-                        <div class="card border-0 shadow-sm h-100">
-                            <div class="card-body p-4">
-                                <h3 class="card-title text-primary mb-4">
-                                    <i class="fas fa-paper-plane me-3" aria-hidden="true"></i>
-                                    Envíanos un Mensaje Directo
-                                </h3>
-
-                                <form id="contactForm" method="POST" action="/api/contact/send"
-                                    class="professional-form" novalidate>
+                    <!-- Formulario de Mensaje Directo -->
+                    <section id="formulario-contacto" class="mb-5" data-section-key="formulario_contacto">
+                        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                            <div class="card-header bg-primary text-white py-3 px-4">
+                                <h4 class="h5 fw-bold mb-0">
+                                    <i class="fas fa-paper-plane me-2" aria-hidden="true"></i>Envíanos un Mensaje Directo
+                                </h4>
+                            </div>
+                            <div class="card-body p-4 p-md-5">
+                                <form id="contactForm" novalidate>
                                     <input type="hidden" name="form_type" value="Contacto General">
-
                                     <div class="row g-3">
                                         <div class="col-md-6">
-                                            <label for="nombre" class="form-label">Nombre Completo *</label>
-                                            <input type="text" class="form-control" id="nombre" name="name" required>
-                                            <div class="invalid-feedback">
-                                                Por favor ingresa tu nombre completo.
-                                            </div>
+                                            <label for="nombre" class="form-label fw-semibold">Nombre Completo *</label>
+                                            <input type="text" class="form-control form-control-lg fs-6" id="nombre" name="name" required placeholder="Tu nombre y apellidos">
+                                            <div class="invalid-feedback">Ingresa tu nombre completo.</div>
                                         </div>
 
                                         <div class="col-md-6">
-                                            <label for="email" class="form-label">Correo Electrónico *</label>
-                                            <input type="email" class="form-control" id="email" name="email" required>
-                                            <div class="invalid-feedback">
-                                                Por favor ingresa un correo electrónico válido.
-                                            </div>
+                                            <label for="email" class="form-label fw-semibold">Correo Electrónico *</label>
+                                            <input type="email" class="form-control form-control-lg fs-6" id="email" name="email" required placeholder="nombre@correo.com">
+                                            <div class="invalid-feedback">Ingresa un correo electrónico válido.</div>
                                         </div>
 
                                         <div class="col-md-6">
-                                            <label for="telefono" class="form-label">Teléfono</label>
-                                            <input type="tel" class="form-control" id="telefono" name="telefono">
+                                            <label for="telefono" class="form-label fw-semibold">Teléfono de Contacto</label>
+                                            <input type="tel" class="form-control form-control-lg fs-6" id="telefono" name="telefono" placeholder="10 dígitos">
                                         </div>
 
                                         <div class="col-md-6">
-                                            <label for="tipo" class="form-label">Tipo de Consulta *</label>
-                                            <select class="form-select" id="tipo" name="tipo" required>
+                                            <label for="tipo" class="form-label fw-semibold">Tipo de Consulta *</label>
+                                            <select class="form-select form-control-lg fs-6" id="tipo" name="tipo" required>
                                                 <option value="">Selecciona una opción</option>
                                                 <option value="Información General">Información General</option>
-                                                <option value="Admisiones e Inscripciones">Admisiones e Inscripciones
-                                                </option>
-                                                <option value="Servicios Escolares">Servicios Escolares</option>
-                                                <option value="Trámites y Documentos">Trámites y Documentos</option>
-                                                <option value="Becas y Apoyos">Becas y Apoyos</option>
-                                                <option value="Quejas y Sugerencias">Quejas y Sugerencias</option>
-                                                <option value="Otro">Otro</option>
+                                                <option value="Admisiones e Inscripciones">Admisiones e Inscripciones</option>
+                                                <option value="Servicios Escolares">Servicios Escolares (Trámites/Constancias)</option>
+                                                <option value="Becas y Apoyos">Becas y Apoyos Estudiantiles</option>
+                                                <option value="Orientación Educativa">Orientación Educativa</option>
+                                                <option value="Otro">Otro Asunto</option>
                                             </select>
-                                            <div class="invalid-feedback">
-                                                Por favor selecciona el tipo de consulta.
-                                            </div>
+                                            <div class="invalid-feedback">Selecciona el tipo de consulta.</div>
                                         </div>
 
                                         <div class="col-12">
-                                            <label for="asunto" class="form-label">Asunto *</label>
-                                            <input type="text" class="form-control" id="asunto" name="subject" required>
-                                            <div class="invalid-feedback">
-                                                Por favor ingresa el asunto de tu mensaje.
-                                            </div>
+                                            <label for="asunto" class="form-label fw-semibold">Asunto *</label>
+                                            <input type="text" class="form-control form-control-lg fs-6" id="asunto" name="subject" required placeholder="Motivo principal del mensaje">
+                                            <div class="invalid-feedback">Escribe el asunto de tu mensaje.</div>
                                         </div>
 
                                         <div class="col-12">
-                                            <label for="mensaje" class="form-label">Mensaje *</label>
-                                            <textarea class="form-control" id="mensaje" name="message" rows="5" required
-                                                placeholder="Escribe aquí tu mensaje detallado..."></textarea>
-                                            <div class="invalid-feedback">
-                                                Por favor escribe tu mensaje.
-                                            </div>
-                                            <div class="form-text">
-                                                Mínimo 10 caracteres. Sé específico para poder ayudarte mejor.
-                                            </div>
+                                            <label for="mensaje" class="form-label fw-semibold">Mensaje Detallado *</label>
+                                            <textarea class="form-control fs-6" id="mensaje" name="message" rows="4" required placeholder="Escribe aquí tu consulta con el mayor detalle posible..."></textarea>
+                                            <div class="invalid-feedback">Por favor describe tu consulta.</div>
                                         </div>
 
                                         <div class="col-12">
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="privacidad"
-                                                    name="privacidad" required>
-                                                <label class="form-check-label" for="privacidad">
-                                                    Acepto el tratamiento de mis datos personales conforme a la
-                                                    normatividad aplicable *
+                                                <input class="form-check-input" type="checkbox" id="privacidad" name="privacidad" required>
+                                                <label class="form-check-label text-muted small" for="privacidad">
+                                                    He leído y acepto el tratamiento de mis datos personales para fines de atención ciudadana conforme a la ley. *
                                                 </label>
-                                                <div class="invalid-feedback">
-                                                    Debes aceptar el tratamiento de datos personales.
-                                                </div>
+                                                <div class="invalid-feedback">Debes aceptar el aviso de privacidad.</div>
                                             </div>
                                         </div>
 
-                                        <div class="col-12">
-                                            <div class="d-grid">
-                                                <button type="submit" class="btn btn-primary btn-lg">
-                                                    <i class="fas fa-paper-plane me-2" aria-hidden="true"></i>
-                                                    <span class="btn-text">Enviar Mensaje</span>
-                                                    <span
-                                                        class="btn-spinner spinner-border spinner-border-sm d-none ms-2"
-                                                        role="status" aria-hidden="true"></span>
-                                                </button>
-                                            </div>
+                                        <div class="col-12 mt-4">
+                                            <button type="submit" class="btn btn-primary btn-lg touch-btn w-100 fw-bold shadow-sm">
+                                                <span class="btn-text"><i class="fas fa-paper-plane me-2" aria-hidden="true"></i>Enviar Mensaje Oficial</span>
+                                                <span class="btn-spinner spinner-border spinner-border-sm d-none ms-2" role="status" aria-hidden="true"></span>
+                                            </button>
                                         </div>
                                     </div>
                                 </form>
 
-                                <!-- Alert para confirmación -->
-                                <div class="alert alert-success d-none mt-3" id="alertSuccess">
-                                    <i class="fas fa-check-circle me-2" aria-hidden="true"></i>
-                                    <strong>¡Mensaje enviado exitosamente!</strong> Te contactaremos pronto.
+                                <!-- Alertas de Confirmación -->
+                                <div class="alert alert-success d-none mt-4 rounded-3" id="alertSuccess" role="alert">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-check-circle fa-2x me-3" aria-hidden="true"></i>
+                                        <div>
+                                            <h6 class="fw-bold mb-1">¡Mensaje Enviado con Éxito!</h6>
+                                            <p class="mb-0 small">Tu solicitud ha sido radicada correctamente. Te responderemos a la brevedad a través de tu correo electrónico proporcionado.</p>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="alert alert-danger d-none mt-3" id="alertError">
-                                    <i class="fas fa-exclamation-triangle me-2" aria-hidden="true"></i>
-                                    <strong>Error al enviar el mensaje.</strong> Por favor intenta nuevamente.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Mapa y Ubicación -->
-        <section id="ubicacion" class="py-5 bg-light" data-section-key="ubicacion">
-            <div class="container">
-                <div class="section-header text-center mb-5">
-                    <h2 class="section-title">
-                        <i class="fas fa-map-marked-alt text-primary me-3" aria-hidden="true"></i>
-                        Nuestra Ubicación
-                    </h2>
-                    <p class="section-subtitle text-muted">
-                        Encuentra fácilmente nuestro plantel educativo
-                    </p>
-                </div>
-
-                <div class="row g-4 align-items-center">
-                    <div class="col-lg-8">
-                        <div class="card border-0 shadow-sm">
-                            <div class="card-body p-0">
-                                <!-- Mapa Interactivo de Google Maps -->
-                                <div class="map-container position-relative">
-                                    <iframe
-                                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3767.2!2d-97.8736!3d19.0435!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cfc0a123b456c7%3A0x9876543210abcdef!2sCoronel%20Tito%20Hern%C3%A1ndez%2C%20Venustiano%20Carranza%2C%20Puebla%2C%20M%C3%A9xico!5e0!3m2!1ses!2smx!4v1694561234567!5m2!1ses!2smx"
-                                        width="100%" height="400" allowfullscreen="" loading="lazy"
-                                        referrerpolicy="no-referrer-when-downgrade"
-                                        title="Ubicación del Bachillerato General">
-                                    </iframe>
-
-                                    <!-- Overlay de controles del mapa -->
-                                    <div class="map-controls position-absolute">
-                                        <div class="btn-group-vertical shadow-sm" role="group">
-                                            <a href="https://maps.google.com/?q=Bachillerato+General"
-                                                target="_blank" class="btn btn-primary btn-sm" rel="noopener noreferrer"
-                                                title="Abrir en Google Maps">
-                                                <i class="fas fa-external-link-alt"></i>
-                                            </a>
-                                            <button type="button" class="btn btn-success btn-sm"
-                                                data-action="getDirections()" title="Obtener direcciones">
-                                                <i class="fas fa-route"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-info btn-sm"
-                                                data-action="shareLocation()" title="Compartir ubicación">
-                                                <i class="fas fa-share-alt"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-warning btn-sm"
-                                                data-action="openMapModal()" title="Ver mapa grande">
-                                                <i class="fas fa-expand"></i>
-                                            </button>
+                                <div class="alert alert-danger d-none mt-4 rounded-3" id="alertError" role="alert">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-exclamation-triangle fa-2x me-3" aria-hidden="true"></i>
+                                        <div>
+                                            <h6 class="fw-bold mb-1">Error al enviar el mensaje</h6>
+                                            <p class="mb-0 small">Por favor verifica tu conexión o intenta comunicarse directamente a través del teléfono del plantel.</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </section>
 
-                    <div class="col-lg-4">
-                        <div class="card border-0 shadow-sm h-100">
-                            <div class="card-body p-4">
-                                <h4 class="card-title text-primary mb-4">
-                                    <i class="fas fa-route me-2" aria-hidden="true"></i>
-                                    Cómo Llegar
-                                </h4>
-
-                                <div class="mb-4">
-                                    <h6 class="text-dark mb-2">
-                                        <i class="fas fa-bus text-primary me-2" aria-hidden="true"></i>
-                                        Transporte Público
-                                    </h6>
-                                    <p class="text-muted small">
-                                        Desde Puebla capital, tomar autobús hacia <span data-tenant-field="municipio">Municipio</span>.
-                                        Bajar en <span data-tenant-field="direccion">Dirección del plantel</span>.
-                                    </p>
-                                </div>
-
-                                <div class="mb-4">
-                                    <h6 class="text-dark mb-2">
-                                        <i class="fas fa-car text-success me-2" aria-hidden="true"></i>
-                                        En Automóvil
-                                    </h6>
-                                    <p class="text-muted small">
-                                        Por carretera federal 140 (Puebla-Veracruz),
-                                        dirigirse hacia <span data-tenant-field="municipio">Municipio</span>.
-                                    </p>
-                                </div>
-
-                                <div class="mb-4">
-                                    <h6 class="text-dark mb-2">
-                                        <i class="fas fa-landmark text-info me-2" aria-hidden="true"></i>
-                                        Referencias
-                                    </h6>
-                                    <p class="text-muted small">
-                                        Cerca del centro de <span data-tenant-field="direccion">Dirección del plantel</span>,
-                                        Col. Centro, sobre la calle principal.
-                                    </p>
-                                </div>
-
-                                <div class="alert alert-info">
-                                    <i class="fas fa-info-circle me-2" aria-hidden="true"></i>
-                                    <strong>Consejo:</strong>
-                                    <small>Si vienes por primera vez, te recomendamos llamar para recibir indicaciones
-                                        específicas.</small>
-                                </div>
-                            </div>
+                    <!-- Directorio Escolar -->
+                    <section id="directorio" class="mb-5" data-section-key="directorio">
+                        <div class="text-center mb-4">
+                            <span class="badge bg-primary-subtle text-primary fw-semibold px-3 py-2 rounded-pill mb-2">Estructura Interna</span>
+                            <h2 class="h3 fw-bold text-dark mb-1">Directorio de Áreas de Atención</h2>
+                            <p class="text-muted">Personal responsable y áreas de contacto directo en el plantel educativo.</p>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </section>
 
-        <!-- Directorio -->
-        <section id="directorio" class="py-5" data-section-key="directorio">
-            <div class="container">
-                <div class="section-header text-center mb-5">
-                    <h2 class="section-title">
-                        <i class="fas fa-address-book text-primary me-3" aria-hidden="true"></i>
-                        Directorio de Contactos
-                    </h2>
-                    <p class="section-subtitle text-muted">
-                        Contacta directamente con el área que necesites
-                    </p>
-                </div>
-
-                <div class="row g-4">
-                    <div class="col-lg-4 col-md-6">
-                        <div class="card border-0 shadow-sm h-100 text-center">
-                            <div class="card-body p-4">
-                                <div class="contact-avatar mb-3">
-                                    <i class="fas fa-user-tie display-4 text-primary" aria-hidden="true"></i>
+                        <div class="bento-grid">
+                            <!-- Dirección General -->
+                            <div class="bento-card">
+                                <div class="bento-icon bg-primary shadow-sm">
+                                    <i class="fas fa-user-tie" aria-hidden="true"></i>
                                 </div>
-                                <h5 class="card-title">Dirección General</h5>
-                                <p class="card-subtitle text-muted mb-3" data-tenant-field="director_name">Nombre del Director</p>
-                                <p class="card-text small">
-                                    Atención a padres de familia, asuntos administrativos
-                                    y gestión institucional.
+                                <h5 class="fw-bold mb-1">Dirección del Plantel</h5>
+                                <p class="text-primary small fw-semibold mb-2" data-tenant-field="director_name">Dirección General</p>
+                                <p class="text-muted small mb-3 flex-grow-1">
+                                    Atención a padres de familia, asuntos normativos institucionales y gestión escolar.
                                 </p>
-                                <div class="contact-details">
-                                    <p class="mb-2">
-                                        <i class="fas fa-clock text-muted me-2" aria-hidden="true"></i>
-                                        <small>Lun-Vie: 9:00 AM - 12:00 PM</small>
-                                    </p>
-                                    <p class="mb-0">
-                                        <i class="fas fa-calendar-check text-muted me-2" aria-hidden="true"></i>
-                                        <small>Con cita previa</small>
-                                    </p>
+                                <div class="bg-light p-2 rounded small text-muted">
+                                    <i class="fas fa-calendar-check me-1" aria-hidden="true"></i> Lun - Vie: 9:00 AM - 12:00 PM (Con cita)
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <div class="col-lg-4 col-md-6">
-                        <div class="card border-0 shadow-sm h-100 text-center">
-                            <div class="card-body p-4">
-                                <div class="contact-avatar mb-3">
-                                    <i class="fas fa-clipboard-list display-4 text-success" aria-hidden="true"></i>
+                            <!-- Servicios Escolares -->
+                            <div class="bento-card">
+                                <div class="bento-icon bg-success shadow-sm">
+                                    <i class="fas fa-clipboard-list" aria-hidden="true"></i>
                                 </div>
-                                <h5 class="card-title">Servicios Escolares</h5>
-                                <p class="card-subtitle text-muted mb-3">Administración Escolar</p>
-                                <p class="card-text small">
-                                    Trámites, constancias, certificados y
-                                    documentación oficial.
+                                <h5 class="fw-bold mb-1">Control Escolar</h5>
+                                <p class="text-success small fw-semibold mb-2">Ventanilla de Trámites</p>
+                                <p class="text-muted small mb-3 flex-grow-1">
+                                    Expedición de constancias, credenciales, historial académico y certificados oficiales SEP.
                                 </p>
-                                <div class="contact-details">
-                                    <p class="mb-2">
-                                        <i class="fas fa-clock text-muted me-2" aria-hidden="true"></i>
-                                        <small>Lun-Vie: 8:00 AM - 1:30 PM</small>
-                                    </p>
-                                    <p class="mb-0">
-                                        <i class="fas fa-file-alt text-muted me-2" aria-hidden="true"></i>
-                                        <small>Trámites y documentos</small>
-                                    </p>
+                                <div class="bg-light p-2 rounded small text-muted">
+                                    <i class="fas fa-clock me-1" aria-hidden="true"></i> Lun - Vie: 8:00 AM - 1:30 PM
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <div class="col-lg-4 col-md-6">
-                        <div class="card border-0 shadow-sm h-100 text-center">
-                            <div class="card-body p-4">
-                                <div class="contact-avatar mb-3">
-                                    <i class="fas fa-user-graduate display-4 text-warning" aria-hidden="true"></i>
+                            <!-- Orientación Educativa -->
+                            <div class="bento-card">
+                                <div class="bento-icon bg-warning shadow-sm">
+                                    <i class="fas fa-user-graduate" aria-hidden="true"></i>
                                 </div>
-                                <h5 class="card-title">Orientación Educativa</h5>
-                                <p class="card-subtitle text-muted mb-3">Apoyo Psicopedagógico</p>
-                                <p class="card-text small">
-                                    Orientación vocacional, apoyo emocional
-                                    y académico para estudiantes.
+                                <h5 class="fw-bold mb-1">Orientación Educativa</h5>
+                                <p class="text-warning-emphasis small fw-semibold mb-2">Apoyo Integral</p>
+                                <p class="text-muted small mb-3 flex-grow-1">
+                                    Tutorías académicas, orientación vocacional y acompañamiento psicopedagógico a estudiantes.
                                 </p>
-                                <div class="contact-details">
-                                    <p class="mb-2">
-                                        <i class="fas fa-clock text-muted me-2" aria-hidden="true"></i>
-                                        <small>Lun-Vie: 8:00 AM - 1:00 PM</small>
-                                    </p>
-                                    <p class="mb-0">
-                                        <i class="fas fa-heart text-muted me-2" aria-hidden="true"></i>
-                                        <small>Apoyo estudiantil</small>
-                                    </p>
+                                <div class="bg-light p-2 rounded small text-muted">
+                                    <i class="fas fa-heart me-1" aria-hidden="true"></i> Lun - Vie: 8:00 AM - 1:00 PM
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <div class="col-lg-4 col-md-6">
-                        <div class="card border-0 shadow-sm h-100 text-center">
-                            <div class="card-body p-4">
-                                <div class="contact-avatar mb-3">
-                                    <i class="fas fa-chalkboard-teacher display-4 text-info" aria-hidden="true"></i>
+                            <!-- Coordinación Académica -->
+                            <div class="bento-card">
+                                <div class="bento-icon bg-info shadow-sm">
+                                    <i class="fas fa-chalkboard-teacher" aria-hidden="true"></i>
                                 </div>
-                                <h5 class="card-title">Coordinación Académica</h5>
-                                <p class="card-subtitle text-muted mb-3">Asuntos Docentes</p>
-                                <p class="card-text small">
-                                    Coordinación de programas educativos,
-                                    evaluación y desarrollo académico.
+                                <h5 class="fw-bold mb-1">Coordinación Académica</h5>
+                                <p class="text-info-emphasis small fw-semibold mb-2">Gestión Pedagógica</p>
+                                <p class="text-muted small mb-3 flex-grow-1">
+                                    Supervisión de planes de estudio, academias docentes y seguimiento de evaluaciones.
                                 </p>
-                                <div class="contact-details">
-                                    <p class="mb-2">
-                                        <i class="fas fa-clock text-muted me-2" aria-hidden="true"></i>
-                                        <small>Lun-Vie: 8:30 AM - 1:00 PM</small>
-                                    </p>
-                                    <p class="mb-0">
-                                        <i class="fas fa-book text-muted me-2" aria-hidden="true"></i>
-                                        <small>Asuntos académicos</small>
-                                    </p>
+                                <div class="bg-light p-2 rounded small text-muted">
+                                    <i class="fas fa-book me-1" aria-hidden="true"></i> Lun - Vie: 8:30 AM - 1:00 PM
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <div class="col-lg-4 col-md-6">
-                        <div class="card border-0 shadow-sm h-100 text-center">
-                            <div class="card-body p-4">
-                                <div class="contact-avatar mb-3">
-                                    <i class="fas fa-hand-holding-usd display-4 text-secondary" aria-hidden="true"></i>
+                            <!-- Becas y Apoyos -->
+                            <div class="bento-card">
+                                <div class="bento-icon bg-secondary shadow-sm">
+                                    <i class="fas fa-hand-holding-usd" aria-hidden="true"></i>
                                 </div>
-                                <h5 class="card-title">Becas y Apoyos</h5>
-                                <p class="card-subtitle text-muted mb-3">Programas de Apoyo</p>
-                                <p class="card-text small">
-                                    Información sobre becas, programas gubernamentales
-                                    y apoyos económicos.
+                                <h5 class="fw-bold mb-1">Becas & Apoyos</h5>
+                                <p class="text-secondary small fw-semibold mb-2">Bienestar Estudiantil</p>
+                                <p class="text-muted small mb-3 flex-grow-1">
+                                    Coordinación del programa Beca Benito Juárez y convocatorias estatales de estímulos económicos.
                                 </p>
-                                <div class="contact-details">
-                                    <p class="mb-2">
-                                        <i class="fas fa-clock text-muted me-2" aria-hidden="true"></i>
-                                        <small>Lun-Vie: 9:00 AM - 1:00 PM</small>
-                                    </p>
-                                    <p class="mb-0">
-                                        <i class="fas fa-handshake text-muted me-2" aria-hidden="true"></i>
-                                        <small>Apoyo económico</small>
-                                    </p>
+                                <div class="bg-light p-2 rounded small text-muted">
+                                    <i class="fas fa-handshake me-1" aria-hidden="true"></i> Lun - Vie: 9:00 AM - 1:00 PM
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <div class="col-lg-4 col-md-6">
-                        <div class="card border-0 shadow-sm h-100 text-center">
-                            <div class="card-body p-4">
-                                <div class="contact-avatar mb-3">
-                                    <i class="fas fa-tools display-4 text-danger" aria-hidden="true"></i>
+                            <!-- Mantenimiento -->
+                            <div class="bento-card">
+                                <div class="bento-icon bg-dark shadow-sm">
+                                    <i class="fas fa-tools" aria-hidden="true"></i>
                                 </div>
-                                <h5 class="card-title">Mantenimiento</h5>
-                                <p class="card-subtitle text-muted mb-3">Servicios Generales</p>
-                                <p class="card-text small">
-                                    Reportes de mantenimiento, limpieza
-                                    y servicios generales del plantel.
+                                <h5 class="fw-bold mb-1">Servicios Generales</h5>
+                                <p class="text-muted small fw-semibold mb-2">Mantenimiento e Instalaciones</p>
+                                <p class="text-muted small mb-3 flex-grow-1">
+                                    Conservación de aulas, laboratorios de cómputo y áreas deportivas del bachillerato.
                                 </p>
-                                <div class="contact-details">
-                                    <p class="mb-2">
-                                        <i class="fas fa-clock text-muted me-2" aria-hidden="true"></i>
-                                        <small>Lun-Vie: 8:00 AM - 1:30 PM</small>
-                                    </p>
-                                    <p class="mb-0">
-                                        <i class="fas fa-wrench text-muted me-2" aria-hidden="true"></i>
-                                        <small>Servicios del plantel</small>
-                                    </p>
+                                <div class="bg-light p-2 rounded small text-muted">
+                                    <i class="fas fa-wrench me-1" aria-hidden="true"></i> Lun - Vie: 8:00 AM - 2:00 PM
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+                    </section>
 
-        <!-- CTA Section -->
-        <section class="cta-section bg-gradient-primary text-white py-5">
-            <div class="container">
-                <div class="row justify-content-center text-center">
-                    <div class="col-lg-8">
-                        <h2 class="display-5 fw-bold mb-4">¿Tienes más preguntas?</h2>
-                        <p class="lead mb-4">
-                            No dudes en contactarnos. Estamos aquí para apoyarte en todo lo que necesites
-                        </p>
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-                            <a href="#contactForm" class="btn btn-light btn-lg me-md-2">
-                                <i class="fas fa-envelope me-2" aria-hidden="true"></i>
-                                Enviar Mensaje
-                            </a>
-                            <a href="servicios.html" class="btn btn-outline-light btn-lg">
-                                <i class="fas fa-info-circle me-2" aria-hidden="true"></i>
-                                Ver Servicios
-                            </a>
+                    <!-- Ubicación y Mapa Interactivo -->
+                    <section id="ubicacion" class="mb-5" data-section-key="ubicacion">
+                        <div class="text-center mb-4">
+                            <span class="badge bg-primary-subtle text-primary fw-semibold px-3 py-2 rounded-pill mb-2">Localización</span>
+                            <h2 class="h3 fw-bold text-dark mb-1">Nuestra Ubicación Geográfica</h2>
+                            <p class="text-muted">Instrucciones y mapa satelital para llegar a nuestras instalaciones.</p>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
 
-    <!-- Modal del Mapa Grande -->
-    <div class="modal fade" id="mapModal" tabindex="-1" aria-labelledby="mapModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="mapModalLabel">
-                        <i class="fas fa-map-marked-alt me-2"></i>
-                        Ubicación del Plantel - BGE <span data-tenant-field="school_short_name">nuestro plantel</span>
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-0">
-                    <div class="map-full-container">
-                        <iframe id="mapFullIframe"
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3767.2!2d-97.8736!3d19.0435!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cfc0a123b456c7%3A0x9876543210abcdef!2sCoronel%20Tito%20Hern%C3%A1ndez%2C%20Venustiano%20Carranza%2C%20Puebla%2C%20M%C3%A9xico!5e0!3m2!1ses!2smx!4v1694561234567!5m2!1ses!2smx"
-                            width="100%" height="500" allowfullscreen="" loading="lazy"
-                            referrerpolicy="no-referrer-when-downgrade"
-                            title="Ubicación completa del Bachillerato General Estatal <span data-tenant-field="school_short_name">nuestro plantel</span>">
-                        </iframe>
-
-                        <!-- Información flotante sobre el mapa -->
-                        <div
-                            class="map-info-overlay position-absolute bottom-0 start-0 end-0 bg-white bg-opacity-95 p-3 border-top">
-                            <div class="row align-items-center">
-                                <div class="col-md-8">
-                                    <h6 class="mb-1">
-                                        <i class="fas fa-graduation-cap text-primary me-2"></i>
-                                        <span data-tenant-field="school_type">Bachillerato General</span> <span data-tenant-field="school_short_name">BGE</span>
-                                    </h6>
-                                    <p class="mb-1 small text-muted">
-                                        <i class="fas fa-map-marker-alt me-1"></i>
-                                        <span data-tenant-field="direccion">Dirección del plantel, Puebla</span>, México
-                                    </p>
-                                    <p class="mb-0 small text-muted">
-                                        <i class="fas fa-phone me-1"></i>
-                                        <span data-tenant-field="telefono">(222) 123-4567</span> |
-                                        <i class="fas fa-envelope me-1"></i>
-                                        <span data-tenant-field="email_institucional">contacto@ejemplo.edu.mx</span>
-                                    </p>
+                        <div class="row g-4 align-items-stretch">
+                            <div class="col-lg-8">
+                                <div class="map-responsive-wrapper shadow-sm">
+                                    <iframe
+                                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3767.2!2d-97.8736!3d19.0435!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cfc0a123b456c7%3A0x9876543210abcdef!2sCoronel%20Tito%20Hern%C3%A1ndez%2C%20Venustiano%20Carranza%2C%20Puebla%2C%20M%C3%A9xico!5e0!3m2!1ses!2smx!4v1694561234567!5m2!1ses!2smx"
+                                        allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                                        title="Mapa satelital de la ubicación del Bachillerato General">
+                                    </iframe>
                                 </div>
-                                <div class="col-md-4 text-end">
-                                    <div class="btn-group" role="group">
-                                        <a href="https://maps.google.com/?q=Bachillerato+General"
-                                            target="_blank" class="btn btn-primary btn-sm" rel="noopener noreferrer">
-                                            <i class="fas fa-external-link-alt me-1"></i>
-                                            Abrir en Maps
-                                        </a>
-                                        <button type="button" class="btn btn-success btn-sm"
-                                            data-action="getDirections()">
-                                            <i class="fas fa-route me-1"></i>
-                                            Cómo llegar
-                                        </button>
+                                <div class="d-flex flex-wrap gap-2 mt-3 justify-content-end">
+                                    <button type="button" class="btn btn-primary btn-sm touch-btn" data-action="getDirections">
+                                        <i class="fas fa-directions me-1" aria-hidden="true"></i>Ruta en Google Maps
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm touch-btn" data-action="openMapModal">
+                                        <i class="fas fa-expand me-1" aria-hidden="true"></i>Pantalla Completa
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="card border-0 shadow-sm rounded-4 h-100 p-4">
+                                    <h5 class="fw-bold mb-3 text-primary">
+                                        <i class="fas fa-route me-2" aria-hidden="true"></i>Guía de Acceso
+                                    </h5>
+                                    
+                                    <div class="mb-3">
+                                        <h6 class="fw-bold mb-1 text-dark"><i class="fas fa-bus text-primary me-2" aria-hidden="true"></i>Transporte Colectivo</h6>
+                                        <p class="text-muted small mb-0">Rutas locales con parada sobre la avenida principal de <span data-tenant-field="municipio">Municipio</span>, a pocos pasos de la entrada escolar.</p>
+                                    </div>
+                                    <hr class="my-2 text-muted opacity-25">
+
+                                    <div class="mb-3">
+                                        <h6 class="fw-bold mb-1 text-dark"><i class="fas fa-car text-success me-2" aria-hidden="true"></i>En Automóvil</h6>
+                                        <p class="text-muted small mb-0">Acceso pavimentado con área de estacionamiento seguro para visitas y eventos escolares.</p>
+                                    </div>
+                                    <hr class="my-2 text-muted opacity-25">
+
+                                    <div class="mb-3">
+                                        <h6 class="fw-bold mb-1 text-dark"><i class="fas fa-landmark text-warning me-2" aria-hidden="true"></i>Punto de Referencia</h6>
+                                        <p class="text-muted small mb-0">Sobre la calle principal de la comunidad, frente al parque o plaza comunitaria.</p>
+                                    </div>
+
+                                    <div class="alert alert-info py-2 px-3 mt-auto mb-0 rounded-3">
+                                        <small><i class="fas fa-info-circle me-1" aria-hidden="true"></i>Para visitas guiadas o de orientación vocacional, agenda cita previa.</small>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </section>
+
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- PESTAÑA 2: TRANSPARENCIA & RENDICIÓN         -->
+            <!-- ============================================ -->
+            <div class="tab-pane fade" id="tab-transparencia" role="tabpanel" aria-labelledby="tab-transparencia-btn">
+                <div class="container">
+
+                    <!-- Información Institucional y Rendición de Cuentas -->
+                    <section id="transparencia-institucional" class="mb-5" data-section-key="transparencia_institucional">
+                        <div class="text-center mb-4">
+                            <span class="badge bg-success-subtle text-success fw-semibold px-3 py-2 rounded-pill mb-2">Información Pública Obligatoria</span>
+                            <h2 class="h3 fw-bold text-dark mb-1">Datos Institucionales de Transparencia</h2>
+                            <p class="text-muted">Cumplimiento formal con los lineamientos de acceso a la información pública del Estado de Puebla.</p>
+                        </div>
+
+                        <div class="bento-grid mb-4">
+                            <div class="bento-card">
+                                <div class="bento-icon bg-primary shadow-sm">
+                                    <i class="fas fa-id-card" aria-hidden="true"></i>
+                                </div>
+                                <h5 class="fw-bold mb-2">Identidad del Plantel</h5>
+                                <ul class="list-unstyled small text-muted mb-0">
+                                    <li class="mb-1"><strong>Nombre:</strong> <span data-tenant-field="school_name">Bachillerato General Estatal</span></li>
+                                    <li class="mb-1"><strong>Clave SEP (CCT):</strong> <span data-tenant-field="cct">21EBHXXXXX</span></li>
+                                    <li class="mb-1"><strong>Nivel:</strong> Medio Superior</li>
+                                    <li class="mb-0"><strong>Subsistema:</strong> Bachilleratos Generales Estatales</li>
+                                </ul>
+                            </div>
+
+                            <div class="bento-card">
+                                <div class="bento-icon bg-success shadow-sm">
+                                    <i class="fas fa-school" aria-hidden="true"></i>
+                                </div>
+                                <h5 class="fw-bold mb-2">Régimen & Modalidad</h5>
+                                <ul class="list-unstyled small text-muted mb-0">
+                                    <li class="mb-1"><strong>Modalidad:</strong> Escolarizada Presencial</li>
+                                    <li class="mb-1"><strong>Sostenimiento:</strong> Público Estatal</li>
+                                    <li class="mb-1"><strong>Turno:</strong> Matutino</li>
+                                    <li class="mb-0"><strong>Planes:</strong> Nueva Escuela Mexicana (NEM)</li>
+                                </ul>
+                            </div>
+
+                            <div class="bento-card">
+                                <div class="bento-icon bg-info shadow-sm">
+                                    <i class="fas fa-users" aria-hidden="true"></i>
+                                </div>
+                                <h5 class="fw-bold mb-2">Matrícula & Personal</h5>
+                                <ul class="list-unstyled small text-muted mb-0">
+                                    <li class="mb-1"><strong>Estudiantes:</strong> Matrícula activa 2024-2025</li>
+                                    <li class="mb-1"><strong>Docentes:</strong> 100% con título y cédula profesional</li>
+                                    <li class="mb-1"><strong>Personal de Apoyo:</strong> Administrativo y mantenimiento</li>
+                                    <li class="mb-0"><strong>Grupos:</strong> 1º, 2º y 3º año de bachillerato</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Documentos Oficiales y Normatividad -->
+                    <section id="documentos-transparencia" class="mb-5" data-section-key="documentos_normatividad">
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+                            <div>
+                                <h3 class="h4 fw-bold text-dark mb-1">
+                                    <i class="fas fa-folder-open text-primary me-2" aria-hidden="true"></i>Documentos Oficiales & Normatividad
+                                </h3>
+                                <p class="text-muted small mb-0">Consulta y descarga directa de documentos vigentes en formato PDF.</p>
+                            </div>
+                            <!-- Filtro interactivo de documentos -->
+                            <div class="btn-group" role="group" aria-label="Filtro de documentos">
+                                <button type="button" class="btn btn-primary btn-sm touch-btn active" data-action="filterDocs" data-category="all">Todos</button>
+                                <button type="button" class="btn btn-outline-primary btn-sm touch-btn" data-action="filterDocs" data-category="normatividad">Normatividad</button>
+                                <button type="button" class="btn btn-outline-primary btn-sm touch-btn" data-action="filterDocs" data-category="finanzas">Finanzas</button>
+                                <button type="button" class="btn btn-outline-primary btn-sm touch-btn" data-action="filterDocs" data-category="gestion">Gestión</button>
+                            </div>
+                        </div>
+
+                        <div class="bento-grid">
+                            <!-- Reglamento Escolar -->
+                            <div class="bento-card transparency-doc-item" data-category="normatividad">
+                                <div class="bento-icon bg-primary shadow-sm">
+                                    <i class="fas fa-book" aria-hidden="true"></i>
+                                </div>
+                                <h5 class="fw-bold mb-1">Reglamento Escolar</h5>
+                                <p class="text-muted small mb-3 flex-grow-1">Normativa interna de derechos, obligaciones y convivencia armónica escolar.</p>
+                                <a href="documents/reglamento-escolar.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm touch-btn w-100">
+                                    <i class="fas fa-file-pdf text-danger me-2" aria-hidden="true"></i>Descargar PDF
+                                </a>
+                            </div>
+
+                            <!-- Plan de Estudios -->
+                            <div class="bento-card transparency-doc-item" data-category="normatividad">
+                                <div class="bento-icon bg-success shadow-sm">
+                                    <i class="fas fa-graduation-cap" aria-hidden="true"></i>
+                                </div>
+                                <h5 class="fw-bold mb-1">Plan de Estudios NEM</h5>
+                                <p class="text-muted small mb-3 flex-grow-1">Mapa curricular oficial con Unidades de Aprendizaje Curricular (UAC).</p>
+                                <a href="documents/plan-estudios.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-outline-success btn-sm touch-btn w-100">
+                                    <i class="fas fa-file-pdf text-danger me-2" aria-hidden="true"></i>Descargar PDF
+                                </a>
+                            </div>
+
+                            <!-- RVOE / Clave Oficial -->
+                            <div class="bento-card transparency-doc-item" data-category="normatividad">
+                                <div class="bento-icon bg-warning shadow-sm">
+                                    <i class="fas fa-certificate" aria-hidden="true"></i>
+                                </div>
+                                <h5 class="fw-bold mb-1">Clave SEP & Validez Oficial</h5>
+                                <p class="text-muted small mb-3 flex-grow-1">Acreditación estatal y reconocimiento de validez de estudios emitido por la SEP.</p>
+                                <a href="documents/rvoe.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-outline-warning btn-sm touch-btn w-100">
+                                    <i class="fas fa-file-pdf text-danger me-2" aria-hidden="true"></i>Descargar PDF
+                                </a>
+                            </div>
+
+                            <!-- Estadísticas Institucionales -->
+                            <div class="bento-card transparency-doc-item" data-category="gestion">
+                                <div class="bento-icon bg-info shadow-sm">
+                                    <i class="fas fa-chart-bar" aria-hidden="true"></i>
+                                </div>
+                                <h5 class="fw-bold mb-1">Indicadores Educativos</h5>
+                                <p class="text-muted small mb-3 flex-grow-1">Índices de aprobación, permanencia escolar y egreso del ciclo escolar.</p>
+                                <a href="documents/estadisticas.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-outline-info btn-sm touch-btn w-100">
+                                    <i class="fas fa-file-pdf text-danger me-2" aria-hidden="true"></i>Descargar PDF
+                                </a>
+                            </div>
+
+                            <!-- Cortes de Caja y Finanzas -->
+                            <div class="bento-card transparency-doc-item" data-category="finanzas">
+                                <div class="bento-icon bg-danger shadow-sm">
+                                    <i class="fas fa-dollar-sign" aria-hidden="true"></i>
+                                </div>
+                                <h5 class="fw-bold mb-1">Cortes de Caja & Finanzas</h5>
+                                <p class="text-muted small mb-3 flex-grow-1">Rendición bimestral de cuotas voluntarias y recursos asignados al plantel.</p>
+                                <a href="documents/corte_caja_bim3_2025.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-outline-danger btn-sm touch-btn w-100">
+                                    <i class="fas fa-file-pdf text-danger me-2" aria-hidden="true"></i>Ver Corte Bimestral
+                                </a>
+                            </div>
+
+                            <!-- Organigrama -->
+                            <div class="bento-card transparency-doc-item" data-category="gestion">
+                                <div class="bento-icon bg-dark shadow-sm">
+                                    <i class="fas fa-sitemap" aria-hidden="true"></i>
+                                </div>
+                                <h5 class="fw-bold mb-1">Organigrama Institucional</h5>
+                                <p class="text-muted small mb-3 flex-grow-1">Estructura jerárquica de funciones docentes y administrativas del centro escolar.</p>
+                                <a href="conocenos.html#organigrama" class="btn btn-outline-dark btn-sm touch-btn w-100">
+                                    <i class="fas fa-eye me-2" aria-hidden="true"></i>Ver Organigrama
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Informes de Gestión PMC y PAEC -->
+                    <section id="informes-actividades" class="mb-5" data-section-key="informes_gestion">
+                        <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5">
+                            <h4 class="h5 fw-bold text-dark mb-2">
+                                <i class="fas fa-clipboard-check text-success me-2" aria-hidden="true"></i>Programa de Mejora Continua (PMC) & PAEC
+                            </h4>
+                            <p class="text-muted small mb-4">
+                                Instrumentos de planeación estratégica y evaluación colegiada orientados a elevar los estándares académicos y formativos.
+                            </p>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="p-3 border rounded-3 bg-light d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <h6 class="fw-bold mb-1">Informe Anual PMC 2024-2025</h6>
+                                            <small class="text-muted">Metas pedagógicas y resultados de gestión</small>
+                                        </div>
+                                        <a href="documents/informe_pmc_2025.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-success btn-sm touch-btn">
+                                            <i class="fas fa-download me-1" aria-hidden="true"></i>PDF
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-3 border rounded-3 bg-light d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <h6 class="fw-bold mb-1">Resultados PAEC Institucional</h6>
+                                            <small class="text-muted">Plan de Evaluación y Certificación</small>
+                                        </div>
+                                        <a href="documents/paec_resultados_2025.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm touch-btn">
+                                            <i class="fas fa-download me-1" aria-hidden="true"></i>PDF
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Enlaces Oficiales de Transparencia -->
+                    <section id="enlaces-oficiales" class="mb-5" data-section-key="enlaces_oficiales">
+                        <h4 class="h5 fw-bold text-dark mb-3">
+                            <i class="fas fa-external-link-alt text-primary me-2" aria-hidden="true"></i>Portales Oficiales Gubernamentales
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-6 col-md-3">
+                                <a href="https://www.plataformadetransparencia.org.mx/" target="_blank" rel="noopener noreferrer" class="card border-0 shadow-sm text-decoration-none text-center p-3 h-100 bento-card">
+                                    <i class="fas fa-landmark text-primary fa-2x mb-2" aria-hidden="true"></i>
+                                    <h6 class="fw-bold text-dark mb-1">PNT</h6>
+                                    <small class="text-muted">Plataforma Nacional de Transparencia</small>
+                                </a>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <a href="https://www.gob.mx/sep" target="_blank" rel="noopener noreferrer" class="card border-0 shadow-sm text-decoration-none text-center p-3 h-100 bento-card">
+                                    <i class="fas fa-book-reader text-danger fa-2x mb-2" aria-hidden="true"></i>
+                                    <h6 class="fw-bold text-dark mb-1">SEP Federal</h6>
+                                    <small class="text-muted">Secretaría de Educación Pública</small>
+                                </a>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <a href="http://sep.puebla.gob.mx/" target="_blank" rel="noopener noreferrer" class="card border-0 shadow-sm text-decoration-none text-center p-3 h-100 bento-card">
+                                    <i class="fas fa-university text-success fa-2x mb-2" aria-hidden="true"></i>
+                                    <h6 class="fw-bold text-dark mb-1">SEP Puebla</h6>
+                                    <small class="text-muted">Gobierno del Estado de Puebla</small>
+                                </a>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <a href="https://puebla.gob.mx/" target="_blank" rel="noopener noreferrer" class="card border-0 shadow-sm text-decoration-none text-center p-3 h-100 bento-card">
+                                    <i class="fas fa-shield-alt text-warning fa-2x mb-2" aria-hidden="true"></i>
+                                    <h6 class="fw-bold text-dark mb-1">Gobierno Estatal</h6>
+                                    <small class="text-muted">Portal del Estado de Puebla</small>
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- PESTAÑA 3: BUZÓN ESCOLAR (FOLIOS)            -->
+            <!-- ============================================ -->
+            <div class="tab-pane fade" id="tab-buzon" role="tabpanel" aria-labelledby="tab-buzon-btn">
+                <div class="container">
+
+                    <!-- Información de Atención Ciudadana -->
+                    <section id="buzon-escolar" class="mb-5" data-section-key="buzon_escolar">
+                        <div class="text-center mb-4">
+                            <span class="badge bg-warning-subtle text-warning-emphasis fw-semibold px-3 py-2 rounded-pill mb-2">Atención Ciudadana Segura</span>
+                            <h2 class="h3 fw-bold text-dark mb-1">Buzón Escolar de Quejas, Denuncias & Sugerencias</h2>
+                            <p class="text-muted">Mecanismo oficial y confidencial para garantizar la calidad, transparencia y sana convivencia escolar.</p>
+                        </div>
+
+                        <!-- Garantías de Ley -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <div class="card border-0 shadow-sm p-3 h-100 border-start border-4 border-primary">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <i class="fas fa-user-shield text-primary fa-lg me-2" aria-hidden="true"></i>
+                                        <h6 class="fw-bold mb-0">100% Confidencial</h6>
+                                    </div>
+                                    <p class="small text-muted mb-0">Protección rigurosa de datos personales y opción de reporte anónimo sin represalias.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card border-0 shadow-sm p-3 h-100 border-start border-4 border-success">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <i class="fas fa-ticket-alt text-success fa-lg me-2" aria-hidden="true"></i>
+                                        <h6 class="fw-bold mb-0">Folio de Seguimiento</h6>
+                                    </div>
+                                    <p class="small text-muted mb-0">Se genera una clave única oficial para monitorear el estatus de resolución de tu reporte.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card border-0 shadow-sm p-3 h-100 border-start border-4 border-warning">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <i class="fas fa-stopwatch text-warning fa-lg me-2" aria-hidden="true"></i>
+                                        <h6 class="fw-bold mb-0">Término Legal</h6>
+                                    </div>
+                                    <p class="small text-muted mb-0">Respuesta formal y seguimiento garantizado en un plazo máximo de 20 días hábiles.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-4">
+                            <!-- Formulario de Buzón Escolar -->
+                            <div class="col-lg-7">
+                                <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5">
+                                    <h4 class="h5 fw-bold mb-3 text-primary">
+                                        <i class="fas fa-edit me-2" aria-hidden="true"></i>Registrar Nuevo Reporte
+                                    </h4>
+
+                                    <form id="buzonForm" novalidate>
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label for="buzonTipo" class="form-label fw-semibold">Tipo de Solicitud *</label>
+                                                <select class="form-select form-control-lg fs-6" id="buzonTipo" required>
+                                                    <option value="">Selecciona tipo</option>
+                                                    <option value="Sugerencia">Sugerencia de Mejora</option>
+                                                    <option value="Queja">Queja Administrativa o de Servicio</option>
+                                                    <option value="Denuncia">Denuncia de Hechos</option>
+                                                    <option value="Petición">Petición de Información</option>
+                                                    <option value="Felicitación">Reconocimiento o Felicitación</option>
+                                                </select>
+                                                <div class="invalid-feedback">Selecciona el tipo de solicitud.</div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label for="buzonAsunto" class="form-label fw-semibold">Asunto Principal *</label>
+                                                <input type="text" class="form-control form-control-lg fs-6" id="buzonAsunto" required placeholder="Ej. Atención en ventanilla">
+                                                <div class="invalid-feedback">Indica el asunto principal.</div>
+                                            </div>
+
+                                            <div class="col-12">
+                                                <label for="buzonDescripcion" class="form-label fw-semibold">Descripción de los Hechos / Propuesta *</label>
+                                                <textarea class="form-control fs-6" id="buzonDescripcion" rows="4" required placeholder="Detalla con claridad qué ocurrió, cuándo, dónde o qué mejora propones..."></textarea>
+                                                <div class="invalid-feedback">Describe detalladamente los hechos o tu propuesta.</div>
+                                            </div>
+
+                                            <!-- Modo Anónimo -->
+                                            <div class="col-12">
+                                                <div class="form-check form-switch p-3 bg-light rounded-3">
+                                                    <input class="form-check-input ms-0 me-3" type="checkbox" role="switch" id="anonimoCheck">
+                                                    <label class="form-check-label fw-semibold" for="anonimoCheck">
+                                                        <i class="fas fa-mask text-primary me-1" aria-hidden="true"></i>Presentar solicitud de forma 100% Anónima
+                                                    </label>
+                                                    <div class="small text-muted ms-4">Si activas esta opción, no se te solicitará ningún dato identificable. Conserva tu folio para consultar el estatus.</div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Campos Personales (Opcionales / Deshabilitables) -->
+                                            <div id="anonimoFields" class="col-12">
+                                                <div class="row g-3">
+                                                    <div class="col-md-6">
+                                                        <label for="buzonNombre" class="form-label fw-semibold">Nombre del Solicitante</label>
+                                                        <input type="text" class="form-control fs-6" id="buzonNombre" placeholder="Tu nombre">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="buzonEmail" class="form-label fw-semibold">Correo de Notificación</label>
+                                                        <input type="email" class="form-control fs-6" id="buzonEmail" placeholder="Para recibir actualizaciones">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12 mt-4">
+                                                <button type="submit" class="btn btn-primary btn-lg touch-btn w-100 fw-bold shadow-sm">
+                                                    <i class="fas fa-check-circle me-2" aria-hidden="true"></i>Generar Folio y Enviar al Buzón
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                    <!-- Resultado con Folio Generado -->
+                                    <div class="alert alert-success d-none mt-4 rounded-4 p-4 shadow-sm" id="buzonSuccess" role="alert">
+                                        <div class="text-center mb-3">
+                                            <div class="display-4 text-success mb-2"><i class="fas fa-clipboard-check" aria-hidden="true"></i></div>
+                                            <h5 class="fw-bold mb-1">¡Solicitud Registrada Oficialmente!</h5>
+                                            <p class="text-muted small mb-3">Guarda o copia este número de folio único para dar seguimiento puntual a tu trámite:</p>
+                                            <div class="d-inline-flex align-items-center gap-2 p-2 px-3 bg-white rounded-pill border shadow-sm mb-3">
+                                                <span id="folioDisplay" class="fw-bold text-primary fs-4 tracking-wide font-monospace">FOL-2025-00000</span>
+                                                <button type="button" class="btn btn-sm btn-outline-primary rounded-circle touch-btn" style="width: 40px; height: 40px;" data-action="copyFolio" title="Copiar Folio" aria-label="Copiar número de folio">
+                                                    <i class="fas fa-copy" aria-hidden="true"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="p-3 bg-white rounded-3 small text-muted border">
+                                            <i class="fas fa-info-circle text-primary me-1" aria-hidden="true"></i> Tu solicitud ha sido turnada al Comité de Contraloría Social y a la Dirección del Plantel para su debida atención e informe.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Consulta de Estatus de Folio & Contraloría -->
+                            <div class="col-lg-5">
+                                <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+                                    <h5 class="fw-bold mb-3 text-dark">
+                                        <i class="fas fa-search me-2 text-primary" aria-hidden="true"></i>Consultar Estatus de Folio
+                                    </h5>
+                                    <p class="text-muted small mb-3">
+                                        Ingresa tu número de folio para verificar el avance y la respuesta emitida por la institución.
+                                    </p>
+                                    <form id="lookupFolioForm">
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control form-control-lg fs-6 font-monospace" id="inputFolio" placeholder="Ej. QUE-2025-12345" required>
+                                            <button class="btn btn-primary touch-btn px-3" type="submit">
+                                                <i class="fas fa-search" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                    <div id="folioStatusResult" class="mt-2 d-none"></div>
+                                </div>
+
+                                <!-- Comité de Contraloría Social -->
+                                <div class="card border-0 shadow-sm rounded-4 p-4">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="bg-primary-subtle text-primary rounded-circle p-3 me-3">
+                                            <i class="fas fa-users-cog fa-lg" aria-hidden="true"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="fw-bold mb-0">Contraloría Social Escolar</h6>
+                                            <small class="text-muted">Vigilancia ciudadana participativa</small>
+                                        </div>
+                                    </div>
+                                    <p class="small text-muted mb-3">
+                                        Órgano colegiado conformado por madres, padres de familia, docentes y autoridades que supervisa la transparencia en la aplicación de los recursos escolares.
+                                    </p>
+                                    <ul class="list-unstyled small text-muted mb-0">
+                                        <li class="mb-2"><i class="fas fa-check text-success me-2" aria-hidden="true"></i>Supervisión de obras y equipamiento escolar</li>
+                                        <li class="mb-2"><i class="fas fa-check text-success me-2" aria-hidden="true"></i>Vigilancia de programas federales y estatales</li>
+                                        <li class="mb-0"><i class="fas fa-check text-success me-2" aria-hidden="true"></i>Revisión bimestral de cortes de caja</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Modal de Mapa Completo -->
+    <div class="modal fade" id="mapModal" tabindex="-1" aria-labelledby="mapModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
+                <div class="modal-header bg-primary text-white py-3">
+                    <h5 class="modal-title h6 fw-bold mb-0" id="mapModalLabel">
+                        <i class="fas fa-map-marked-alt me-2" aria-hidden="true"></i>Ubicación Institucional - Bachillerato General
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <div style="height: 520px; width: 100%;">
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3767.2!2d-97.8736!3d19.0435!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cfc0a123b456c7%3A0x9876543210abcdef!2sCoronel%20Tito%20Hern%C3%A1ndez%2C%20Venustiano%20Carranza%2C%20Puebla%2C%20M%C3%A9xico!5e0!3m2!1ses!2smx!4v1694561234567!5m2!1ses!2smx"
+                            width="100%" height="100%" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                            title="Ubicación detallada en Google Maps">
+                        </iframe>
                     </div>
+                </div>
+                <div class="modal-footer bg-light py-2">
+                    <button type="button" class="btn btn-secondary btn-sm touch-btn" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary btn-sm touch-btn" data-action="getDirections">
+                        <i class="fas fa-directions me-1" aria-hidden="true"></i>Abrir Navegación GPS
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Footer -->
+    <!-- Footer dinámico -->
     <footer id="main-footer"></footer>
 
-    <!-- Dark Mode Toggle -->
-    <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Alternar modo oscuro">
-        <i class="fas fa-moon"></i>
-    </button>
-
-    
-
-    <!-- Back to Top -->
-    <button id="back-to-top" class="btn btn-primary rounded-circle position-fixed d-none" aria-label="Volver arriba"
-        title="Volver arriba">
-        <i class="fas fa-arrow-up"></i>
-    </button>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Main JS - Carga Header/Footer -->
+    <!-- Scripts (CSP Compliant) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
     <script src="js/main.js"></script>
-
-    <!-- Tenant Config Loader - Carga configuración multi-tenancy -->
+    <script src="js/contacto-hub.js"></script>
     <script src="js/tenant-config-loader.js"></script>
     <script src="js/tenant-content-binder.js"></script>
-
-    <script src="js/chatbot.js"></script>
     <script src="js/page-sections-loader.js" defer></script>
 </body>
 

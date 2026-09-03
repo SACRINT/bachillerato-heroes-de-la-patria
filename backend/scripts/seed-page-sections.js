@@ -438,20 +438,60 @@ const DEFAULT_SECTIONS = {
             order: 1
         },
         {
-            key: 'ubicacion',
-            title: 'Mapa y Ubicación',
-            subtitle: 'Cómo llegar a nuestro plantel educativo',
-            content: '<p class="text-muted">Ubicación geográfica e instalaciones del bachillerato.</p>',
-            icon: 'fa-map-marked-alt',
+            key: 'formulario_contacto',
+            title: 'Mensaje Directo',
+            subtitle: 'Envío de consultas y peticiones directas a oficinas',
+            content: '<p class="text-muted">Formulario de atención ciudadana y solicitudes escolares.</p>',
+            icon: 'fa-paper-plane',
             order: 2
         },
         {
             key: 'directorio',
             title: 'Directorio Escolar',
-            subtitle: 'Personal directivo, administrativo y docente',
+            subtitle: 'Personal directivo, administrativo y orientación',
             content: '',
             icon: 'fa-address-book',
             order: 3
+        },
+        {
+            key: 'ubicacion',
+            title: 'Mapa y Ubicación',
+            subtitle: 'Cómo llegar a nuestro plantel educativo',
+            content: '<p class="text-muted">Ubicación geográfica e instalaciones del bachillerato.</p>',
+            icon: 'fa-map-marked-alt',
+            order: 4
+        },
+        {
+            key: 'transparencia_institucional',
+            title: 'Información Pública y Transparencia',
+            subtitle: 'Datos generales, CCT, sostenimiento y matrícula',
+            content: '',
+            icon: 'fa-balance-scale',
+            order: 5
+        },
+        {
+            key: 'documentos_normatividad',
+            title: 'Documentos Oficiales y Normatividad',
+            subtitle: 'Reglamentos, RVOE, organigrama y planes de estudio',
+            content: '',
+            icon: 'fa-file-alt',
+            order: 6
+        },
+        {
+            key: 'informes_gestion',
+            title: 'Informes de Gestión PMC y PAEC',
+            subtitle: 'Programa de Mejora Continua y Plan de Evaluación',
+            content: '',
+            icon: 'fa-clipboard-check',
+            order: 7
+        },
+        {
+            key: 'buzon_escolar',
+            title: 'Buzón Escolar y Contraloría',
+            subtitle: 'Mecanismo oficial de quejas, denuncias y sugerencias con folio',
+            content: '<p class="text-muted">Atención ciudadana, seguimiento por folio y comité de contraloría social.</p>',
+            icon: 'fa-inbox',
+            order: 8
         }
     ],
 
@@ -690,36 +730,12 @@ const DEFAULT_SECTIONS = {
     ],
     'transparencia': [
         {
-            key: 'informacion_general',
-            title: 'Información General',
-            subtitle: 'Datos institucionales de transparencia',
-            content: '',
-            icon: 'fa-info-circle',
+            key: 'redirect_transparencia',
+            title: 'Portal de Transparencia (Unificada)',
+            subtitle: 'Redirigido al Portal de Transparencia & Contacto (contacto.html#transparencia)',
+            content: '<p class="text-muted">El Portal de Transparencia ahora forma parte del Portal Unificado de Transparencia & Contacto. Serás redirigido automáticamente.</p>',
+            icon: 'fa-eye',
             order: 1
-        },
-        {
-            key: 'documentos_transparencia',
-            title: 'Documentos de Transparencia',
-            subtitle: 'Informes y documentos oficiales',
-            content: '',
-            icon: 'fa-file-alt',
-            order: 2
-        },
-        {
-            key: 'solicitudes_informacion',
-            title: 'Solicitudes de Información',
-            subtitle: 'Procedimiento para solicitar información pública',
-            content: '',
-            icon: 'fa-file-signature',
-            order: 3
-        },
-        {
-            key: 'documentos_financieros',
-            title: 'Documentos Financieros',
-            subtitle: 'Presupuesto, rendición de cuentas',
-            content: '',
-            icon: 'fa-dollar-sign',
-            order: 4
         }
     ],
     'normatividad': [

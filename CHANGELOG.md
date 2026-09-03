@@ -1,5 +1,68 @@
 # CHANGELOG - SIPWEB-BG / EDUZONA EMS
 
+[v4.10.0] - 2026-09-03 (FASE 6 HUB 7: TRANSPARENCIA & CONTACTO - PORTAL MAESTRO + REDIRECT)
+
+**Tipo:** Feature / Security / Visual / Hub Architecture / Mobile-First  
+**Estado:** ✅ HUB 7 COMPLETADO — ¡LOS 7 HUBS INSTITUCIONALES FINALIZADOS!
+
+### Resumen:
+Unificación completa de `contacto.html` y `transparencia.html` en un único **Portal Maestro de Transparencia & Contacto** con 3 pestañas maestras (Contacto & Ubicación, Transparencia & Rendición de Cuentas, Buzón Escolar). Diseño Bento Grid moderno Mobile-First con touch targets ≥ 48px, cero scripts inline (100% CSP compliant), generación oficial de folio para reportes del buzón escolar, y página de redirección suave de 5s en `transparencia.html`.
+
+### Cambios Realizados:
+
+1. **contacto.html - Portal Maestro Unificado:**
+   - Hero institucional con gradiente azul BGE (`#1976D2` / `#0D47A1`).
+   - **3 Pestañas Maestras (Nav-Pills Sticky con touch targets ≥ 48px):**
+     * "📞 1. Contacto & Ubicación" (`#tab-contacto`) — Canales oficiales (cards con iconos y tenant bindings), formulario de contacto directo con validación frontend y protección XSS, directorio escolar de 6 áreas (Dirección, Servicios Escolares, Orientación, Académica, Becas, Mantenimiento), y ubicación geográfica interactiva con Google Maps responsivo, indicaciones y modal ampliado.
+     * "🏛️ 2. Transparencia & Cuentas" (`#tab-transparencia`) — Información pública institucional (CCT, sostenimiento, modalidad, matrícula), documentos normativos con filtro por categoría (Reglamento Escolar, Plan NEM, RVOE, Estadísticas, Finanzas/Cortes de caja, Organigrama), informes de gestión PMC & PAEC y enlaces a portales oficiales (PNT, SEP Federal, SEP Puebla, Gobierno de Puebla).
+     * "📬 3. Buzón Escolar (Folios)" (`#tab-buzon`) — Mecanismo oficial de quejas, denuncias y sugerencias, opción de envío 100% anónimo o con datos, generación automática de número de folio único oficial (`FOL-2025-XXXXX`), verificador de estatus de folio en tiempo real con términos legales de atención (plazo máx. 20 días hábiles) y Comité de Contraloría Social Escolar.
+   - **Bento Grid**: Tarjetas modulares con iconos tematizados, sombras sutiles, hover effects y border-radius de 1rem.
+   - **CMS Bindings**: Atributos `data-section-key` y `data-tenant-field` en cada bloque para administración desde el dashboard.
+   - **Botones Flotantes**: Cero botones hardcodeados; inyectados canónicamente por `main.js`.
+   - **CSP Compliant**: Cero scripts inline; toda la interacción controlada desde `contacto-hub.js`.
+
+2. **transparencia.html - Página Redirect:**
+   - Card centrada moderna con icono de transparencia (`fa-eye`).
+   - Contador regresivo visible (5 segundos) y círculo animado.
+   - Botón directo "Ir ahora a Transparencia" (`btn btn-primary btn-lg touch-btn`).
+   - **Auto-redirect** suave a `contacto.html#transparencia` con `<meta http-equiv="refresh">`.
+   - Preserva URLs existentes sin romper bookmarks ni SEO.
+
+3. **JS Externos (CSP Compliant):**
+   - `contacto-hub.js` — Soporte de hash navigation (`#contacto`, `#transparencia`, `#buzon`, `#directorio`, `#ubicacion`, etc.), validación y envío de formularios, alternancia de modo anónimo, generador de folios únicos guardados en `localStorage`, consulta de estatus de folio y event delegation (`data-action`).
+   - `transparencia-redirect.js` — Cuenta regresiva visual de 5s y redirección suave a `contacto.html#transparencia`.
+
+4. **Seed Update (seed-page-sections.js):**
+   - `contacto`: 8 secciones estructuradas (`info_contacto`, `formulario_contacto`, `directorio`, `ubicacion`, `transparencia_institucional`, `documentos_normatividad`, `informes_gestion`, `buzon_escolar`).
+   - `transparencia`: 1 sección de redirección unificada (`redirect_transparencia`).
+
+5. **Fixes de Auditoría Previos Consolidados:**
+   - Eliminación de sanitizadores duplicados en `chatbot.js`.
+   - `sanitizePartial` defensivo en `main.js` con `DOMPurify` y `DOMParser`.
+   - Sincronización inmediata de tema oscuro/claro al inicializar el chatbot.
+   - Limpieza de CSS móvil obsoleto en `style.css`.
+
+### Archivos Modificados:
+- `public/contacto.html` - Portal Maestro Unificado (747 líneas rediseñadas)
+- `public/transparencia.html` - Página de redirección suave (613→~140 líneas, -77%)
+- `backend/scripts/seed-page-sections.js` - Secciones actualizadas para contacto y transparencia
+- `CHANGELOG.md` - Versión v4.10.0
+
+### Archivos Creados:
+- `public/js/contacto-hub.js` - Controlador maestro CSP compliant de Hub 7
+- `public/js/transparencia-redirect.js` - Contador y redirección suave CSP compliant
+
+### Arquitectura de 7 Hubs Institucionales (¡100% COMPLETADA!):
+- Hub 1: Portada (`index.html`) - ✅ COMPLETADO
+- Hub 2: Identidad (`conocenos.html`) - ✅ COMPLETADO
+- Hub 3: Oferta Educativa (`oferta-educativa.html`) - ✅ COMPLETADO
+- Hub 4: Ventanilla Digital (`servicios.html`) - ✅ COMPLETADO
+- Hub 5: Portal Escolar (`estudiantes.html` + `padres.html`) - ✅ COMPLETADO
+- Hub 6: Vida Escolar (`calendario.html` + `convocatorias.html`) - ✅ COMPLETADO
+- **Hub 7: Transparencia & Contacto (`contacto.html` + `transparencia.html`) - ✅ COMPLETADO**
+
+---
+
 [v4.9.0] - 2026-09-02 (FASE 6 HUB 6: VIDA ESCOLAR - CALENDARIO + CONVOCATORIAS)
 
 **Tipo:** Feature / Visual / Hub Architecture / Mobile-First  
