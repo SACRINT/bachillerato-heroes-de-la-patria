@@ -21,10 +21,10 @@ class TinyMCEManager {
             language: 'es',
             language_url: 'https://cdn.jsdelivr.net/npm/tinymce-i18n@23.10.9/langs6/es.min.js',
 
-            // FIX: URL ABSOLUTA del CDN con API key - SIN ESTO TinyMCE no carga themes/plugins y queda readonly
-            base_url: window.TINYMCE_API_KEY
+            // FIX: Si hay API key válida usar Tiny Cloud; de lo contrario usar CDNJS libre de restricciones readonly
+            base_url: (window.TINYMCE_API_KEY && window.TINYMCE_API_KEY !== 'no-api-key')
                 ? `https://cdn.tiny.cloud/1/${window.TINYMCE_API_KEY}/tinymce/6`
-                : 'https://cdn.tiny.cloud/1/9eomuls0jgbqziqkahugmesowt48tellxulfspshp9pa03bi/tinymce/6',
+                : 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.2',
             suffix: '.min',
 
             // Plugins
@@ -142,9 +142,19 @@ class TinyMCEManager {
                     console.warn('[TINYMCE] No se pudo forzar design mode:', e.message);
                 }
 
-                const mode = editor.mode ? editor.mode.get() : 'unknown';
+                let mode = editor.mode ? editor.mode.get() : 'unknown';
                 if (mode === 'readonly') {
-                    console.error(`[TINYMCE] Editor #${editor.id} en readonly - verificar base_url/suffix`);
+                    try {
+                        if (editor.mode && typeof editor.mode.set === 'function') {
+                            editor.mode.set('design');
+                            mode = editor.mode.get();
+                        }
+                    } catch (e) {
+                        // ignore
+                    }
+                    if (mode === 'readonly') {
+                        console.warn(`[TINYMCE] Editor #${editor.id} en modo solo lectura`);
+                    }
                 }
             }
         };

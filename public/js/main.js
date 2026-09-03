@@ -19,37 +19,118 @@
             if (typeof DOMPurify !== 'undefined' && typeof DOMPurify.sanitize === 'function') {
                 return DOMPurify.sanitize(str);
             }
+            return str || '';
+        };
+    }
+
+    if (typeof window.escapeHtml !== 'function') {
+        window.escapeHtml = function (text) {
             const temp = document.createElement('div');
-            temp.textContent = str || '';
+            temp.textContent = text || '';
             return temp.innerHTML;
         };
     }
 
-    // 🌙 APLICACIÓN TEMPRANA DEL TEMA (Previene destello blanco)
-    function applySavedTheme() {
+    // 🌙 CONTROLADOR UNIFICADO DE TEMA CLARO / OSCURO
+    function getSavedTheme() {
         try {
-            const isDark = localStorage.getItem('darkMode') === 'enabled' || localStorage.getItem('theme') === 'dark';
+            // 1. Si el usuario desactivó explícitamente el modo oscuro, respetar SIEMPRE
+            const isExplicitlyDisabled = (
+                localStorage.getItem('darkMode') === 'disabled' ||
+                localStorage.getItem('theme') === 'light' ||
+                localStorage.getItem('heroesPatria_darkMode') === 'false' ||
+                localStorage.getItem('bge-dark-mode') === 'light'
+            );
+            if (isExplicitlyDisabled) return 'light';
+
+            // 2. Si el usuario activó explícitamente el modo oscuro
+            const isExplicitlyEnabled = (
+                localStorage.getItem('darkMode') === 'enabled' ||
+                localStorage.getItem('theme') === 'dark' ||
+                localStorage.getItem('heroesPatria_darkMode') === 'true' ||
+                localStorage.getItem('bge-dark-mode') === 'dark'
+            );
+            if (isExplicitlyEnabled) return 'dark';
+
+            // 3. Por defecto modo claro para estética consistente del bachillerato
+            return 'light';
+        } catch (e) {
+            return 'light';
+        }
+    }
+
+    function setUnifiedTheme(theme) {
+        const isDark = (theme === 'dark');
+        try {
             if (isDark) {
-                if (document.documentElement) document.documentElement.classList.add('dark-mode');
-                if (document.body) document.body.classList.add('dark-mode');
+                if (document.documentElement) {
+                    document.documentElement.classList.add('dark-mode');
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                }
+                if (document.body) {
+                    document.body.classList.add('dark-mode');
+                }
+            } else {
+                if (document.documentElement) {
+                    document.documentElement.classList.remove('dark-mode');
+                    document.documentElement.setAttribute('data-theme', 'light');
+                }
+                if (document.body) {
+                    document.body.classList.remove('dark-mode');
+                }
             }
+
+            // Sincronizar TODAS las variantes de llaves de almacenamiento en la plataforma
+            localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            localStorage.setItem('heroesPatria_darkMode', isDark ? 'true' : 'false');
+            localStorage.setItem('bge-dark-mode', isDark ? 'dark' : 'light');
+
+            // Actualizar icono y accesibilidad del botón
+            const btn = document.getElementById('darkModeToggle');
+            if (btn) {
+                const icon = btn.querySelector('i');
+                if (icon) {
+                    icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+                }
+                btn.setAttribute('title', isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
+                btn.setAttribute('aria-label', isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
+            }
+
+            window.dispatchEvent(new CustomEvent('darkModeChanged', { detail: { darkMode: isDark } }));
+            window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme: isDark ? 'dark' : 'light' } }));
         } catch (e) {}
     }
+
+    function applySavedTheme() {
+        setUnifiedTheme(getSavedTheme());
+    }
+
+    // Ejecutar aplicación temprana del tema
     applySavedTheme();
 
     // ========================================
     // 1. CARGAR HEADER Y FOOTER DINÁMICAMENTE
     // ========================================
 
+    function sanitizePartial(html) {
+        // Si DOMPurify está disponible, se utiliza sanitización permitiendo estructura HTML
+        if (typeof DOMPurify !== 'undefined' && typeof DOMPurify.sanitize === 'function') {
+            return DOMPurify.sanitize(html);
+        }
+        // Las plantillas en /partials/ son recursos locales estáticos y de confianza
+        return html;
+    }
+
     async function loadHeaderFooter() {
         try {
-            // Cargar header si existe el elemento contenedor y está vacío
+            // Cargar header si existe el contenedor y está vacío
             const headerElement = document.getElementById('main-header');
             if (headerElement && !headerElement.innerHTML.trim()) {
                 const headerResponse = await fetch('/partials/header.html');
                 if (headerResponse.ok) {
                     const headerHTML = await headerResponse.text();
-                    headerElement.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(headerHTML) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(headerHTML) : headerHTML));
+                    headerElement.innerHTML = sanitizePartial(headerHTML);
 
                     const scripts = headerElement.querySelectorAll('script');
                     for (const script of scripts) {
@@ -71,13 +152,13 @@
                 }
             }
 
-            // Cargar footer si existe el elemento contenedor y está vacío
+            // Cargar footer si existe el contenedor y está vacío
             const footerElement = document.getElementById('main-footer');
             if (footerElement && !footerElement.innerHTML.trim()) {
                 const footerResponse = await fetch('/partials/footer.html');
                 if (footerResponse.ok) {
                     const footerHTML = await footerResponse.text();
-                    footerElement.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(footerHTML) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(footerHTML) : footerHTML));
+                    footerElement.innerHTML = sanitizePartial(footerHTML);
 
                     const scripts = footerElement.querySelectorAll('script');
                     for (const script of scripts) {
@@ -249,41 +330,32 @@
     // ========================================
     function initDarkMode() {
         applySavedTheme();
-        const isDark = (document.body && document.body.classList.contains('dark-mode')) ||
-                       (localStorage.getItem('darkMode') === 'enabled') ||
-                       (localStorage.getItem('theme') === 'dark');
+        const isDark = (getSavedTheme() === 'dark');
 
         let btn = document.getElementById('darkModeToggle');
         if (!btn && document.body) {
             btn = document.createElement('button');
             btn.className = 'dark-mode-toggle';
             btn.id = 'darkModeToggle';
-            btn.setAttribute('aria-label', 'Alternar modo oscuro');
+            btn.setAttribute('aria-label', isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
             btn.setAttribute('title', isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
             btn.innerHTML = `<i class="fas ${isDark ? 'fa-sun' : 'fa-moon'}"></i>`;
+            btn.style.zIndex = '10000';
             document.body.appendChild(btn);
         } else if (btn) {
+            btn.style.zIndex = '10000';
             const icon = btn.querySelector('i');
             if (icon) icon.className = `fas ${isDark ? 'fa-sun' : 'fa-moon'}`;
             btn.setAttribute('title', isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
+            btn.setAttribute('aria-label', isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
         }
 
         if (btn && !btn.dataset.dmBound) {
             btn.dataset.dmBound = 'true';
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
-                document.body.classList.toggle('dark-mode');
-                if (document.documentElement) document.documentElement.classList.toggle('dark-mode');
-                const active = document.body.classList.contains('dark-mode');
-                localStorage.setItem('darkMode', active ? 'enabled' : 'disabled');
-                localStorage.setItem('theme', active ? 'dark' : 'light');
-
-                const icon = btn.querySelector('i');
-                if (icon) {
-                    icon.className = active ? 'fas fa-sun' : 'fas fa-moon';
-                }
-                btn.setAttribute('title', active ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
-                window.dispatchEvent(new CustomEvent('darkModeChanged', { detail: { darkMode: active } }));
+                const currentTheme = getSavedTheme();
+                setUnifiedTheme(currentTheme === 'dark' ? 'light' : 'dark');
             });
         }
     }
@@ -365,11 +437,18 @@
         init();
     }
 
+    window.setUnifiedTheme = setUnifiedTheme;
+    window.applyUnifiedTheme = applySavedTheme;
+    window.getSavedTheme = getSavedTheme;
+
     window.mainJS = {
         restoreUserSession,
         updateUserUIInHeader,
         loadHeaderFooter,
         initDarkMode,
+        setUnifiedTheme,
+        applyUnifiedTheme,
+        getSavedTheme,
         initBackToTop,
         initChatbotLoader
     };

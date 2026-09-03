@@ -11,7 +11,7 @@ class ProfileService {
         // Asumiendo que existe columna 'username' en usuarios
         const query = `
             SELECT 
-                u.id, u.username, u.nombre, u.apellido_paterno, u.role as tipo_usuario, u.fecha_creacion as joined_at,
+                u.id, u.username, u.nombre, u.apellido_paterno, u.role as tipo_usuario, COALESCE(u.created_at, NOW()) as joined_at,
                 p.bio, p.location, p.website, p.social_links, p.interests,
                 p.privacy_show_email, p.privacy_show_activity, p.privacy_show_achievements,
                 

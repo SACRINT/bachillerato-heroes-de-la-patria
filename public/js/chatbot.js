@@ -14,8 +14,14 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
             if (typeof DOMPurify !== 'undefined' && typeof DOMPurify.sanitize === 'function') {
                 return DOMPurify.sanitize(str);
             }
+            return str || '';
+        };
+    }
+
+    if (typeof window.escapeHtml !== 'function') {
+        window.escapeHtml = function (text) {
             const temp = document.createElement('div');
-            temp.textContent = str || '';
+            temp.textContent = text || '';
             return temp.innerHTML;
         };
     }
@@ -28,9 +34,7 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
         if (typeof window.sanitizeHTML === 'function') {
             return window.sanitizeHTML(content);
         }
-        const temp = document.createElement('div');
-        temp.textContent = content;
-        return temp.innerHTML;
+        return content;
     }
 
     // 🔧 Configuración de API Backend

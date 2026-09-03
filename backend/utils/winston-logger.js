@@ -7,9 +7,17 @@
 const winston = require('winston');
 const path = require('path');
 
-// Crear directorio de logs si no existe
+const isServerless = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
+
+// Crear directorio de logs solo si no estamos en entorno serverless
 const logsDir = path.join(__dirname, '../../logs');
-require('fs').mkdirSync(logsDir, { recursive: true });
+if (!isServerless) {
+  try {
+    require('fs').mkdirSync(logsDir, { recursive: true });
+  } catch (err) {
+    console.warn('[WINSTON] No se pudo crear directorio de logs:', err.message);
+  }
+}
 
 // Definir niveles de log personalizados
 const levels = {
@@ -39,7 +47,7 @@ const format = winston.format.combine(
   winston.format.json()
 );
 
-// Formato para consola (desarrollo)
+// Formato para consola
 const consoleFormat = winston.format.combine(
   winston.format.colorize({ all: true }),
   winston.format.printf(
@@ -48,50 +56,48 @@ const consoleFormat = winston.format.combine(
 );
 
 // Configuración de transports
-const transports = [
-  // Errores - archivo separado
-  new winston.transports.File({
-    filename: path.join(logsDir, 'error.log'),
-    level: 'error',
-    maxsize: 5242880, // 5MB
-    maxFiles: 5,
-  }),
+const transports = [];
 
-  // Todos los logs combinados
-  new winston.transports.File({
-    filename: path.join(logsDir, 'combined.log'),
-    maxsize: 5242880, // 5MB
-    maxFiles: 5,
-  }),
-
-  // HTTP requests
-  new winston.transports.File({
-    filename: path.join(logsDir, 'http.log'),
-    level: 'http',
-    maxsize: 5242880, // 5MB
-    maxFiles: 3,
-  }),
-];
-
-// Transport a Logstash (ELK Stack) - solo en producción
-if (process.env.NODE_ENV === 'production' && process.env.LOGSTASH_HOST) {
-  transports.push(
-    new winston.transports.Http({
-      host: process.env.LOGSTASH_HOST || 'logstash',
-      port: parseInt(process.env.LOGSTASH_PORT) || 5000,
-      path: '/',
-      ssl: process.env.LOGSTASH_SSL === 'true',
-    })
-  );
-}
-
-// Consola - solo en desarrollo
-if (process.env.NODE_ENV !== 'production') {
+if (isServerless) {
+  // En Vercel / Serverless: enviar logs a consola (stdout/stderr de Lambda)
   transports.push(
     new winston.transports.Console({
-      format: consoleFormat,
+      format: process.env.NODE_ENV === 'production' ? format : consoleFormat,
     })
   );
+} else {
+  // En servidor tradicional con disco persistente
+  transports.push(
+    // Errores - archivo separado
+    new winston.transports.File({
+      filename: path.join(logsDir, 'error.log'),
+      level: 'error',
+      maxsize: 5242880, // 5MB
+      maxFiles: 5,
+    }),
+    // Todos los logs combinados
+    new winston.transports.File({
+      filename: path.join(logsDir, 'combined.log'),
+      maxsize: 5242880, // 5MB
+      maxFiles: 5,
+    }),
+    // HTTP requests
+    new winston.transports.File({
+      filename: path.join(logsDir, 'http.log'),
+      level: 'http',
+      maxsize: 5242880, // 5MB
+      maxFiles: 3,
+    })
+  );
+
+  // Consola en desarrollo
+  if (process.env.NODE_ENV !== 'production') {
+    transports.push(
+      new winston.transports.Console({
+        format: consoleFormat,
+      })
+    );
+  }
 }
 
 // Crear logger

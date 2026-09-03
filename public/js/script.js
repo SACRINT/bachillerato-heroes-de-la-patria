@@ -378,9 +378,18 @@ class HeroesPatriaApp {
             }
         }
 
+        // Integración con el gestor unificado de temas
+        if (typeof window.applyUnifiedTheme === 'function') {
+            window.applyUnifiedTheme();
+            const isDark = (typeof window.getSavedTheme === 'function') ? (window.getSavedTheme() === 'dark') : false;
+            this.updateDarkModeIcon(toggle, isDark);
+            return;
+        }
+
         // Load saved preference and apply dark mode
-        const isDarkMode = localStorage.getItem(APP_CONFIG.storage.darkMode) === 'true';
-        //void 0;
+        const isDarkMode = localStorage.getItem(APP_CONFIG.storage.darkMode) === 'true' ||
+                           localStorage.getItem('darkMode') === 'enabled' ||
+                           localStorage.getItem('theme') === 'dark';
 
         if (isDarkMode) {
             document.body.classList.add(APP_CONFIG.classes.darkMode);
@@ -391,23 +400,25 @@ class HeroesPatriaApp {
         // Update icon to match current state
         this.updateDarkModeIcon(toggle, isDarkMode);
 
-        // Remove any existing event listeners to avoid duplicates
+        // Add click event listener without replacing node if unified manager exists
+        if (typeof window.setUnifiedTheme === 'function') {
+            return;
+        }
+
         const newToggle = toggle.cloneNode(true);
         toggle.parentNode.replaceChild(newToggle, toggle);
         toggle = newToggle;
 
-        // Add click event listener
         toggle.addEventListener('click', () => {
             const isCurrentlyDark = document.body.classList.contains(APP_CONFIG.classes.darkMode);
             const newDarkState = !isCurrentlyDark;
 
-            //void 0;
-
             document.body.classList.toggle(APP_CONFIG.classes.darkMode, newDarkState);
             localStorage.setItem(APP_CONFIG.storage.darkMode, newDarkState.toString());
+            localStorage.setItem('darkMode', newDarkState ? 'enabled' : 'disabled');
+            localStorage.setItem('theme', newDarkState ? 'dark' : 'light');
             this.updateDarkModeIcon(toggle, newDarkState);
 
-            // Smooth transition
             document.body.style.transition = 'background-color 0.3s ease, color 0.3s ease';
             setTimeout(() => {
                 document.body.style.transition = '';

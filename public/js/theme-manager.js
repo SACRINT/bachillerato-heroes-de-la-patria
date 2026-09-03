@@ -76,25 +76,29 @@ class IntegratedThemeManager {
      * Detecta y aplica el tema correcto
      */
     detectAndApplyTheme() {
-        // Si el usuario no ha establecido preferencia, usar la del sistema
-        if (!this.hasUserPreference && this.isSystemDark) {
-            
-            this.body.classList.add(this.existingClass);
-            localStorage.setItem(this.storageKey, 'true');
+        if (typeof window.applyUnifiedTheme === 'function') {
+            window.applyUnifiedTheme();
+            return;
         }
 
-        // Aplicar data-theme para usar variables CSS avanzadas
-        const isDark = this.isDarkMode();
-        this.html.setAttribute('data-theme', isDark ? 'dark' : 'light');
+        // Si el usuario no ha establecido preferencia, respetar preferencia o claro por defecto
+        const isDark = (localStorage.getItem(this.storageKey) === 'true') ||
+                       (localStorage.getItem('darkMode') === 'enabled') ||
+                       (localStorage.getItem('theme') === 'dark');
 
-        
+        if (isDark) {
+            this.body.classList.add(this.existingClass);
+            this.html.setAttribute('data-theme', 'dark');
+        } else {
+            this.body.classList.remove(this.existingClass);
+            this.html.setAttribute('data-theme', 'light');
+        }
     }
 
     /**
      * Configura el botón toggle existente
      */
     setupExistingToggle() {
-        // Buscar el botón existente con múltiples intentos
         const findToggle = () => {
             this.toggleButton = document.querySelector(this.toggleSelector);
             return this.toggleButton !== null;
@@ -103,7 +107,6 @@ class IntegratedThemeManager {
         if (findToggle()) {
             this.enhanceToggleButton();
         } else {
-            // Reintentar hasta encontrarlo (máximo 10 segundos)
             let attempts = 0;
             const maxAttempts = 20;
 
@@ -114,7 +117,6 @@ class IntegratedThemeManager {
                     this.enhanceToggleButton();
                 } else if (attempts >= maxAttempts) {
                     clearInterval(interval);
-                    
                 }
             }, 500);
         }
@@ -125,21 +127,19 @@ class IntegratedThemeManager {
      */
     enhanceToggleButton() {
         if (!this.toggleButton) return;
-
-        
-
-        // Actualizar icono inicial
         this.updateToggleIcon();
+
+        // Si main.js ya gestiona el evento de clic de manera unificada, no clonar ni reemplazar el nodo
+        if (typeof window.setUnifiedTheme === 'function') {
+            return;
+        }
 
         // Remover listeners previos y añadir el nuestro
         const newButton = this.toggleButton.cloneNode(true);
         this.toggleButton.parentNode.replaceChild(newButton, this.toggleButton);
         this.toggleButton = newButton;
 
-        // Añadir nuestro listener mejorado
         this.toggleButton.addEventListener('click', () => this.toggleTheme());
-
-        // Mejorar accesibilidad
         this.toggleButton.setAttribute('title', this.isDarkMode() ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
     }
 
@@ -147,35 +147,26 @@ class IntegratedThemeManager {
      * Alterna el tema
      */
     toggleTheme() {
+        if (typeof window.setUnifiedTheme === 'function') {
+            const next = this.isDarkMode() ? 'light' : 'dark';
+            window.setUnifiedTheme(next);
+            this.updateToggleIcon();
+            return;
+        }
+
         const wasWasDark = this.isDarkMode();
         const newDarkState = !wasWasDark;
 
-        
-
-        // Aplicar transición suave
-        this.body.style.transition = 'background-color 0.3s ease, color 0.3s ease';
-        this.html.style.transition = 'background-color 0.3s ease, color 0.3s ease';
-
-        // Cambiar clase existente
         this.body.classList.toggle(this.existingClass, newDarkState);
-
-        // Cambiar data-theme para variables CSS avanzadas
         this.html.setAttribute('data-theme', newDarkState ? 'dark' : 'light');
 
-        // Guardar preferencia
         localStorage.setItem(this.storageKey, newDarkState.toString());
+        localStorage.setItem('darkMode', newDarkState ? 'enabled' : 'disabled');
+        localStorage.setItem('theme', newDarkState ? 'dark' : 'light');
         this.hasUserPreference = true;
 
-        // Actualizar icono
         this.updateToggleIcon();
 
-        // Remover transición después de completarse
-        setTimeout(() => {
-            this.body.style.transition = '';
-            this.html.style.transition = '';
-        }, 300);
-
-        // Evento personalizado
         this.dispatchEvent('themeChanged', {
             isDark: newDarkState,
             wasSystemTriggered: false
@@ -255,7 +246,10 @@ class IntegratedThemeManager {
      * Verifica si está en modo oscuro
      */
     isDarkMode() {
-        return this.body.classList.contains(this.existingClass);
+        if (typeof window.getSavedTheme === 'function') {
+            return window.getSavedTheme() === 'dark';
+        }
+        return this.body ? this.body.classList.contains(this.existingClass) : false;
     }
 
     /**

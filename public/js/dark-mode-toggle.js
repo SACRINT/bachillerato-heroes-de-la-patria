@@ -23,33 +23,53 @@ class DarkModeManager {
     }
 
     loadTheme() {
-        // 1. Intentar cargar desde localStorage
-        const savedTheme = localStorage.getItem(this.STORAGE_KEY);
-        if (savedTheme) return savedTheme;
-
-        // 2. Detectar preferencia del sistema
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            return 'dark';
+        if (typeof window.getSavedTheme === 'function') {
+            return window.getSavedTheme();
         }
+        // 1. Intentar cargar desde localStorage
+        const savedTheme = localStorage.getItem(this.STORAGE_KEY) || localStorage.getItem('theme');
+        if (savedTheme === 'dark' || savedTheme === 'light') return savedTheme;
+        if (localStorage.getItem('darkMode') === 'enabled') return 'dark';
+        if (localStorage.getItem('darkMode') === 'disabled') return 'light';
 
-        // 3. Default: light
+        // 2. Por defecto: light
         return 'light';
     }
 
     applyTheme(theme) {
+        if (typeof window.setUnifiedTheme === 'function') {
+            window.setUnifiedTheme(theme);
+            this.theme = theme;
+            this.updateToggleIcon();
+            return;
+        }
+
         this.theme = theme;
+        const isDark = (theme === 'dark');
         document.documentElement.setAttribute('data-theme', theme);
+        if (isDark) {
+            document.documentElement.classList.add('dark-mode');
+            if (document.body) document.body.classList.add('dark-mode');
+        } else {
+            document.documentElement.classList.remove('dark-mode');
+            if (document.body) document.body.classList.remove('dark-mode');
+        }
+
         localStorage.setItem(this.STORAGE_KEY, theme);
+        localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+        localStorage.setItem('theme', theme);
 
         // Actualizar icono del toggle
         this.updateToggleIcon();
 
         // Emit event para que otros componentes puedan reaccionar
         window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme } }));
+        window.dispatchEvent(new CustomEvent('darkModeChanged', { detail: { darkMode: isDark } }));
     }
 
     toggleTheme() {
-        const newTheme = this.theme === 'light' ? 'dark' : 'light';
+        const current = (typeof window.getSavedTheme === 'function') ? window.getSavedTheme() : this.theme;
+        const newTheme = current === 'dark' ? 'light' : 'dark';
         this.applyTheme(newTheme);
     }
 
