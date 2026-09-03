@@ -1,10 +1,10 @@
-Ôªø<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>üõçÔ∏è Tienda IA Coins - BGE <span data-tenant-field="school_short_name">nuestro plantel</span></title>
+    <title>??? Tienda IA Coins - BGE <span data-tenant-field="school_short_name">nuestro plantel</span></title>
 
     <!-- Bootstrap 5.3.2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -17,7 +17,7 @@
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@300;400;500;700&display=swap"
         rel="stylesheet">
 
-    <!-- ‚úÖ FIX (2 Dec 2025): Header/Footer styles loaded globally -->
+    <!-- ? FIX (2 Dec 2025): Header/Footer styles loaded globally -->
     <!-- These MUST be in <head> so they apply BEFORE dynamic header/footer injection -->
     <link rel="stylesheet" href="css/global-layout.css">
     <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
@@ -31,7 +31,7 @@
 
 
 
-    <!-- √∞≈∏¬è¬¢ Multi-Tenancy Support -->
+    <!-- üè¢ Multi-Tenancy Support -->
     <script src="js/tenant-config-loader.js"></script>
     <script src="js/tenant-content-binder.js"></script>
     <!-- tenant-replacer.js removed - functionality handled by tenant-config-loader.js -->
@@ -46,7 +46,7 @@
     <!-- Header will be injected here -->
     <header id="main-header"></header>
     <div class="container store-container">
-        <!-- P√°gina Header -->
+        <!-- P·gina Header -->
         <div class="page-header">
             <h1><i class="fas fa-store"></i> Tienda IA Coins</h1>
             <p>Compra paquetes de IA Coins y desbloquea todo el potencial de la plataforma</p>
@@ -62,7 +62,7 @@
                     <h3>Tu Saldo Actual</h3>
                     <div class="amount">
                         <span id="currentBalance">0</span>
-                        <small class="fs-12-gold">ü™ô IA Coins</small>
+                        <small class="fs-12-gold">?? IA Coins</small>
                     </div>
                 </div>
             </div>
@@ -77,7 +77,7 @@
         </div>
 
         <div class="packages-grid" id="packagesContainer">
-            <!-- Los paquetes se cargar√°n din√°micamente desde config.json -->
+            <!-- Los paquetes se cargar·n din·micamente desde config.json -->
         </div>
 
         <!-- Items de la Tienda -->
@@ -86,7 +86,7 @@
         </div>
 
         <div class="store-items-grid" id="storeItemsContainer">
-            <!-- Los items se cargar√°n din√°micamente desde la API -->
+            <!-- Los items se cargar·n din·micamente desde la API -->
         </div>
     </div>
 
@@ -106,7 +106,7 @@
                         <div id="modalPackageBonus"></div>
                     </div>
 
-                    <h5 class="mb-3">Selecciona M√©todo de Pago</h5>
+                    <h5 class="mb-3">Selecciona MÈtodo de Pago</h5>
                     <div class="payment-methods">
                         <div class="payment-method" data-method="stripe">
                             <i class="fab fa-cc-stripe color-stripe"></i>
@@ -116,7 +116,7 @@
                         <div class="payment-method" data-method="mercadopago">
                             <i class="fas fa-credit-card color-mercadopago"></i>
                             <p class="mb-0"><strong>MercadoPago</strong></p>
-                            <small>M√©xico</small>
+                            <small>MÈxico</small>
                         </div>
                         <div class="payment-method" data-method="paypal">
                             <i class="fab fa-paypal color-paypal"></i>
@@ -126,7 +126,7 @@
                     </div>
 
                     <div id="paymentFormContainer" class="mt-4 d-none">
-                        <!-- Aqu√≠ se cargar√° el formulario de pago seg√∫n el m√©todo seleccionado -->
+                        <!-- AquÌ se cargar· el formulario de pago seg˙n el mÈtodo seleccionado -->
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -149,33 +149,33 @@
         let currentPackage = null;
         let selectedPaymentMethod = null;
 
-        // Definici√≥n de paquetes (desde config/institucion.json)
+        // DefiniciÛn de paquetes (desde config/institucion.json)
         const PACKAGES = [
             {
                 id: 'basic',
-                name: 'B√°sico',
+                name: 'B·sico',
                 iacoins: 50,
                 price_usd: 5.00,
                 price_mxn: 100,
                 bonus_percentage: 0,
                 features: [
-                    'Acceso a funciones b√°sicas de IA',
+                    'Acceso a funciones b·sicas de IA',
                     'Soporte por email',
-                    'V√°lido por 90 d√≠as'
+                    'V·lido por 90 dÌas'
                 ]
             },
             {
                 id: 'standard',
-                name: 'Est√°ndar',
+                name: 'Est·ndar',
                 iacoins: 100,
                 price_usd: 10.00,
                 price_mxn: 200,
                 bonus_percentage: 5,
                 features: [
                     '5% de bonus (105 IA Coins total)',
-                    'Acceso a tutor√≠as P2P',
+                    'Acceso a tutorÌas P2P',
                     'Soporte prioritario',
-                    'V√°lido por 180 d√≠as'
+                    'V·lido por 180 dÌas'
                 ]
             },
             {
@@ -191,7 +191,7 @@
                     'Acceso completo a IA Premium',
                     'Tutor IA ilimitado',
                     'Soporte prioritario 24/7',
-                    'V√°lido por 1 a√±o'
+                    'V·lido por 1 aÒo'
                 ]
             },
             {
@@ -206,7 +206,7 @@
                     'Ideal para todo el ciclo escolar',
                     'Acceso completo Premium',
                     'Reportes mensuales para padres',
-                    'V√°lido por 1 a√±o'
+                    'V·lido por 1 aÒo'
                 ]
             },
             {
@@ -218,11 +218,11 @@
                 bonus_percentage: 20,
                 features: [
                     '20% de bonus (1,200 IA Coins total)',
-                    'M√°ximo valor - ¬°Ahorra $20!',
+                    'M·ximo valor - °Ahorra $20!',
                     'Acceso VIP a todas las funciones',
                     'Sesiones personalizadas con tutores',
                     'Certificado de excelencia',
-                    'V√°lido por 2 a√±os'
+                    'V·lido por 2 aÒos'
                 ]
             }
         ];
@@ -237,8 +237,8 @@
                              localStorage.getItem('authToken');
 
                 if (!token) {
-                    console.warn('[IACOINS-STORE] Sin token de autenticaci√≥n detectado');
-                    // No mostrar alert - permitir que el usuario vea la tienda aunque no est√© logueado
+                    console.warn('[IACOINS-STORE] Sin token de autenticaciÛn detectado');
+                    // No mostrar alert - permitir que el usuario vea la tienda aunque no estÈ logueado
                     document.getElementById('currentBalance').textContent = '0.00';
                     return;
                 }
@@ -280,7 +280,7 @@
                 if (pkg.featured) {
                     const badge = document.createElement('div');
                     badge.className = 'package-badge';
-                    badge.textContent = 'M√°s Popular';
+                    badge.textContent = 'M·s Popular';
                     card.appendChild(badge);
                 }
 
@@ -376,7 +376,7 @@
             modal.show();
         }
 
-        // Selecci√≥n de M√©todo de Pago
+        // SelecciÛn de MÈtodo de Pago
         document.querySelectorAll('.payment-method').forEach(method => {
             method.addEventListener('click', function () {
                 document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('active'));
@@ -389,14 +389,14 @@
         // Confirmar Compra
         document.getElementById('btnConfirmPurchase').addEventListener('click', async function () {
             if (!currentPackage || !selectedPaymentMethod) {
-                alert('Selecciona un m√©todo de pago');
+                alert('Selecciona un mÈtodo de pago');
                 return;
             }
 
             // TODO: Integrar con Stripe/MercadoPago/PayPal
             alert(`Redirigiendo a ${selectedPaymentMethod.toUpperCase()}...\n\nPaquete: ${currentPackage.name}\nTotal: $${currentPackage.price_usd} USD`);
 
-            // Simular compra exitosa (remover en producci√≥n)
+            // Simular compra exitosa (remover en producciÛn)
             try {
                 const token = sessionStorage.getItem('bge_auth_token') ||
                              localStorage.getItem('bge_auth_token') ||
@@ -419,7 +419,7 @@
 
                 if (response.ok) {
                     const data = await response.json();
-                    alert(`¬°Compra exitosa!\n\n+${data.iacoins_purchased} IA Coins\nNuevo Saldo: ${data.new_balance}`);
+                    alert(`°Compra exitosa!\n\n+${data.iacoins_purchased} IA Coins\nNuevo Saldo: ${data.new_balance}`);
                     bootstrap.Modal.getInstance(document.getElementById('purchaseModal')).hide();
                     loadWalletBalance();
                 } else {
@@ -427,7 +427,7 @@
                 }
             } catch (error) {
                 console.error('Error al comprar:', error);
-                alert('Error de conexi√≥n. Intenta nuevamente.');
+                alert('Error de conexiÛn. Intenta nuevamente.');
             }
         });
 
@@ -457,7 +457,7 @@
                         id: 1,
                         name: 'Avatar Premium',
                         description: 'Personaliza tu perfil con avatares exclusivos',
-                        icon: '√∞≈∏≈Ω¬≠',
+                        icon: 'üé≠',
                         price_iacoins: 50,
                         category: 'customization'
                     },
@@ -465,7 +465,7 @@
                         id: 2,
                         name: 'Tema Oscuro Plus',
                         description: 'Desbloquea el modo oscuro premium',
-                        icon: '√∞≈∏≈í‚Ñ¢',
+                        icon: 'üåô',
                         price_iacoins: 30,
                         category: 'customization'
                     },
@@ -473,7 +473,7 @@
                         id: 3,
                         name: 'Certificado Digital',
                         description: 'Certificado verificable de logros',
-                        icon: '√∞≈∏¬è√≠',
+                        icon: 'üèÌ',
                         price_iacoins: 100,
                         category: 'rewards'
                     }
@@ -540,7 +540,7 @@
 
         // Comprar Item
         async function buyItem(itemId, itemName, price) {
-            if (!confirm(`¬øComprar "${itemName}" por ${price} IA Coins?`)) {
+            if (!confirm(`øComprar "${itemName}" por ${price} IA Coins?`)) {
                 return;
             }
 
@@ -563,7 +563,7 @@
 
                 if (response.ok) {
                     const data = await response.json();
-                    alert(`¬°Compra exitosa!\n\nItem: ${itemName}\nNuevo Saldo: ${data.new_balance} IA Coins`);
+                    alert(`°Compra exitosa!\n\nItem: ${itemName}\nNuevo Saldo: ${data.new_balance} IA Coins`);
                     loadWalletBalance();
                 } else {
                     const error = await response.json();
@@ -571,7 +571,7 @@
                 }
             } catch (error) {
                 console.error('Error al comprar item:', error);
-                alert('Error de conexi√≥n. Intenta nuevamente.');
+                alert('Error de conexiÛn. Intenta nuevamente.');
             }
         }
 
@@ -611,7 +611,7 @@
             }
         });
 
-        // Inicializaci√≥n
+        // InicializaciÛn
         document.addEventListener('DOMContentLoaded', function () {
             renderPackages();
             loadWalletBalance();

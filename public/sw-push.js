@@ -23,9 +23,9 @@ self.addEventListener('push', (event) => {
     console.log('[SW Push] Push received');
 
     let data = {
-        title: 'BGE Héroes de la Patria',
+        title: 'Bachillerato General Estatal',
         body: 'Tienes una nueva notificación',
-        icon: '/images/logo-bachillerato-HDLP.webp',
+        icon: '/images/logo/logo-general-bge.webp',
         badge: '/images/badge-72x72.png',
         tag: 'bge-notification',
         data: {}

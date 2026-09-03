@@ -27,9 +27,9 @@ function getDefaultConfig(hostname) {
         domain: hostname,
         subdomain: 'default',
         status: 'activo',
-        logo_url: '/images/logo-bachillerato-HDLP.webp',
-        escudo_url: '/images/logo-bachillerato-HDLP.webp',
-        favicon_url: '/favicon.ico',
+        logo_url: '/images/logo/logo-general-bge.webp',
+        escudo_url: '/images/logo/logo-general-bge.webp',
+        favicon_url: '/images/logo/logo-general-bge.webp',
         colors: {
             primary: '#1e40af',
             secondary: '#dc2626',

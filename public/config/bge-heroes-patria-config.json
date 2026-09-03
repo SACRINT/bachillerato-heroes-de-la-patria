@@ -31,8 +31,8 @@
     "primaryColor": "#1e40af",
     "secondaryColor": "#dc2626",
     "accentColor": "#059669",
-    "logoUrl": "/images/logo-bachillerato-HDLP.webp",
-    "faviconUrl": "/favicon.ico",
+    "logoUrl": "/images/logo/logo-general-bge.webp",
+    "faviconUrl": "/images/logo/logo-general-bge.webp",
     "heroImageUrl": "",
     "fontFamily": "Inter"
   },

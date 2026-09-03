@@ -265,8 +265,8 @@ class TenantsAdminManager {
                 branding: {
                     primaryColor: document.getElementById('primaryColor').value,
                     secondaryColor: '#F57C00',
-                    logoUrl: '/images/logo-bachillerato-HDLP.webp',
-                    faviconUrl: '/images/favicon.ico'
+                    logoUrl: '/images/logo/logo-general-bge.webp',
+                    faviconUrl: '/images/logo/logo-general-bge.webp'
                 },
                 contact: {
                     address: 'C. Manuel Ávila Camacho #7, Coronel Tito Hernández, V. Carranza, Puebla',

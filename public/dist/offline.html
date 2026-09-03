@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title" data-base-title="Sin conexión - Bachillerato nuestro plantel">Sin conexión - Bachillerato
+    <title id="page-title" data-base-title="Sin conexiÃ³n - Bachillerato nuestro plantel">Sin conexiÃ³n - Bachillerato
         nuestro plantel</title>
 
     <!-- Inline critical styles for offline page -->
@@ -123,7 +123,7 @@
         }
 
         .feature-list li::before {
-            content: 'âœ“';
+            content: 'Ã¢Å“â€œ';
             color: #28a745;
             font-weight: bold;
             margin-right: 0.75rem;
@@ -322,8 +322,8 @@
     <link rel="manifest" href="manifest.json">
 
     <!-- Icons -->
-    <link rel="icon" href="/images/logo-bachillerato-HDLP.webp" type="image/webp">
-    <link rel="apple-touch-icon" href="/images/logo/logo-bachillerato-HDLP.png">
+    <link rel="icon" href="/images/logo/logo-general-bge.webp" type="image/webp">
+    <link rel="apple-touch-icon" href="/images/logo/logo-general-bge.png">
 
     <!-- Theme Color -->
     <meta name="theme-color" content="#1976D2">
@@ -335,41 +335,41 @@
 </head>
 
 <body>
-    <!-- Header dinámico inyectado por main.js -->
+    <!-- Header dinÃ¡mico inyectado por main.js -->
     <header id="main-header"></header>
     <div class="offline-container">
-        <div class="offline-icon" id="connectionIcon">ðŸ“¡</div>
+        <div class="offline-icon" id="connectionIcon">Ã°Å¸â€œÂ¡</div>
 
-        <h1 class="offline-title">Sin conexión a Internet</h1>
-        <h2 class="offline-subtitle">¡Pero no te preocupes!</h2>
+        <h1 class="offline-title">Sin conexiÃ³n a Internet</h1>
+        <h2 class="offline-subtitle">Â¡Pero no te preocupes!</h2>
 
         <p class="offline-message">
-            Aunque no tienes conexión a Internet en este momento, algunas funciones
-            de nuestro sitio siguen disponibles gracias a nuestra tecnología PWA.
+            Aunque no tienes conexiÃ³n a Internet en este momento, algunas funciones
+            de nuestro sitio siguen disponibles gracias a nuestra tecnologÃ­a PWA.
         </p>
 
         <div class="offline-features">
-            <h3>ðŸš€ Funciones disponibles sin conexión:</h3>
+            <h3>Ã°Å¸Å¡â‚¬ Funciones disponibles sin conexiÃ³n:</h3>
             <ul class="feature-list">
-                <li>Navegar por páginas ya visitadas</li>
-                <li>Consultar información institucional</li>
-                <li>Usar el asistente virtual (respuestas básicas)</li>
-                <li>Ver contenido guardado en caché</li>
+                <li>Navegar por pÃ¡ginas ya visitadas</li>
+                <li>Consultar informaciÃ³n institucional</li>
+                <li>Usar el asistente virtual (respuestas bÃ¡sicas)</li>
+                <li>Ver contenido guardado en cachÃ©</li>
                 <li>Acceder a documentos descargados</li>
             </ul>
         </div>
 
         <div class="button-group">
             <button class="btn btn-primary" data-action="check-connection">
-                <span>ðŸ”„</span> Verificar conexión
+                <span>Ã°Å¸â€â€ž</span> Verificar conexiÃ³n
             </button>
             <a href="/" class="btn btn-secondary">
-                <span>ðŸ </span> Ir al inicio
+                <span>Ã°Å¸ÂÂ </span> Ir al inicio
             </a>
         </div>
 
         <div class="connection-status status-offline" id="connectionStatus">
-            <strong>Estado:</strong> Sin conexión a Internet
+            <strong>Estado:</strong> Sin conexiÃ³n a Internet
         </div>
 
         <div class="brand-info">
@@ -378,20 +378,20 @@
             </div>
             <p class="brand-text">
                 <strong>Bachillerato General Estatal<br><span data-tenant-field="school_short_name">nuestro plantel</span></strong><br>
-                Educación de calidad con valores sólidos<br>
-                <span data-tenant-field="direccion">Dirección del plantel</span>, Puebla
+                EducaciÃ³n de calidad con valores sÃ³lidos<br>
+                <span data-tenant-field="direccion">DirecciÃ³n del plantel</span>, Puebla
             </p>
         </div>
     </div>
 
-    <!-- ðŸš€ BGE FRAMEWORK MODULAR - PÁGINA OFFLINE -->
+    <!-- Ã°Å¸Å¡â‚¬ BGE FRAMEWORK MODULAR - PÃGINA OFFLINE -->
 
-    <!-- ðŸ”§ SISTEMA CORE (BGE Framework - Solo esenciales para offline) -->
+    <!-- Ã°Å¸â€Â§ SISTEMA CORE (BGE Framework - Solo esenciales para offline) -->
     <script src="js/context-manager.js" defer></script>
     <script src="js/config.js?v=2024091401" defer></script>
     <script src="js/theme-manager.js" defer></script>
 
-    <!-- 🎯 BGE FRAMEWORK CORE (Carga condicional para offline) -->
+    <!-- ðŸŽ¯ BGE FRAMEWORK CORE (Carga condicional para offline) -->
     <script>
         // Load BGE core only if online
         if (navigator.onLine) {
@@ -402,8 +402,8 @@
         }
     </script>
 
-    <!-- ðŸ“Š MÃ“DULOS BGE PARA OFFLINE -->
-    <script src="js/bge-performance-module.js" defer></script><!-- ðŸ”§ FUNCIONALIDADES ESPECÍFICAS OFFLINE -->
+    <!-- Ã°Å¸â€œÅ  MÃƒâ€œDULOS BGE PARA OFFLINE -->
+    <script src="js/bge-performance-module.js" defer></script><!-- Ã°Å¸â€Â§ FUNCIONALIDADES ESPECÃFICAS OFFLINE -->
     <script>
         // BGE Offline Manager - Connection status checking
         class BGEOfflineManager {
@@ -425,9 +425,9 @@
                 const status = document.getElementById('connectionStatus');
 
                 if (isOnline) {
-                    icon.textContent = '✅';
+                    icon.textContent = 'âœ…';
                     status.className = 'connection-status status-online';
-                    status.innerHTML = '<strong>Estado:</strong> ¡Conexión restaurada! Redirigiendo...';
+                    status.innerHTML = '<strong>Estado:</strong> Â¡ConexiÃ³n restaurada! Redirigiendo...';
 
                     // BGE Analytics - Track connection restored
                     if (window.BGEAnalytics) {
@@ -438,9 +438,9 @@
                         window.location.href = '/';
                     }, 2000);
                 } else {
-                    icon.textContent = 'ðŸ“¡';
+                    icon.textContent = 'Ã°Å¸â€œÂ¡';
                     status.className = 'connection-status status-offline';
-                    status.innerHTML = '<strong>Estado:</strong> Sin conexión a Internet';
+                    status.innerHTML = '<strong>Estado:</strong> Sin conexiÃ³n a Internet';
 
                     // BGE Analytics - Track offline state
                     if (window.BGEAnalytics) {
@@ -458,11 +458,11 @@
                 const button = document.querySelector('.btn-primary');
 
                 // Update UI to show checking state
-                icon.textContent = 'ðŸ”„';
+                icon.textContent = 'Ã°Å¸â€â€ž';
                 status.className = 'connection-status status-checking';
-                status.innerHTML = '<strong>Estado:</strong> Verificando conexión...';
+                status.innerHTML = '<strong>Estado:</strong> Verificando conexiÃ³n...';
                 button.disabled = true;
-                button.innerHTML = '<span>â³</span> Verificando...';
+                button.innerHTML = '<span>Ã¢ÂÂ³</span> Verificando...';
 
                 // BGE Performance - Optimized connection check
                 const controller = new AbortController();
@@ -485,7 +485,7 @@
                     .finally(() => {
                         this.isCheckingConnection = false;
                         button.disabled = false;
-                        button.innerHTML = '<span>ðŸ”„</span> Verificar conexión';
+                        button.innerHTML = '<span>Ã°Å¸â€â€ž</span> Verificar conexiÃ³n';
                     });
             }
 
@@ -533,7 +533,7 @@
                         if (event.data && event.data.type === 'CACHE_UPDATED') {
                             const status = document.getElementById('connectionStatus');
                             status.className = 'connection-status status-online';
-                            status.innerHTML = '<strong>Actualización:</strong> Contenido actualizado en segundo plano';
+                            status.innerHTML = '<strong>ActualizaciÃ³n:</strong> Contenido actualizado en segundo plano';
                         }
                     });
                 }
@@ -544,7 +544,7 @@
 
                     const installButton = document.createElement('button');
                     installButton.className = 'btn btn-secondary';
-                    installButton.innerHTML = '<span>ðŸ“±</span> Instalar App';
+                    installButton.innerHTML = '<span>Ã°Å¸â€œÂ±</span> Instalar App';
                     installButton.onclick = () => {
                         e.prompt();
                         // BGE Analytics - Track install prompt
@@ -576,13 +576,13 @@
         }
     </script>
 
-    <!-- ðŸ”§ MAIN.JS - CARGA DINÁMICA DE HEADER Y FOOTER -->
+    <!-- Ã°Å¸â€Â§ MAIN.JS - CARGA DINÃMICA DE HEADER Y FOOTER -->
     <script src="js/main.js"></script>
-    <!-- ðŸ¢ TENANT CONFIG LOADER - Carga configuración multi-tenancy desde BD -->
+    <!-- Ã°Å¸ÂÂ¢ TENANT CONFIG LOADER - Carga configuraciÃ³n multi-tenancy desde BD -->
     <script src="js/tenant-config-loader.js"></script>
     <script src="js/tenant-content-binder.js"></script>
 
-    <!-- Footer dinámico inyectado por main.js -->
+    <!-- Footer dinÃ¡mico inyectado por main.js -->
     <footer id="main-footer"></footer>
     <script src="js/chatbot.js"></script>
 </body>

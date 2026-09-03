@@ -111,7 +111,7 @@ publicDirs.forEach(publicDir => {
     // 9. Reemplazar logos específicos con data-tenant-src
     content = content.replace(
         /<img([^>]*)src=["'](?:\/)?images\/(?:logo\/)?logo-bachillerato-HDLP(?:2)?\.webp["']([^>]*)alt=["'][^"']*["']([^>]*)>/gi,
-        '<img$1data-tenant-src="logo_url" src="/images/logo-bachillerato-HDLP.webp"$2alt="Logo del Bachillerato"$3>'
+        '<img$1data-tenant-src="logo_url" src="/images/logo/logo-general-bge.webp"$2alt="Logo del Bachillerato"$3>'
     );
 
         if (content !== original) {

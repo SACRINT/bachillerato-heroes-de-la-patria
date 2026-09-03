@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500">
+  <defs>
+    <!-- Gradients -->
+    <radialGradient id="goldRim" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="70%" stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </radialGradient>
+    
+    <linearGradient id="blueRing" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f2b5c"/>
+      <stop offset="50%" stop-color="#1e3a8a"/>
+      <stop offset="100%" stop-color="#172554"/>
+    </linearGradient>
+
+    <radialGradient id="centerBg" cx="50%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="85%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </radialGradient>
+
+    <linearGradient id="flameGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#dc2626"/>
+      <stop offset="40%" stop-color="#f97316"/>
+      <stop offset="80%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#fef08a"/>
+    </linearGradient>
+
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="30%" stop-color="#f59e0b"/>
+      <stop offset="70%" stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#92400e"/>
+    </linearGradient>
+
+    <linearGradient id="bannerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a8a"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+
+    <!-- Text Paths -->
+    <!-- Top arc: R=205 -->
+    <path id="topTextArc" d="M 60,250 A 190,190 0 1,1 440,250" fill="none"/>
+    <!-- Bottom arc: R=205 -->
+    <path id="bottomTextArc" d="M 430,250 A 185,185 0 0,1 70,250" fill="none"/>
+    
+    <!-- Filter for soft shadow -->
+    <filter id="dropShadow" x="-10%" y="-10%" width="125%" height="125%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#0f172a" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Outer Base & Gold Edge -->
+  <circle cx="250" cy="250" r="242" fill="url(#goldRim)" filter="url(#dropShadow)"/>
+  
+  <!-- Outer Blue Ring -->
+  <circle cx="250" cy="250" r="230" fill="url(#blueRing)"/>
+  
+  <!-- Inner Gold Beaded Border -->
+  <circle cx="250" cy="250" r="162" fill="none" stroke="url(#goldGrad)" stroke-width="4"/>
+  <circle cx="250" cy="250" r="158" fill="url(#centerBg)"/>
+
+  <!-- Curved Text: Top -->
+  <text fill="#ffffff" font-family="'Cinzel', 'Trajan Pro', 'Georgia', serif" font-size="22" font-weight="bold" letter-spacing="4">
+    <textPath href="#topTextArc" startOffset="50%" text-anchor="middle">
+      BACHILLERATO GENERAL ESTATAL
+    </textPath>
+  </text>
+
+  <!-- Curved Text: Bottom -->
+  <text fill="url(#goldGrad)" font-family="'Cinzel', 'Trajan Pro', 'Georgia', serif" font-size="16" font-weight="bold" letter-spacing="4">
+    <textPath href="#bottomTextArc" startOffset="50%" text-anchor="middle">
+      ★ EXCELENCIA ACADÉMICA ★
+    </textPath>
+  </text>
+
+  <!-- Laurel Wreath (Left & Right) -->
+  <g fill="url(#goldGrad)" stroke="#92400e" stroke-width="0.8" opacity="0.95">
+    <!-- Left Leaves -->
+    <path d="M 175,290 C 160,260 160,220 180,180 C 172,195 168,215 170,235 C 160,230 148,215 152,198 C 148,212 150,230 162,245 C 150,248 138,235 138,220 C 136,238 148,255 160,262 C 150,270 138,265 135,250 C 138,272 152,285 168,285 Z"/>
+    <!-- Right Leaves -->
+    <path d="M 325,290 C 340,260 340,220 320,180 C 328,195 332,215 330,235 C 340,230 352,215 348,198 C 352,212 350,230 338,245 C 350,248 362,235 362,220 C 364,238 352,255 340,262 C 350,270 362,265 365,250 C 362,272 348,285 332,285 Z"/>
+  </g>
+
+  <!-- Torch of Wisdom / Flame -->
+  <g id="torch">
+    <!-- Flame Outer -->
+    <path d="M 250,110 C 275,145 285,175 270,205 C 265,190 260,185 255,180 C 255,195 245,205 235,205 C 220,185 230,150 250,110 Z" fill="url(#flameGrad)" filter="url(#dropShadow)"/>
+    <!-- Flame Inner -->
+    <path d="M 250,135 C 262,158 268,178 258,195 C 255,186 250,182 247,178 C 247,188 240,195 235,192 C 230,178 238,155 250,135 Z" fill="#ffffff" opacity="0.85"/>
+    <!-- Torch Holder -->
+    <path d="M 238,205 L 262,205 L 257,235 L 243,235 Z" fill="url(#goldGrad)" stroke="#78350f" stroke-width="1"/>
+    <ellipse cx="250" cy="205" rx="14" ry="4" fill="#fef08a"/>
+  </g>
+
+  <!-- Open Book of Knowledge -->
+  <g id="openBook" filter="url(#dropShadow)">
+    <!-- Backing/Shadow -->
+    <path d="M 250,255 C 225,242 195,245 170,255 L 170,295 C 195,285 225,282 250,295 C 275,282 305,285 330,295 L 330,255 C 305,245 275,242 250,255 Z" fill="#1e293b"/>
+    <!-- Left Page -->
+    <path d="M 248,252 C 224,240 196,242 172,252 L 172,290 C 196,280 224,278 248,290 Z" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <!-- Right Page -->
+    <path d="M 252,252 C 276,240 304,242 328,252 L 328,290 C 304,280 276,278 252,290 Z" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <!-- Book Spine Rib -->
+    <path d="M 247,252 L 253,252 L 253,292 L 247,292 Z" fill="url(#goldGrad)"/>
+    <!-- Lines on Pages -->
+    <line x1="184" y1="262" x2="236" y2="256" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="184" y1="270" x2="236" y2="264" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="184" y1="278" x2="236" y2="272" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round"/>
+    
+    <line x1="264" y1="256" x2="316" y2="262" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="264" y1="264" x2="316" y2="270" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="264" y1="272" x2="316" y2="278" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Ribbon Banner: BGE -->
+  <g id="bgeBanner" filter="url(#dropShadow)">
+    <path d="M 180,312 L 320,312 L 335,335 L 320,335 L 325,348 L 305,335 L 195,335 L 175,348 L 180,335 L 165,335 Z" fill="url(#bannerGrad)" stroke="url(#goldGrad)" stroke-width="2"/>
+    <text x="250" y="330" fill="url(#goldGrad)" font-family="'Cinzel', 'Trajan Pro', 'Georgia', serif" font-size="22" font-weight="900" text-anchor="middle" letter-spacing="5">
+      BGE
+    </text>
+  </g>
+
+  <!-- Golden 3 Stars at top -->
+  <g fill="url(#goldGrad)" stroke="#78350f" stroke-width="0.5">
+    <!-- Center Star -->
+    <polygon points="250,75 253,83 262,83 255,88 257,96 250,91 243,96 245,88 238,83 247,83"/>
+    <!-- Left Star -->
+    <polygon points="228,82 230,88 237,88 232,92 234,98 228,94 222,98 224,92 219,88 226,88"/>
+    <!-- Right Star -->
+    <polygon points="272,82 274,88 281,88 276,92 278,98 272,94 266,98 268,92 263,88 270,88"/>
+  </g>
+</svg>
