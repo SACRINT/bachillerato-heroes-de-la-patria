@@ -2400,59 +2400,14 @@ app.get('/api/support-tickets/tickets', async (req, res) => {
 // PORTAL DOCENTES (TEACHERS PORTAL)
 // ============================================
 
-// POST /api/teachers-portal/auth/login - Login para docentes
-app.post('/api/teachers-portal/auth/login', async (req, res) => {
+// POST /api/teachers-portal/auth/login - Delegar a backend/routes/teachers-portal.js
+app.post('/api/teachers-portal/auth/login', (req, res, next) => {
     try {
-        const { email, password } = req.body;
-
-        if (!email || !password) {
-            return res.status(400).json({
-                success: false,
-                error: 'Email y contraseña requeridos'
-            });
-        }
-
-        // Demo: Aceptar cualquier email con contraseña válida
-        const jwt = require('jsonwebtoken');
-        const jwtSecret = process.env.JWT_SECRET || JWT_DEFAULT_SECRET;
-
-        const token = jwt.sign(
-            {
-                userId: 1,
-                email: email,
-                role: 'docente',
-                username: email.split('@')[0]
-            },
-            jwtSecret,
-            { expiresIn: '24h' }
-        );
-
-        res.json({
-            success: true,
-            token: token,
-            user: {
-                id: 1,
-                email: email,
-                role: 'docente',
-                username: email.split('@')[0],
-                nombre: 'Docente Demo'
-            },
-            isDemoData: true
-        });
-    } catch (error) {
-        console.error('[TEACHERS-LOGIN] Error:', error.message);
-        res.json({
-            success: true,
-            token: 'demo-token-' + Date.now(),
-            user: {
-                id: 1,
-                email: 'docente@example.com',
-                role: 'docente',
-                username: 'docente',
-                nombre: 'Docente Demo'
-            },
-            isDemoData: true
-        });
+        const teachersPortalRoutes = require('../backend/routes/teachers-portal.js');
+        req.url = '/login';
+        teachersPortalRoutes(req, res, next);
+    } catch (err) {
+        next(err);
     }
 });
 

@@ -33,12 +33,13 @@ interface AuthenticatedRequest extends Request {
 
 /**
  * POST /api/teachers-portal/login
+ * POST /api/teachers-portal/auth/login
  * Login de docentes
  */
-router.post('/login', [
-    body('email').isEmail().withMessage('Email válido requerido'),
+router.post(['/login', '/auth/login'], [
+    body('email').notEmpty().withMessage('Email o usuario requerido'),
     body('password').notEmpty().withMessage('Contraseña requerida')
-] as ValidationChain[], async (req: Request, res: Response): Promise<void> => {
+] as any, async (req: Request, res: Response): Promise<void> => {
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -70,13 +71,15 @@ router.post('/login', [
         const jwt = require('jsonwebtoken');
 
         // ✅ FIXED SCHEMA: password_hash instead of password, status='activo' instead of activo=true
-        // ✅ ALLOW ADMIN: u.role IN ('docente', 'admin')
+        // ✅ ALLOW ADMIN: u.role IN ('docente', 'admin') with username or email
         const userResult = await executeQuery(`
             SELECT u.*, d.especialidad, d.numero_empleado
             FROM usuarios u
             LEFT JOIN docentes d ON u.id = d.usuario_id
-            WHERE u.email = $1 AND u.role IN ('docente', 'admin') AND u.status = 'activo'
-        `, [email]) as any[];
+            WHERE (LOWER(u.email) = LOWER($1) OR u.username = $1)
+              AND u.role IN ('docente', 'admin')
+              AND u.status = 'activo'
+        `, [email.trim()]) as any[];
 
         if (!userResult || userResult.length === 0) {
             res.status(401).json({ success: false, message: 'Credenciales inválidas' });
@@ -114,10 +117,11 @@ router.post('/login', [
             token,
             teacher: {
                 id: user.id,
-                nombre: `${user.nombre} ${user.apellido_paterno || ''}`.trim(),
+                nombre: `${user.nombre || ''} ${user.apellido_paterno || ''}`.trim() || user.username || 'Administrador',
                 email: user.email,
-                especialidad: user.especialidad,
-                numero_empleado: user.numero_empleado
+                especialidad: user.especialidad || (user.role === 'admin' ? 'Dirección y Administración' : 'Docencia'),
+                numero_empleado: user.numero_empleado || ((user.role === 'admin' ? 'ADM-' : 'DOC-') + user.id),
+                role: user.role
             }
         });
     } catch (error) {
@@ -137,11 +141,14 @@ router.post('/login', [
 router.get('/dashboard', authenticateToken, requireRole(['docente', 'admin']), async (req: Request, res: Response): Promise<void> => {
     try {
         const authReq = req as AuthenticatedRequest;
-        const userId = authReq.user.id;
+        const userId = authReq.user.id || authReq.user.userId;
+        const isAdmin = authReq.user.role === 'admin';
+        let docenteId = 0;
 
-        // Resolve Docente ID
-        const docenteRes = await executeQuery('SELECT id FROM docentes WHERE usuario_id = $1', [userId]) as any[];
-        const docenteId = docenteRes[0]?.id || 0;
+        if (!isAdmin) {
+            const docenteRes = await executeQuery('SELECT id FROM docentes WHERE usuario_id = $1', [userId]) as any[];
+            docenteId = docenteRes[0]?.id || 0;
+        }
 
         // Get teacher info
         const teacherInfo = await executeQuery(`
@@ -150,43 +157,72 @@ router.get('/dashboard', authenticateToken, requireRole(['docente', 'admin']), a
             WHERE id = $1
         `, [userId]) as any[];
 
-        // Get teacher's classes
-        const classes = await executeQuery(`
-            SELECT 
-                m.id, m.nombre as materia, COALESCE(m.grupo, 'A') as grupo, 
-                m.semestre as grado, 'Matutino' as turno, '2025-2026' as ciclo_escolar,
-                (SELECT COUNT(*) FROM inscripciones_materias WHERE materia_id = m.id AND status = 'activo') as estudiantes
-            FROM materias m
-            WHERE m.docente_id = $1 AND m.activa = true
-            ORDER BY m.semestre, m.nombre
-        `, [docenteId]) as any[];
+        // EN QUERIES DE CLASES/ESTUDIANTES:
+        // Si admin → métricas globales (sin WHERE m.docente_id)
+        // Si docente → filtrar por docenteId
+        const classes = isAdmin
+            ? await executeQuery(`
+                SELECT 
+                    m.id, m.nombre as materia, COALESCE(m.grupo, 'A') as grupo, 
+                    m.semestre as grado, 'Matutino' as turno, '2025-2026' as ciclo_escolar,
+                    (SELECT COUNT(*) FROM inscripciones_materias WHERE materia_id = m.id AND status = 'activo') as estudiantes
+                FROM materias m
+                WHERE m.activa = true
+                ORDER BY m.semestre, m.nombre
+            `) as any[]
+            : await executeQuery(`
+                SELECT 
+                    m.id, m.nombre as materia, COALESCE(m.grupo, 'A') as grupo, 
+                    m.semestre as grado, 'Matutino' as turno, '2025-2026' as ciclo_escolar,
+                    (SELECT COUNT(*) FROM inscripciones_materias WHERE materia_id = m.id AND status = 'activo') as estudiantes
+                FROM materias m
+                WHERE m.docente_id = $1 AND m.activa = true
+                ORDER BY m.semestre, m.nombre
+            `, [docenteId]) as any[];
 
         // Get today's schedule (Empty for now as horarios table is missing)
         const schedule: any[] = [];
 
         // Get pending grades count
-        const pendingGrades = await executeQuery(`
-            SELECT COUNT(*) as count
-            FROM inscripciones_materias im
-            JOIN materias m ON im.materia_id = m.id
-            JOIN estudiantes e ON im.estudiante_id = e.id
-            LEFT JOIN calificaciones c ON c.estudiante_id = e.id AND c.materia_id = m.id
-            WHERE m.docente_id = $1 AND im.status = 'activo' AND c.id IS NULL
-        `, [docenteId]) as any[];
+        const pendingGrades = isAdmin
+            ? await executeQuery(`
+                SELECT COUNT(*) as count
+                FROM inscripciones_materias im
+                JOIN materias m ON im.materia_id = m.id
+                JOIN estudiantes e ON im.estudiante_id = e.id
+                LEFT JOIN calificaciones c ON c.estudiante_id = e.id AND c.materia_id = m.id
+                WHERE im.status = 'activo' AND c.id IS NULL
+            `) as any[]
+            : await executeQuery(`
+                SELECT COUNT(*) as count
+                FROM inscripciones_materias im
+                JOIN materias m ON im.materia_id = m.id
+                JOIN estudiantes e ON im.estudiante_id = e.id
+                LEFT JOIN calificaciones c ON c.estudiante_id = e.id AND c.materia_id = m.id
+                WHERE m.docente_id = $1 AND im.status = 'activo' AND c.id IS NULL
+            `, [docenteId]) as any[];
 
         // Get unread messages count
-        const unreadMessages = await executeQuery(`
-            SELECT total_no_leidos as count
-            FROM v_teacher_unread_messages
-            WHERE teacher_id = $1
-        `, [docenteId]) as any[];
+        const unreadMessages = isAdmin
+            ? [{ count: 0 }]
+            : await executeQuery(`
+                SELECT total_no_leidos as count
+                FROM v_teacher_unread_messages
+                WHERE teacher_id = $1
+            `, [docenteId]) as any[];
 
         // Get unread notifications count
-        const unreadNotifications = await executeQuery(`
-            SELECT COUNT(*) as count
-            FROM teacher_notifications
-            WHERE teacher_id = $1 AND leida = false
-        `, [docenteId]) as any[];
+        const unreadNotifications = isAdmin
+            ? await executeQuery(`
+                SELECT COUNT(*) as count
+                FROM teacher_notifications
+                WHERE leida = false
+            `) as any[]
+            : await executeQuery(`
+                SELECT COUNT(*) as count
+                FROM teacher_notifications
+                WHERE teacher_id = $1 AND leida = false
+            `, [docenteId]) as any[];
 
         // Stats
         const totalStudents = classes.reduce((acc: number, c: any) => acc + (parseInt(c.estudiantes) || 0), 0);
@@ -196,7 +232,7 @@ router.get('/dashboard', authenticateToken, requireRole(['docente', 'admin']), a
             success: true,
             data: {
                 teacher: {
-                    nombre: teacherProfile.nombre || 'Docente',
+                    nombre: teacherProfile.nombre || (isAdmin ? 'Administrador' : 'Docente'),
                     apellido_paterno: teacherProfile.apellido_paterno || ''
                 },
                 stats: {

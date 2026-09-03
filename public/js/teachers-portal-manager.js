@@ -140,11 +140,11 @@ class TeachersPortalManager {
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.error || 'Error al iniciar sesión');
+                throw new Error(data.error || data.message || 'Error al iniciar sesión');
             }
 
             if (!data.success) {
-                throw new Error(data.error || 'Login falló');
+                throw new Error(data.error || data.message || 'Login falló');
             }
 
             // Guardar token
@@ -153,8 +153,15 @@ class TeachersPortalManager {
             localStorage.setItem('bge_auth_token', data.token);
             localStorage.setItem('bge_auth_session', JSON.stringify({
                 user: data.teacher,
-                role: 'docente'
+                role: data.teacher?.role || 'docente'
             }));
+
+            // Cerrar modal si existe
+            const modalEl = document.getElementById('loginModal');
+            if (modalEl && typeof bootstrap !== 'undefined') {
+                const modal = bootstrap.Modal.getInstance(modalEl);
+                if (modal) modal.hide();
+            }
 
             // Cargar dashboard
             await this.loadDashboard();

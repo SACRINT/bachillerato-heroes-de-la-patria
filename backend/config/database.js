@@ -39,15 +39,18 @@ let useJsonFallback = false;
 // - Timeout de conexión aumentado a 5 segundos
 // Prioridad 1: DATABASE_URL de Neon (Vercel) - IGNORAR SI ES PLACEHOLDER
 const hasValidUrl = process.env.DATABASE_URL && !process.env.DATABASE_URL.includes('CHANGE_ME');
+const isNeon = hasValidUrl && (process.env.DATABASE_URL.includes('neon.tech') || process.env.DATABASE_URL.includes('sslmode=require'));
 const poolConfig = hasValidUrl
     ? {
         connectionString: process.env.DATABASE_URL,
-        // SSL configurable según variable de entorno (false para local, true para Neon)
-        ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
-        max: parseInt(process.env.DB_CONNECTION_LIMIT) || 100,  // Aumentado de 10 a 100
-        min: parseInt(process.env.DB_CONNECTION_MIN) || 10,      // Min = 10 conexiones
-        idleTimeoutMillis: 60000,                                // Aumentado de 30s a 60s
-        connectionTimeoutMillis: 5000,                           // Aumentado de 10s a 5s (más rápido)
+        // SSL obligatorio para Neon con modo compatible pg v9+
+        ssl: isNeon 
+            ? { rejectUnauthorized: false, sslmode: 'require' }
+            : (process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false),
+        max: parseInt(process.env.DB_CONNECTION_LIMIT) || 20,
+        min: 0,  // CRÍTICO: 0 para serverless (Vercel cold-starts)
+        idleTimeoutMillis: 30000,
+        connectionTimeoutMillis: 10000,
     }
     : {
         host: process.env.DB_HOST || 'localhost',
@@ -55,11 +58,11 @@ const poolConfig = hasValidUrl
         user: process.env.DB_USER || 'postgres',
         password: process.env.DB_PASSWORD || '',
         database: process.env.DB_NAME || 'sipweb-bg',
-        max: parseInt(process.env.DB_CONNECTION_LIMIT) || 100,   // Aumentado de 10 a 100
-        min: parseInt(process.env.DB_CONNECTION_MIN) || 10,      // Min = 10 conexiones
-        idleTimeoutMillis: 60000,                                // Aumentado de 30s a 60s
-        connectionTimeoutMillis: 5000,                           // Aumentado de 10s a 5s (más rápido)
-        ssl: false // Forzar false para desarrollo local si no hay DATABASE_URL
+        max: parseInt(process.env.DB_CONNECTION_LIMIT) || 20,
+        min: 0,
+        idleTimeoutMillis: 30000,
+        connectionTimeoutMillis: 10000,
+        ssl: false
     };
 
 // Crear pool de conexiones PostgreSQL
