@@ -44,9 +44,9 @@ const poolConfig = hasValidUrl
     ? {
         connectionString: process.env.DATABASE_URL,
         // SSL obligatorio para Neon con modo compatible pg v9+
-        ssl: isNeon 
-            ? { rejectUnauthorized: false, sslmode: 'require' }
-            : (process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false),
+        ssl: isNeon || process.env.DB_SSL === 'true' 
+            ? { rejectUnauthorized: false }
+            : false,
         max: parseInt(process.env.DB_CONNECTION_LIMIT) || 20,
         min: 0,  // CRÍTICO: 0 para serverless (Vercel cold-starts)
         idleTimeoutMillis: 30000,

@@ -72,7 +72,7 @@ router.post(['/login', '/auth/login'], [
             LEFT JOIN docentes d ON u.id = d.usuario_id
             WHERE (LOWER(u.email) = LOWER($1) OR u.username = $1)
               AND u.role IN ('docente', 'admin')
-              AND u.status = 'activo'
+              AND (u.status = 'activo' OR u.status IS NULL)
         `, [email.trim()]);
         if (!userResult || userResult.length === 0) {
             res.status(401).json({ success: false, message: 'Credenciales inválidas' });

@@ -114,6 +114,15 @@ class TeachersPortalManager {
         if (startAttendanceBtn) {
             startAttendanceBtn.addEventListener('click', () => this.startAttendanceSession());
         }
+
+        // Escuchar login unificado desde el header o modal global
+        window.addEventListener('bge-user-logged-in', async () => {
+            const token = this.getStoredToken();
+            if (token) {
+                this.setToken(token);
+                await this.loadDashboard();
+            }
+        });
     }
 
     /**
@@ -156,12 +165,8 @@ class TeachersPortalManager {
                 role: data.teacher?.role || 'docente'
             }));
 
-            // Cerrar modal si existe
-            const modalEl = document.getElementById('loginModal');
-            if (modalEl && typeof bootstrap !== 'undefined') {
-                const modal = bootstrap.Modal.getInstance(modalEl);
-                if (modal) modal.hide();
-            }
+            // Cerrar modales si existen
+            this.dismissAuthModals();
 
             // Cargar dashboard
             await this.loadDashboard();
@@ -172,6 +177,26 @@ class TeachersPortalManager {
         } finally {
             this.showLoading(false);
         }
+    }
+
+    /**
+     * Dismiss authentication modals and clean backdrops
+     */
+    dismissAuthModals() {
+        const unifiedModal = document.getElementById('unified-auth-modal');
+        if (unifiedModal) {
+            unifiedModal.classList.remove('show');
+            unifiedModal.style.display = 'none';
+            unifiedModal.setAttribute('aria-hidden', 'true');
+        }
+        const modalEl = document.getElementById('loginModal');
+        if (modalEl && typeof bootstrap !== 'undefined') {
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            if (modal) modal.hide();
+        }
+        document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
+        document.body.classList.remove('modal-open');
+        document.body.removeAttribute('style');
     }
 
     /**
@@ -201,6 +226,7 @@ class TeachersPortalManager {
     showDashboard() {
         document.getElementById('loginScreen').style.display = 'none';
         document.getElementById('dashboardContainer').classList.add('active');
+        this.dismissAuthModals();
     }
 
     /**
@@ -855,7 +881,10 @@ class TeachersPortalManager {
      * Get stored token
      */
     getStoredToken() {
-        return localStorage.getItem('teachers_auth_token') || sessionStorage.getItem('teachers_auth_token');
+        return localStorage.getItem('teachers_auth_token') || 
+               sessionStorage.getItem('teachers_auth_token') ||
+               localStorage.getItem('bge_auth_token') ||
+               sessionStorage.getItem('bge_auth_token');
     }
 
     /**
@@ -864,6 +893,7 @@ class TeachersPortalManager {
     setToken(token) {
         this.token = token;
         localStorage.setItem('teachers_auth_token', token);
+        localStorage.setItem('bge_auth_token', token);
     }
 
     /**

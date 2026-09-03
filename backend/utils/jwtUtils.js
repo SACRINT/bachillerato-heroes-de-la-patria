@@ -18,6 +18,7 @@ class JWTUtils {
         this.rememberMeExpiry = process.env.REMEMBER_ME_EXPIRY || '30d';
 
         // Configuración de emisor y audiencia resiliente (SIPWEB-BG y BGE)
+        this.signIssuer = 'sipweb-bg';
         this.issuer = ['sipweb-bg', 'bge-heroes-de-la-patria'];
         this.audience = ['sipweb-users', 'bge-users'];
 
@@ -47,7 +48,7 @@ class JWTUtils {
 
         const defaultOptions = {
             expiresIn: this.accessTokenExpiry,
-            issuer: this.issuer,
+            issuer: this.signIssuer || (Array.isArray(this.issuer) ? this.issuer[0] : this.issuer),
             audience: this.audience,
             subject: payload.userId?.toString(),
             algorithm: this.algorithm
@@ -77,7 +78,7 @@ class JWTUtils {
 
         const defaultOptions = {
             expiresIn: this.refreshTokenExpiry,
-            issuer: this.issuer,
+            issuer: this.signIssuer || (Array.isArray(this.issuer) ? this.issuer[0] : this.issuer),
             audience: this.audience,
             subject: payload.userId?.toString(),
             algorithm: this.algorithm
