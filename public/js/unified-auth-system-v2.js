@@ -7,7 +7,7 @@ if (typeof debugLog === 'undefined') {
     };
 }
 
-if (typeof window !== 'undefined' && typeof window.UnifiedAuthSystem === 'undefined') {
+if (typeof window !== 'undefined' && (typeof window.UnifiedAuthSystem === 'undefined' || typeof window.UnifiedAuthSystem !== 'function')) {
 (function() {
 
 class UnifiedAuthSystem {
@@ -1871,6 +1871,32 @@ class SessionManager {
                 expiresAt: expiryTime
             };
             storage.setItem('bge_auth_session', JSON.stringify(sessionData));
+
+            // ✅ PERSISTENCIA DE ADMIN: Guardar adminSession para admin-dashboard.html
+            const role = (userData.role || userData.tipo_usuario || '').toLowerCase();
+            if (role === 'admin' || role === 'administrativo' || role === 'directivo' || role === 'administrator') {
+                const adminSessionData = {
+                    username: userData.username || userData.email,
+                    role: role,
+                    name: userData.nombre ? `${userData.nombre} ${userData.apellido_paterno || ''}`.trim() : (userData.username || 'Administrador'),
+                    token: token,
+                    isAuthenticated: true,
+                    loginTime: Date.now(),
+                    expires: expiryTime
+                };
+                const adminStr = JSON.stringify(adminSessionData);
+                const userStr = JSON.stringify(userData);
+                localStorage.setItem('adminSession', adminStr);
+                sessionStorage.setItem('adminSession', adminStr);
+                localStorage.setItem('secure_admin_session', adminStr);
+                sessionStorage.setItem('secure_admin_session', adminStr);
+                localStorage.setItem('bge_user_data', userStr);
+                sessionStorage.setItem('bge_user_data', userStr);
+                localStorage.setItem('bge_auth_user', userStr);
+                sessionStorage.setItem('bge_auth_user', userStr);
+                localStorage.setItem('bge_auth_token', token);
+                sessionStorage.setItem('bge_auth_token', token);
+            }
 
             // VERIFICACIÓN INMEDIATA
             const tokenCheck = storage.getItem(this.STORAGE_KEYS.token);

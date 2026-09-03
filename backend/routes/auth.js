@@ -192,6 +192,8 @@ router.post('/login', loginLimiter, loginValidation, async (req, res) => {
         res.json({
             success: true,
             message: 'Autenticación exitosa',
+            token: tokenPair.accessToken,
+            accessToken: tokenPair.accessToken,
             user: {
                 id: user.id,
                 username: user.username,
@@ -199,7 +201,8 @@ router.post('/login', loginLimiter, loginValidation, async (req, res) => {
                 nombre: user.nombre,
                 apellido_paterno: user.apellido_paterno,
                 role: user.role,
-                permissions: userPayload.permissions
+                permissions: userPayload.permissions,
+                tipo_usuario: user.role
             },
             tokens: tokenPair,
             sessionInfo: {

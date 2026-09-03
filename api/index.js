@@ -619,7 +619,7 @@ try {
 
 // POST /api/auth/login - Email/Password authentication (CONNECTED TO POSTGRESQL)
 // ℹ️ NO aplicar express.json() aquí - ya se aplica globalmente en línea 93
-app.post('/api/auth/login', async (req, res) => {
+app.post(['/api/auth/login', '/auth/login'], async (req, res) => {
     try {
         console.log('[AUTH-DETAILED] ============= LOGIN ATTEMPT =============');
         console.log('[AUTH-DETAILED] Request Body (raw):', JSON.stringify(req.body));
@@ -723,6 +723,8 @@ app.post('/api/auth/login', async (req, res) => {
             return res.json({
                 success: true,
                 message: 'Autenticación exitosa',
+                token: accessToken,
+                accessToken: accessToken,
                 user: {
                     id: user.id,
                     uuid: user.uuid,
@@ -732,7 +734,8 @@ app.post('/api/auth/login', async (req, res) => {
                     apellido_paterno: user.apellido_paterno,
                     apellido_materno: user.apellido_materno,
                     role: user.role,
-                    permissions: userPayload.permissions
+                    permissions: userPayload.permissions,
+                    tipo_usuario: user.role
                 },
                 tokens: {
                     accessToken: accessToken,

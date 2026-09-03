@@ -64,28 +64,36 @@ class AdminDashboard {
             return;
         }
 
-        // Prioridad 2: Verificar en localStorage del sistema seguro
+        // Prioridad 1: Verificar adminSession o secure_admin_session (ambos storages)
         try {
-            const secureSession = localStorage.getItem('secure_admin_session');
-            if (secureSession) {
-                const sessionData = JSON.parse(secureSession);
-                if (sessionData.token && sessionData.expiresAt && Date.now() < sessionData.expiresAt) {
-                    this.currentUser = sessionData.user || { role: 'admin' };
+            const adminSessionStr = localStorage.getItem('adminSession') || sessionStorage.getItem('adminSession')
+                                  || localStorage.getItem('secure_admin_session') || sessionStorage.getItem('secure_admin_session');
+            if (adminSessionStr) {
+                const sessionData = JSON.parse(adminSessionStr);
+                if (sessionData && (sessionData.isAuthenticated || sessionData.token || this.isAdmin())) {
+                    this.currentUser = sessionData.user || sessionData;
                     this.isLoggedIn = true;
-                    //debugLog.log('APP', '✅ Usuario autenticado via localStorage seguro');
                     return;
                 }
             }
         } catch (error) {
-            debugLog.warn('ERROR', '⚠️ Error verificando sesión segura:', error);
+            console.warn('⚠️ Error verificando adminSession:', error);
         }
 
-        // ✅ NUEVO: Verificar autenticación moderna (bge_auth_* y bge_auth_session)
+        // Prioridad 2: Sistema seguro
+        if (window.secureAdminAuth && window.secureAdminAuth.isUserAuthenticated()) {
+            this.currentUser = window.secureAdminAuth.getCurrentUser();
+            this.isLoggedIn = true;
+            return;
+        }
+
+        // Prioridad 3: Verificar autenticación moderna (bge_auth_*, bge_user_data, etc.)
         try {
             const bgeToken = localStorage.getItem('bge_auth_token') || sessionStorage.getItem('bge_auth_token') ||
                              localStorage.getItem('authToken') || sessionStorage.getItem('authToken') ||
                              localStorage.getItem('token') || sessionStorage.getItem('token');
             const bgeUserStr = localStorage.getItem('bge_auth_user') || sessionStorage.getItem('bge_auth_user') ||
+                               localStorage.getItem('bge_user_data') || sessionStorage.getItem('bge_user_data') ||
                                localStorage.getItem('auth_user') || sessionStorage.getItem('auth_user') ||
                                localStorage.getItem('userData') || sessionStorage.getItem('userData') ||
                                localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
@@ -94,7 +102,7 @@ class AdminDashboard {
             if (bgeUserStr) {
                 const bgeUser = JSON.parse(bgeUserStr);
                 this.currentUser = bgeUser;
-                this.isLoggedIn = !!bgeToken || true;
+                this.isLoggedIn = true;
                 return;
             }
 
@@ -142,33 +150,14 @@ class AdminDashboard {
     }
 
     showLoginPrompt() {
-        //debugLog.log('APP', '🔐 Mostrando prompt de login');
-        //debugLog.log('DASHBOARD', '🚫 Acceso no autorizado al dashboard - Redirigiendo al inicio');
-
-        // Mostrar mensaje de seguridad
-        alert('Acceso restringido: Debes iniciar sesión como administrador para acceder al dashboard.');
-
-        // DEBUG REDIRECT
-        // window.location.href = 'index.html';
-        const debugOverlay = document.createElement('div');
-        debugOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);color:white;z-index:99999;padding:20px;overflow:auto;';
-        debugOverlay.innerHTML = `
-            <h2>⚠️ Acceso Denegado (Debug Mode)</h2>
-            <p>El sistema intentó redirigirte a index.html.</p>
-            <h3>Diagnóstico:</h3>
-            <ul>
-                <li><strong>isLoggedIn:</strong> ${this.isLoggedIn}</li>
-                <li><strong>currentUser:</strong> ${JSON.stringify(this.currentUser, null, 2)}</li>
-                <li><strong>Role Check:</strong> ${this.currentUser ? this.currentUser.role : 'N/A'} (Expected: 'admin')</li>
-                <li><strong>bge_auth_token (LS):</strong> ${localStorage.getItem('bge_auth_token') ? 'PRESENT' : 'MISSING'}</li>
-                <li><strong>bge_auth_token (SS):</strong> ${sessionStorage.getItem('bge_auth_token') ? 'PRESENT' : 'MISSING'}</li>
-                <li><strong>secure_admin_session:</strong> ${localStorage.getItem('secure_admin_session') ? 'PRESENT' : 'MISSING'}</li>
-            </ul>
-            <button onclick="window.location.reload()" class="btn btn-primary">Recargar</button>
-            <button onclick="window.location.href='index.html'" class="btn btn-danger">Ir a Inicio</button>
-        `;
-        document.body.appendChild(debugOverlay);
-        void 0;
+        console.warn('🔐 Mostrando modal de acceso para administrador');
+        const modalEl = document.getElementById('loginModal');
+        if (modalEl && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+            const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modalInstance.show();
+        } else {
+            window.location.href = 'login.html?redirect=admin-dashboard.html';
+        }
     }
 
     showDashboard() {
@@ -605,35 +594,100 @@ class AdminDashboard {
         }
     }
 
-    loginAdmin() {
-        const username = document.getElementById('adminUsername').value;
-        const password = document.getElementById('adminPassword').value;
-        const role = document.getElementById('adminRole').value;
+    async loginAdmin() {
+        const usernameInput = document.getElementById('adminUsername');
+        const passwordInput = document.getElementById('adminPassword');
+        const roleInput = document.getElementById('adminRole');
 
-        if (username === this.adminCredentials.username &&
-            password === this.adminCredentials.password &&
-            role === this.adminCredentials.role) {
+        const username = usernameInput ? usernameInput.value.trim() : '';
+        const password = passwordInput ? passwordInput.value : '';
+        const role = roleInput ? roleInput.value : 'admin';
 
-            // Crear sesión
-            this.currentSession = {
-                username: username,
-                role: role,
-                name: this.adminCredentials.name,
-                loginTime: Date.now(),
-                expires: Date.now() + (8 * 60 * 60 * 1000) // 8 horas
-            };
+        if (!username || !password) {
+            this.showErrorToast('Por favor completa todos los campos requeridos');
+            return;
+        }
 
-            localStorage.setItem('adminSession', JSON.stringify(this.currentSession));
-            this.isLoggedIn = true;
+        const submitBtn = document.querySelector('[data-action="loginAdmin"]');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Verificando...';
+        }
 
-            // Cerrar modal y mostrar panel
-            const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
-            loginModal.hide();
+        try {
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: username, password: password })
+            });
 
-            this.showAdminPanel();
-            this.showSuccessToast('Acceso administrativo exitoso');
-        } else {
-            this.showErrorToast('Credenciales administrativas incorrectas');
+            const data = await response.json();
+
+            if (data.success && (data.token || data.tokens?.accessToken)) {
+                const token = data.token || data.tokens?.accessToken;
+                const user = data.user || { username, role: role || 'admin' };
+
+                // Crear sesión administrativa completa
+                this.currentSession = {
+                    username: user.username || user.email || username,
+                    role: user.role || role || 'admin',
+                    name: user.nombre ? `${user.nombre} ${user.apellido_paterno || ''}`.trim() : (user.username || 'Administrador'),
+                    token: token,
+                    isAuthenticated: true,
+                    loginTime: Date.now(),
+                    expires: Date.now() + (24 * 60 * 60 * 1000)
+                };
+
+                const sessionStr = JSON.stringify(this.currentSession);
+                const userStr = JSON.stringify(user);
+
+                localStorage.setItem('adminSession', sessionStr);
+                sessionStorage.setItem('adminSession', sessionStr);
+                localStorage.setItem('secure_admin_session', sessionStr);
+                sessionStorage.setItem('secure_admin_session', sessionStr);
+                localStorage.setItem('bge_auth_user', userStr);
+                sessionStorage.setItem('bge_auth_user', userStr);
+                localStorage.setItem('bge_user_data', userStr);
+                sessionStorage.setItem('bge_user_data', userStr);
+                localStorage.setItem('bge_auth_token', token);
+                sessionStorage.setItem('bge_auth_token', token);
+                localStorage.setItem('authToken', token);
+                sessionStorage.setItem('authToken', token);
+
+                this.currentUser = user;
+                this.isLoggedIn = true;
+
+                // Cerrar modal y limpiar backdrops
+                const loginModalEl = document.getElementById('loginModal');
+                if (loginModalEl) {
+                    if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                        const loginModal = bootstrap.Modal.getInstance(loginModalEl);
+                        if (loginModal) loginModal.hide();
+                    }
+                    loginModalEl.classList.remove('show');
+                    loginModalEl.style.display = 'none';
+                }
+                document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+                document.body.classList.remove('modal-open');
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+
+                this.showAdminPanel();
+                await this.loadDashboardData();
+                this.updateDashboardUI();
+                this.displayPendingRegistrations();
+                this.showSuccessToast(`¡Bienvenido ${this.currentSession.name}!`);
+            } else {
+                this.showErrorToast(data.message || 'Credenciales administrativas incorrectas');
+            }
+        } catch (error) {
+            console.error('Error en loginAdmin:', error);
+            this.showErrorToast('Error al conectar con el servidor de autenticación');
+        } finally {
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-sign-in-alt me-2"></i>Acceder';
+            }
         }
     }
 
