@@ -124,7 +124,7 @@
         // Mostrar panel de pagos
         function showPaymentPanel() {
             const heroSection = document.querySelector('#hero');
-            if (heroSection) heroSection.classList.add('d-none');
+            if (heroSection) heroSection.classList.remove('d-none');
 
             const paymentPanel = document.getElementById('paymentPanel');
             if (paymentPanel) {

@@ -163,16 +163,12 @@ class AdminDashboard {
     showDashboard() {
         //debugLog.log('DASHBOARD', '📊 Mostrando dashboard');
 
-        // 1. Ocultar secciones de 'Landing Page' (Hero y Módulos públicos)
+        // 1. Mantener visible el hero institucional
         const heroSection = document.getElementById('hero');
-        if (heroSection) heroSection.style.display = 'none';
-
-        const modulosSection = document.getElementById('modulos-admin');
-        if (modulosSection) modulosSection.style.display = 'none';
-
-        const characteristicsSection = document.querySelector('section.py-5:not(.dashboard-section):not(#modulos-admin):not(#seguridad)');
-        if (characteristicsSection && characteristicsSection.querySelector('.feature-card')) {
-            characteristicsSection.style.display = 'none';
+        if (heroSection) {
+            heroSection.style.display = 'block';
+            heroSection.style.visibility = 'visible';
+            heroSection.style.opacity = '1';
         }
 
         // 2. Mostrar secciones del Dashboard Integrado
@@ -701,16 +697,19 @@ class AdminDashboard {
     }
 
     showAdminPanel() {
-        // Ocultar hero section (CORRECTO - debe mantenerse oculto)
-        document.getElementById('hero').style.display = 'none';
+        // Mantener hero section visible (estilo unificado como descargas.html)
+        const heroSection = document.getElementById('hero');
+        if (heroSection) {
+            heroSection.style.display = 'block';
+            heroSection.style.visibility = 'visible';
+            heroSection.style.opacity = '1';
+        }
 
-        // Agregar padding-top al body para compensar el navbar fixed
-        document.body.style.paddingTop = '90px';
-        document.body.style.transition = 'padding-top 0.3s ease';
-
-        // Mostrar panel administrativo
+        // Mostrar panel administrativo si existe
         const adminPanel = document.getElementById('adminPanel');
-        adminPanel.classList.remove('d-none');
+        if (adminPanel) {
+            adminPanel.classList.remove('d-none');
+        }
 
         // Configurar información del usuario
         this.setupAdminInfo();
@@ -721,18 +720,13 @@ class AdminDashboard {
         // Crear gráficos
         this.createAcademicChart();
 
-        // Scroll suave al panel administrativo después de un delay
+        // Scroll suave al inicio
         setTimeout(() => {
-            // Scroll a la primera sección visible, no al panel admin
-            const firstVisibleSection = document.querySelector('section:not(#hero)');
-            if (firstVisibleSection) {
-                const sectionTop = firstVisibleSection.offsetTop - 100; // 100px de margen para el navbar
-                window.scrollTo({
-                    top: Math.max(0, sectionTop),
-                    behavior: 'smooth'
-                });
-            }
-        }, 400);
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }, 200);
     }
 
     hideAdminPanel() {

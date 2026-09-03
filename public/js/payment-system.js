@@ -292,12 +292,13 @@ class PaymentSystemManager {
     }
 
     showPaymentPanel() {
-        // Ocultar hero section
-        document.getElementById('hero').style.display = 'none';
+        // Mantener hero section visible (consistente con descargas.html)
+        const hero = document.getElementById('hero');
+        if (hero) hero.style.display = 'block';
         
         // Mostrar panel de pagos
         const paymentPanel = document.getElementById('paymentPanel');
-        paymentPanel.classList.remove('d-none');
+        if (paymentPanel) paymentPanel.classList.remove('d-none');
         
         // Cargar datos del estudiante
         document.getElementById('studentName').textContent = this.studentData.name;

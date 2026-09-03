@@ -27,7 +27,7 @@ El proyecto será presentado próximamente en el Congreso Nacional de Jóvenes I
                 date: "2025-01-15",
                 category: "logros",
                 featured: true,
-                image: "images/noticias/proyecto-ctim.webp",
+                image: "images/noticias/proyecto-ctim-modern.webp",
                 badges: ["Destacado", "Logros Académicos"]
             },
             {

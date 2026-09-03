@@ -5488,3 +5488,24 @@ body.dark-mode .time-slot:hover {
     width: 100%;
 }
 
+/* ==========================================================================
+   FIX: PREVENCIÓN DE TÍTULOS CORTADOS POR NAVBAR FIJO
+   ========================================================================== */
+section,
+[id],
+.page-hero,
+.dashboard-section,
+.feature-card-container {
+    scroll-margin-top: 110px;
+}
+
+@media (max-width: 768px) {
+    section,
+    [id],
+    .page-hero,
+    .dashboard-section {
+        scroll-margin-top: 130px;
+    }
+}
+
+
