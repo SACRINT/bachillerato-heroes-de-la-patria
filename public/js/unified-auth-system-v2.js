@@ -398,19 +398,16 @@ class UnifiedAuthSystem {
         if (!document.getElementById('unified-auth-modal')) {
             const modalHTML = this.managers.ui.createModalHTML();
 
-            // Sanitizar con fallback si sanitizeHTML no está disponible
+            // Sanitizar de forma segura sin romper atributos esenciales ni inputs
             let sanitizedHTML = modalHTML;
             try {
-                if (typeof DOMPurify !== 'undefined' && typeof sanitizeHTML === 'function') {
-                    sanitizedHTML = DOMPurify.sanitize(sanitizeHTML(modalHTML, 'simple'));
-                } else if (typeof DOMPurify !== 'undefined') {
-                    // Fallback: usar solo DOMPurify si sanitizeHTML no está disponible
+                if (typeof DOMPurify !== 'undefined') {
+                    // Usar DOMPurify directamente si está disponible, sin 'simple' que destruye inputs
                     sanitizedHTML = DOMPurify.sanitize(modalHTML);
                 }
-                // Si ni DOMPurify está disponible, usar el HTML directamente (último fallback)
             } catch (error) {
                 debugLog.warn('ERROR', '⚠️ Error sanitizando modal HTML:', error.message);
-                // Usar HTML sin sanitizar como último recurso
+                sanitizedHTML = modalHTML;
             }
 
             document.body.insertAdjacentHTML('beforeend', sanitizedHTML);
@@ -616,13 +613,11 @@ class UnifiedAuthSystem {
         }));
 
         // ✅ REDIRECCIÓN AUTOMÁTICA PARA ADMINS
-        if (userData.role === 'admin' || userData.role === 'administrativo') {
-            
-
+        const userRole = (userData.role || userData.tipo_usuario || '').toLowerCase();
+        if (userRole === 'admin' || userRole === 'administrativo' || userRole === 'administrator' || userRole === 'directivo') {
             // FORCE REMEMBER ME para asegurar persistencia cruzada en LocalStorage
             // Esto soluciona problemas donde sessionStorage se pierde en redirecciones raras
             if (!rememberMe) {
-                
                 this.managers.session.saveSession(userData, token, true);
             }
 
@@ -630,7 +625,6 @@ class UnifiedAuthSystem {
             setTimeout(() => {
                 // Validación extra para evitar bucles si ya estamos en el dashboard
                 if (!window.location.pathname.includes('admin-dashboard.html')) {
-                    
                     window.location.replace('admin-dashboard.html');
                 }
             }, 500);
@@ -1364,11 +1358,18 @@ class ManualLoginManager {
                 return;
             }
 
-            // Botón "Iniciar Sesión" DENTRO del formulario
+            // Botón "Iniciar Sesión" DENTRO del formulario (fallback directo)
             const submitBtn = e.target.closest('#manual-login-btn');
             if (submitBtn) {
-                // No hacemos preventDefault aquí, dejamos que el evento 'submit' del form lo maneje
-                
+                const parentForm = submitBtn.closest('form') || document.getElementById('unified-login-form');
+                if (parentForm) {
+                    // Si el click no activa el submit nativo, manejarlo con fallback
+                    setTimeout(() => {
+                        if (!this.isLoading) {
+                            this.handleManualLogin(parentForm);
+                        }
+                    }, 50);
+                }
             }
         });
 
@@ -1382,8 +1383,7 @@ class ManualLoginManager {
                 e.preventDefault(); // 🛑 DETENER ENVÍO TRADICIONAL
                 e.stopPropagation(); // 🛑 DETENER PROPAGACIÓN
 
-                
-                this.handleManualLogin(); // ✅ EJECUTAR LÓGICA JS
+                this.handleManualLogin(form); // ✅ EJECUTAR LÓGICA JS CON FORM CONTEXTUAL
                 return false;
             }
 
@@ -1397,8 +1397,9 @@ class ManualLoginManager {
         // 3. LISTENERS AUXILIARES (UI)
         document.addEventListener('click', (e) => {
             // Toggle Password
-            if (e.target.closest('#togglePassword') || e.target.closest('#toggle-password')) {
-                this.togglePasswordVisibility();
+            const togglePassBtn = e.target.closest('#togglePassword') || e.target.closest('#toggle-password');
+            if (togglePassBtn) {
+                this.togglePasswordVisibility(togglePassBtn);
             }
             // Cerrar Modal
             if (e.target.closest('.btn-close') || e.target.closest('#modal-close-btn')) {
@@ -1503,10 +1504,52 @@ class ManualLoginManager {
     /**
      * MANEJAR LOGIN MANUAL
      */
-    async handleManualLogin() {
-        const email = (document.getElementById('loginEmail') || document.getElementById('login-email'))?.value?.trim();
-        const password = (document.getElementById('loginPassword') || document.getElementById('login-password'))?.value;
-        const rememberMe = (document.getElementById('rememberMe') || document.getElementById('remember-me'))?.checked || false;
+    async handleManualLogin(submittedForm = null) {
+        if (this.isLoading) return;
+
+        // 1. Contexto prioritario: buscar en el formulario que emitió el evento o modal activo
+        const form = submittedForm || 
+                     document.getElementById('unified-login-form') || 
+                     document.getElementById('manual-login-form') ||
+                     document.querySelector('#unified-auth-modal form') ||
+                     document.querySelector('.modal.show form') ||
+                     document;
+
+        let emailInput = form.querySelector('#loginEmail, #login-email, input[type="email"], input[name="email"]');
+        let passInput = form.querySelector('#loginPassword, #login-password, input[type="password"], input[id*="assword"], input[name*="assword"]');
+        let rememberInput = form.querySelector('#rememberMe, #remember-me, input[type="checkbox"]');
+
+        let email = emailInput?.value?.trim() || '';
+        let password = passInput?.value || '';
+        let rememberMe = rememberInput?.checked || false;
+
+        // 2. 🛡️ Fallback Robusto 1: Si email está vacío, escanear todos los inputs de email del DOM que contengan texto
+        if (!email) {
+            const allEmails = Array.from(document.querySelectorAll('input[type="email"], #loginEmail, #login-email, input[name="email"], input[autocomplete="email"]'));
+            const filled = allEmails.find(inp => inp.value && inp.value.trim().length > 0);
+            if (filled) {
+                email = filled.value.trim();
+                emailInput = filled;
+            }
+        }
+
+        // 3. 🛡️ Fallback Robusto 2: Si password está vacío, escanear todos los inputs de contraseña
+        // (incluyendo type="text" por si el usuario activó togglePassword con el botón del ojo)
+        if (!password) {
+            const allPasswords = Array.from(document.querySelectorAll('#loginPassword, #login-password, input[type="password"], input[id*="assword"], input[name*="assword"], input[autocomplete*="password"]'));
+            const filled = allPasswords.find(inp => inp.value && inp.value.length > 0);
+            if (filled) {
+                password = filled.value;
+                passInput = filled;
+            } else {
+                const toggleBtn = document.querySelector('#togglePassword, #toggle-password');
+                const nearbyInput = toggleBtn?.closest('.input-group')?.querySelector('input');
+                if (nearbyInput && nearbyInput.value) {
+                    password = nearbyInput.value;
+                    passInput = nearbyInput;
+                }
+            }
+        }
 
         // Validaciones
         if (!email || !password) {
@@ -1534,8 +1577,11 @@ class ManualLoginManager {
         this.setLoading(true);
 
         try {
-            // ✅ Petición al backend
-            const response = await fetch(`${this.auth.config.apiBaseUrl}/auth/login`, {
+            // ✅ Asegurar endpoint correcto
+            const apiBase = (this.auth && this.auth.config && this.auth.config.apiBaseUrl) ? this.auth.config.apiBaseUrl : '/api';
+            const endpoint = apiBase.endsWith('/') ? `${apiBase}auth/login` : `${apiBase}/auth/login`;
+
+            const response = await fetch(endpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password, rememberMe })
@@ -1565,31 +1611,10 @@ class ManualLoginManager {
                 throw new Error(`Error del servidor (${response.status})`);
             }
 
-            // Debug masivo
-            
-            
-            
-            
-            
-            
-            
-
-            // 🔍 DEBUGGING PROFUNDO: Verificar estructura exacta
-            const messageStr = (data?.message || '').toString().toLowerCase();
-            
-            
-            
-
-            // ✅ FIX (Jan 2026): SUCCESS LOGIC DEFINITIVA Y ROBUSTA
-            // No confiar en el cuerpo del mensaje, confiar en el status de la respuesta HTTP
-            // y la presencia de datos críticos (user + token)
-            const isSuccess = response.ok && !!(data?.user && (data.user.id || data.user.email)) && !!(data?.tokens?.accessToken || data?.token);
-
-            
+            // ✅ SUCCESS LOGIC DEFINITIVA Y ROBUSTA
+            const isSuccess = response.ok && !!(data?.user && (data.user.id || data.user.email)) && !!(data?.tokens?.accessToken || data?.token || data?.accessToken);
 
             if (isSuccess) {
-                
-
                 if (data.requires2FA) {
                     debugLog.log('AUTH', 'Login requiere 2FA');
                     this.auth.pending2FAData = {
@@ -1604,18 +1629,14 @@ class ManualLoginManager {
                         this.auth.show2FAVerificationModal();
                     } else {
                         console.error('[AUTH] show2FAVerificationModal not found on auth system');
-                        // Fallback: try to show the modal by ID manually if possible, or just error
                         this.auth.showError('Error: Sistema 2FA no encontrado');
                     }
                     return;
                 }
 
-                const accessToken = data.tokens?.accessToken || data.token;
-                
-
+                const accessToken = data.tokens?.accessToken || data.token || data.accessToken;
                 await this.auth.processLogin(data.user, accessToken, rememberMe);
             } else {
-                
                 const errorMsg = data.error || data.message || 'Credenciales inválidas';
                 debugLog.warn('AUTH', 'Login fallido:', errorMsg);
                 this.auth.showError(errorMsg);
@@ -1639,18 +1660,23 @@ class ManualLoginManager {
     /**
      * TOGGLE PASSWORD VISIBILITY
      */
-    togglePasswordVisibility() {
-        const input = document.getElementById('loginPassword') || document.getElementById('login-password');
-        const icon = document.querySelector('#togglePassword i') || document.querySelector('#toggle-password i');
+    togglePasswordVisibility(toggleBtn = null) {
+        const btn = toggleBtn || document.querySelector('#togglePassword, #toggle-password');
+        const container = btn?.closest('.input-group') || document;
+        const input = container.querySelector('#loginPassword, #login-password, input[type="password"], input[type="text"]') ||
+                      document.getElementById('loginPassword') || document.getElementById('login-password');
+        const icon = btn?.querySelector('i') || document.querySelector('#togglePassword i, #toggle-password i');
 
         if (!input || !icon) return;
 
         if (input.type === 'password') {
             input.type = 'text';
-            icon.classList.replace('fa-eye', 'fa-eye-slash');
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
         } else {
             input.type = 'password';
-            icon.classList.replace('fa-eye-slash', 'fa-eye');
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
         }
     }
 
@@ -1798,14 +1824,28 @@ class ManualLoginManager {
      */
     setLoading(isLoading) {
         this.isLoading = isLoading;
-        const submitBtn = document.querySelector('#manual-login-form button[type="submit"]');
-        const form = document.getElementById('manual-login-form');
+        const submitBtn = document.getElementById('manual-login-btn') || 
+                          document.querySelector('#unified-login-form button[type="submit"]') ||
+                          document.querySelector('#manual-login-form button[type="submit"]');
+        const form = document.getElementById('unified-login-form') || document.getElementById('manual-login-form');
 
         if (submitBtn) {
             submitBtn.disabled = isLoading;
-            submitBtn.innerHTML = (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(isLoading) : (typeof sanitizeHTML === 'function' ? sanitizeHTML(isLoading) : isLoading))
-                ? '<span class="spinner-border spinner-border-sm me-2"></span>Verificando...'
-                : '<i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión';
+            const loadingSpan = submitBtn.querySelector('.loading-text');
+            const normalSpan = submitBtn.querySelector('.normal-text');
+            if (loadingSpan && normalSpan) {
+                if (isLoading) {
+                    loadingSpan.classList.remove('d-none');
+                    normalSpan.classList.add('d-none');
+                } else {
+                    loadingSpan.classList.add('d-none');
+                    normalSpan.classList.remove('d-none');
+                }
+            } else {
+                submitBtn.innerHTML = isLoading
+                    ? '<span class="spinner-border spinner-border-sm me-2"></span>Entrando...'
+                    : '<i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión';
+            }
         }
 
         if (form) {

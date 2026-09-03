@@ -50,10 +50,20 @@
 
     // Helper para abrir login de forma segura sin alertas falsas
     function openLoginSafe() {
-        // 1. Si ya existe una instancia activa con showModal
-        if (window.unifiedLogin && typeof window.unifiedLogin.showModal === 'function') {
-            window.unifiedLogin.showModal();
-            return;
+        // 1. Si ya existe una instancia activa con showModal o sus managers
+        if (window.unifiedLogin) {
+            if (typeof window.unifiedLogin.showModal === 'function') {
+                window.unifiedLogin.showModal();
+                return;
+            }
+            if (window.unifiedLogin.managers?.ui && typeof window.unifiedLogin.managers.ui.showModal === 'function') {
+                window.unifiedLogin.managers.ui.showModal();
+                return;
+            }
+            if (window.unifiedLogin.managers?.manual && typeof window.unifiedLogin.managers.manual.openModalSafe === 'function') {
+                window.unifiedLogin.managers.manual.openModalSafe();
+                return;
+            }
         }
 
         // 2. Si UnifiedAuthSystem es una clase constructora
