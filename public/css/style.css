@@ -2225,85 +2225,20 @@ body .analytics-dashboard-toggle {
     max-height: 500px !important;
 }
 
-/* Override para la secciÃ³n de mÃ©tricas ejecutivas */
+/* Override para la sección de métricas ejecutivas */
 #executive-metrics-section.dashboard-section {
     max-height: none !important;
     min-height: 500px !important;
 }
 
-/* Limitar altura de cards con grÃ¡ficos */
+/* Limitar altura de cards con gráficos */
 .card-body canvas {
     max-height: 250px !important;
     width: 100% !important;
     height: auto !important;
 }
 
-/* Responsive: Mantener posiciones originales y organizar horizontalmente */
-@media (max-width: 768px) {
-
-    /* Floating buttons unificados en global-layout.css */
-
-    /* LÃNEA HORIZONTAL INFERIOR - MÃ¡s espacio entre botones en mÃ³vil */
-    body .ia-floating-button {
-        bottom: 30px !important;
-        right: 70px !important;
-    }
-
-    body .notification-config-btn {
-        bottom: 30px !important;
-        right: 125px !important;
-    }
-
-    body .dashboard-personalizer-btn {
-        bottom: 30px !important;
-        right: 180px !important;
-    }
-
-    body .ar-activation {
-        bottom: 30px !important;
-        right: 235px !important;
-    }
-
-    body .game-activation {
-        bottom: 30px !important;
-        right: 290px !important;
-    }
-
-    body .ai-dashboard-activation {
-        bottom: 265px !important;
-        right: 15px !important;
-    }
-
-    body .ai-tutor-activation {
-        bottom: 325px !important;
-        right: 15px !important;
-    }
-
-    body .ia-floating-button {
-        bottom: 385px !important;
-        right: 15px !important;
-        left: auto !important;
-    }
-
-    body .labs-activation {
-        bottom: 445px !important;
-        right: 15px !important;
-    }
-
-    body #back-to-top {
-        bottom: 25px !important;
-        left: 15px !important;
-    }
-
-    body .analytics-dashboard-toggle {
-        bottom: 85px !important;
-        left: 15px !important;
-    }
-}
-
-/* ========================================= */
-/* FIN SISTEMA DE REORGANIZACIÃ“N FLOTANTES */
-/* ========================================= */
+/* Floating buttons reorganizados y unificados canónicamente en global-layout.css */
 
 /* ===========================================
    MODAL CUSTOMIZATIONS - BOTONES CERRAR AZULES

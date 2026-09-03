@@ -114,12 +114,25 @@
     // ========================================
 
     function sanitizePartial(html) {
-        // Si DOMPurify está disponible, se utiliza sanitización permitiendo estructura HTML
+        if (!html) return '';
+        // Si DOMPurify está disponible, se utiliza sanitización permitiendo estructura completa
         if (typeof DOMPurify !== 'undefined' && typeof DOMPurify.sanitize === 'function') {
-            return DOMPurify.sanitize(html);
+            return DOMPurify.sanitize(html, {
+                ADD_TAGS: ['nav', 'header', 'footer', 'button', 'svg', 'path', 'i', 'span', 'ul', 'li', 'a', 'div', 'img', 'form', 'input', 'select'],
+                ADD_ATTR: ['data-bs-toggle', 'data-bs-target', 'aria-expanded', 'aria-label', 'data-tenant-field']
+            });
         }
-        // Las plantillas en /partials/ son recursos locales estáticos y de confianza
-        return html;
+        // Fallback defensivo que NO rompe las etiquetas HTML en texto crudo:
+        // Usa DOMParser nativo del navegador para validar sintaxis y expurgar scripts/iframes no deseados
+        try {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const dangerousTags = doc.querySelectorAll('script, iframe, object, embed');
+            dangerousTags.forEach(el => el.remove());
+            return doc.body.innerHTML;
+        } catch (e) {
+            return html;
+        }
     }
 
     async function loadHeaderFooter() {
@@ -443,6 +456,9 @@
         // Si chatbot.js ya está en memoria y expone su inicializador, ejecutarlo
         if (typeof window.initChatbotSystem === 'function') {
             window.initChatbotSystem();
+            if (typeof window.applyUnifiedTheme === 'function') {
+                window.applyUnifiedTheme();
+            }
             return;
         }
 
@@ -452,6 +468,9 @@
             existingScript.addEventListener('load', function() {
                 if (typeof window.initChatbotSystem === 'function') {
                     window.initChatbotSystem();
+                    if (typeof window.applyUnifiedTheme === 'function') {
+                        window.applyUnifiedTheme();
+                    }
                 }
             });
             return;
@@ -464,6 +483,9 @@
         script.onload = function() {
             if (typeof window.initChatbotSystem === 'function') {
                 window.initChatbotSystem();
+                if (typeof window.applyUnifiedTheme === 'function') {
+                    window.applyUnifiedTheme();
+                }
             }
         };
         document.body.appendChild(script);

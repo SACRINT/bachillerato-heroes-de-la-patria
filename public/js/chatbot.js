@@ -8,24 +8,7 @@
 if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
     window.BGE_CHATBOT_LOADED = true;
 
-    // 🛡️ Sanitizador seguro universal (evita ReferenceError si sanitizeHTML o DOMPurify no están definidos)
-    if (typeof window.sanitizeHTML !== 'function') {
-        window.sanitizeHTML = function (str) {
-            if (typeof DOMPurify !== 'undefined' && typeof DOMPurify.sanitize === 'function') {
-                return DOMPurify.sanitize(str);
-            }
-            return str || '';
-        };
-    }
-
-    if (typeof window.escapeHtml !== 'function') {
-        window.escapeHtml = function (text) {
-            const temp = document.createElement('div');
-            temp.textContent = text || '';
-            return temp.innerHTML;
-        };
-    }
-
+    // 🛡️ Sanitizador seguro universal (utiliza window.sanitizeHTML provisto por main.js o DOMPurify)
     function safeSanitize(content) {
         if (!content) return '';
         if (typeof DOMPurify !== 'undefined' && typeof DOMPurify.sanitize === 'function') {
