@@ -38,7 +38,7 @@ class SimpleAuth {
                 expiresAt: Date.now() + (7 * 24 * 60 * 60 * 1000)
             });
 
-            const userKeys = ['auth_user', 'bge_auth_user', 'userData', 'currentUser', 'current_student', 'current_parent'];
+            const userKeys = ['auth_user', 'bge_auth_user', 'bge_user_data', 'userData', 'currentUser', 'current_student', 'current_parent'];
             userKeys.forEach(k => {
                 try {
                     localStorage.setItem(k, userJson);
@@ -47,6 +47,8 @@ class SimpleAuth {
             });
 
             try {
+                localStorage.setItem('adminSession', sessionData);
+                sessionStorage.setItem('adminSession', sessionData);
                 localStorage.setItem('bge_auth_session', sessionData);
                 sessionStorage.setItem('bge_auth_session', sessionData);
                 localStorage.setItem('secure_admin_session', sessionData);

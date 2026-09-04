@@ -193,11 +193,19 @@
                 // Verificar si ya tiene sesión activa como admin
                 let isAlreadyAdmin = false;
                 try {
-                    const uStr = localStorage.getItem('bge_auth_user') || localStorage.getItem('bge_user_data') || sessionStorage.getItem('bge_auth_user');
-                    const u = uStr ? JSON.parse(uStr) : null;
-                    const r = (u?.role || u?.tipo_usuario || '').toLowerCase();
-                    const adminSess = localStorage.getItem('adminSession') || localStorage.getItem('secure_admin_session') || sessionStorage.getItem('adminSession');
-                    isAlreadyAdmin = ['admin', 'administrator', 'directivo', 'administrativo'].includes(r) || !!adminSess;
+                    if (typeof window.checkAdminSession === 'function') {
+                        isAlreadyAdmin = window.checkAdminSession();
+                    } else {
+                        const adminSess = localStorage.getItem('adminSession') || localStorage.getItem('secure_admin_session') || sessionStorage.getItem('adminSession');
+                        if (adminSess) {
+                            const parsedSess = JSON.parse(adminSess);
+                            const isExp = (parsedSess.expires && Date.now() > parsedSess.expires) ||
+                                          (parsedSess.expiresAt && Date.now() > parsedSess.expiresAt);
+                            if (!isExp && (parsedSess.isAuthenticated || parsedSess.token)) {
+                                isAlreadyAdmin = true;
+                            }
+                        }
+                    }
                 } catch(err) {}
 
                 if (isAlreadyAdmin) {

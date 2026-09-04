@@ -10,9 +10,10 @@
 (function () {
     'use strict';
 
-    const ADMIN_ROLES = ['admin', 'administrativo', 'directivo', 'administrator'];
+    const ADMIN_ROLES = ['admin', 'administrativo', 'directivo', 'administrator', 'director', 'subdirector', 'coordinador', 'superadmin'];
 
     function tryParseJSON(str) {
+        if (!str || typeof str !== 'string') return null;
         try { return JSON.parse(str); } catch (e) { return null; }
     }
 
@@ -29,17 +30,28 @@
                               || localStorage.getItem('secure_admin_session') || sessionStorage.getItem('secure_admin_session');
         if (adminSessionStr) {
             const adminData = tryParseJSON(adminSessionStr);
-            if (adminData) {
-                const role = extractRole(adminData);
-                if (adminData.isAuthenticated || adminData.token || (role && ADMIN_ROLES.includes(role.toLowerCase()))) {
-                    return true;
+            if (adminData && typeof adminData === 'object') {
+                const isExp = (adminData.expires && Date.now() > adminData.expires) ||
+                              (adminData.expiresAt && Date.now() > adminData.expiresAt);
+                if (!isExp) {
+                    const role = extractRole(adminData);
+                    if (adminData.isAuthenticated || adminData.token || (role && ADMIN_ROLES.includes(String(role).toLowerCase()))) {
+                        return true;
+                    }
+                } else {
+                    // Limpiar sesión expirada
+                    try {
+                        localStorage.removeItem('adminSession');
+                        sessionStorage.removeItem('adminSession');
+                        localStorage.removeItem('secure_admin_session');
+                        sessionStorage.removeItem('secure_admin_session');
+                    } catch (e) {}
                 }
             }
         }
 
         // =============================================
-        // SISTEMA 2: Token + UserData (unified-auth-system-v2 & main.js)
-        // Keys: bge_auth_token + bge_auth_user / bge_user_data
+        // SISTEMA 2: Token + UserData (SimpleAuth & unified-auth-system-v2)
         // =============================================
         const token = localStorage.getItem('bge_auth_token') || sessionStorage.getItem('bge_auth_token')
                     || localStorage.getItem('authToken') || sessionStorage.getItem('authToken')
@@ -56,32 +68,36 @@
         if (token && rawUserData) {
             const user = tryParseJSON(rawUserData);
             const role = extractRole(user);
-            if (role && ADMIN_ROLES.includes(role.toLowerCase())) {
+            if (role && ADMIN_ROLES.includes(String(role).toLowerCase())) {
                 return true;
             }
         }
 
         // =============================================
-        // SISTEMA 3: bge_auth_session (unified-auth-system-v2 legacy path)
+        // SISTEMA 3: bge_auth_session
         // =============================================
-        const authSession = localStorage.getItem('bge_auth_session') || sessionStorage.getItem('bge_auth_session');
-        if (authSession) {
-            const sessionData = tryParseJSON(authSession);
-            if (sessionData) {
-                const role = extractRole(sessionData) || extractRole(sessionData.user);
-                if (role && ADMIN_ROLES.includes(role.toLowerCase())) {
-                    return true;
-                }
-                if (sessionData.token || sessionData.user?.token || sessionData.user) {
-                    return true;
+        const authSessionStr = localStorage.getItem('bge_auth_session') || sessionStorage.getItem('bge_auth_session');
+        if (authSessionStr) {
+            const sessionData = tryParseJSON(authSessionStr);
+            if (sessionData && typeof sessionData === 'object') {
+                const isExp = (sessionData.expires && Date.now() > sessionData.expires) ||
+                              (sessionData.expiresAt && Date.now() > sessionData.expiresAt);
+                if (!isExp) {
+                    const role = extractRole(sessionData) || extractRole(sessionData.user);
+                    if (sessionData.isAuthenticated || (role && ADMIN_ROLES.includes(String(role).toLowerCase()))) {
+                        return true;
+                    }
+                    if (sessionData.token || sessionData.user?.token) {
+                        return true;
+                    }
                 }
             }
         }
 
         // =============================================
-        // SISTEMA 4: Token JWT Payload decoding (100% resiliente)
+        // SISTEMA 4: Token JWT Payload decoding
         // =============================================
-        if (token && token.includes('.')) {
+        if (token && typeof token === 'string' && token.includes('.')) {
             try {
                 const base64Url = token.split('.')[1];
                 const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -89,43 +105,47 @@
                     return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
                 }).join(''));
                 const decoded = JSON.parse(jsonPayload);
-                const role = decoded.role || decoded.tipo_usuario;
-                if (role && ADMIN_ROLES.includes(role.toLowerCase())) {
-                    return true;
+                if (decoded.exp && (decoded.exp * 1000) < Date.now()) {
+                    return false; // Token expirado
                 }
-                // Si el token es válido y no expiró
-                if (decoded.exp && (decoded.exp * 1000) > Date.now()) {
+                const role = decoded.role || decoded.tipo_usuario;
+                if (role && ADMIN_ROLES.includes(String(role).toLowerCase())) {
                     return true;
                 }
             } catch (e) {
-                if (token.length > 20) return true;
+                // Si no se puede decodificar pero tiene longitud JWT
             }
         }
 
         return false;
     }
 
-    // Verificación amigable y no bloqueante
+    // Exponer universalmente para otros scripts
+    window.checkAdminSession = isAuthenticated;
+
+    // Verificación de seguridad estricta para el dashboard
     if (!isAuthenticated()) {
-        console.warn('⚠️ [DASHBOARD AUTH] Sesión no detectada. Preparando modal de acceso...');
+        console.warn('🔒 [DASHBOARD AUTH] Acceso no autorizado detectado. Bloqueando vista y redirigiendo a login...');
         window.isDashboardUnauthenticated = true;
 
-        const openLoginPrompt = function() {
-            const modalEl = document.getElementById('loginModal');
-            if (modalEl && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
-                const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
-                modalInstance.show();
-            }
-        };
-
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', openLoginPrompt);
-        } else {
-            setTimeout(openLoginPrompt, 150);
+        // 1. Ocultar el documento de inmediato para evitar cualquier filtración visual de datos
+        if (document.documentElement) {
+            document.documentElement.style.display = 'none';
         }
+
+        // 2. Guardar página de retorno
+        try {
+            sessionStorage.setItem('redirect_after_login', 'admin-dashboard.html');
+        } catch (e) {}
+
+        // 3. Redirigir de inmediato al portal de acceso con credenciales
+        window.location.replace('login.html?redirect=admin-dashboard.html');
     } else {
         window.isDashboardUnauthenticated = false;
-        console.log('✅ [DASHBOARD AUTH] Sesión administrativa validada.');
+        if (document.documentElement && document.documentElement.style.display === 'none') {
+            document.documentElement.style.display = '';
+        }
+        console.log('✅ [DASHBOARD AUTH] Sesión administrativa validada con éxito.');
     }
 
 })();

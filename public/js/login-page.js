@@ -86,7 +86,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         defaultDestination = 'padres.html';
                     }
 
-                    const redirectTo = sessionStorage.getItem('redirect_after_login') || defaultDestination;
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const queryRedirect = urlParams.get('redirect');
+                    const redirectTo = sessionStorage.getItem('redirect_after_login') || queryRedirect || defaultDestination;
                     sessionStorage.removeItem('redirect_after_login');
                     window.location.href = redirectTo;
                 }, 800);

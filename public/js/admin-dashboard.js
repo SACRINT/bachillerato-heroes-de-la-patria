@@ -134,30 +134,24 @@ class AdminDashboard {
     }
 
     isAdmin() {
-        const ADMIN_ROLES = ['admin', 'administrativo', 'directivo', 'administrator'];
-        if (!this.currentUser) return this.isLoggedIn; // Si está autenticado pero sin objeto user, permitir
+        const ADMIN_ROLES = ['admin', 'administrativo', 'directivo', 'administrator', 'director', 'subdirector', 'coordinador', 'superadmin'];
+        if (!this.currentUser) return false;
         const role = this.currentUser.role || (this.currentUser.user && this.currentUser.user.role) || this.currentUser.tipo_usuario;
         if (role && ADMIN_ROLES.includes(role.toLowerCase())) {
             return true;
         }
-
-        // Si solo tenemos autenticación básica, asumir admin
-        if (this.isLoggedIn) {
-            return true;
-        }
-
         return false;
     }
 
     showLoginPrompt() {
-        console.warn('🔐 Mostrando modal de acceso para administrador');
-        const modalEl = document.getElementById('loginModal');
-        if (modalEl && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
-            const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
-            modalInstance.show();
-        } else {
-            window.location.href = 'login.html?redirect=admin-dashboard.html';
+        console.warn('🔐 Sesión no detectada: redirigiendo al portal de acceso administrativo');
+        if (document.documentElement) {
+            document.documentElement.style.display = 'none';
         }
+        try {
+            sessionStorage.setItem('redirect_after_login', 'admin-dashboard.html');
+        } catch (e) {}
+        window.location.replace('login.html?redirect=admin-dashboard.html');
     }
 
     showDashboard() {

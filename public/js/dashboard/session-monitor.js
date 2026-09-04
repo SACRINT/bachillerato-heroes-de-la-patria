@@ -121,42 +121,25 @@
         return false;
     };
 
-    // Función amigable en caso de que no haya sesión o se cierre
+    // Manejador seguro en caso de que no haya sesión o se cierre
     function handleUnauthenticatedSession(reason) {
-        console.warn(`⚠️ [SESSION-MONITOR] Sesión no detectada (${reason}). Preparando inicio de sesión.`);
+        console.warn(`🔒 [SESSION-MONITOR] Sesión no detectada (${reason}). Redirigiendo a login...`);
 
-        // Si fue un logout explícito, redirigir limpiamente
+        // Si fue un logout explícito, redirigir limpiamente a index.html
         if (sessionStorage.getItem('admin_logout_redirect') === 'true') {
             sessionStorage.removeItem('admin_logout_redirect');
             window.location.replace('index.html');
             return;
         }
 
-        // Si estamos en admin-dashboard, dar oportunidad al usuario de autenticarse
-        const promptLogin = () => {
-            const modalEl = document.getElementById('loginModal') || document.getElementById('unified-auth-modal');
-            if (modalEl && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
-                const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-                modal.show();
-            } else {
-                // Notificación sutil no destructiva
-                const banner = document.createElement('div');
-                banner.className = 'alert alert-warning text-center fixed-top m-3 shadow-lg';
-                banner.style.zIndex = '999999';
-                banner.innerHTML = `
-                    <i class="fas fa-lock me-2"></i>
-                    <strong>Acceso Administrativo Requerido:</strong> Inicie sesión para gestionar el plantel.
-                    <a href="index.html" class="btn btn-sm btn-primary ms-3">Ir al Inicio</a>
-                `;
-                document.body.appendChild(banner);
-            }
-        };
-
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => setTimeout(promptLogin, 300));
-        } else {
-            setTimeout(promptLogin, 300);
+        // Ocultar vista y redirigir al login
+        if (document.documentElement) {
+            document.documentElement.style.display = 'none';
         }
+        try {
+            sessionStorage.setItem('redirect_after_login', 'admin-dashboard.html');
+        } catch (e) {}
+        window.location.replace('login.html?redirect=admin-dashboard.html');
     }
 
     // Inicialización al cargar el DOM con período de gracia
