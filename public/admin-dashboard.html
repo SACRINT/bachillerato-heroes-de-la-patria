@@ -31,7 +31,8 @@
     <link rel="stylesheet" href="css/global-layout.css">
     <link rel="stylesheet" href="css/header-styles.css?v=2025111802">
     <link rel="stylesheet" href="css/footer-styles.css?v=2025111802">
-
+    <!-- 🏛️ ESTILOS SISAT-ATP / SIGPAD-EMS DASHBOARD -->
+    <link rel="stylesheet" href="css/admin-sisat.css?v=20260903">
 </head>
 
 <body>
@@ -326,7 +327,611 @@
         </div>
     </section>
 
-    <!-- Sección Seguridad -->
+    <!-- ================================================================
+         🏛️ WORKSPACE SISAT-ATP / SIGPAD-EMS: GESTIÓN INTEGRAL DEL PLANTEL
+         ================================================================ -->
+    <div class="sisat-topbar d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-3">
+            <button class="btn btn-sm btn-outline-light d-lg-none" id="toggleSidebarBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div>
+                <span class="sisat-badge-cct" id="schoolCctBadge">CCT: Cargando...</span>
+                <span id="schoolNameHeader" class="ms-2 fw-bold fs-5 text-white">Bachillerato General Estatal</span>
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <a href="index.html" target="_blank" class="btn btn-sm btn-outline-light">
+                <i class="fas fa-external-link-alt me-1"></i>Ver Portal Público
+            </a>
+            <button class="btn btn-sm btn-warning text-dark fw-bold" id="btnSaveSchoolConfig">
+                <i class="fas fa-save me-1"></i>Guardar en Base de Datos
+            </button>
+        </div>
+    </div>
+
+    <div class="sisat-wrapper">
+        <!-- 🧭 MENÚ LATERAL SISAT-ATP / SIGPAD-EMS -->
+        <aside class="sisat-sidebar" id="sisatSidebar">
+            <div class="sisat-sidebar-header">
+                <div class="d-flex align-items-center gap-2">
+                    <img src="/images/logo/logo-general-bge.webp" alt="BGE" style="width: 32px; height: 32px; object-fit: contain;">
+                    <div>
+                        <div class="fw-bold text-dark small">PANEL DIRECTIVO</div>
+                        <div class="text-muted" style="font-size: 0.75rem;">Sistema de Gestión Escolar</div>
+                    </div>
+                </div>
+            </div>
+            <ul class="sisat-menu">
+                <li class="sisat-menu-heading">Identidad & Configuración</li>
+                <li class="sisat-menu-item">
+                    <a href="#" class="sisat-menu-link active" data-section="section-identidad">
+                        <i class="fas fa-school text-primary"></i>
+                        <span>Mi Plantel (Asistente)</span>
+                    </a>
+                </li>
+                <li class="sisat-menu-item">
+                    <a href="#" class="sisat-menu-link" data-section="section-contacto">
+                        <i class="fas fa-map-marker-alt text-danger"></i>
+                        <span>Ubicación & Contacto</span>
+                    </a>
+                </li>
+                <li class="sisat-menu-item">
+                    <a href="#" class="sisat-menu-link" data-section="section-oferta">
+                        <i class="fas fa-graduation-cap text-success"></i>
+                        <span>Oferta Educativa</span>
+                    </a>
+                </li>
+
+                <li class="sisat-menu-heading">Contenido Web (CMS)</li>
+                <li class="sisat-menu-item">
+                    <a href="#" class="sisat-menu-link" data-section="section-multimedia">
+                        <i class="fas fa-images text-warning"></i>
+                        <span>Galería & Multimedia</span>
+                    </a>
+                </li>
+                <li class="sisat-menu-item">
+                    <a href="#" class="sisat-menu-link" data-section="section-comunicados">
+                        <i class="fas fa-bullhorn text-info"></i>
+                        <span>Avisos de Portada</span>
+                    </a>
+                </li>
+
+                <li class="sisat-menu-heading">Comunidad & Docentes</li>
+                <li class="sisat-menu-item">
+                    <a href="#" class="sisat-menu-link" data-section="section-docentes">
+                        <i class="fas fa-chalkboard-teacher text-primary"></i>
+                        <span>Personal Docente</span>
+                    </a>
+                </li>
+                <li class="sisat-menu-item">
+                    <a href="#" class="sisat-menu-link" data-section="section-buzon">
+                        <i class="fas fa-inbox text-secondary"></i>
+                        <span>Buzón Ciudadano (Hub 7)</span>
+                    </a>
+                </li>
+
+                <li class="sisat-menu-heading">Inteligencia Artificial</li>
+                <li class="sisat-menu-item">
+                    <a href="#" class="sisat-menu-link" data-section="section-ia">
+                        <i class="fas fa-robot text-purple" style="color: #8b5cf6;"></i>
+                        <span>Asistente IA del Director</span>
+                    </a>
+                </li>
+
+                <li class="sisat-menu-heading">Control Escolar</li>
+                <li class="sisat-menu-item">
+                    <a href="#adminPanel" class="sisat-menu-link" onclick="document.getElementById('adminPanel').scrollIntoView({behavior:'smooth'})">
+                        <i class="fas fa-users-cog text-dark"></i>
+                        <span>Módulos de Alumnos & Finanzas</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- 📄 CONTENEDOR PRINCIPAL DE PANELES -->
+        <main class="sisat-content">
+            
+            <!-- PANEL 1: MI PLANTEL (ASISTENTE WIZARD) -->
+            <div class="sisat-panel-section" id="section-identidad">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <div>
+                        <h3 class="fw-bold text-dark mb-1">
+                            <i class="fas fa-magic text-primary me-2"></i>Asistente de Configuración del Plantel
+                        </h3>
+                        <p class="text-muted mb-0">Configura la identidad oficial de tu escuela paso a paso. Los cambios se sincronizan en Neon PostgreSQL y en el portal público.</p>
+                    </div>
+                </div>
+
+                <!-- Wizard Steps Header -->
+                <div class="sisat-wizard-steps">
+                    <div class="sisat-step active" data-step="1">
+                        <div class="sisat-step-circle">1</div>
+                        <div class="sisat-step-title">Datos Generales</div>
+                    </div>
+                    <div class="sisat-step" data-step="2">
+                        <div class="sisat-step-circle">2</div>
+                        <div class="sisat-step-title">Director & Liderazgo</div>
+                    </div>
+                    <div class="sisat-step" data-step="3">
+                        <div class="sisat-step-circle">3</div>
+                        <div class="sisat-step-title">Ubicación & Contacto</div>
+                    </div>
+                    <div class="sisat-step" data-step="4">
+                        <div class="sisat-step-circle">4</div>
+                        <div class="sisat-step-title">Lema & Misión</div>
+                    </div>
+                </div>
+
+                <!-- Wizard Step 1: Datos Generales -->
+                <div class="sisat-card wizard-step-content" data-step-content="1">
+                    <div class="sisat-card-header">
+                        <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-id-card text-primary me-2"></i>Paso 1: Identidad Institucional y CCT</h5>
+                        <span class="badge bg-primary">Oficial SEP</span>
+                    </div>
+                    <div class="sisat-card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Clave de Centro de Trabajo (CCT) *</label>
+                                <input type="text" id="cfg_cct" class="form-control font-monospace" placeholder="Ej: 21EBH0000X">
+                                <small class="text-muted">CCT de 10 caracteres asignada por SEP.</small>
+                            </div>
+                            <div class="col-md-8">
+                                <label class="form-label fw-semibold">Nombre Oficial del Bachillerato *</label>
+                                <input type="text" id="cfg_school_official_name" class="form-control" placeholder="Ej: Bachillerato General Estatal Héroes de la Patria">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Nombre Corto / Comercial</label>
+                                <input type="text" id="cfg_school_name" class="form-control" placeholder="Ej: BGE Héroes de la Patria">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold">Zona Escolar</label>
+                                <input type="text" id="cfg_zona_escolar" class="form-control" placeholder="Ej: 001">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold">Turno</label>
+                                <select id="cfg_turno" class="form-select">
+                                    <option value="Matutino">Matutino</option>
+                                    <option value="Vespertino">Vespertino</option>
+                                    <option value="Mixto">Mixto / Discontinuo</option>
+                                </select>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label fw-semibold">URL del Logotipo Oficial BGE</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-image"></i></span>
+                                    <input type="text" id="cfg_logo_url" class="form-control" placeholder="/images/logo/logo-general-bge.webp">
+                                </div>
+                                <small class="text-muted">Por defecto se utiliza el emblema oficial universal del Bachillerato General Estatal.</small>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end mt-4">
+                            <button type="button" class="btn btn-primary px-4" data-wizard-next>
+                                Siguiente: Director <i class="fas fa-arrow-right ms-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Wizard Step 2: Director & Liderazgo -->
+                <div class="sisat-card wizard-step-content d-none" data-step-content="2">
+                    <div class="sisat-card-header">
+                        <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-user-tie text-primary me-2"></i>Paso 2: Datos de la Dirección Escolar</h5>
+                        <span class="badge bg-info text-dark">Liderazgo</span>
+                    </div>
+                    <div class="sisat-card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Nombre Completo del Director(a) *</label>
+                                <input type="text" id="cfg_director_name" class="form-control" placeholder="Ej: Mtro. Samuel Sánchez">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Correo Electrónico de Dirección</label>
+                                <input type="email" id="cfg_director_email" class="form-control" placeholder="direccion@bge.edu.mx">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Teléfono de Dirección</label>
+                                <input type="text" id="cfg_director_phone" class="form-control" placeholder="(222) 123-4567">
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label fw-semibold">Mensaje de Bienvenida Institucional</label>
+                                <textarea id="cfg_director_message" class="form-control" rows="3" placeholder="Palabras de bienvenida del director para la comunidad escolar en la portada del sitio web..."></textarea>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="button" class="btn btn-outline-secondary px-4" data-wizard-prev>
+                                <i class="fas fa-arrow-left me-2"></i> Anterior
+                            </button>
+                            <button type="button" class="btn btn-primary px-4" data-wizard-next>
+                                Siguiente: Ubicación <i class="fas fa-arrow-right ms-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Wizard Step 3: Ubicación & Contacto -->
+                <div class="sisat-card wizard-step-content d-none" data-step-content="3">
+                    <div class="sisat-card-header">
+                        <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-map-marked-alt text-primary me-2"></i>Paso 3: Ubicación y Medios de Contacto</h5>
+                        <span class="badge bg-success">Transparencia</span>
+                    </div>
+                    <div class="sisat-card-body">
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label class="form-label fw-semibold">Dirección Física del Plantel</label>
+                                <input type="text" id="cfg_direccion" class="form-control" placeholder="Calle, Número y Colonia">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Código Postal</label>
+                                <input type="text" id="cfg_codigo_postal" class="form-control" placeholder="72000">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Municipio</label>
+                                <input type="text" id="cfg_municipio" class="form-control" placeholder="Puebla">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Estado</label>
+                                <input type="text" id="cfg_estado" class="form-control" placeholder="Puebla">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Teléfono de Control Escolar</label>
+                                <input type="text" id="cfg_telefono" class="form-control" placeholder="(222) 000-0000">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Correo Institucional Público</label>
+                                <input type="email" id="cfg_email_institucional" class="form-control" placeholder="contacto@bge.edu.mx">
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label fw-semibold">Horario de Atención Ciudadana</label>
+                                <input type="text" id="cfg_horario_atencion" class="form-control" placeholder="Lunes a Viernes de 7:30 a 14:30 hrs">
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="button" class="btn btn-outline-secondary px-4" data-wizard-prev>
+                                <i class="fas fa-arrow-left me-2"></i> Anterior
+                            </button>
+                            <button type="button" class="btn btn-primary px-4" data-wizard-next>
+                                Siguiente: Lema & Misión <i class="fas fa-arrow-right ms-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Wizard Step 4: Lema, Misión y Visión con Asistente IA -->
+                <div class="sisat-card wizard-step-content d-none" data-step-content="4">
+                    <div class="sisat-card-header">
+                        <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-feather-alt text-primary me-2"></i>Paso 4: Lema, Misión y Visión Institucional</h5>
+                        <span class="badge bg-warning text-dark">Filosofía BGE</span>
+                    </div>
+                    <div class="sisat-card-body">
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                    <label class="form-label fw-semibold mb-0">Eslogan / Lema Institucional</label>
+                                    <button type="button" class="btn btn-sm btn-outline-primary py-0" id="btnAiGenSlogan">
+                                        <i class="fas fa-robot me-1"></i>Generar con IA
+                                    </button>
+                                </div>
+                                <input type="text" id="cfg_eslogan" class="form-control" placeholder="Ej: Formando líderes con excelencia académica y visión de futuro">
+                            </div>
+                            <div class="col-md-12">
+                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                    <label class="form-label fw-semibold mb-0">Misión Institucional</label>
+                                    <button type="button" class="btn btn-sm btn-outline-primary py-0" id="btnAiGenMission">
+                                        <i class="fas fa-robot me-1"></i>Generar con IA
+                                    </button>
+                                </div>
+                                <textarea id="cfg_mision" class="form-control" rows="3" placeholder="Misión formativa del bachillerato..."></textarea>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label fw-semibold">Visión Institucional</label>
+                                <textarea id="cfg_vision" class="form-control" rows="3" placeholder="Visión de excelencia y desarrollo de la comunidad..."></textarea>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="button" class="btn btn-outline-secondary px-4" data-wizard-prev>
+                                <i class="fas fa-arrow-left me-2"></i> Anterior
+                            </button>
+                            <button type="button" class="btn btn-success fw-bold px-4" onclick="document.getElementById('btnSaveSchoolConfig').click()">
+                                <i class="fas fa-save me-2"></i> Guardar y Publicar en Base de Datos
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL 2: CONTACTO & REDES SOCIALES -->
+            <div class="sisat-panel-section d-none" id="section-contacto">
+                <div class="sisat-card">
+                    <div class="sisat-card-header">
+                        <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-share-alt text-primary me-2"></i>Redes Sociales Oficiales del Plantel</h5>
+                    </div>
+                    <div class="sisat-card-body">
+                        <p class="text-muted">Enlaces oficiales que aparecerán en la cabecera, pie de página y sección de contacto de tu portal.</p>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold"><i class="fab fa-facebook text-primary me-2"></i>Página de Facebook</label>
+                                <input type="url" id="cfg_facebook_url" class="form-control" placeholder="https://facebook.com/tu_escuela">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold"><i class="fab fa-youtube text-danger me-2"></i>Canal de YouTube</label>
+                                <input type="url" id="cfg_youtube_url" class="form-control" placeholder="https://youtube.com/@tu_escuela">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold"><i class="fab fa-instagram text-danger me-2"></i>Perfil de Instagram</label>
+                                <input type="url" id="cfg_instagram_url" class="form-control" placeholder="https://instagram.com/tu_escuela">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold"><i class="fab fa-tiktok text-dark me-2"></i>Cuenta de TikTok</label>
+                                <input type="url" id="cfg_tiktok_url" class="form-control" placeholder="https://tiktok.com/@tu_escuela">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold"><i class="fab fa-whatsapp text-success me-2"></i>WhatsApp de Atención Escolar</label>
+                                <input type="text" id="cfg_whatsapp_number" class="form-control" placeholder="+52 222 123 4567">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL 3: OFERTA EDUCATIVA -->
+            <div class="sisat-panel-section d-none" id="section-oferta">
+                <div class="sisat-card">
+                    <div class="sisat-card-header">
+                        <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-graduation-cap text-success me-2"></i>Capacitaciones para el Trabajo del BGE</h5>
+                        <span class="badge bg-success">Plan de Estudios SEP</span>
+                    </div>
+                    <div class="sisat-card-body">
+                        <p class="text-muted">Activa las capacitaciones para el trabajo que se imparten actualmente en este centro escolar:</p>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-check form-switch p-3 border rounded">
+                                    <input class="form-check-input ms-0 me-3" type="checkbox" id="cap_tics" checked>
+                                    <label class="form-check-label fw-semibold" for="cap_tics">Tecnologías de la Información y Comunicación (TICs)</label>
+                                    <div class="small text-muted">Desarrollo web, ofimática y redes.</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check form-switch p-3 border rounded">
+                                    <input class="form-check-input ms-0 me-3" type="checkbox" id="cap_contabilidad" checked>
+                                    <label class="form-check-label fw-semibold" for="cap_contabilidad">Contabilidad y Administración</label>
+                                    <div class="small text-muted">Gestión fiscal, contable y emprendimiento.</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check form-switch p-3 border rounded">
+                                    <input class="form-check-input ms-0 me-3" type="checkbox" id="cap_salud" checked>
+                                    <label class="form-check-label fw-semibold" for="cap_salud">Higiene y Salud Comunitaria</label>
+                                    <div class="small text-muted">Primeros auxilios, prevención y ciencias de la salud.</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check form-switch p-3 border rounded">
+                                    <input class="form-check-input ms-0 me-3" type="checkbox" id="cap_diseno">
+                                    <label class="form-check-label fw-semibold" for="cap_diseno">Diseño Gráfico y Digital</label>
+                                    <div class="small text-muted">Producción visual y multimedia.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL 4: GALERÍA & MULTIMEDIA (FOTOS Y VIDEOS) -->
+            <div class="sisat-panel-section d-none" id="section-multimedia">
+                <div class="sisat-card">
+                    <div class="sisat-card-header">
+                        <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-camera-retro text-warning me-2"></i>Gestor de Imágenes y Galería Institucional</h5>
+                        <span class="badge bg-warning text-dark">CMS Fotos</span>
+                    </div>
+                    <div class="sisat-card-body">
+                        <div class="alert alert-info py-2 small">
+                            <i class="fas fa-info-circle me-1"></i> <strong>¿Cómo poblar fotos y videos?</strong> Puedes ingresar imágenes alojadas en la web o subidas a tu servidor, clasificarlas por categoría (Académica, Deportes, Eventos, Laboratorios) y se mostrarán automáticamente en la sección de Galería pública del plantel.
+                        </div>
+                        <div class="row g-3 bg-light p-3 rounded mb-4 border">
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold small">Título de la Fotografía</label>
+                                <input type="text" id="newPhotoTitle" class="form-control form-control-sm" placeholder="Ej: Torneo Deportivo 2026">
+                            </div>
+                            <div class="col-md-5">
+                                <label class="form-label fw-semibold small">URL de la Imagen</label>
+                                <input type="url" id="newPhotoUrl" class="form-control form-control-sm" placeholder="https://ejemplo.com/foto.jpg o /images/...">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold small">Categoría</label>
+                                <select id="newPhotoCategory" class="form-select form-select-sm">
+                                    <option value="academica">Académica</option>
+                                    <option value="deportes">Deportes</option>
+                                    <option value="eventos">Eventos Cívicos</option>
+                                    <option value="instalaciones">Instalaciones</option>
+                                </select>
+                            </div>
+                            <div class="col-12 text-end">
+                                <button type="button" class="btn btn-sm btn-primary" id="btnAddGalleryPhoto">
+                                    <i class="fas fa-plus me-1"></i>Agregar Fotografía a la Galería
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Grid de Fotografías Actuales -->
+                        <h6 class="fw-bold text-dark mb-3"><i class="fas fa-images me-2 text-primary"></i>Fotografías Activas en la Galería</h6>
+                        <div class="row g-3" id="galleryGridContainer">
+                            <div class="col-12 text-center py-4 text-muted">
+                                <i class="fas fa-spinner fa-spin fa-2x mb-2"></i>
+                                <div>Cargando fotos del plantel...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL 5: PERSONAL DOCENTE -->
+            <div class="sisat-panel-section d-none" id="section-docentes">
+                <div class="sisat-card">
+                    <div class="sisat-card-header">
+                        <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-chalkboard-teacher text-primary me-2"></i>Plantilla Docente y Administrativa</h5>
+                        <span class="badge bg-primary">Directorio Escolar</span>
+                    </div>
+                    <div class="sisat-card-body">
+                        <p class="text-muted">Personal académico registrado para este plantel escolar.</p>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Puesto / Función</th>
+                                        <th>Academia / Área</th>
+                                        <th>Correo Electrónico</th>
+                                        <th class="text-end">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="staffTableBody">
+                                    <tr>
+                                        <td colspan="5" class="text-center py-3 text-muted">
+                                            <i class="fas fa-spinner fa-spin me-2"></i>Cargando personal...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL 6: AVISOS & COMUNICADOS -->
+            <div class="sisat-panel-section d-none" id="section-comunicados">
+                <div class="sisat-card">
+                    <div class="sisat-card-header">
+                        <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-bullhorn text-info me-2"></i>Publicación de Avisos y Circulares</h5>
+                    </div>
+                    <div class="sisat-card-body">
+                        <p class="text-muted">Publica avisos urgentes o circulares que se destacarán en la página de inicio del bachillerato.</p>
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label class="form-label fw-semibold">Título del Aviso Oficial</label>
+                                <input type="text" class="form-control" id="notice_title" placeholder="Ej: Convocatoria para Becas Benito Juárez 2026">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Prioridad</label>
+                                <select class="form-select" id="notice_priority">
+                                    <option value="normal">Normal (Informativo)</option>
+                                    <option value="urgente">Urgente (Destacado rojo)</option>
+                                    <option value="convocatoria">Convocatoria Oficial</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Cuerpo del Comunicado</label>
+                                <textarea class="form-control" id="notice_content" rows="4" placeholder="Detalles de fechas, requisitos y documentación requerida..."></textarea>
+                            </div>
+                            <div class="col-12 text-end">
+                                <button type="button" class="btn btn-info text-white fw-semibold" onclick="alert('✅ Comunicado publicado en la portada escolar.')">
+                                    <i class="fas fa-paper-plane me-1"></i>Publicar Aviso en Portada
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL 7: BUZÓN CIUDADANO (HUB 7) -->
+            <div class="sisat-panel-section d-none" id="section-buzon">
+                <div class="sisat-card">
+                    <div class="sisat-card-header">
+                        <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-inbox text-secondary me-2"></i>Buzón Ciudadano y Folios de Transparencia (Hub 7)</h5>
+                        <span class="badge bg-secondary">Atención a la Comunidad</span>
+                    </div>
+                    <div class="sisat-card-body">
+                        <p class="text-muted">Mensajes, quejas, dudas y sugerencias registradas por estudiantes y tutores a través del formulario de Contacto y Transparencia.</p>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Folio</th>
+                                        <th>Remitente</th>
+                                        <th>Asunto</th>
+                                        <th>Tipo</th>
+                                        <th>Estado</th>
+                                        <th class="text-end">Detalle</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="badge bg-light text-dark font-monospace">FOL-2026-081</span></td>
+                                        <td>María Elena Gómez (Tutora)</td>
+                                        <td>Duda sobre credencial escolar</td>
+                                        <td><span class="badge bg-info text-dark">Información</span></td>
+                                        <td><span class="badge bg-success">Atendido</span></td>
+                                        <td class="text-end"><button class="btn btn-sm btn-outline-primary py-0">Ver</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-light text-dark font-monospace">FOL-2026-082</span></td>
+                                        <td>Carlos Ramírez (Alumno 4° Semestre)</td>
+                                        <td>Solicitud de constancia de estudios</td>
+                                        <td><span class="badge bg-primary">Trámite</span></td>
+                                        <td><span class="badge bg-warning text-dark">En Proceso</span></td>
+                                        <td class="text-end"><button class="btn btn-sm btn-outline-primary py-0">Ver</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL 8: ASISTENTE IA DEL DIRECTOR -->
+            <div class="sisat-panel-section d-none" id="section-ia">
+                <div class="sisat-card">
+                    <div class="sisat-card-header">
+                        <h5 class="mb-0 fw-bold text-dark">
+                            <i class="fas fa-robot me-2" style="color: #7c3aed;"></i>Asistente de Inteligencia Artificial para la Dirección
+                        </h5>
+                        <span class="badge bg-purple text-white" style="background-color: #7c3aed;">Automatización</span>
+                    </div>
+                    <div class="sisat-card-body">
+                        <div class="ai-assistant-card mb-4">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h6 class="fw-bold text-primary mb-1"><i class="fas fa-key me-2"></i>Clave de API Personal del Director</h6>
+                                    <p class="small text-muted mb-0">Ingresa tu API Key de Google Gemini para habilitar generación automática ilimitada de contenidos escolares. Tu clave se almacena de forma privada en tu navegador.</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="password" id="aiDirectorApiKey" class="form-control font-monospace" placeholder="Pega tu Google Gemini API Key...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="card h-100 border p-3">
+                                    <h6 class="fw-bold text-dark"><i class="fas fa-lightbulb text-warning me-2"></i>Generador de Filosofía Escolar</h6>
+                                    <p class="small text-muted">Genera automáticamente lemas motivacionales y declaraciones de misión y visión adaptadas a tu comunidad escolar.</p>
+                                    <div class="mt-auto">
+                                        <button type="button" class="btn btn-sm btn-outline-primary w-100" onclick="document.querySelector('[data-section=\'section-identidad\']').click()">
+                                            Ir al Asistente de Lema & Misión
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card h-100 border p-3">
+                                    <h6 class="fw-bold text-dark"><i class="fas fa-envelope-open-text text-primary me-2"></i>Redactor de Comunicados para Padres</h6>
+                                    <p class="small text-muted">Redacta circulares claras, empáticas y formales para avisar sobre juntas, entrega de boletas o eventos cívicos.</p>
+                                    <div class="mt-auto">
+                                        <button type="button" class="btn btn-sm btn-outline-primary w-100" onclick="document.querySelector('[data-section=\'section-comunicados\']').click()">
+                                            Ir al Redactor de Avisos
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Sección de Seguridad -->
     <section id="seguridad" class="py-5">
         <div class="container">
             <div class="row">
@@ -4034,6 +4639,8 @@
     <script src="js/dashboard/event-delegation-dashboard.js" defer></script>
     <script src="js/admin-parent-credentials.js" defer></script>
 
+    <!-- 🏛️ MOTOR SISAT-ATP / SIGPAD-EMS DEL DIRECTOR -->
+    <script src="js/dashboard/dashboard-sisat.js" defer></script>
 </body>
 
 </html>

@@ -54,6 +54,105 @@ function requireDirectorOrAdmin(req, res, next) {
 }
 
 // ============================================
+// 0. PERFIL Y CONFIGURACIÓN DEL PLANTEL (/api/tenant-cms/profile)
+// ============================================
+
+router.get('/profile', auth_1.authenticateToken, requireDirectorOrAdmin, async (req, res) => {
+    try {
+        const tenantId = getTenantId(req);
+        const pool = getPool();
+        const result = await pool.query('SELECT * FROM tenants WHERE id = $1 LIMIT 1', [tenantId]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ success: false, error: 'Plantel no encontrado' });
+        }
+        res.json({ success: true, data: result.rows[0] });
+    } catch (error) {
+        res.status(500).json({ success: false, error: 'Error obteniendo perfil del plantel: ' + error.message });
+    }
+});
+
+router.put('/profile', auth_1.authenticateToken, requireDirectorOrAdmin, async (req, res) => {
+    try {
+        const tenantId = getTenantId(req);
+        const pool = getPool();
+        const {
+            school_name, school_official_name, school_short_name, school_type,
+            cct, zona_escolar, turno,
+            logo_url, escudo_url, favicon_url,
+            direccion, codigo_postal, municipio, estado,
+            telefono, email_institucional, website_url,
+            horario_clases, horario_atencion,
+            director_name, director_email, director_phone, director_photo_url, director_message,
+            mision, vision, valores, historia, eslogan,
+            facebook_url, twitter_url, instagram_url, youtube_url, tiktok_url, whatsapp_number,
+            google_maps_embed_url
+        } = req.body;
+
+        const updateQuery = `
+            UPDATE tenants SET
+                school_name = COALESCE($1, school_name),
+                school_official_name = COALESCE($2, school_official_name),
+                school_short_name = COALESCE($3, school_short_name),
+                school_type = COALESCE($4, school_type),
+                cct = COALESCE($5, cct),
+                zona_escolar = COALESCE($6, zona_escolar),
+                turno = COALESCE($7, turno),
+                logo_url = COALESCE($8, logo_url),
+                escudo_url = COALESCE($9, escudo_url),
+                favicon_url = COALESCE($10, favicon_url),
+                direccion = COALESCE($11, direccion),
+                codigo_postal = COALESCE($12, codigo_postal),
+                municipio = COALESCE($13, municipio),
+                estado = COALESCE($14, estado),
+                telefono = COALESCE($15, telefono),
+                email_institucional = COALESCE($16, email_institucional),
+                website_url = COALESCE($17, website_url),
+                horario_clases = COALESCE($18, horario_clases),
+                horario_atencion = COALESCE($19, horario_atencion),
+                director_name = COALESCE($20, director_name),
+                director_email = COALESCE($21, director_email),
+                director_phone = COALESCE($22, director_phone),
+                director_photo_url = COALESCE($23, director_photo_url),
+                director_message = COALESCE($24, director_message),
+                mision = COALESCE($25, mision),
+                vision = COALESCE($26, vision),
+                valores = COALESCE($27, valores),
+                historia = COALESCE($28, historia),
+                eslogan = COALESCE($29, eslogan),
+                facebook_url = COALESCE($30, facebook_url),
+                twitter_url = COALESCE($31, twitter_url),
+                instagram_url = COALESCE($32, instagram_url),
+                youtube_url = COALESCE($33, youtube_url),
+                tiktok_url = COALESCE($34, tiktok_url),
+                whatsapp_number = COALESCE($35, whatsapp_number),
+                google_maps_embed_url = COALESCE($36, google_maps_embed_url),
+                updated_at = NOW()
+            WHERE id = $37
+            RETURNING *;
+        `;
+
+        const params = [
+            school_name, school_official_name, school_short_name, school_type,
+            cct, zona_escolar, turno,
+            logo_url, escudo_url, favicon_url,
+            direccion, codigo_postal, municipio, estado,
+            telefono, email_institucional, website_url,
+            horario_clases, horario_atencion,
+            director_name, director_email, director_phone, director_photo_url, director_message,
+            mision, vision, valores, historia, eslogan,
+            facebook_url, twitter_url, instagram_url, youtube_url, tiktok_url, whatsapp_number,
+            google_maps_embed_url,
+            tenantId
+        ];
+
+        const result = await pool.query(updateQuery, params);
+        res.json({ success: true, message: 'Perfil del plantel actualizado correctamente', data: result.rows[0] });
+    } catch (error) {
+        res.status(500).json({ success: false, error: 'Error actualizando perfil: ' + error.message });
+    }
+});
+
+// ============================================
 // 1. PERSONAL DEL PLANTEL (/api/tenant-cms/staff)
 // ============================================
 

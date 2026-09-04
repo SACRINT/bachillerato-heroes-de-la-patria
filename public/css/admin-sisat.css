@@ -1,0 +1,315 @@
+/* ==========================================================================
+   🏛️ DASHBOARD ADMINISTRATIVO BGE - ESTILO SISAT-ATP / SIGPAD-EMS
+   Diseño institucional, limpio, ergonómico y minimalista para Directores
+   ========================================================================== */
+
+:root {
+    --sisat-primary: #0f172a;       /* Slate 900 - Institucional profundo */
+    --sisat-primary-light: #1e293b; /* Slate 800 */
+    --sisat-accent: #2563eb;        /* Azul SEP oficial */
+    --sisat-accent-hover: #1d4ed8;
+    --sisat-gold: #d97706;          /* Oro institucional */
+    --sisat-gold-light: #fef3c7;
+    --sisat-success: #16a34a;
+    --sisat-danger: #dc2626;
+    --sisat-bg: #f8fafc;            /* Fondo gris claro limpio */
+    --sisat-surface: #ffffff;       /* Tarjetas y superficies blancas */
+    --sisat-border: #e2e8f0;        /* Bordes sutiles */
+    --sisat-text-main: #0f172a;
+    --sisat-text-muted: #64748b;
+    --sisat-sidebar-width: 280px;
+    --sisat-header-height: 64px;
+    --sisat-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --sisat-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+    --sisat-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.04);
+}
+
+/* --- Layout Principal --- */
+.sisat-wrapper {
+    display: flex;
+    min-height: calc(100vh - var(--sisat-header-height));
+    background-color: var(--sisat-bg);
+    position: relative;
+    padding-top: 75px; /* Espacio para el navbar global */
+}
+
+/* --- Topbar Institucional Compacto --- */
+.sisat-topbar {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+    color: #ffffff;
+    padding: 0.75rem 1.5rem;
+    box-shadow: var(--sisat-shadow-md);
+    border-bottom: 2px solid var(--sisat-gold);
+}
+
+.sisat-badge-cct {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #fef3c7;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-family: 'Consolas', monospace;
+    font-weight: 600;
+}
+
+/* --- Sidebar Lateral Estilo SISAT-ATP --- */
+.sisat-sidebar {
+    width: var(--sisat-sidebar-width);
+    background-color: var(--sisat-surface);
+    border-right: 1px solid var(--sisat-border);
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 40;
+}
+
+.sisat-sidebar.collapsed {
+    margin-left: calc(-1 * var(--sisat-sidebar-width));
+}
+
+.sisat-sidebar-header {
+    padding: 1.25rem 1rem 0.75rem;
+    border-bottom: 1px solid var(--sisat-border);
+}
+
+.sisat-menu {
+    list-style: none;
+    padding: 0.75rem 0.5rem;
+    margin: 0;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.sisat-menu-heading {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.075em;
+    color: var(--sisat-text-muted);
+    padding: 0.75rem 0.75rem 0.25rem;
+}
+
+.sisat-menu-item {
+    margin-bottom: 0.25rem;
+}
+
+.sisat-menu-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 0.85rem;
+    color: #334155;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.15s ease-in-out;
+    border: 1px solid transparent;
+}
+
+.sisat-menu-link:hover {
+    background-color: #f1f5f9;
+    color: var(--sisat-accent);
+}
+
+.sisat-menu-link.active {
+    background-color: #eff6ff;
+    color: var(--sisat-accent);
+    border-color: #bfdbfe;
+    font-weight: 600;
+}
+
+.sisat-menu-link i {
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+    color: #64748b;
+    transition: color 0.15s ease;
+}
+
+.sisat-menu-link.active i,
+.sisat-menu-link:hover i {
+    color: var(--sisat-accent);
+}
+
+.sisat-badge-nav {
+    margin-left: auto;
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 9999px;
+}
+
+/* --- Contenedor de Contenido --- */
+.sisat-content {
+    flex-grow: 1;
+    padding: 1.5rem 2rem 3rem;
+    overflow-x: hidden;
+}
+
+/* --- Tarjetas SISAT / SIGPAD --- */
+.sisat-card {
+    background: var(--sisat-surface);
+    border: 1px solid var(--sisat-border);
+    border-radius: 0.75rem;
+    box-shadow: var(--sisat-shadow-sm);
+    margin-bottom: 1.5rem;
+    transition: box-shadow 0.2s ease;
+}
+
+.sisat-card:hover {
+    box-shadow: var(--sisat-shadow-md);
+}
+
+.sisat-card-header {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--sisat-border);
+    background-color: #ffffff;
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.sisat-card-body {
+    padding: 1.25rem;
+}
+
+/* --- Wizard Paso a Paso para el Director --- */
+.sisat-wizard-steps {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.sisat-wizard-steps::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 40px;
+    right: 40px;
+    height: 3px;
+    background-color: var(--sisat-border);
+    z-index: 1;
+}
+
+.sisat-step {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    flex: 1;
+    cursor: pointer;
+}
+
+.sisat-step-circle {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background-color: var(--sisat-surface);
+    border: 3px solid var(--sisat-border);
+    color: var(--sisat-text-muted);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.sisat-step.active .sisat-step-circle {
+    border-color: var(--sisat-accent);
+    background-color: var(--sisat-accent);
+    color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
+}
+
+.sisat-step.completed .sisat-step-circle {
+    border-color: var(--sisat-success);
+    background-color: var(--sisat-success);
+    color: #ffffff;
+}
+
+.sisat-step-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--sisat-text-muted);
+}
+
+.sisat-step.active .sisat-step-title {
+    color: var(--sisat-accent);
+    font-weight: 700;
+}
+
+/* --- Multimedia Cards (Galería & Videos) --- */
+.media-preview-card {
+    border: 1px solid var(--sisat-border);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    position: relative;
+    background-color: #0f172a;
+    transition: transform 0.2s ease;
+}
+
+.media-preview-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--sisat-shadow-md);
+}
+
+.media-preview-img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+}
+
+.media-preview-actions {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: 4px;
+}
+
+/* --- Panel IA del Director --- */
+.ai-assistant-card {
+    background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
+    border: 1px solid #bfdbfe;
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+}
+
+.ai-assistant-card .btn-ai {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    color: white;
+    border: none;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.ai-assistant-card .btn-ai:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+    color: white;
+}
+
+/* --- Responsive --- */
+@media (max-width: 991.98px) {
+    .sisat-sidebar {
+        position: fixed;
+        top: 75px;
+        bottom: 0;
+        left: 0;
+        box-shadow: var(--sisat-shadow-lg);
+    }
+    
+    .sisat-sidebar.collapsed {
+        left: calc(-1 * var(--sisat-sidebar-width));
+        margin-left: 0;
+    }
+    
+    .sisat-content {
+        padding: 1rem;
+    }
+}
