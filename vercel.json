@@ -23,7 +23,7 @@
   },
   "headers": [
     {
-      "source": "/(.*admin.*)",
+      "source": "/admin:path*",
       "headers": [
         {
           "key": "Cache-Control",
@@ -40,7 +40,7 @@
       ]
     },
     {
-      "source": "/js/dashboard/(.*)",
+      "source": "/js/dashboard/:path*",
       "headers": [
         {
           "key": "Cache-Control",
