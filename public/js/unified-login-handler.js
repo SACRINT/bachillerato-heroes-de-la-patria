@@ -190,6 +190,24 @@
         document.addEventListener('click', function(e) {
             const openLoginBtn = e.target.closest('[data-action="open-unified-login"]');
             if (openLoginBtn) {
+                // Verificar si ya tiene sesión activa como admin
+                let isAlreadyAdmin = false;
+                try {
+                    const uStr = localStorage.getItem('bge_auth_user') || localStorage.getItem('bge_user_data') || sessionStorage.getItem('bge_auth_user');
+                    const u = uStr ? JSON.parse(uStr) : null;
+                    const r = (u?.role || u?.tipo_usuario || '').toLowerCase();
+                    const adminSess = localStorage.getItem('adminSession') || localStorage.getItem('secure_admin_session') || sessionStorage.getItem('adminSession');
+                    isAlreadyAdmin = ['admin', 'administrator', 'directivo', 'administrativo'].includes(r) || !!adminSess;
+                } catch(err) {}
+
+                if (isAlreadyAdmin) {
+                    e.preventDefault();
+                    if (!window.location.pathname.includes('admin-dashboard.html')) {
+                        window.location.href = 'admin-dashboard.html';
+                    }
+                    return;
+                }
+
                 e.preventDefault();
                 openLoginSafe();
                 return;

@@ -298,6 +298,28 @@
             if (adminSection) {
                 adminSection.classList.toggle('d-none', !['admin', 'administrator', 'directivo'].includes(role));
             }
+
+            const adminPanelMenuLink = document.getElementById('adminPanelMenuLink');
+            const adminPanelLogoutOption = document.getElementById('adminPanelLogoutOption');
+            const adminPanelSessionStatus = document.getElementById('adminPanelSessionStatus');
+
+            if (['admin', 'administrator', 'directivo'].includes(role)) {
+                if (adminPanelMenuLink) {
+                    adminPanelMenuLink.href = 'admin-dashboard.html';
+                    adminPanelMenuLink.removeAttribute('data-action');
+                    adminPanelMenuLink.innerHTML = '<i class="fas fa-tachometer-alt me-2"></i>Dashboard Administrativo';
+                }
+                if (adminPanelLogoutOption) adminPanelLogoutOption.classList.remove('d-none');
+                if (adminPanelSessionStatus) adminPanelSessionStatus.classList.remove('d-none');
+            } else {
+                if (adminPanelMenuLink) {
+                    adminPanelMenuLink.href = '#';
+                    adminPanelMenuLink.setAttribute('data-action', 'open-unified-login');
+                    adminPanelMenuLink.innerHTML = '<i class="fas fa-shield-halved me-2"></i>Administrador';
+                }
+                if (adminPanelLogoutOption) adminPanelLogoutOption.classList.add('d-none');
+                if (adminPanelSessionStatus) adminPanelSessionStatus.classList.add('d-none');
+            }
         };
 
         updateUI();
