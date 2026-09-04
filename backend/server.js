@@ -525,6 +525,7 @@ app.use('/api/tenant-cms', require('./routes/tenant-cms'));  // ✅ CMS DEL DIRE
 app.use('/api/page-sections', require('./routes/page-sections'));  // ✅ SECCIONES DE PÁGINAS - Plantillas configurables por director (1 SEP 2026)
 app.use('/api/search', require('./routes/semantic-search'));  // 🧠 BÚSQUEDA SEMÁNTICA PGVECTOR - Fase 6 Objetivo 2 (Sep 2026)
 app.use('/api/tutor/graph', require('./routes/langgraph-tutor')); // 🎓 LANGGRAPH TUTOR ESCOLAR - Fase 6 Objetivo 3 (Sep 2026)
+app.use('/api/flashcards', require('./routes/flashcards')); // 🧠 REPETICIÓN ESPACIADA FSRS v4 - Fase 6 Objetivo 4 (Sep 2026)
 app.use('/api/comunicados', comunicadosRoutes);
 app.use('/api/push', pushNotificationsRoutes); // ✅ PUSH NOTIFICATIONS
 app.use('/api/upload', uploadsRoutes);

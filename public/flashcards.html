@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards Mnemotécnicas (FSRS v4) | Bachillerato General Estatal</title>
+    <meta name="description" content="Sistema de Repetición Espaciada FSRS v4 con tarjetas mnemotécnicas interactivas y gamificación con IA Coins para estudiantes del BGE Héroes de la Patria.">
+
+    <!-- CSS Institucional, Bootstrap 5 y FontAwesome -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/global-layout.css">
+
+    <style>
+        :root {
+            --fc-bg-gradient: radial-gradient(circle at top right, rgba(37, 99, 235, 0.08), transparent 45%),
+                              radial-gradient(circle at bottom left, rgba(16, 185, 129, 0.08), transparent 45%);
+            --fc-card-bg: rgba(255, 255, 255, 0.96);
+            --fc-card-border: rgba(226, 232, 240, 0.9);
+            --fc-text-main: #0f172a;
+            --fc-text-muted: #64748b;
+            --fc-shadow: 0 14px 40px rgba(15, 23, 42, 0.08);
+            --fc-front-accent: #2563eb;
+            --fc-back-accent: #059669;
+        }
+
+        [data-theme="dark"], body.dark-mode {
+            --fc-bg-gradient: radial-gradient(circle at top right, rgba(59, 130, 246, 0.12), transparent 50%),
+                              radial-gradient(circle at bottom left, rgba(16, 185, 129, 0.1), transparent 50%);
+            --fc-card-bg: rgba(30, 41, 59, 0.96);
+            --fc-card-border: rgba(51, 65, 85, 0.8);
+            --fc-text-main: #f8fafc;
+            --fc-text-muted: #94a3b8;
+            --fc-shadow: 0 14px 40px rgba(0, 0, 0, 0.4);
+            --fc-front-accent: #60a5fa;
+            --fc-back-accent: #34d399;
+            background-color: #0b0f19 !important;
+            color: #f8fafc !important;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f8fafc;
+            color: var(--fc-text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .flashcards-page-wrapper {
+            flex: 1;
+            background: var(--fc-bg-gradient);
+            padding: 2.5rem 0 4rem 0;
+        }
+
+        /* Glassmorphism Header & Metric Bento */
+        .glass-panel {
+            background: var(--fc-card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--fc-card-border);
+            border-radius: 20px;
+            box-shadow: var(--fc-shadow);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .metric-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            border-radius: 16px;
+            background: rgba(241, 245, 249, 0.6);
+            border: 1px solid var(--fc-card-border);
+        }
+
+        [data-theme="dark"] .metric-card, body.dark-mode .metric-card {
+            background: rgba(15, 23, 42, 0.6);
+        }
+
+        .metric-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        /* Bento Grid Mazos */
+        .deck-card {
+            background: var(--fc-card-bg);
+            border: 1px solid var(--fc-card-border);
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            cursor: pointer;
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .deck-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.1);
+            border-color: #3b82f6;
+        }
+
+        .subject-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .subject-matematicas { background: rgba(59, 130, 246, 0.12); color: #2563eb; }
+        .subject-fisica { background: rgba(168, 85, 247, 0.12); color: #9333ea; }
+        .subject-quimica { background: rgba(236, 72, 153, 0.12); color: #db2777; }
+        .subject-biologia { background: rgba(16, 185, 129, 0.12); color: #059669; }
+        .subject-historia { background: rgba(245, 158, 11, 0.12); color: #d97706; }
+        .subject-lenguaje { background: rgba(14, 165, 233, 0.12); color: #0284c7; }
+        .subject-filosofia { background: rgba(99, 102, 241, 0.12); color: #4f46e5; }
+
+        /* Visor de Estudio 3D Flip Card */
+        .study-view-container {
+            display: none; /* Activo al seleccionar mazo */
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .flashcard-scene {
+            perspective: 1400px;
+            width: 100%;
+            max-width: 720px;
+            height: 410px;
+            margin: 1.5rem auto;
+            user-select: none;
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.65s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+        }
+
+        .flashcard-inner.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 28px;
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: var(--fc-card-bg);
+            border: 2px solid var(--fc-card-border);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.1);
+        }
+
+        .flashcard-front {
+            border-top: 6px solid var(--fc-front-accent);
+        }
+
+        .flashcard-back {
+            transform: rotateY(180deg);
+            border-top: 6px solid var(--fc-back-accent);
+            background: linear-gradient(135deg, rgba(5, 150, 105, 0.03), transparent 60%), var(--fc-card-bg);
+        }
+
+        .card-content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 1rem 0;
+            overflow-y: auto;
+        }
+
+        .card-main-text {
+            font-size: 1.35rem;
+            font-weight: 600;
+            line-height: 1.6;
+            color: var(--fc-text-main);
+        }
+
+        .card-hint-box {
+            font-size: 0.9rem;
+            color: #d97706;
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 3px solid #f59e0b;
+            padding: 8px 14px;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        /* Botones de Calificación FSRS v4 */
+        .rating-controls-bar {
+            max-width: 720px;
+            margin: 1.5rem auto 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .btn-grade {
+            min-height: 60px;
+            border-radius: 16px;
+            border: 1px solid transparent;
+            font-weight: 700;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-grade:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .btn-grade:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .grade-shortcut {
+            font-size: 0.72rem;
+            opacity: 0.85;
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(0, 0, 0, 0.12);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Botones con paleta de alto impacto */
+        .btn-grade-1 {
+            background: #ef4444;
+            color: white;
+        }
+        .btn-grade-1:hover:not(:disabled) { background: #dc2626; }
+
+        .btn-grade-2 {
+            background: #f59e0b;
+            color: white;
+        }
+        .btn-grade-2:hover:not(:disabled) { background: #d97706; }
+
+        .btn-grade-3 {
+            background: #3b82f6;
+            color: white;
+        }
+        .btn-grade-3:hover:not(:disabled) { background: #2563eb; }
+
+        .btn-grade-4 {
+            background: #10b981;
+            color: white;
+        }
+        .btn-grade-4:hover:not(:disabled) { background: #059669; }
+
+        /* Floating IA Coin Animation */
+        .floating-reward {
+            position: fixed;
+            pointer-events: none;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #f59e0b;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            z-index: 9999;
+            animation: floatUp 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        @keyframes floatUp {
+            0% { opacity: 0; transform: translate(-50%, 0) scale(0.6); }
+            20% { opacity: 1; transform: translate(-50%, -20px) scale(1.15); }
+            80% { opacity: 0.9; transform: translate(-50%, -60px) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -90px) scale(0.85); }
+        }
+
+        /* Subject Filter Chips */
+        .filter-chip {
+            padding: 8px 18px;
+            border-radius: 30px;
+            border: 1px solid var(--fc-card-border);
+            background: var(--fc-card-bg);
+            color: var(--fc-text-muted);
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .filter-chip:hover {
+            border-color: #3b82f6;
+            color: #3b82f6;
+        }
+
+        .filter-chip.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);
+        }
+
+        /* Mobile Touch Target 48px Guarantee */
+        @media (max-width: 768px) {
+            .rating-controls-bar {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            .flashcard-scene {
+                height: 360px;
+                padding: 0 10px;
+            }
+            .flashcard-face {
+                padding: 1.5rem;
+            }
+            .card-main-text {
+                font-size: 1.15rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar Institucional -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+                <img src="images/logo-bge.png" alt="Logo" width="40" height="40" class="rounded-circle bg-white p-1" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎓</text></svg>'">
+                <div>
+                    <span class="fw-bold d-block leading-none">BGE "Héroes de la Patria"</span>
+                    <small class="text-white-50" style="font-size: 0.75rem;">Flashcards FSRS v4 • Bachillerato General</small>
+                </div>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navFlashcards">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navFlashcards">
+                <ul class="navbar-nav ms-auto align-items-center gap-2">
+                    <li class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-home me-1"></i>Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="tutor-ia.html"><i class="fas fa-brain me-1"></i>Tutor Socrático IA</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="flashcards.html"><i class="fas fa-layer-group me-1"></i>Flashcards</a></li>
+                    <li class="nav-item"><a class="nav-link" href="gamification-center.html"><i class="fas fa-coins me-1"></i>IA Coins</a></li>
+                    <li class="nav-item ms-2">
+                        <button id="darkModeToggle" class="btn btn-outline-light btn-sm rounded-circle" style="width: 38px; height: 38px;" title="Alternar modo oscuro">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                    </li>
+                    <li class="nav-item ms-2" id="userAuthBadgeContainer">
+                        <span class="badge bg-light text-primary px-3 py-2 rounded-pill font-monospace" id="userAuthName">
+                            <i class="fas fa-user-graduate me-1"></i>Estudiante BGE
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenedor Principal -->
+    <main class="flashcards-page-wrapper">
+        <div class="container">
+
+            <!-- Banner de Encabezado y Métricas Bento FSRS -->
+            <div class="glass-panel mb-4">
+                <div class="row align-items-center mb-3">
+                    <div class="col-lg-7">
+                        <h2 class="fw-bold mb-1 d-flex align-items-center gap-2">
+                            <span class="text-primary"><i class="fas fa-layer-group"></i></span>
+                            Flashcards Mnemotécnicas
+                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle fs-6 rounded-pill">FSRS v4</span>
+                        </h2>
+                        <p class="text-muted mb-0" style="font-size: 0.95rem;">
+                            Optimiza la memoria a largo plazo mediante el algoritmo de <strong>Repetición Espaciada FSRS v4</strong> con retención garantizada al 90%.
+                        </p>
+                    </div>
+                    <div class="col-lg-5 text-lg-end mt-3 mt-lg-0">
+                        <button class="btn btn-outline-primary btn-sm me-2" id="btnStudyAllDue">
+                            <i class="fas fa-bolt me-1"></i>Repasar Pendientes (<span id="countAllDue">0</span>)
+                        </button>
+                        <button class="btn btn-primary btn-sm" id="btnOpenGenerateModal" data-bs-toggle="modal" data-bs-target="#generateDeckModal">
+                            <i class="fas fa-magic me-1"></i>Generar Mazo
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Grid Bento de Métricas del Estudiante -->
+                <div class="row g-3">
+                    <div class="col-6 col-md-3">
+                        <div class="metric-card">
+                            <div class="metric-icon bg-warning-subtle text-warning">
+                                <i class="fas fa-fire"></i>
+                            </div>
+                            <div>
+                                <div class="text-muted small fw-semibold">Racha Activa</div>
+                                <div class="h5 fw-bold mb-0" id="statStreak">0 días</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="metric-card">
+                            <div class="metric-icon bg-info-subtle text-info">
+                                <i class="fas fa-check-double"></i>
+                            </div>
+                            <div>
+                                <div class="text-muted small fw-semibold">Repasos Hoy</div>
+                                <div class="h5 fw-bold mb-0" id="statReviewsToday">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="metric-card">
+                            <div class="metric-icon bg-success-subtle text-success">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div>
+                                <div class="text-muted small fw-semibold">Retención FSRS</div>
+                                <div class="h5 fw-bold mb-0" id="statRetention">90%</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="metric-card">
+                            <div class="metric-icon bg-primary-subtle text-primary">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div>
+                                <div class="text-muted small fw-semibold">Recompensa</div>
+                                <div class="h5 fw-bold mb-0 text-warning">+2 IA Coins</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VISTA 1: EXPLORADOR DE MAZOS (BENTO GRID) -->
+            <div id="deckBrowserView">
+                <!-- Filtros por Materia Escolar -->
+                <div class="d-flex align-items-center gap-2 overflow-x-auto pb-3 mb-4" id="subjectFilterBar">
+                    <button class="filter-chip active" data-subject="all">
+                        <i class="fas fa-border-all me-1"></i>Todas las Materias
+                    </button>
+                    <button class="filter-chip" data-subject="matematicas">📐 Matemáticas</button>
+                    <button class="filter-chip" data-subject="fisica">⚡ Física</button>
+                    <button class="filter-chip" data-subject="quimica">🧪 Química</button>
+                    <button class="filter-chip" data-subject="biologia">🧬 Biología</button>
+                    <button class="filter-chip" data-subject="historia">🏛️ Historia</button>
+                    <button class="filter-chip" data-subject="lenguaje">📚 Lengua</button>
+                    <button class="filter-chip" data-subject="filosofia">💡 Filosofía</button>
+                </div>
+
+                <!-- Grid de Mazos Dinámicos -->
+                <div class="row g-4" id="decksGridContainer">
+                    <div class="col-12 text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Cargando mazos curriculares...</span>
+                        </div>
+                        <p class="text-muted mt-2">Sincronizando mazos curriculares del BGE...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VISTA 2: VISOR DE ESTUDIO INTERACTIVO (3D FLIP CARD) -->
+            <div id="studySessionView" class="study-view-container">
+                <!-- Barra superior de sesión -->
+                <div class="d-flex align-items-center justify-content-between mb-3 max-w-720 mx-auto" style="max-width: 720px;">
+                    <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" id="btnExitStudy">
+                        <i class="fas fa-arrow-left me-1"></i>Volver a Mazos
+                    </button>
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="badge bg-secondary-subtle text-secondary px-3 py-2 rounded-pill font-monospace" id="studyCardCounter">
+                            Tarjeta 1 de 5
+                        </span>
+                        <span class="small text-muted" id="studyTimer">
+                            <i class="far fa-clock me-1"></i>00:00
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Barra de Progreso del Mazo -->
+                <div class="progress mb-2 mx-auto" style="max-width: 720px; height: 6px; border-radius: 10px;">
+                    <div class="progress-bar bg-primary" id="studyProgressBar" role="progressbar" style="width: 0%"></div>
+                </div>
+
+                <!-- Escenario 3D Flashcard -->
+                <div class="flashcard-scene" id="flashcardScene">
+                    <div class="flashcard-inner" id="flashcardInner" title="Haz clic o presiona [Espacio] para voltear">
+                        
+                        <!-- ANVERSO (Front - Pregunta/Concepto) -->
+                        <div class="flashcard-face flashcard-front">
+                            <div class="d-flex justify-content-between align-items-center w-100">
+                                <span class="subject-badge" id="cardSubjectBadge">📐 Matemáticas</span>
+                                <span class="badge bg-light text-muted border font-monospace" style="font-size: 0.75rem;">
+                                    <i class="fas fa-keyboard me-1"></i>Espacio para voltear
+                                </span>
+                            </div>
+
+                            <div class="card-content-area">
+                                <div class="text-muted small text-uppercase mb-2 fw-bold tracking-wider">Pregunta / Concepto Clave</div>
+                                <div class="card-main-text" id="cardFrontText">Cargando tarjeta...</div>
+                                <div class="card-hint-box" id="cardHintBox">
+                                    <i class="fas fa-lightbulb me-1"></i><span id="cardHintText"></span>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center w-100">
+                                <button class="btn btn-sm btn-link text-warning text-decoration-none p-0" id="btnToggleHint">
+                                    <i class="far fa-lightbulb me-1"></i>Ver pista
+                                </button>
+                                <span class="small text-muted" id="cardFSRSDueInfo">
+                                    <i class="fas fa-history me-1"></i>Nuevo concepto
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- REVERSO (Back - Respuesta/Explicación) -->
+                        <div class="flashcard-face flashcard-back">
+                            <div class="d-flex justify-content-between align-items-center w-100">
+                                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 rounded-pill">
+                                    <i class="fas fa-check-circle me-1"></i>Respuesta Correcta
+                                </span>
+                                <span class="badge bg-light text-muted border font-monospace" style="font-size: 0.75rem;">
+                                    FSRS v4 Scheduler
+                                </span>
+                            </div>
+
+                            <div class="card-content-area">
+                                <div class="text-muted small text-uppercase mb-2 fw-bold tracking-wider text-success">Explicación Pedagógica</div>
+                                <div class="card-main-text" id="cardBackText">Respuesta...</div>
+                            </div>
+
+                            <div class="text-center w-100">
+                                <small class="text-muted">¿Qué tan fácil fue recordar este concepto?</small>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Botones de Calificación FSRS v4 -->
+                <div class="rating-controls-bar" id="ratingControls">
+                    <button class="btn btn-grade btn-grade-1" data-grade="1" title="Presiona [1] para Otra vez">
+                        <span>Otra vez</span>
+                        <span class="grade-shortcut">[1] Lapse</span>
+                    </button>
+                    <button class="btn btn-grade btn-grade-2" data-grade="2" title="Presiona [2] para Difícil">
+                        <span>Difícil</span>
+                        <span class="grade-shortcut">[2] Hard</span>
+                    </button>
+                    <button class="btn btn-grade btn-grade-3" data-grade="3" title="Presiona [3] para Bueno">
+                        <span>Bueno</span>
+                        <span class="grade-shortcut">[3] Good</span>
+                    </button>
+                    <button class="btn btn-grade btn-grade-4" data-grade="4" title="Presiona [4] para Fácil">
+                        <span>Fácil</span>
+                        <span class="grade-shortcut">[4] Easy</span>
+                    </button>
+                </div>
+
+                <!-- Pantalla de Mazo Completado -->
+                <div id="deckCompletedView" class="glass-panel text-center max-w-720 mx-auto mt-4 p-5" style="max-width: 720px; display: none;">
+                    <div class="mb-3 text-warning" style="font-size: 3.5rem;">🏆</div>
+                    <h3 class="fw-bold mb-2">¡Repaso Mnemotécnico Completado!</h3>
+                    <p class="text-muted mb-4" id="completedSummaryText">
+                        Has consolidado este conjunto de tarjetas en tu memoria a largo plazo.
+                    </p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <button class="btn btn-primary px-4 py-2" id="btnFinishSession">
+                            <i class="fas fa-th-large me-2"></i>Volver a la Galería de Mazos
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <!-- MODAL: GENERAR MAZO AUTOMÁTICO (Ajuste 5 - Opción A) -->
+    <div class="modal fade" id="generateDeckModal" tabindex="-1" aria-labelledby="generateModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glass-panel border-0">
+                <div class="modal-header border-bottom border-light-subtle">
+                    <h5 class="modal-title fw-bold" id="generateModalLabel">
+                        <i class="fas fa-magic text-primary me-2"></i>Generar Mazo Curricular
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted small mb-3">
+                        Genera tarjetas mnemotécnicas de estudio a partir del banco de conocimiento oficial del Bachillerato General Estatal.
+                    </p>
+                    <form id="formGenerateDeck">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Materia Curricular</label>
+                            <select class="form-select" id="genSubjectSelect" required>
+                                <option value="matematicas" selected>📐 Matemáticas y Razonamiento Lógico</option>
+                                <option value="fisica">⚡ Física y Mecánica Clásica</option>
+                                <option value="quimica">🧪 Química y Enlace Atómico</option>
+                                <option value="biologia">🧬 Biología y Genética</option>
+                                <option value="historia">🏛️ Historia de México</option>
+                                <option value="lenguaje">📚 Lengua y Redacción</option>
+                                <option value="filosofia">💡 Filosofía y Ética</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Título del Mazo (Opcional)</label>
+                            <input type="text" class="form-control" id="genDeckTitle" placeholder="Ej: Conceptos Clave de Cálculo y Álgebra">
+                        </div>
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary" id="btnSubmitGenerate">
+                                <i class="fas fa-sparkles me-1"></i>Crear Mazo con 5 Flashcards
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Institucional -->
+    <footer class="bg-dark text-white py-4 mt-auto">
+        <div class="container text-center">
+            <p class="mb-1 small">Bachillerato General Estatal "Héroes de la Patria" • CCT: 21EBH0200X</p>
+            <p class="text-white-50 mb-0" style="font-size: 0.75rem;">
+                Sistema de Repetición Espaciada ts-fsrs v4 • Diseñado para la Retención Óptima del Aprendizaje Escolar
+            </p>
+        </div>
+    </footer>
+
+    <!-- Scripts Bootstrap y Cliente Flashcards -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/flashcards-client.js"></script>
+</body>
+</html>
