@@ -54,83 +54,37 @@ class AdminDashboard {
     }
 
     async checkAuthentication() {
-        //debugLog.log('DASHBOARD', '🔐 Verificando autenticación en dashboard...');
+        const isAuth = typeof window.checkAdminSession === 'function' 
+            ? window.checkAdminSession() 
+            : false;
 
-        // Prioridad 1: Sistema de autenticación seguro (nuevo)
-        if (window.secureAdminAuth && window.secureAdminAuth.isUserAuthenticated()) {
-            this.currentUser = window.secureAdminAuth.getCurrentUser();
-            this.isLoggedIn = true;
-            //debugLog.log('APP', '✅ Usuario autenticado con sistema seguro:', this.currentUser);
+        if (!isAuth) {
+            this.currentUser = null;
+            this.isLoggedIn = false;
             return;
         }
 
-        // Prioridad 1: Verificar adminSession o secure_admin_session (ambos storages)
         try {
-            const adminSessionStr = localStorage.getItem('adminSession') || sessionStorage.getItem('adminSession')
-                                  || localStorage.getItem('secure_admin_session') || sessionStorage.getItem('secure_admin_session');
-            if (adminSessionStr) {
-                const sessionData = JSON.parse(adminSessionStr);
-                if (sessionData && (sessionData.isAuthenticated || sessionData.token || this.isAdmin())) {
-                    this.currentUser = sessionData.user || sessionData;
-                    this.isLoggedIn = true;
-                    return;
+            const rawUser = sessionStorage.getItem('bge_auth_user') || localStorage.getItem('bge_auth_user')
+                         || sessionStorage.getItem('bge_user_data') || localStorage.getItem('bge_user_data')
+                         || sessionStorage.getItem('userData') || localStorage.getItem('userData');
+            if (rawUser) {
+                this.currentUser = JSON.parse(rawUser);
+            } else {
+                const adminSess = sessionStorage.getItem('adminSession') || localStorage.getItem('adminSession');
+                if (adminSess) {
+                    const parsed = JSON.parse(adminSess);
+                    this.currentUser = parsed.user || parsed;
                 }
             }
-        } catch (error) {
-            console.warn('⚠️ Error verificando adminSession:', error);
-        }
-
-        // Prioridad 2: Sistema seguro
-        if (window.secureAdminAuth && window.secureAdminAuth.isUserAuthenticated()) {
-            this.currentUser = window.secureAdminAuth.getCurrentUser();
+            if (!this.currentUser) {
+                this.currentUser = { role: 'admin', nombre: 'Administrador' };
+            }
             this.isLoggedIn = true;
-            return;
-        }
-
-        // Prioridad 3: Verificar autenticación moderna (bge_auth_*, bge_user_data, etc.)
-        try {
-            const bgeToken = localStorage.getItem('bge_auth_token') || sessionStorage.getItem('bge_auth_token') ||
-                             localStorage.getItem('authToken') || sessionStorage.getItem('authToken') ||
-                             localStorage.getItem('token') || sessionStorage.getItem('token');
-            const bgeUserStr = localStorage.getItem('bge_auth_user') || sessionStorage.getItem('bge_auth_user') ||
-                               localStorage.getItem('bge_user_data') || sessionStorage.getItem('bge_user_data') ||
-                               localStorage.getItem('auth_user') || sessionStorage.getItem('auth_user') ||
-                               localStorage.getItem('userData') || sessionStorage.getItem('userData') ||
-                               localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
-            const bgeSessionStr = localStorage.getItem('bge_auth_session') || sessionStorage.getItem('bge_auth_session');
-
-            if (bgeUserStr) {
-                const bgeUser = JSON.parse(bgeUserStr);
-                this.currentUser = bgeUser;
-                this.isLoggedIn = true;
-                return;
-            }
-
-            if (bgeSessionStr) {
-                const sessionData = JSON.parse(bgeSessionStr);
-                this.currentUser = sessionData.user || sessionData;
-                this.isLoggedIn = true;
-                return;
-            }
-
-            if (bgeToken) {
-                this.currentUser = { role: 'admin' };
-                this.isLoggedIn = true;
-                return;
-            }
-        } catch (error) {
-            console.warn('⚠️ Error verificando sesión moderna:', error);
-        }
-
-        // Fallback: Sistema viejo (mantener compatibilidad)
-        if (window.authInterface && window.authInterface.isAuthenticated()) {
-            this.currentUser = window.authInterface.getCurrentUser();
+        } catch (e) {
+            this.currentUser = { role: 'admin', nombre: 'Administrador' };
             this.isLoggedIn = true;
-            return;
         }
-
-        // No autenticado
-        this.isLoggedIn = false;
     }
 
     isAdmin() {

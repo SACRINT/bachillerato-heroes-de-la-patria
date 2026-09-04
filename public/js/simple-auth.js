@@ -30,13 +30,8 @@ class SimpleAuth {
         if (user) {
             const userJson = typeof user === 'string' ? user : JSON.stringify(user);
             const userObj = typeof user === 'string' ? JSON.parse(user) : user;
-            const sessionData = JSON.stringify({
-                user: userObj,
-                role: userObj.role || 'admin',
-                token: token || this.getToken(),
-                isAuthenticated: true,
-                expiresAt: Date.now() + (7 * 24 * 60 * 60 * 1000)
-            });
+            const role = (userObj.role || userObj.tipo_usuario || '').toLowerCase();
+            const isAdminRole = ['admin', 'administrativo', 'directivo', 'administrator', 'director', 'subdirector', 'coordinador', 'superadmin'].includes(role);
 
             const userKeys = ['auth_user', 'bge_auth_user', 'bge_user_data', 'userData', 'currentUser', 'current_student', 'current_parent'];
             userKeys.forEach(k => {
@@ -46,16 +41,31 @@ class SimpleAuth {
                 } catch (e) {}
             });
 
-            try {
-                localStorage.setItem('adminSession', sessionData);
-                sessionStorage.setItem('adminSession', sessionData);
-                localStorage.setItem('bge_auth_session', sessionData);
-                sessionStorage.setItem('bge_auth_session', sessionData);
-                localStorage.setItem('secure_admin_session', sessionData);
-                sessionStorage.setItem('secure_admin_session', sessionData);
-                localStorage.setItem('auth_expires', String(Date.now() + 86400000 * 7));
-                sessionStorage.setItem('auth_expires', String(Date.now() + 86400000 * 7));
-            } catch (e) {}
+            if (isAdminRole) {
+                const sessionData = JSON.stringify({
+                    user: userObj,
+                    role: role,
+                    token: token || this.getToken(),
+                    isAuthenticated: true,
+                    expiresAt: Date.now() + (4 * 60 * 60 * 1000)
+                });
+                try {
+                    localStorage.setItem('adminSession', sessionData);
+                    sessionStorage.setItem('adminSession', sessionData);
+                    localStorage.setItem('secure_admin_session', sessionData);
+                    sessionStorage.setItem('secure_admin_session', sessionData);
+                    localStorage.setItem('bge_auth_session', sessionData);
+                    sessionStorage.setItem('bge_auth_session', sessionData);
+                } catch (e) {}
+            } else {
+                try {
+                    localStorage.removeItem('adminSession');
+                    sessionStorage.removeItem('adminSession');
+                    localStorage.removeItem('secure_admin_session');
+                    sessionStorage.removeItem('secure_admin_session');
+                    localStorage.removeItem('admin_session');
+                } catch (e) {}
+            }
         }
     }
 
@@ -124,7 +134,8 @@ class SimpleAuth {
             'bge_refresh_token', 'refreshToken',
             'bge_auth_user', 'bge_user_data', 'userData', 'auth_user', 'currentUser',
             'current_student', 'current_parent', 'current_teacher',
-            'bge_auth_session', 'secure_admin_session', 'auth_expires', 'bge_auth_expiry',
+            'adminSession', 'secure_admin_session', 'admin_session',
+            'bge_auth_session', 'auth_expires', 'bge_auth_expiry',
             'redirect_after_login'
         ];
 

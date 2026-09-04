@@ -13,38 +13,113 @@
 (function() {
     'use strict';
 
+    const ADMIN_ROLES = [
+        'admin', 'administrativo', 'directivo', 'administrator',
+        'director', 'subdirector', 'coordinador', 'superadmin'
+    ];
+
+    const ALL_AUTH_STORAGE_KEYS = [
+        'adminSession', 'secure_admin_session', 'admin_session',
+        'bge_auth_token', 'authToken', 'auth_token', 'token', 'admin_token',
+        'student_auth_token', 'teachers_auth_token', 'parent_auth_token',
+        'bge_refresh_token', 'refreshToken',
+        'bge_auth_user', 'bge_user_data', 'userData', 'auth_user', 'currentUser',
+        'current_student', 'current_parent', 'current_teacher',
+        'bge_auth_session', 'auth_expires', 'bge_auth_expiry',
+        'redirect_after_login', 'adminAuth_attempts', 'adminAuth_lockout'
+    ];
+
+    function purgeAllAuthStorage() {
+        ALL_AUTH_STORAGE_KEYS.forEach(k => {
+            try {
+                localStorage.removeItem(k);
+                sessionStorage.removeItem(k);
+            } catch (e) {}
+        });
+        try {
+            document.cookie.split(";").forEach(function (c) {
+                document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+            });
+        } catch (e) {}
+    }
+
+    function validateAdminJwt(token) {
+        if (!token || typeof token !== 'string') return null;
+        const parts = token.split('.');
+        if (parts.length !== 3) return null;
+        try {
+            const base64Url = parts[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            let jsonPayload;
+            try {
+                jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+            } catch (e) {
+                jsonPayload = atob(base64);
+            }
+            const payload = JSON.parse(jsonPayload);
+            if (payload.exp && (payload.exp * 1000) < Date.now()) return null;
+            const role = (payload.role || payload.tipo_usuario || '').toLowerCase();
+            if (ADMIN_ROLES.includes(role)) return { valid: true, payload: payload, role: role };
+            return null;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function checkActiveAdminSession() {
+        if (typeof window.checkAdminSession === 'function') {
+            return window.checkAdminSession();
+        }
+        const tokenCandidates = [
+            sessionStorage.getItem('bge_auth_token'),
+            localStorage.getItem('bge_auth_token'),
+            sessionStorage.getItem('authToken'),
+            localStorage.getItem('authToken'),
+            sessionStorage.getItem('token'),
+            localStorage.getItem('token')
+        ];
+        const adminSessionStr = sessionStorage.getItem('adminSession') || localStorage.getItem('adminSession');
+        if (adminSessionStr) {
+            try {
+                const parsed = JSON.parse(adminSessionStr);
+                if (parsed && parsed.token) tokenCandidates.unshift(parsed.token);
+            } catch (e) {}
+        }
+        for (let i = 0; i < tokenCandidates.length; i++) {
+            const candidate = tokenCandidates[i];
+            if (candidate && validateAdminJwt(candidate)) {
+                return true;
+            }
+        }
+        // Si no tiene JWT administrativo válido, purgar residuo admin
+        try {
+            localStorage.removeItem('adminSession');
+            sessionStorage.removeItem('adminSession');
+            localStorage.removeItem('secure_admin_session');
+            sessionStorage.removeItem('secure_admin_session');
+            localStorage.removeItem('admin_session');
+        } catch (e) {}
+        return false;
+    }
+
     // Función global unificada de logout administrativo
     window.logoutAdminPanel = function() {
+        // Ejecutar siempre limpieza total de storages
+        purgeAllAuthStorage();
+
         if (window.unifiedLogin && typeof window.unifiedLogin.logout === 'function') {
-            window.unifiedLogin.logout();
-        } else if (window.unifiedAuthManager && typeof window.unifiedAuthManager.logout === 'function') {
-            window.unifiedAuthManager.logout();
-        } else if (window.SimpleAuth && typeof window.SimpleAuth.logout === 'function') {
-            window.SimpleAuth.logout();
-        } else {
-            // Limpieza exhaustiva de emergencia
-            const ALL_AUTH_STORAGE_KEYS = [
-                'bge_auth_token', 'authToken', 'auth_token', 'token', 'admin_token',
-                'student_auth_token', 'teachers_auth_token', 'parent_auth_token',
-                'bge_refresh_token', 'refreshToken',
-                'bge_auth_user', 'bge_user_data', 'userData', 'auth_user', 'currentUser',
-                'current_student', 'current_parent', 'current_teacher',
-                'bge_auth_session', 'secure_admin_session', 'auth_expires', 'bge_auth_expiry',
-                'redirect_after_login'
-            ];
-            ALL_AUTH_STORAGE_KEYS.forEach(k => {
-                try {
-                    localStorage.removeItem(k);
-                    sessionStorage.removeItem(k);
-                } catch (e) {}
-            });
-            try {
-                document.cookie.split(";").forEach(function (c) {
-                    document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-                });
-            } catch (e) {}
-            window.location.href = 'index.html';
+            try { window.unifiedLogin.logout(); } catch (e) {}
         }
+        if (window.unifiedAuthManager && typeof window.unifiedAuthManager.logout === 'function') {
+            try { window.unifiedAuthManager.logout(); } catch (e) {}
+        }
+        if (window.SimpleAuth && typeof window.SimpleAuth.logout === 'function') {
+            try { window.SimpleAuth.logout(); } catch (e) {}
+        }
+
+        window.location.href = 'index.html';
     };
     window.logoutAdmin = window.logoutAdminPanel;
 
@@ -190,33 +265,18 @@
         document.addEventListener('click', function(e) {
             const openLoginBtn = e.target.closest('[data-action="open-unified-login"]');
             if (openLoginBtn) {
-                // Verificar si ya tiene sesión activa como admin
-                let isAlreadyAdmin = false;
-                try {
-                    if (typeof window.checkAdminSession === 'function') {
-                        isAlreadyAdmin = window.checkAdminSession();
-                    } else {
-                        const adminSess = localStorage.getItem('adminSession') || localStorage.getItem('secure_admin_session') || sessionStorage.getItem('adminSession');
-                        if (adminSess) {
-                            const parsedSess = JSON.parse(adminSess);
-                            const isExp = (parsedSess.expires && Date.now() > parsedSess.expires) ||
-                                          (parsedSess.expiresAt && Date.now() > parsedSess.expiresAt);
-                            if (!isExp && (parsedSess.isAuthenticated || parsedSess.token)) {
-                                isAlreadyAdmin = true;
-                            }
-                        }
-                    }
-                } catch(err) {}
+                e.preventDefault();
+                // Comprobación estricta de sesión administrativa real mediante JWT
+                const isAlreadyAdmin = checkActiveAdminSession();
 
                 if (isAlreadyAdmin) {
-                    e.preventDefault();
                     if (!window.location.pathname.includes('admin-dashboard.html')) {
                         window.location.href = 'admin-dashboard.html';
                     }
                     return;
                 }
 
-                e.preventDefault();
+                // Si NO hay sesión de administrador real y activa, abrir modal de credenciales
                 openLoginSafe();
                 return;
             }

@@ -4,9 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 🔒 PROTECCIÓN JWT ESTRICTA - CERO CONFIANZA: OCULTA EL DOCUMENTO HASTA VALIDAR TOKEN REAL -->
+    <style id="auth-gate-style">html { display: none !important; }</style>
+    <script src="js/dashboard/dashboard-auth-check.js?v=20260904_auth_v5"></script>
     <meta name="theme-color" content="#1976D2">
-    <meta name="description" id="page-description" data-tenant-field="mision" content="Bachillerato General - Educación media superior de calidad." id="page-description"
-        >
+    <meta name="description" id="page-description" data-tenant-field="mision" content="Bachillerato General - Educación media superior de calidad.">
     <meta name="keywords" content="administración, dashboard, gestión, académico, control">
     <title id="page-title" data-base-title="Dashboard Administrativo | BGE nuestro plantel">Dashboard Administrativo
         | BGE nuestro plantel</title>
@@ -36,12 +38,6 @@
 </head>
 
 <body>
-    <!-- 🔒 PROTECCIÓN JWT - VERIFICA AUTENTICACIÓN ANTES DE CARGAR CONTENIDO -->
-    <script src="js/dashboard/dashboard-auth-check.js?v=20260119"></script>
-
-    <!-- 🧹 LIMPIEZA DE CACHÉ Y SERVICE WORKER -->
-    <!-- <script src="js/dashboard/cache-cleanup.js"></script> -->
-
     <!-- Header -->
     <header id="main-header"></header>
 

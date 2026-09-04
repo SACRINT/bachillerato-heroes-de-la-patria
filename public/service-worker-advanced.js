@@ -3,7 +3,7 @@
  * PWA Enhanced con offline support, background sync y push notifications
  */
 
-const CACHE_VERSION = 'v4.1.0';
+const CACHE_VERSION = 'v5.0.0';
 const CACHE_NAME = `bachillerato-heroes-${CACHE_VERSION}`;
 
 const CACHES = {
@@ -36,7 +36,8 @@ self.addEventListener('activate', (event) => {
     caches.keys().then(names => {
       return Promise.all(
         names.map(name => {
-          if (!Object.values(CACHES).includes(name)) {
+          if (!name.includes(CACHE_VERSION)) {
+            console.log('[SW] Purgando cache obsoleta:', name);
             return caches.delete(name);
           }
         })
@@ -50,9 +51,20 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
   if (url.origin !== location.origin) return;
 
-  if (event.request.url.includes('/api/')) {
-    event.respondWith(networkFirst(event.request, CACHES.api));
-  } else if (event.request.destination === 'image') {
+  // 🔒 SEGURIDAD ESTRICTA: Excluir totalmente rutas y scripts de administración o login de la caché
+  const isExcludedFromCache = 
+    url.pathname.includes('admin') ||
+    url.pathname.includes('dashboard') ||
+    url.pathname.includes('login') ||
+    url.pathname.includes('auth') ||
+    url.pathname.includes('/api/');
+
+  if (isExcludedFromCache) {
+    // Pasar directo a la red sin interceptar ni cachear
+    return;
+  }
+
+  if (event.request.destination === 'image') {
     event.respondWith(cacheFirst(event.request, CACHES.images));
   } else {
     event.respondWith(staleWhileRevalidate(event.request, CACHES.dynamic));

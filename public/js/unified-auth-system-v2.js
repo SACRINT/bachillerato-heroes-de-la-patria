@@ -1992,12 +1992,13 @@ class SessionManager {
      */
     clearSession() {
         const ALL_AUTH_STORAGE_KEYS = [
+            'adminSession', 'secure_admin_session', 'admin_session',
             'bge_auth_token', 'authToken', 'auth_token', 'token', 'admin_token',
             'student_auth_token', 'teachers_auth_token', 'parent_auth_token',
             'bge_refresh_token', 'refreshToken',
             'bge_auth_user', 'bge_user_data', 'userData', 'auth_user', 'currentUser',
             'current_student', 'current_parent', 'current_teacher',
-            'bge_auth_session', 'secure_admin_session', 'auth_expires', 'bge_auth_expiry',
+            'bge_auth_session', 'auth_expires', 'bge_auth_expiry',
             'redirect_after_login'
         ];
 
