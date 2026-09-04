@@ -22,6 +22,19 @@ class LangGraphTutorClient {
         return sid;
     }
 
+    getAuthHeaders() {
+        const token = localStorage.getItem('bge_auth_token') || 
+                      localStorage.getItem('token') || 
+                      localStorage.getItem('authToken') || 
+                      sessionStorage.getItem('bge_auth_token') || 
+                      sessionStorage.getItem('token');
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+        return headers;
+    }
+
     async init() {
         this.cacheDom();
         this.bindEvents();
@@ -118,7 +131,15 @@ class LangGraphTutorClient {
 
     async loadSessionState() {
         try {
-            const res = await fetch(`${this.apiBase}/session/${this.sessionId}`);
+            const res = await fetch(`${this.apiBase}/session/${this.sessionId}`, {
+                headers: this.getAuthHeaders()
+            });
+
+            if (res.status === 401 || res.status === 403) {
+                this.addMessage('assistant', `🔒 **Acceso Protegido**: Para interactuar con tu Tutor IA Socrático, por favor inicia sesión institucional con tu cuenta de estudiante.\n\n> 🎓 *Acceso para alumnos, docentes y personal del BGE.*`);
+                return;
+            }
+
             const data = await res.json();
             if (data.success && data.state && data.state.messages && data.state.messages.length > 0) {
                 this.chatMessagesEl.innerHTML = '';
@@ -156,13 +177,18 @@ class LangGraphTutorClient {
         try {
             const res = await fetch(`${this.apiBase}/chat`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: this.getAuthHeaders(),
                 body: JSON.stringify({
                     sessionId: this.sessionId,
                     message: text,
                     subject: this.currentSubject
                 })
             });
+
+            if (res.status === 401 || res.status === 403) {
+                this.addMessage('assistant', '🔒 **Acceso Protegido**: Tu sesión no está autenticada o el token ha expirado. Por favor inicia sesión como estudiante en el menú superior para interactuar.');
+                return;
+            }
 
             const result = await res.json();
             if (result.success && result.data) {
@@ -289,7 +315,7 @@ class LangGraphTutorClient {
         try {
             await fetch(`${this.apiBase}/session/reset`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: this.getAuthHeaders(),
                 body: JSON.stringify({
                     sessionId: this.sessionId,
                     subject: this.currentSubject
@@ -305,7 +331,13 @@ class LangGraphTutorClient {
 
     formatMarkdown(text) {
         if (!text) return '';
-        let html = text
+        // PRIMERO: escapar HTML peligroso
+        let safe = text
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+        // LUEGO: aplicar formato Markdown
+        let html = safe
             .replace(/^### (.*$)/gim, '<h5 class="fw-bold mt-2 mb-1">$1</h5>')
             .replace(/^## (.*$)/gim, '<h4 class="fw-bold mt-3 mb-2">$1</h4>')
             .replace(/^# (.*$)/gim, '<h3 class="fw-bold mt-3 mb-2">$1</h3>')

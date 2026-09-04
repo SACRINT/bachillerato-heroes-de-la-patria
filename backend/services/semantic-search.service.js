@@ -4,7 +4,7 @@
  * Búsqueda semántica de conocimiento escolar con embeddings vectoriales de 1536 dimensiones.
  */
 
-const { Pool } = require('pg');
+const { pool } = require('../config/database.js');
 const { INSTITUTIONAL_DOCUMENTS } = require('../data/institutional-knowledge.js');
 
 // Documentos complementarios para enriquecer el corpus escolar
@@ -79,20 +79,7 @@ class SemanticSearchService {
      * Obtener o inicializar conexión a base de datos Neon
      */
     getPool() {
-        if (!this.pool) {
-            const connectionString = process.env.DATABASE_URL;
-            if (!connectionString) {
-                console.warn('[SEMANTIC-SEARCH] Falta DATABASE_URL; operando en modo local');
-                return null;
-            }
-            this.pool = new Pool({
-                connectionString,
-                ssl: { rejectUnauthorized: false },
-                max: 5,
-                idleTimeoutMillis: 30000
-            });
-        }
-        return this.pool;
+        return pool;
     }
 
     /**

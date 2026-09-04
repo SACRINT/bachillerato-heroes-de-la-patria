@@ -2,15 +2,18 @@
  * 🛣️ RUTAS API: LANGGRAPH TUTOR ESCOLAR
  * Fase 6 - Backend Inteligente: Objetivo 3
  * Endpoints REST para interactuar con la Máquina de Estados / Grafo Socrático.
+ * Protegido con autenticación JWT institucional (BGE Héroes de la Patria).
  */
 
 const express = require('express');
 const router = express.Router();
+const crypto = require('crypto');
 const tutorService = require('../services/langgraph-tutor.service.js');
+const { authenticateToken } = require('../middleware/auth.js');
 
 /**
  * GET /api/tutor/graph/subjects
- * Obtener catálogo oficial de materias y temas del BGE
+ * Obtener catálogo oficial de materias y temas del BGE (Ruta Pública)
  */
 router.get('/subjects', (req, res) => {
     try {
@@ -32,8 +35,9 @@ router.get('/subjects', (req, res) => {
 /**
  * POST /api/tutor/graph/chat
  * Procesar mensaje del estudiante a través del grafo de estados pedagógico
+ * Protegido: Requiere autenticación JWT de estudiante/docente/admin
  */
-router.post('/chat', async (req, res) => {
+router.post('/chat', authenticateToken, async (req, res) => {
     try {
         const { sessionId, message, subject, userId } = req.body;
 
@@ -44,8 +48,11 @@ router.post('/chat', async (req, res) => {
             });
         }
 
-        const sid = sessionId || `session_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
-        const result = await tutorService.executeGraph(sid, message.trim(), subject || 'matematicas', userId);
+        // FIX 5: Generación segura de session ID con crypto.randomUUID()
+        const sid = sessionId || `session_${crypto.randomUUID()}`;
+        const effectiveUserId = req.user ? req.user.id : (userId || null);
+
+        const result = await tutorService.executeGraph(sid, message.trim(), subject || 'matematicas', effectiveUserId);
 
         res.json({
             success: true,
@@ -62,10 +69,19 @@ router.post('/chat', async (req, res) => {
 });
 
 /**
+ * POST /api/tutor/graph/interact (Alias para retrocompatibilidad)
+ */
+router.post('/interact', authenticateToken, async (req, res, next) => {
+    req.url = '/chat';
+    return router.handle(req, res, next);
+});
+
+/**
  * GET /api/tutor/graph/session/:sessionId
  * Consultar el estado y checkpoint actual de la sesión
+ * Protegido: Requiere autenticación JWT
  */
-router.get('/session/:sessionId', async (req, res) => {
+router.get('/session/:sessionId', authenticateToken, async (req, res) => {
     try {
         const { sessionId } = req.params;
         const state = await tutorService.getOrCreateSessionState(sessionId);
@@ -85,8 +101,9 @@ router.get('/session/:sessionId', async (req, res) => {
 /**
  * POST /api/tutor/graph/session/reset
  * Reiniciar la sesión del grafo
+ * Protegido: Requiere autenticación JWT
  */
-router.post('/session/reset', async (req, res) => {
+router.post('/session/reset', authenticateToken, async (req, res) => {
     try {
         const { sessionId, subject } = req.body;
         if (!sessionId) {

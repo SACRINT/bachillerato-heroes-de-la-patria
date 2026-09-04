@@ -5,7 +5,7 @@
  * Integra pgvector en Neon PostgreSQL, memoria de checkpoints y pedagogía activa.
  */
 
-const { Pool } = require('pg');
+const { pool } = require('../config/database.js');
 const { semanticSearchService } = require('./semantic-search.service.js');
 
 // Catálogo curricular oficial del BGE "Héroes de la Patria"
@@ -112,27 +112,13 @@ const CURRICULAR_SUBJECTS = {
 
 class LangGraphTutorService {
     constructor() {
-        this.pool = null;
     }
 
     /**
      * Obtener o inicializar conexión a base de datos Neon PostgreSQL
      */
     getPool() {
-        if (!this.pool) {
-            const connectionString = process.env.DATABASE_URL;
-            if (!connectionString) {
-                console.warn('[LANGGRAPH-TUTOR] Falta DATABASE_URL; operando en memoria temporal');
-                return null;
-            }
-            this.pool = new Pool({
-                connectionString,
-                ssl: { rejectUnauthorized: false },
-                max: 5,
-                idleTimeoutMillis: 30000
-            });
-        }
-        return this.pool;
+        return pool; // Usar el pool global, no crear uno nuevo
     }
 
     /**
@@ -528,7 +514,16 @@ Devuelve tu respuesta en formato JSON estrictamente válido:
 
         if (!res.ok) throw new Error(`OpenAI error: ${res.status}`);
         const data = await res.json();
-        return JSON.parse(data.choices[0].message.content);
+        const rawContent = data.choices[0].message.content;
+        try {
+            return JSON.parse(rawContent);
+        } catch (parseErr) {
+            console.warn('[LANGGRAPH-TUTOR] LLM returned invalid JSON, wrapping as text response');
+            return {
+                text: rawContent,
+                challenge: null
+            };
+        }
     }
 
     /**
