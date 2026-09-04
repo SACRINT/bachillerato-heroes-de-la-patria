@@ -7,15 +7,15 @@
  */
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Si main.js ya gestiona el tema de forma unificada, delegar completamente
+    if (typeof window.applyUnifiedTheme === 'function' || typeof window.setUnifiedTheme === 'function') {
+        return;
+    }
+
     const darkModeToggle = document.getElementById('darkModeToggle');
     if (!darkModeToggle || darkModeToggle.dataset.dmBound) {
         return;
     }
-    darkModeToggle.dataset.dmBound = 'true';
-
-    if (typeof window.applyUnifiedTheme === 'function') {
-        window.applyUnifiedTheme();
-    } else {
         if (localStorage.getItem('darkMode') === 'enabled') {
             document.body.classList.add('dark-mode');
             updateDarkModeIcon(true);

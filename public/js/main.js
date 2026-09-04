@@ -34,25 +34,27 @@
     // 🌙 CONTROLADOR UNIFICADO DE TEMA CLARO / OSCURO
     function getSavedTheme() {
         try {
-            // 1. Si el usuario desactivó explícitamente el modo oscuro, respetar SIEMPRE
-            const isExplicitlyDisabled = (
-                localStorage.getItem('darkMode') === 'disabled' ||
-                localStorage.getItem('theme') === 'light' ||
-                localStorage.getItem('heroesPatria_darkMode') === 'false' ||
-                localStorage.getItem('bge-dark-mode') === 'light'
-            );
-            if (isExplicitlyDisabled) return 'light';
+            // 1. Clave canónica preferencial 'theme'
+            const canonicalTheme = localStorage.getItem('theme');
+            if (canonicalTheme === 'dark') return 'dark';
+            if (canonicalTheme === 'light') return 'light';
 
-            // 2. Si el usuario activó explícitamente el modo oscuro
-            const isExplicitlyEnabled = (
-                localStorage.getItem('darkMode') === 'enabled' ||
-                localStorage.getItem('theme') === 'dark' ||
-                localStorage.getItem('heroesPatria_darkMode') === 'true' ||
-                localStorage.getItem('bge-dark-mode') === 'dark'
-            );
-            if (isExplicitlyEnabled) return 'dark';
+            // 2. Si no hay 'theme', comprobar 'darkMode'
+            const dm = localStorage.getItem('darkMode');
+            if (dm === 'enabled') return 'dark';
+            if (dm === 'disabled') return 'light';
 
-            // 3. Por defecto modo claro para estética consistente del bachillerato
+            // 3. Comprobar 'heroesPatria_darkMode'
+            const hp = localStorage.getItem('heroesPatria_darkMode');
+            if (hp === 'true') return 'dark';
+            if (hp === 'false') return 'light';
+
+            // 4. Comprobar 'bge-dark-mode'
+            const bge = localStorage.getItem('bge-dark-mode');
+            if (bge === 'dark') return 'dark';
+            if (bge === 'light') return 'light';
+
+            // 5. Por defecto modo claro para estética institucional consistente
             return 'light';
         } catch (e) {
             return 'light';
@@ -81,21 +83,21 @@
             }
 
             // Sincronizar TODAS las variantes de llaves de almacenamiento en la plataforma
-            localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
             localStorage.setItem('heroesPatria_darkMode', isDark ? 'true' : 'false');
             localStorage.setItem('bge-dark-mode', isDark ? 'dark' : 'light');
 
-            // Actualizar icono y accesibilidad del botón
-            const btn = document.getElementById('darkModeToggle');
-            if (btn) {
+            // Actualizar icono y accesibilidad de TODOS los botones de tema en la página
+            const allToggles = document.querySelectorAll('.dark-mode-toggle, #darkModeToggle');
+            allToggles.forEach(btn => {
                 const icon = btn.querySelector('i');
                 if (icon) {
                     icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
                 }
                 btn.setAttribute('title', isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
                 btn.setAttribute('aria-label', isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
-            }
+            });
 
             window.dispatchEvent(new CustomEvent('darkModeChanged', { detail: { darkMode: isDark } }));
             window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme: isDark ? 'dark' : 'light' } }));
@@ -105,6 +107,11 @@
     function applySavedTheme() {
         setUnifiedTheme(getSavedTheme());
     }
+
+    // Exponer inmediatamente al objeto global window para scripts dependientes
+    window.setUnifiedTheme = setUnifiedTheme;
+    window.applyUnifiedTheme = applySavedTheme;
+    window.getSavedTheme = getSavedTheme;
 
     // Ejecutar aplicación temprana del tema
     applySavedTheme();
@@ -394,9 +401,14 @@
             btn.dataset.dmBound = 'true';
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
+                e.stopPropagation();
+                if (typeof e.stopImmediatePropagation === 'function') {
+                    e.stopImmediatePropagation();
+                }
                 const currentTheme = getSavedTheme();
-                setUnifiedTheme(currentTheme === 'dark' ? 'light' : 'dark');
-            });
+                const nextTheme = (currentTheme === 'dark') ? 'light' : 'dark';
+                setUnifiedTheme(nextTheme);
+            }, true); // useCapture = true para interceptar antes de cualquier listener legacy
         }
     }
 

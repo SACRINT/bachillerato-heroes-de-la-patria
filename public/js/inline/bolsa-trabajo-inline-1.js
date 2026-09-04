@@ -220,6 +220,10 @@
         });
 
         document.addEventListener('DOMContentLoaded', function () {
+            if (typeof window.applyUnifiedTheme === 'function' || typeof window.setUnifiedTheme === 'function') {
+                return;
+            }
+
             const darkModeToggle = document.getElementById('darkModeToggle');
             const body = document.body;
 

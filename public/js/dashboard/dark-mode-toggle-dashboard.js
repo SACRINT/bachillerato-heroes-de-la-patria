@@ -5,6 +5,11 @@
  */
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Si main.js ya gestiona el tema de forma unificada, delegar completamente
+    if (typeof window.setUnifiedTheme === 'function' || typeof window.applyUnifiedTheme === 'function') {
+        return;
+    }
+
     const darkModeToggle = document.getElementById('darkModeToggle');
     const body = document.body;
 

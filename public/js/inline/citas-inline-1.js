@@ -168,7 +168,7 @@ function consultarCita() {
         const darkModeToggle = document.getElementById('darkModeToggle');
         const body = document.body;
 
-        if (darkModeToggle) {
+        if (darkModeToggle && typeof window.setUnifiedTheme !== 'function' && typeof window.applyUnifiedTheme !== 'function') {
             // Limpiar cualquier contenido de texto del botón
             const cleanToggleButton = () => {
                 // Remover cualquier nodo de texto

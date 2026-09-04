@@ -723,6 +723,27 @@ body.dark-mode .dropdown-item:focus {
     transform: scale(1.05);
 }
 
+/* Chatbot Callout / Footer con alto contraste WCAG AAA */
+.response-footer {
+    margin-top: 14px;
+    padding: 10px 14px;
+    background: #f0fdf4 !important;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    color: #166534 !important;
+    font-style: italic;
+    border-left: 4px solid #16a34a !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+body.dark-mode .response-footer,
+[data-theme="dark"] .response-footer {
+    background: #0f291e !important;
+    color: #86efac !important;
+    border-left: 4px solid #22c55e !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+}
+
 /* Chatbot Toggle Button - PosiciÃ³n intermedia derecha TODAS las pÃ¡ginas */
 /* Chatbot Toggle Button - Styles moved to global-layout.css */
 
