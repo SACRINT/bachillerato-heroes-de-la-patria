@@ -12,16 +12,21 @@
      */
     async function updateTabCounters() {
         try {
-            const token = localStorage.getItem('bge_auth_token') || sessionStorage.getItem('bge_auth_token');
+            const token = (typeof window.getGlobalAdminToken === 'function' && window.getGlobalAdminToken()) ||
+                          localStorage.getItem('bge_auth_token') || sessionStorage.getItem('bge_auth_token') ||
+                          localStorage.getItem('authToken') || sessionStorage.getItem('authToken') ||
+                          localStorage.getItem('token') || sessionStorage.getItem('token');
             const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
 
             let summary = null;
             try {
-                const res = await fetch('/api/admin/dashboard-summary', { headers });
-                if (res.ok) {
-                    const json = await res.json();
-                    if (json && json.success && json.data) {
-                        summary = json.data;
+                if (token) {
+                    const res = await fetch('/api/admin/dashboard-summary', { headers });
+                    if (res.ok) {
+                        const json = await res.json();
+                        if (json && json.success && json.data) {
+                            summary = json.data;
+                        }
                     }
                 }
             } catch (e) {}

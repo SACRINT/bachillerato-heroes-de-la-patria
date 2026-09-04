@@ -73,18 +73,26 @@ class APIClient {
      * Obtener token almacenado y verificar expiración
      */
     getStoredToken() {
+        if (typeof window.getGlobalAdminToken === 'function') {
+            const globalTok = window.getGlobalAdminToken();
+            if (globalTok) return globalTok;
+        }
+
         // Prioridad 1: Token unificado moderno
         const modernToken = localStorage.getItem('bge_auth_token') || 
                             sessionStorage.getItem('bge_auth_token') || 
                             localStorage.getItem('authToken') || 
-                            sessionStorage.getItem('authToken');
+                            sessionStorage.getItem('authToken') ||
+                            localStorage.getItem('token') ||
+                            sessionStorage.getItem('token');
         if (modernToken) {
             return modernToken;
         }
 
-        // Prioridad 2: Secure session
+        // Prioridad 2: Secure session / adminSession
         try {
-            const secureSession = localStorage.getItem('secure_admin_session') || sessionStorage.getItem('secure_admin_session');
+            const secureSession = localStorage.getItem('adminSession') || sessionStorage.getItem('adminSession') ||
+                                  localStorage.getItem('secure_admin_session') || sessionStorage.getItem('secure_admin_session');
             if (secureSession) {
                 const sessionData = JSON.parse(secureSession);
                 if (sessionData.token) return sessionData.token;

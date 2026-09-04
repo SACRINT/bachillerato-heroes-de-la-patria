@@ -10,11 +10,28 @@
     let activeSection = 'section-identidad';
     let currentStep = 1;
 
-    // Obtener token JWT de sesión
+    // Obtener token JWT de sesión blindado
     function getAuthToken() {
-        return localStorage.getItem('token') || 
-               localStorage.getItem('auth_token') || 
-               localStorage.getItem('adminToken') || '';
+        if (typeof window.getGlobalAdminToken === 'function') {
+            const tok = window.getGlobalAdminToken();
+            if (tok) return tok;
+        }
+        const direct = localStorage.getItem('bge_auth_token') || sessionStorage.getItem('bge_auth_token') ||
+                       localStorage.getItem('authToken') || sessionStorage.getItem('authToken') ||
+                       localStorage.getItem('token') || sessionStorage.getItem('token') ||
+                       localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token') ||
+                       localStorage.getItem('adminToken') || sessionStorage.getItem('adminToken');
+        if (direct) return direct;
+
+        const sessionStr = localStorage.getItem('adminSession') || sessionStorage.getItem('adminSession') ||
+                           localStorage.getItem('secure_admin_session') || sessionStorage.getItem('secure_admin_session');
+        if (sessionStr) {
+            try {
+                const s = JSON.parse(sessionStr);
+                if (s.token) return s.token;
+            } catch (e) {}
+        }
+        return '';
     }
 
     // Inicialización al cargar el DOM
@@ -478,7 +495,7 @@
                             ` : `
                                 <span class="badge bg-dark bg-opacity-75 position-absolute top-0 start-0 m-2 text-capitalize">${item.category || 'Foto'}</span>
                             `}
-                            <div class="media-preview-actions">
+                            <div class="media-preview-actions position-absolute bottom-0 end-0 m-2">
                                 ${videoLink ? `
                                     <a href="${videoLink}" target="_blank" class="btn btn-sm btn-info text-white py-0 px-2 me-1" title="Ver video">
                                         <i class="fas fa-play"></i>
@@ -505,9 +522,10 @@
         if (!confirm('¿Eliminar este elemento de la galería?')) return;
         try {
             const token = getAuthToken();
+            const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
             const res = await fetch(`/api/tenant-cms/gallery/${id}`, {
                 method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` }
+                headers
             });
             if (res.ok) {
                 showToast('Elemento eliminado', 'success');
@@ -527,9 +545,11 @@
 
         try {
             const token = getAuthToken();
-            const res = await fetch('/api/tenant-cms/staff', {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
+            const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+            const res = await fetch('/api/tenant-cms/staff', { headers });
+            if (!res.ok) {
+                if (res.status === 401) return; // Esperar a que el usuario se autentique
+            }
             const data = await res.json();
 
             if (res.ok && data.success && data.data) {

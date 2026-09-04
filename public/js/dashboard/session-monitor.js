@@ -1,247 +1,181 @@
 /**
- * 🔐 SESSION MONITOR - Sistema de seguridad automática avanzado
- * Extraído de admin-dashboard.html para cumplir con CSP (No inline scripts)
- * Fecha: 19 Nov 2025
+ * 🔐 SESSION MONITOR & UNIVERSAL ADMIN AUTH BRIDGE
+ * Sistema de gestión y verificación de sesión administrativa resiliente (BGE Plantel).
+ * v3.0 (Sep 2026) - Blindaje definitivo:
+ *   - Soporte universal para adminSession, secure_admin_session, bge_auth_token, authToken, token.
+ *   - Cero bloqueos prematuros con pantallas rojas.
+ *   - Provee helper global window.getGlobalAdminToken() y window.checkAdminSession().
  */
 
 (function () {
     'use strict';
 
-    let lastSessionCheck = null;
-    let isRedirecting = false;
-    let hasEverBeenAuthenticated = false;
+    const ADMIN_ROLES = ['admin', 'administrativo', 'directivo', 'administrator', 'director'];
 
-    // 🚨 VERIFICACIÓN INMEDIATA AL CARGAR LA PÁGINA
-    function immediateSecurityCheck() {
-        let hasValidAuth = false;
+    function tryParse(str) {
+        if (!str || typeof str !== 'string') return null;
+        try { return JSON.parse(str); } catch (e) { return null; }
+    }
 
-        // Buscar en localStorage o sessionStorage
-        const bgeToken = localStorage.getItem('bge_auth_token') || sessionStorage.getItem('bge_auth_token') ||
-                         localStorage.getItem('authToken') || sessionStorage.getItem('authToken') ||
-                         localStorage.getItem('token') || sessionStorage.getItem('token');
-        const bgeUser = localStorage.getItem('bge_auth_user') || sessionStorage.getItem('bge_auth_user') ||
-                        localStorage.getItem('auth_user') || sessionStorage.getItem('auth_user');
-        const bgeSession = localStorage.getItem('bge_auth_session') || sessionStorage.getItem('bge_auth_session');
+    /**
+     * 🔑 Helper global para extraer el Token JWT desde cualquier ubicación de almacenamiento
+     */
+    window.getGlobalAdminToken = function () {
+        // 1. Claves directas de almacenamiento
+        const directKeys = [
+            'bge_auth_token',
+            'authToken',
+            'token',
+            'auth_token',
+            'adminToken',
+            'admin_token',
+            'teachers_auth_token'
+        ];
 
-        if (bgeSession || (bgeToken && bgeUser) || bgeToken) {
-            hasValidAuth = true;
-        }
-
-        // Sistema 2: JWT legacy
-        if (!hasValidAuth) {
-            const legacyToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
-            const legacyUser = localStorage.getItem('userData') || sessionStorage.getItem('userData');
-            if (legacyToken && legacyUser) {
-                hasValidAuth = true;
+        for (const key of directKeys) {
+            const val = localStorage.getItem(key) || sessionStorage.getItem(key);
+            if (val && typeof val === 'string' && val.trim().length > 10) {
+                return val.trim();
             }
         }
 
-        // Sistema 3: Secure session (legacy)
-        if (!hasValidAuth) {
-            const session = localStorage.getItem('secure_admin_session') || sessionStorage.getItem('secure_admin_session');
-            if (session) {
+        // 2. Objetos de sesión estructurados (adminSession, secure_admin_session, etc.)
+        const sessionKeys = [
+            'adminSession',
+            'secure_admin_session',
+            'bge_auth_session'
+        ];
+
+        for (const key of sessionKeys) {
+            const raw = localStorage.getItem(key) || sessionStorage.getItem(key);
+            if (raw) {
+                const parsed = tryParse(raw);
+                if (parsed) {
+                    if (parsed.token && typeof parsed.token === 'string') return parsed.token;
+                    if (parsed.tokens?.access) return parsed.tokens.access;
+                    if (parsed.tokens?.accessToken) return parsed.tokens.accessToken;
+                    if (parsed.user?.token) return parsed.user.token;
+                }
+            }
+        }
+
+        // 3. Fallback a cookies
+        if (typeof document !== 'undefined' && document.cookie) {
+            const match = document.cookie.match(/(?:^|;\s*)(?:bge_auth_token|authToken|token)=([^;]+)/);
+            if (match && match[1]) return decodeURIComponent(match[1]);
+        }
+
+        return '';
+    };
+
+    /**
+     * 🛡️ Helper global para verificar si existe una sesión administrativa activa
+     */
+    window.checkAdminSession = function () {
+        // A. Verificar token disponible
+        const token = window.getGlobalAdminToken();
+        if (token) {
+            // Si tiene estructura JWT, verificar expiración si es posible
+            if (token.includes('.')) {
                 try {
-                    const sessionData = JSON.parse(session);
-                    if (sessionData.isAuthenticated || (sessionData.expiresAt && Date.now() < sessionData.expiresAt)) {
-                        hasValidAuth = true;
+                    const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+                    if (payload.exp && (payload.exp * 1000) < Date.now()) {
+                        console.warn('[SESSION-MONITOR] Token JWT expirado localmente.');
+                        return false;
                     }
-                } catch (e) {}
-            }
-        }
-
-        // Sistema 4: window.unifiedLogin (nuevo)
-        if (!hasValidAuth && window.unifiedLogin && typeof window.unifiedLogin.loadSession === 'function') {
-            const sessionData = window.unifiedLogin.loadSession();
-            if (sessionData && sessionData.token) {
-                hasValidAuth = true;
-                void 0;
-            }
-        }
-
-        // Si no hay sesión válida, bloquear inmediatamente
-        if (!hasValidAuth) {
-            void 0;
-            blockPageAndRedirect('Acceso no autorizado');
-            return false;
-        }
-
-        hasEverBeenAuthenticated = true;
-        return true;
-    }
-
-    function blockPageAndRedirect(reason) {
-        if (isRedirecting) return;
-        isRedirecting = true;
-
-        void 0;
-
-        // Bloquear toda la página inmediatamente
-        const overlay = document.createElement('div');
-        overlay.style.cssText = `
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.9); z-index: 999998;
-            display: flex; align-items: center; justify-content: center;
-        `;
-
-        // Mostrar notificación de seguridad
-        const notification = document.createElement('div');
-        notification.style.cssText = `
-            background: #dc3545; color: white; padding: 30px; border-radius: 12px;
-            text-align: center; max-width: 400px; box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-        `;
-        notification.innerHTML = `
-            <i class="fas fa-shield-alt fa-3x mb-3"></i>
-            <h3>🔐 Seguridad Activada</h3>
-            <p><strong>Motivo:</strong> ${reason}</p>
-            <p>Redirigiendo por seguridad...</p>
-            <div class="spinner-border text-light mt-3" role="status">
-                <span class="visually-hidden">Redirigiendo...</span>
-            </div>
-        `;
-
-        overlay.appendChild(notification);
-        document.body.appendChild(overlay);
-
-        // Ocultar todo el contenido de la página
-        document.body.style.overflow = 'hidden';
-        const mainContent = document.querySelector('main');
-        if (mainContent) mainContent.style.display = 'none';
-
-        // Redirigir después de un breve delay
-        setTimeout(() => {
-            void 0;
-            // window.location.replace('index.html'); // replace evita volver con botón atrás
-        }, 2000);
-    }
-
-    function checkSessionAndRedirect() {
-        // Solo ejecutar si no estamos en proceso de redirección
-        if (isRedirecting) return;
-
-        try {
-            // Verificar múltiples formas de detectar cierre de sesión
-            let isLoggedOut = false;
-
-            // ✅ FIX (16 Dec 2025): Verificar claves correctas
-            // 1. Verificar JWT moderno (bge_auth_*)
-            const bgeToken = localStorage.getItem('bge_auth_token') || sessionStorage.getItem('bge_auth_token') ||
-                             localStorage.getItem('authToken') || sessionStorage.getItem('authToken') ||
-                             localStorage.getItem('token') || sessionStorage.getItem('token');
-            const bgeUser = localStorage.getItem('bge_auth_user') || sessionStorage.getItem('bge_auth_user') ||
-                            localStorage.getItem('auth_user') || sessionStorage.getItem('auth_user');
-            const bgeSession = localStorage.getItem('bge_auth_session') || sessionStorage.getItem('bge_auth_session');
-
-            const hasModernJWT = !!bgeSession || (bgeToken && bgeUser) || !!bgeToken;
-
-            // 2. Verificar JWT legacy
-            const legacyToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
-            const legacyUser = localStorage.getItem('userData') || sessionStorage.getItem('userData');
-            const hasLegacyJWT = legacyToken && legacyUser;
-
-            // 3. Verificar secure_admin_session
-            const session = localStorage.getItem('secure_admin_session') || sessionStorage.getItem('secure_admin_session');
-            const hasSecureSession = session ? (() => {
-                try {
-                    const sessionData = JSON.parse(session);
-                    return sessionData.isAuthenticated && sessionData.expiresAt && Date.now() < sessionData.expiresAt;
+                    return true;
                 } catch (e) {
-                    return false;
-                }
-            })() : false;
-
-            // 4. Verificar window.unifiedLogin
-            let hasUnifiedLogin = false;
-            if (window.unifiedLogin && typeof window.unifiedLogin.loadSession === 'function') {
-                const sessionData = window.unifiedLogin.loadSession();
-                hasUnifiedLogin = sessionData && sessionData.token;
-            }
-
-            // Si ALGUNO de los sistemas tiene autenticación válida, permitir acceso
-            const hasAnyValidAuth = hasModernJWT || hasLegacyJWT || hasSecureSession || hasUnifiedLogin;
-
-            // Si DU no tiene autenticación válida y ANTES estaba autenticado, es un logout
-            if (!hasAnyValidAuth && hasEverBeenAuthenticated) {
-                void 0;
-                isLoggedOut = true;
-            }
-
-            // Verificar notificación de cierre en ventana
-            if (sessionStorage.getItem('admin_logout_redirect') === 'true') {
-                void 0;
-                sessionStorage.removeItem('admin_logout_redirect');
-                isLoggedOut = true;
-            }
-
-            // Si se detectó cierre de sesión, bloquear inmediatamente
-            if (isLoggedOut) {
-                blockPageAndRedirect('Sesión cerrada');
-            }
-
-        } catch (error) {
-            console.error('🚨 [SECURITY ERROR]', error);
-        }
-    }
-
-    // 🛡️ PROTECCIÓN CONTRA BOTÓN DE RETROCESO
-    function preventBackNavigation() {
-        // Agregar entrada al historial para evitar retroceso directo
-        history.pushState(null, null, location.href);
-
-        // Interceptar evento de retroceso
-        window.addEventListener('popstate', function (event) {
-            void 0;
-
-            // ✅ FIX (16 Dec 2025): Verificar claves correctas
-            // Verificar inmediatamente la sesión en claves correctas
-            const bgeToken = localStorage.getItem('bge_auth_token') || sessionStorage.getItem('bge_auth_token');
-            const bgeUser = localStorage.getItem('bge_auth_user') || sessionStorage.getItem('bge_auth_user');
-            const legacyToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
-            const legacyUser = localStorage.getItem('userData') || sessionStorage.getItem('userData');
-            const session = localStorage.getItem('secure_admin_session') || sessionStorage.getItem('secure_admin_session');
-
-            let hasValidAuth = (bgeToken && bgeUser) || (legacyToken && legacyUser);
-
-            if (!hasValidAuth && session) {
-                try {
-                    const sessionData = JSON.parse(session);
-                    hasValidAuth = sessionData.isAuthenticated && sessionData.expiresAt && Date.now() < sessionData.expiresAt;
-                } catch (e) {
-                    // Ignore parse errors
+                    return true; // Token opaco o no-JWT válido
                 }
             }
+            return true;
+        }
 
-            if (!hasValidAuth) {
-                void 0;
-                blockPageAndRedirect('Navegación no autorizada');
+        // B. Verificar adminSession / secure_admin_session
+        const adminSessionStr = localStorage.getItem('adminSession') || sessionStorage.getItem('adminSession') ||
+                                localStorage.getItem('secure_admin_session') || sessionStorage.getItem('secure_admin_session');
+        if (adminSessionStr) {
+            const sessionData = tryParse(adminSessionStr);
+            if (sessionData) {
+                const isExp = (sessionData.expires && Date.now() > sessionData.expires) ||
+                              (sessionData.expiresAt && Date.now() > sessionData.expiresAt);
+                if (!isExp && (sessionData.isAuthenticated || sessionData.token)) {
+                    return true;
+                }
+            }
+        }
+
+        // C. Verificar usuario con rol administrativo
+        const userKeys = ['bge_auth_user', 'bge_user_data', 'auth_user', 'userData'];
+        for (const key of userKeys) {
+            const rawUser = localStorage.getItem(key) || sessionStorage.getItem(key);
+            if (rawUser) {
+                const user = tryParse(rawUser);
+                const role = (user?.role || user?.tipo_usuario || user?.user?.role || '').toLowerCase();
+                if (ADMIN_ROLES.includes(role)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    };
+
+    // Función amigable en caso de que no haya sesión o se cierre
+    function handleUnauthenticatedSession(reason) {
+        console.warn(`⚠️ [SESSION-MONITOR] Sesión no detectada (${reason}). Preparando inicio de sesión.`);
+
+        // Si fue un logout explícito, redirigir limpiamente
+        if (sessionStorage.getItem('admin_logout_redirect') === 'true') {
+            sessionStorage.removeItem('admin_logout_redirect');
+            window.location.replace('index.html');
+            return;
+        }
+
+        // Si estamos en admin-dashboard, dar oportunidad al usuario de autenticarse
+        const promptLogin = () => {
+            const modalEl = document.getElementById('loginModal') || document.getElementById('unified-auth-modal');
+            if (modalEl && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                modal.show();
             } else {
-                // Si hay sesión válida, permitir pero mantener en la misma página
-                history.pushState(null, null, location.href);
+                // Notificación sutil no destructiva
+                const banner = document.createElement('div');
+                banner.className = 'alert alert-warning text-center fixed-top m-3 shadow-lg';
+                banner.style.zIndex = '999999';
+                banner.innerHTML = `
+                    <i class="fas fa-lock me-2"></i>
+                    <strong>Acceso Administrativo Requerido:</strong> Inicie sesión para gestionar el plantel.
+                    <a href="index.html" class="btn btn-sm btn-primary ms-3">Ir al Inicio</a>
+                `;
+                document.body.appendChild(banner);
             }
-        });
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => setTimeout(promptLogin, 300));
+        } else {
+            setTimeout(promptLogin, 300);
+        }
     }
 
-    // 🚀 INICIALIZACIÓN DEL SISTEMA DE SEGURIDAD
+    // Inicialización al cargar el DOM con período de gracia
     document.addEventListener('DOMContentLoaded', function () {
-        // Verificación inmediata
-        if (!immediateSecurityCheck()) {
-            return; // Ya se está redirigiendo
-        }
+        setTimeout(function () {
+            const isValid = window.checkAdminSession();
+            if (!isValid) {
+                handleUnauthenticatedSession('Verificación post-carga');
+            } else {
+                console.log('✅ [SESSION-MONITOR] Sesión administrativa validada con éxito.');
+            }
+        }, 800); // 800ms de gracia para que todos los stores e inicializadores se estabilicen
 
-        // Activar protección contra retroceso
-        preventBackNavigation();
-
-        // 🔧 OPTIMIZADO: Page Visibility API para pausar cuando la página no está visible
-        let securityInterval = null;
-        let isPageVisible = !document.hidden;
-
-        // Verificar cuando hay cambios en localStorage desde otras pestañas
+        // Sincronización entre pestañas sin romper navegación
         window.addEventListener('storage', function (e) {
-            if ((e.key === 'bge_auth_token' || e.key === 'secure_admin_session') && !e.newValue) {
-                blockPageAndRedirect('Sesión cerrada en otra pestaña');
+            if (e.key === 'admin_logout_redirect' && e.newValue === 'true') {
+                handleUnauthenticatedSession('Cierre de sesión en otra pestaña');
             }
         });
     });
 
-    // Ejecutar verificación inmediata incluso antes del DOMContentLoaded
-    immediateSecurityCheck();
 })();

@@ -204,16 +204,37 @@ class GlobalSearch {
     /**
      * Realizar búsqueda en el backend
      */
+    /**
+     * Realizar búsqueda en el backend (pgvector + búsqueda léxica)
+     */
     async performSearch(query) {
         try {
-            const response = await fetch(`/api/search/global?q=${encodeURIComponent(query)}&limit=5`);
-            const data = await response.json();
+            const [semanticRes, globalRes] = await Promise.allSettled([
+                fetch(`/api/search/semantic?q=${encodeURIComponent(query)}&limit=3`),
+                fetch(`/api/search/global?q=${encodeURIComponent(query)}&limit=5`)
+            ]);
 
-            if (!data.success) {
-                throw new Error(data.error);
+            let semanticItems = [];
+            if (semanticRes.status === 'fulfilled' && semanticRes.value.ok) {
+                try {
+                    const sJson = await semanticRes.value.json();
+                    if (sJson.success && Array.isArray(sJson.data)) {
+                        semanticItems = sJson.data;
+                    }
+                } catch (e) {}
             }
 
-            this.displayResults(data.results);
+            let globalData = { total: 0, noticias: [], eventos: [], avisos: [], comunicados: [], egresados: [] };
+            if (globalRes.status === 'fulfilled' && globalRes.value.ok) {
+                try {
+                    const gJson = await globalRes.value.json();
+                    if (gJson.success && gJson.results) {
+                        globalData = gJson.results;
+                    }
+                } catch (e) {}
+            }
+
+            this.displayResults(globalData, semanticItems);
         } catch (error) {
             console.error('Error en búsqueda:', error);
             this.resultsContainer.innerHTML = DOMPurify.sanitize(`
@@ -226,15 +247,17 @@ class GlobalSearch {
     }
 
     /**
-     * Mostrar resultados de búsqueda
+     * Mostrar resultados de búsqueda (incluyendo conocimiento semántico pgvector)
      */
-    displayResults(results) {
-        if (results.total === 0) {
+    displayResults(results, semanticItems = []) {
+        const totalMatches = (results.total || 0) + semanticItems.length;
+
+        if (totalMatches === 0) {
             this.resultsContainer.innerHTML = DOMPurify.sanitize(`
                 <div class="text-center text-muted py-5">
                     <i class="fas fa-inbox fa-3x mb-3 opacity-25"></i>
                     <p>No se encontraron resultados para "${this.currentQuery}"</p>
-                    <small class="text-muted">Intenta con otros términos de búsqueda</small>
+                    <small class="text-muted">Intenta con otros términos como "becas", "falta médica", "horarios" o "capacitaciones"</small>
                 </div>
             `);
             return;
@@ -243,45 +266,81 @@ class GlobalSearch {
         let html = '';
         this.results = [];
 
+        // 🧠 RESULTADOS SEMÁNTICOS PGVECTOR (DESTACADOS)
+        if (semanticItems.length > 0) {
+            html += `
+                <div class="result-section mb-4 p-3 rounded-3 bg-light border border-primary border-opacity-25 shadow-sm">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-gradient bg-primary text-white px-2 py-1">
+                            <i class="fas fa-brain me-1"></i>Conocimiento Institucional (pgvector)
+                        </span>
+                        <small class="text-muted">Búsqueda Semántica Inteligente</small>
+                    </div>
+                    <div class="list-group list-group-flush">
+            `;
+
+            semanticItems.forEach(item => {
+                const scorePercent = Math.min(Math.round((item.similarity_score || 0) * 100), 100);
+                html += `
+                    <div class="list-group-item list-group-item-action border-0 px-2 py-2 rounded mb-1">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h6 class="mb-1 text-primary fw-bold">
+                                <i class="fas fa-book-reader me-2"></i>${item.title}
+                            </h6>
+                            <span class="badge bg-info text-dark">${scorePercent}% coincidencia</span>
+                        </div>
+                        <p class="mb-1 text-secondary small">${item.content}</p>
+                        <div class="d-flex justify-content-between align-items-center mt-1">
+                            <small class="text-muted text-capitalize"><i class="fas fa-tag me-1"></i>${item.category}</small>
+                            ${item.metadata?.source ? `<small class="text-muted"><i class="fas fa-certificate me-1"></i>${item.metadata.source}</small>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `
+                    </div>
+                </div>
+            `;
+        }
+
         // Resultados de Noticias
-        if (results.noticias.length > 0) {
+        if (results.noticias && results.noticias.length > 0) {
             html += this.renderResultSection('Noticias', results.noticias, 'newspaper', 'primary');
             this.results.push(...results.noticias);
         }
 
         // Resultados de Eventos
-        if (results.eventos.length > 0) {
+        if (results.eventos && results.eventos.length > 0) {
             html += this.renderResultSection('Eventos', results.eventos, 'calendar-alt', 'success');
             this.results.push(...results.eventos);
         }
 
         // Resultados de Avisos
-        if (results.avisos.length > 0) {
+        if (results.avisos && results.avisos.length > 0) {
             html += this.renderResultSection('Avisos', results.avisos, 'bullhorn', 'warning');
             this.results.push(...results.avisos);
         }
 
         // Resultados de Comunicados
-        if (results.comunicados.length > 0) {
+        if (results.comunicados && results.comunicados.length > 0) {
             html += this.renderResultSection('Comunicados', results.comunicados, 'file-alt', 'info');
             this.results.push(...results.comunicados);
         }
 
         // Resultados de Egresados
-        if (results.egresados.length > 0) {
+        if (results.egresados && results.egresados.length > 0) {
             html += this.renderResultSection('Egresados', results.egresados, 'user-graduate', 'secondary');
             this.results.push(...results.egresados);
         }
 
         html += `
             <div class="text-center text-muted py-3 border-top">
-                <small>Total: ${results.total} resultados encontrados</small>
+                <small>Total: ${totalMatches} resultados encontrados</small>
             </div>
         `;
 
         this.resultsContainer.innerHTML = DOMPurify.sanitize(html);
-
-        // Agregar event listeners a los resultados
         this.bindResultClicks();
     }
 
