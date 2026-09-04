@@ -497,12 +497,19 @@
                                 </select>
                             </div>
                             <div class="col-md-12">
-                                <label class="form-label fw-semibold">URL del Logotipo Oficial BGE</label>
+                                <label class="form-label fw-semibold">Logotipo Oficial del Plantel / BGE</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-image"></i></span>
                                     <input type="text" id="cfg_logo_url" class="form-control" placeholder="/images/logo/logo-general-bge.webp">
+                                    <input type="file" id="cfg_logo_file" class="d-none" accept="image/*">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('cfg_logo_file').click()">
+                                        <i class="fas fa-upload me-1"></i>Subir desde mi equipo
+                                    </button>
                                 </div>
-                                <small class="text-muted">Por defecto se utiliza el emblema oficial universal del Bachillerato General Estatal.</small>
+                                <div class="d-flex align-items-center gap-3 mt-2">
+                                    <img id="logoPreviewImg" src="/images/logo/logo-general-bge.webp" alt="Vista previa del logo" style="width: 44px; height: 44px; object-fit: contain;" class="border p-1 rounded bg-white shadow-sm">
+                                    <small class="text-muted">Por defecto se utiliza el emblema oficial universal del BGE. Puedes subir una imagen desde tu PC/celular o pegar una URL directa.</small>
+                                </div>
                             </div>
                         </div>
                         <div class="d-flex justify-content-end mt-4">
@@ -534,7 +541,12 @@
                                 <input type="text" id="cfg_director_phone" class="form-control" placeholder="(222) 123-4567">
                             </div>
                             <div class="col-md-12">
-                                <label class="form-label fw-semibold">Mensaje de Bienvenida Institucional</label>
+                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                    <label class="form-label fw-semibold mb-0">Mensaje de Bienvenida Institucional</label>
+                                    <button type="button" class="btn btn-sm btn-outline-primary py-0" id="btnAiGenDirectorMsg">
+                                        <i class="fas fa-robot me-1"></i>Redactar con IA
+                                    </button>
+                                </div>
                                 <textarea id="cfg_director_message" class="form-control" rows="3" placeholder="Palabras de bienvenida del director para la comunidad escolar en la portada del sitio web..."></textarea>
                             </div>
                         </div>
@@ -721,44 +733,79 @@
             <div class="sisat-panel-section d-none" id="section-multimedia">
                 <div class="sisat-card">
                     <div class="sisat-card-header">
-                        <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-camera-retro text-warning me-2"></i>Gestor de Imágenes y Galería Institucional</h5>
-                        <span class="badge bg-warning text-dark">CMS Fotos</span>
+                        <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-photo-video text-warning me-2"></i>Gestor de Galería & Multimedia (Fotos y Videos)</h5>
+                        <span class="badge bg-warning text-dark">CMS Multimedia</span>
                     </div>
                     <div class="sisat-card-body">
                         <div class="alert alert-info py-2 small">
-                            <i class="fas fa-info-circle me-1"></i> <strong>¿Cómo poblar fotos y videos?</strong> Puedes ingresar imágenes alojadas en la web o subidas a tu servidor, clasificarlas por categoría (Académica, Deportes, Eventos, Laboratorios) y se mostrarán automáticamente en la sección de Galería pública del plantel.
+                            <i class="fas fa-info-circle me-1"></i> <strong>¿Cómo poblar fotos y videos en tu página?</strong>
+                            <ul class="mb-0 ps-3 mt-1">
+                                <li><strong>Fotografías:</strong> Puedes subir fotos directamente desde tu computadora/celular o pegar una URL web. Se publicarán automáticamente en la sección de Galería de <code>comunidad.html</code> y <code>galeria.html</code>.</li>
+                                <li><strong>Videos:</strong> Pega el enlace de un video o transmisión de <strong>YouTube</strong> o <strong>Vimeo</strong>. El sistema genera la miniatura y el reproductor adaptativo de inmediato sin consumir espacio de tu servidor.</li>
+                            </ul>
                         </div>
-                        <div class="row g-3 bg-light p-3 rounded mb-4 border">
-                            <div class="col-md-4">
-                                <label class="form-label fw-semibold small">Título de la Fotografía</label>
-                                <input type="text" id="newPhotoTitle" class="form-control form-control-sm" placeholder="Ej: Torneo Deportivo 2026">
+
+                        <!-- Formulario de Nuevo Elemento Multimedia -->
+                        <div class="bg-light p-3 rounded mb-4 border">
+                            <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+                                <div class="btn-group btn-group-sm" role="group" id="mediaTypeToggle">
+                                    <input type="radio" class="btn-check" name="mediaType" id="mediaTypePhoto" checked>
+                                    <label class="btn btn-outline-primary" for="mediaTypePhoto"><i class="fas fa-camera me-1"></i>Fotografía</label>
+
+                                    <input type="radio" class="btn-check" name="mediaType" id="mediaTypeVideo">
+                                    <label class="btn btn-outline-danger" for="mediaTypeVideo"><i class="fab fa-youtube me-1"></i>Video de YouTube</label>
+                                </div>
+                                <span class="small text-muted" id="mediaTypeHint">Subiendo imagen a la galería</span>
                             </div>
-                            <div class="col-md-5">
-                                <label class="form-label fw-semibold small">URL de la Imagen</label>
-                                <input type="url" id="newPhotoUrl" class="form-control form-control-sm" placeholder="https://ejemplo.com/foto.jpg o /images/...">
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label fw-semibold small">Categoría</label>
-                                <select id="newPhotoCategory" class="form-select form-select-sm">
-                                    <option value="academica">Académica</option>
-                                    <option value="deportes">Deportes</option>
-                                    <option value="eventos">Eventos Cívicos</option>
-                                    <option value="instalaciones">Instalaciones</option>
-                                </select>
-                            </div>
-                            <div class="col-12 text-end">
-                                <button type="button" class="btn btn-sm btn-primary" id="btnAddGalleryPhoto">
-                                    <i class="fas fa-plus me-1"></i>Agregar Fotografía a la Galería
-                                </button>
+
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold small">Título del Contenido</label>
+                                    <input type="text" id="newPhotoTitle" class="form-control form-control-sm" placeholder="Ej: Torneo Deportivo 2026">
+                                </div>
+                                <div class="col-md-5">
+                                    <label class="form-label fw-semibold small" id="lblMediaUrl">URL o Archivo de Imagen</label>
+                                    <div class="input-group input-group-sm">
+                                        <input type="text" id="newPhotoUrl" class="form-control" placeholder="https://... o selecciona un archivo local">
+                                        <input type="file" id="newPhotoFile" class="d-none" accept="image/*">
+                                        <button type="button" class="btn btn-outline-secondary" id="btnBrowsePhoto" onclick="document.getElementById('newPhotoFile').click()">
+                                            <i class="fas fa-folder-open me-1"></i>Examinar
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-semibold small">Categoría</label>
+                                    <select id="newPhotoCategory" class="form-select form-select-sm">
+                                        <option value="academica">Académica</option>
+                                        <option value="deportes">Deportes</option>
+                                        <option value="eventos">Eventos Cívicos</option>
+                                        <option value="instalaciones">Instalaciones</option>
+                                        <option value="videos">Videos Institucionales</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 d-flex align-items-center justify-content-between">
+                                    <div id="mediaPreviewMini" class="d-none d-flex align-items-center gap-2">
+                                        <img id="mediaPreviewThumb" src="" alt="Vista previa" style="width: 48px; height: 36px; object-fit: cover; border-radius: 4px;" class="border">
+                                        <span class="small text-success fw-medium"><i class="fas fa-check-circle me-1"></i>Imagen lista</span>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-primary ms-auto" id="btnAddGalleryPhoto">
+                                        <i class="fas fa-plus me-1"></i>Agregar a la Galería
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Grid de Fotografías Actuales -->
-                        <h6 class="fw-bold text-dark mb-3"><i class="fas fa-images me-2 text-primary"></i>Fotografías Activas en la Galería</h6>
+                        <!-- Grid de Fotografías y Videos Actuales -->
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h6 class="fw-bold text-dark mb-0"><i class="fas fa-images me-2 text-primary"></i>Contenido Multimedia Activo en la Galería</h6>
+                            <button class="btn btn-sm btn-outline-secondary py-0" id="btnRefreshGallery">
+                                <i class="fas fa-sync-alt me-1"></i>Actualizar
+                            </button>
+                        </div>
                         <div class="row g-3" id="galleryGridContainer">
                             <div class="col-12 text-center py-4 text-muted">
                                 <i class="fas fa-spinner fa-spin fa-2x mb-2"></i>
-                                <div>Cargando fotos del plantel...</div>
+                                <div>Cargando contenido multimedia...</div>
                             </div>
                         </div>
                     </div>
@@ -801,10 +848,28 @@
             <!-- PANEL 6: AVISOS & COMUNICADOS -->
             <div class="sisat-panel-section d-none" id="section-comunicados">
                 <div class="sisat-card">
-                    <div class="sisat-card-header">
+                    <div class="sisat-card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
                         <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-bullhorn text-info me-2"></i>Publicación de Avisos y Circulares</h5>
+                        <span class="badge bg-info text-dark">Portada Escolar</span>
                     </div>
                     <div class="sisat-card-body">
+                        <!-- Asistente IA para Redacción de Circulares SEP -->
+                        <div class="p-3 mb-4 rounded border shadow-sm" style="background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%); border-color: #c4b5fd !important;">
+                            <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-2">
+                                <div class="fw-bold text-dark">
+                                    <i class="fas fa-robot me-2" style="color: #7c3aed;"></i>Redactor Inteligente de Circulares y Avisos SEP (IA)
+                                </div>
+                                <span class="badge text-white" style="background-color: #7c3aed;">Automatización Directiva</span>
+                            </div>
+                            <p class="small text-muted mb-2">Escribe tu instrucción o idea breve (ej: <em>"Suspender clases este viernes por Consejo Técnico Escolar y reanudar el lunes 7:30 am"</em>). La IA generará el comunicado oficial con formato institucional y saludo protocolario para la comunidad escolar.</p>
+                            <div class="input-group">
+                                <input type="text" id="aiNoticePromptInput" class="form-control" placeholder="Ej: Convocatoria para junta de padres de familia y firma de boletas el martes...">
+                                <button type="button" class="btn text-white fw-semibold" id="btnAiGenNotice" style="background-color: #7c3aed;">
+                                    <i class="fas fa-magic me-1"></i>Redactar con IA
+                                </button>
+                            </div>
+                        </div>
+
                         <p class="text-muted">Publica avisos urgentes o circulares que se destacarán en la página de inicio del bachillerato.</p>
                         <div class="row g-3">
                             <div class="col-md-8">
@@ -821,10 +886,10 @@
                             </div>
                             <div class="col-12">
                                 <label class="form-label fw-semibold">Cuerpo del Comunicado</label>
-                                <textarea class="form-control" id="notice_content" rows="4" placeholder="Detalles de fechas, requisitos y documentación requerida..."></textarea>
+                                <textarea class="form-control" id="notice_content" rows="5" placeholder="Detalles de fechas, requisitos y documentación requerida..."></textarea>
                             </div>
                             <div class="col-12 text-end">
-                                <button type="button" class="btn btn-info text-white fw-semibold" onclick="alert('✅ Comunicado publicado en la portada escolar.')">
+                                <button type="button" class="btn btn-info text-white fw-semibold" id="btnPublishNotice" onclick="alert('✅ Comunicado publicado en la portada escolar.')">
                                     <i class="fas fa-paper-plane me-1"></i>Publicar Aviso en Portada
                                 </button>
                             </div>
@@ -921,6 +986,32 @@
                                             Ir al Redactor de Avisos
                                         </button>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Consola Directiva de Asistencia Libre -->
+                        <div class="mt-4 p-3 border rounded bg-light">
+                            <h6 class="fw-bold text-dark mb-2">
+                                <i class="fas fa-terminal me-2" style="color: #7c3aed;"></i>Consola Directiva de Asistencia Libre (IA)
+                            </h6>
+                            <p class="small text-muted mb-3">Pídele al Asistente IA cualquier documento, discurso para honores a la bandera, protocolo de convivencia o circular institucional:</p>
+                            <div class="mb-3">
+                                <textarea id="aiFreePromptInput" class="form-control" rows="2" placeholder="Ej: Redacta un discurso breve de 3 minutos para los honores a la bandera conmemorando el inicio de clases..."></textarea>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                                <div class="small text-muted" id="aiFreeStatus"><i class="fas fa-info-circle me-1"></i>Requiere tu API Key de Gemini configurada arriba</div>
+                                <button type="button" class="btn btn-sm text-white fw-semibold px-3" id="btnAiRunFreePrompt" style="background-color: #7c3aed;">
+                                    <i class="fas fa-paper-plane me-1"></i>Consultar a la IA
+                                </button>
+                            </div>
+                            <div id="aiFreeResultContainer" class="d-none">
+                                <label class="form-label small fw-semibold text-muted">Respuesta generada por la IA:</label>
+                                <div class="p-3 bg-white rounded border position-relative">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary position-absolute top-0 end-0 m-2 py-0 px-2" id="btnCopyAiFreeResult">
+                                        <i class="fas fa-copy me-1"></i>Copiar
+                                    </button>
+                                    <div id="aiFreeResultText" style="white-space: pre-wrap;" class="small text-dark"></div>
                                 </div>
                             </div>
                         </div>

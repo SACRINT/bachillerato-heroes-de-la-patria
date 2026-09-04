@@ -123,6 +123,33 @@
         if (saveBtn) {
             saveBtn.addEventListener('click', saveSchoolConfig);
         }
+
+        // Listener para subir logotipo desde el equipo
+        const logoFileInput = document.getElementById('cfg_logo_file');
+        const logoUrlInput = document.getElementById('cfg_logo_url');
+        const logoPreview = document.getElementById('logoPreviewImg');
+        if (logoFileInput) {
+            logoFileInput.addEventListener('change', function () {
+                const file = this.files[0];
+                if (!file) return;
+                if (!file.type.startsWith('image/')) {
+                    alert('Por favor selecciona un archivo de imagen válido.');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    if (logoUrlInput) logoUrlInput.value = e.target.result;
+                    if (logoPreview) logoPreview.src = e.target.result;
+                    showToast('✅ Logotipo cargado desde tu equipo (Guarda cambios para persistir)', 'success');
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+        if (logoUrlInput && logoPreview) {
+            logoUrlInput.addEventListener('input', function () {
+                if (this.value.trim()) logoPreview.src = this.value.trim();
+            });
+        }
     }
 
     // ================================================================
@@ -169,6 +196,8 @@
         setVal('cfg_turno', data.turno);
         setVal('cfg_eslogan', data.eslogan);
         setVal('cfg_logo_url', data.logo_url);
+        const logoPreview = document.getElementById('logoPreviewImg');
+        if (logoPreview && data.logo_url) logoPreview.src = data.logo_url;
 
         // Director
         setVal('cfg_director_name', data.director_name);
@@ -279,15 +308,101 @@
     // ================================================================
     function setupMediaManager() {
         const btnAddPhoto = document.getElementById('btnAddGalleryPhoto');
+        const photoFileInput = document.getElementById('newPhotoFile');
+        const photoUrlInput = document.getElementById('newPhotoUrl');
+        const miniPreview = document.getElementById('mediaPreviewMini');
+        const miniThumb = document.getElementById('mediaPreviewThumb');
+        const mediaTypeHint = document.getElementById('mediaTypeHint');
+        const lblMediaUrl = document.getElementById('lblMediaUrl');
+        const btnBrowsePhoto = document.getElementById('btnBrowsePhoto');
+        const btnRefreshGallery = document.getElementById('btnRefreshGallery');
+        const radioPhoto = document.getElementById('mediaTypePhoto');
+        const radioVideo = document.getElementById('mediaTypeVideo');
+        const categorySelect = document.getElementById('newPhotoCategory');
+
+        function extractYouTubeId(url) {
+            if (!url) return null;
+            const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+            return match ? match[1] : null;
+        }
+
+        if (radioPhoto && radioVideo) {
+            radioPhoto.addEventListener('change', () => {
+                if (mediaTypeHint) mediaTypeHint.textContent = 'Subiendo imagen a la galería';
+                if (lblMediaUrl) lblMediaUrl.textContent = 'URL o Archivo de Imagen';
+                if (btnBrowsePhoto) btnBrowsePhoto.classList.remove('d-none');
+                if (photoUrlInput) photoUrlInput.placeholder = 'https://... o selecciona un archivo local';
+                if (categorySelect) categorySelect.value = 'academica';
+            });
+
+            radioVideo.addEventListener('change', () => {
+                if (mediaTypeHint) mediaTypeHint.textContent = 'Enlace de video de YouTube o Vimeo';
+                if (lblMediaUrl) lblMediaUrl.textContent = 'Enlace de YouTube (URL)';
+                if (btnBrowsePhoto) btnBrowsePhoto.classList.add('d-none');
+                if (photoUrlInput) photoUrlInput.placeholder = 'https://www.youtube.com/watch?v=... o https://youtu.be/...';
+                if (categorySelect) categorySelect.value = 'videos';
+            });
+        }
+
+        if (photoFileInput) {
+            photoFileInput.addEventListener('change', function () {
+                const file = this.files[0];
+                if (!file) return;
+                if (!file.type.startsWith('image/')) {
+                    alert('Por favor selecciona un archivo de imagen válido.');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    if (photoUrlInput) photoUrlInput.value = e.target.result;
+                    if (miniThumb) miniThumb.src = e.target.result;
+                    if (miniPreview) miniPreview.classList.remove('d-none');
+                    showToast('📷 Imagen cargada y lista para agregar', 'info');
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        if (photoUrlInput) {
+            photoUrlInput.addEventListener('input', function () {
+                const val = this.value.trim();
+                const ytId = extractYouTubeId(val);
+                if (ytId) {
+                    const thumbUrl = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
+                    if (miniThumb) miniThumb.src = thumbUrl;
+                    if (miniPreview) miniPreview.classList.remove('d-none');
+                    if (radioVideo) radioVideo.checked = true;
+                    if (categorySelect) categorySelect.value = 'videos';
+                } else if (val.startsWith('http') || val.startsWith('data:image')) {
+                    if (miniThumb) miniThumb.src = val;
+                    if (miniPreview) miniPreview.classList.remove('d-none');
+                } else {
+                    if (miniPreview) miniPreview.classList.add('d-none');
+                }
+            });
+        }
+
+        if (btnRefreshGallery) {
+            btnRefreshGallery.addEventListener('click', async () => {
+                await loadGalleryData();
+                showToast('Galería sincronizada', 'info');
+            });
+        }
+
         if (btnAddPhoto) {
             btnAddPhoto.addEventListener('click', async function () {
                 const title = document.getElementById('newPhotoTitle')?.value.trim();
-                const url = document.getElementById('newPhotoUrl')?.value.trim();
-                const category = document.getElementById('newPhotoCategory')?.value || 'general';
+                let url = photoUrlInput?.value.trim();
+                let category = categorySelect?.value || 'general';
 
                 if (!url) {
-                    alert('Por favor ingresa la URL de la imagen.');
+                    alert('Por favor ingresa una URL o selecciona un archivo de imagen/video.');
                     return;
+                }
+
+                const ytId = extractYouTubeId(url);
+                if (ytId) {
+                    category = 'videos';
                 }
 
                 try {
@@ -298,16 +413,17 @@
                             'Content-Type': 'application/json',
                             'Authorization': `Bearer ${token}`
                         },
-                        body: JSON.stringify({ title, image_url: url, category })
+                        body: JSON.stringify({ title: title || (ytId ? 'Video Institucional BGE' : 'Foto de Plantel'), image_url: url, category })
                     });
                     const data = await res.json();
                     if (res.ok && data.success) {
-                        showToast('✅ Foto agregada a la galería', 'success');
-                        document.getElementById('newPhotoTitle').value = '';
-                        document.getElementById('newPhotoUrl').value = '';
+                        showToast('✅ Elemento agregado a la galería', 'success');
+                        if (document.getElementById('newPhotoTitle')) document.getElementById('newPhotoTitle').value = '';
+                        if (photoUrlInput) photoUrlInput.value = '';
+                        if (miniPreview) miniPreview.classList.add('d-none');
                         await loadGalleryData();
                     } else {
-                        showToast('⚠️ ' + (data.error || 'Error al guardar foto'), 'danger');
+                        showToast('⚠️ ' + (data.error || 'Error al guardar'), 'danger');
                     }
                 } catch (err) {
                     showToast('❌ Error al conectar con el servidor', 'danger');
@@ -331,27 +447,54 @@
                 if (data.data.length === 0) {
                     container.innerHTML = `
                         <div class="col-12 text-center text-muted py-4">
-                            <i class="fas fa-images fa-3x mb-2 text-secondary"></i>
-                            <p>No hay fotos en la galería aún. Agrega la primera arriba.</p>
+                            <i class="fas fa-photo-video fa-3x mb-2 text-secondary"></i>
+                            <p>No hay fotos o videos en la galería aún. Agrega el primero arriba.</p>
                         </div>`;
                     return;
                 }
 
-                container.innerHTML = data.data.map(item => `
+                container.innerHTML = data.data.map(item => {
+                    const isVideo = item.category === 'videos' || 
+                                   item.image_url.includes('youtube.com') || 
+                                   item.image_url.includes('youtu.be');
+                    
+                    let thumbUrl = item.image_url;
+                    let videoLink = null;
+                    const ytMatch = item.image_url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+                    if (ytMatch) {
+                        thumbUrl = `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg`;
+                        videoLink = `https://www.youtube.com/watch?v=${ytMatch[1]}`;
+                    }
+
+                    return `
                     <div class="col-sm-6 col-md-4 col-lg-3">
-                        <div class="media-preview-card">
-                            <img src="${item.image_url}" alt="${item.title || 'Foto'}" class="media-preview-img" onerror="this.src='/images/hero-bge-main.webp'">
+                        <div class="media-preview-card position-relative shadow-sm rounded overflow-hidden">
+                            <img src="${thumbUrl}" alt="${item.title || 'Contenido'}" class="media-preview-img" onerror="this.src='/images/hero-bge-main.webp'">
+                            ${isVideo ? `
+                                <div class="position-absolute top-50 start-50 translate-middle" style="pointer-events: none;">
+                                    <i class="fab fa-youtube fa-2x text-danger bg-white rounded-circle p-1 shadow"></i>
+                                </div>
+                                <span class="badge bg-danger position-absolute top-0 start-0 m-2">Video</span>
+                            ` : `
+                                <span class="badge bg-dark bg-opacity-75 position-absolute top-0 start-0 m-2 text-capitalize">${item.category || 'Foto'}</span>
+                            `}
                             <div class="media-preview-actions">
-                                <button class="btn btn-sm btn-danger py-0 px-2" onclick="window.deleteGalleryItem(${item.id})">
+                                ${videoLink ? `
+                                    <a href="${videoLink}" target="_blank" class="btn btn-sm btn-info text-white py-0 px-2 me-1" title="Ver video">
+                                        <i class="fas fa-play"></i>
+                                    </a>
+                                ` : ''}
+                                <button class="btn btn-sm btn-danger py-0 px-2" onclick="window.deleteGalleryItem(${item.id})" title="Eliminar">
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
                             </div>
                             <div class="p-2 bg-white text-dark small text-truncate fw-medium">
-                                ${item.title || 'Foto de plantel'}
+                                ${item.title || 'Contenido de plantel'}
                             </div>
                         </div>
                     </div>
-                `).join('');
+                    `;
+                }).join('');
             }
         } catch (err) {
             console.warn('[SISAT-DASHBOARD] Error cargando galería:', err);
@@ -359,7 +502,7 @@
     }
 
     window.deleteGalleryItem = async function (id) {
-        if (!confirm('¿Eliminar esta foto de la galería?')) return;
+        if (!confirm('¿Eliminar este elemento de la galería?')) return;
         try {
             const token = getAuthToken();
             const res = await fetch(`/api/tenant-cms/gallery/${id}`, {
@@ -367,7 +510,7 @@
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
-                showToast('Foto eliminada', 'success');
+                showToast('Elemento eliminado', 'success');
                 await loadGalleryData();
             }
         } catch (err) {
@@ -432,7 +575,7 @@
     };
 
     // ================================================================
-    // 6. ASISTENTE IA PARA EL DIRECTOR (GEMINI / PROMPT SYSTEM)
+    // 6. ASISTENTE IA PARA EL DIRECTOR (GEMINI / AUTOMATIZACIÓN)
     // ================================================================
     function setupAIAssistant() {
         const apiKeyInput = document.getElementById('aiDirectorApiKey');
@@ -446,27 +589,144 @@
             });
         }
 
+        // 1. Generador de Lema
         const btnGenerateSlogan = document.getElementById('btnAiGenSlogan');
         if (btnGenerateSlogan) {
             btnGenerateSlogan.addEventListener('click', async () => {
                 const schoolName = document.getElementById('cfg_school_name')?.value || 'Bachillerato General Estatal';
                 const key = localStorage.getItem('bge_director_ai_key');
-
                 const prompt = `Genera un lema o eslogan educativo inspirador, formal y breve (máximo 10 palabras) para una escuela de Educación Media Superior en México llamada: "${schoolName}". Devuelve solo el lema sin comillas ni explicaciones.`;
                 await runAiTask(key, prompt, 'cfg_eslogan');
             });
         }
 
+        // 2. Generador de Misión
         const btnGenerateMission = document.getElementById('btnAiGenMission');
         if (btnGenerateMission) {
             btnGenerateMission.addEventListener('click', async () => {
                 const schoolName = document.getElementById('cfg_school_name')?.value || 'Bachillerato General Estatal';
                 const key = localStorage.getItem('bge_director_ai_key');
-
                 const prompt = `Escribe una Misión institucional formal y alineada a la Nueva Escuela Mexicana (SEP) para el plantel "${schoolName}". Máximo 3 renglones.`;
                 await runAiTask(key, prompt, 'cfg_mision');
             });
         }
+
+        // 3. Mensaje de Bienvenida del Director
+        const btnGenDirectorMsg = document.getElementById('btnAiGenDirectorMsg');
+        if (btnGenDirectorMsg) {
+            btnGenDirectorMsg.addEventListener('click', async () => {
+                const schoolName = document.getElementById('cfg_school_name')?.value || 'Bachillerato General Estatal';
+                const dirName = document.getElementById('cfg_director_name')?.value || 'Director Escolar';
+                const key = localStorage.getItem('bge_director_ai_key');
+                const prompt = `Redacta un Mensaje de Bienvenida institucional, cálido, formal y motivador del Director(a) "${dirName}" para toda la comunidad de estudiantes y padres de familia del plantel "${schoolName}". Máximo 2 párrafos concisos.`;
+                await runAiTask(key, prompt, 'cfg_director_message');
+            });
+        }
+
+        // 4. Redactor de Circulares y Avisos SEP
+        const btnAiGenNotice = document.getElementById('btnAiGenNotice');
+        if (btnAiGenNotice) {
+            btnAiGenNotice.addEventListener('click', async () => {
+                const promptInput = document.getElementById('aiNoticePromptInput')?.value.trim();
+                if (!promptInput) {
+                    alert('Por favor escribe una idea o instrucción breve para la circular en el campo de texto.');
+                    return;
+                }
+                const schoolName = document.getElementById('cfg_school_name')?.value || 'Bachillerato General Estatal';
+                const dirName = document.getElementById('cfg_director_name')?.value || 'Dirección del Plantel';
+                const key = localStorage.getItem('bge_director_ai_key');
+
+                const prompt = `Actúa como Director del plantel "${schoolName}". Genera una Circular Oficial para padres y alumnos basada en esta instrucción: "${promptInput}". 
+                Responde en formato JSON con la siguiente estructura:
+                {
+                    "title": "Título formal del comunicado",
+                    "priority": "urgente",
+                    "body": "Cuerpo del comunicado con saludo protocolario a la comunidad escolar, explicación detallada, instrucciones y despedida formal firmada por ${dirName}."
+                }
+                Devuelve únicamente el código JSON válido, sin bloques markdown ni explicaciones adicionales.`;
+
+                try {
+                    showToast('🤖 Asistente IA redactando circular oficial...', 'info');
+                    const text = await executeGeminiCall(key, prompt);
+                    if (text) {
+                        try {
+                            const cleaned = text.replace(/```json/gi, '').replace(/```/g, '').trim();
+                            const parsed = JSON.parse(cleaned);
+                            if (parsed.title) document.getElementById('notice_title').value = parsed.title;
+                            if (parsed.priority && document.getElementById('notice_priority')) {
+                                document.getElementById('notice_priority').value = parsed.priority;
+                            }
+                            if (parsed.body) document.getElementById('notice_content').value = parsed.body;
+                            showToast('✨ Circular redactada con éxito', 'success');
+                        } catch (parseErr) {
+                            document.getElementById('notice_content').value = text;
+                            showToast('✨ Circular redactada con éxito', 'success');
+                        }
+                    }
+                } catch (err) {
+                    showToast('⚠️ No se pudo redactar con IA. Verifique su API Key.', 'warning');
+                }
+            });
+        }
+
+        // 5. Consola Directiva de Asistencia Libre
+        const btnAiRunFreePrompt = document.getElementById('btnAiRunFreePrompt');
+        const freePromptInput = document.getElementById('aiFreePromptInput');
+        const freeResultContainer = document.getElementById('aiFreeResultContainer');
+        const freeResultText = document.getElementById('aiFreeResultText');
+        const btnCopyAiFreeResult = document.getElementById('btnCopyAiFreeResult');
+        const freeStatus = document.getElementById('aiFreeStatus');
+
+        if (btnAiRunFreePrompt) {
+            btnAiRunFreePrompt.addEventListener('click', async () => {
+                const prompt = freePromptInput?.value.trim();
+                if (!prompt) {
+                    alert('Por favor escribe tu consulta para el asistente directivo.');
+                    return;
+                }
+                const key = localStorage.getItem('bge_director_ai_key');
+                if (!key) {
+                    alert('Por favor ingresa tu API Key de Google Gemini en la parte superior para usar la consola libre.');
+                    return;
+                }
+
+                if (freeStatus) freeStatus.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Generando respuesta institucional...';
+                try {
+                    const resText = await executeGeminiCall(key, prompt);
+                    if (freeResultContainer) freeResultContainer.classList.remove('d-none');
+                    if (freeResultText) freeResultText.textContent = resText;
+                    if (freeStatus) freeStatus.innerHTML = '<i class="fas fa-check-circle text-success me-1"></i>Consulta completada';
+                } catch (err) {
+                    if (freeStatus) freeStatus.innerHTML = '<i class="fas fa-exclamation-triangle text-danger me-1"></i>Error al procesar';
+                    showToast('Error al conectar con la IA', 'danger');
+                }
+            });
+        }
+
+        if (btnCopyAiFreeResult && freeResultText) {
+            btnCopyAiFreeResult.addEventListener('click', () => {
+                navigator.clipboard.writeText(freeResultText.textContent).then(() => {
+                    showToast('📋 Texto copiado al portapapeles', 'info');
+                });
+            });
+        }
+    }
+
+    async function executeGeminiCall(apiKey, prompt) {
+        if (!apiKey) throw new Error('No API Key');
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: prompt }] }]
+            })
+        });
+        const data = await res.json();
+        if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
+            return data.candidates[0].content.parts[0].text.trim();
+        }
+        throw new Error(data.error?.message || 'Respuesta vacía');
     }
 
     async function runAiTask(apiKey, prompt, targetFieldId) {
@@ -480,30 +740,17 @@
                 target.value = 'Formando líderes con excelencia académica, valores y visión de futuro.';
             } else if (targetFieldId === 'cfg_mision') {
                 target.value = 'Formar jóvenes analíticos, creativos y con alto sentido de responsabilidad cívica y humana, preparados para triunfar en la educación superior y transformar su comunidad.';
+            } else if (targetFieldId === 'cfg_director_message') {
+                target.value = 'Les damos la más cordial bienvenida a nuestra comunidad escolar. Nuestro compromiso es brindar una formación de excelencia que prepare a nuestras alumnas y alumnos para los retos del futuro.';
             }
             return;
         }
 
         try {
             showToast('🤖 Asistente IA generando contenido...', 'info');
-            // Llamar a Gemini API directamente con la clave del director
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-            const res = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: prompt }] }]
-                })
-            });
-
-            const data = await res.json();
-            if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
-                const text = data.candidates[0].content.parts[0].text.trim();
-                target.value = text;
-                showToast('✨ Contenido generado e insertado con éxito', 'success');
-            } else {
-                throw new Error(data.error?.message || 'Respuesta vacía');
-            }
+            const text = await executeGeminiCall(apiKey, prompt);
+            target.value = text;
+            showToast('✨ Contenido generado e insertado con éxito', 'success');
         } catch (err) {
             console.warn('[AI-ASSISTANT] Fallback a plantilla por error:', err);
             showToast('⚠️ No se pudo conectar a la API de IA. Verifique su API Key.', 'warning');
