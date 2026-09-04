@@ -146,49 +146,8 @@
      * Manejo del chatbot y envío de mensajes
      */
     function registerChatbotHandlers() {
-        // Botón toggle del chatbot por onclick (fallback para compatibilidad)
-        const chatbotToggleBtn = document.querySelector('button[onclick*="toggleChatbot"]');
-        if (chatbotToggleBtn) {
-            chatbotToggleBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                toggleChatbot();
-            });
-        }
-
-        // Botón toggle por ID (nuevo patrón)
-        const chatbotToggleId = document.getElementById('chatbotToggle');
-        if (chatbotToggleId) {
-            chatbotToggleId.addEventListener('click', toggleChatbot);
-        }
-
-        // Botón cerrar chatbot con ID (nuevo patrón)
-        const chatbotCloseBtn = document.getElementById('chatbotCloseBtn');
-        if (chatbotCloseBtn) {
-            chatbotCloseBtn.addEventListener('click', toggleChatbot);
-        }
-
-        // Input del chatbot - Enter para enviar
-        const chatInput = document.getElementById('chatbotInput');
-        if (chatInput) {
-            chatInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    sendMessage();
-                }
-            });
-        }
-
-        // Botón enviar mensaje por ID (nuevo patrón)
-        const sendBtn = document.getElementById('chatbotSendBtn');
-        if (sendBtn) {
-            sendBtn.addEventListener('click', sendMessage);
-        }
-
-        // Botón enviar mensaje selector antiguo (fallback para compatibilidad)
-        const sendBtnFallback = document.querySelector('.chatbot-input button');
-        if (sendBtnFallback && sendBtn !== sendBtnFallback) {
-            sendBtnFallback.addEventListener('click', sendMessage);
-        }
+        // Chatbot es gestionado de forma centralizada por js/chatbot.js
+        // Se evita registrar listeners duplicados que desincronicen el DOM
     }
 
     // ============================================
@@ -277,14 +236,9 @@
         }
     }
 
-    /**
-     * 💬 Alterna la visibilidad del chatbot
-     */
     function toggleChatbot() {
-        const container = document.getElementById('chatbotContainer');
-        if (container) {
-            container.classList.toggle('active');
-            container.style.display = container.style.display === 'none' ? 'flex' : 'none';
+        if (typeof window.toggleChatbot === 'function') {
+            window.toggleChatbot();
         }
     }
 

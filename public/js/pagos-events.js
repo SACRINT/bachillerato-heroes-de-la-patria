@@ -130,46 +130,7 @@
      * Manejo del chatbot y envío de mensajes
      */
     function registerChatbotHandlers() {
-        // Botón toggle del chatbot
-        const chatbotToggle = document.getElementById('chatbotToggle');
-        if (chatbotToggle) {
-            chatbotToggle.addEventListener('click', toggleChatbot);
-        }
-
-        // Fallback: botón por atributo onclick
-        const chatbotToggleFallback = document.querySelector('button[onclick*="toggleChatbot"]');
-        if (chatbotToggleFallback && chatbotToggleFallback !== chatbotToggle) {
-            chatbotToggleFallback.addEventListener('click', toggleChatbot);
-        }
-
-        // Botón cerrar chatbot
-        const chatbotCloseBtn = document.getElementById('chatbotCloseBtn');
-        if (chatbotCloseBtn) {
-            chatbotCloseBtn.addEventListener('click', toggleChatbot);
-        }
-
-        // Input del chatbot - Enter para enviar
-        const chatInput = document.getElementById('chatbotInput');
-        if (chatInput) {
-            chatInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    sendMessage();
-                }
-            });
-        }
-
-        // Botón enviar mensaje
-        const sendBtn = document.getElementById('chatbotSendBtn');
-        if (sendBtn) {
-            sendBtn.addEventListener('click', sendMessage);
-        }
-
-        // Fallback: botón por selector
-        const sendBtnFallback = document.querySelector('.chatbot-input button');
-        if (sendBtnFallback && sendBtn !== sendBtnFallback) {
-            sendBtnFallback.addEventListener('click', sendMessage);
-        }
+        // Chatbot es gestionado de forma centralizada por js/chatbot.js
     }
 
     /**
@@ -300,14 +261,9 @@
         alert(`Procesando pago de deuda #${index} - En desarrollo`);
     }
 
-    /**
-     * 💬 Alterna la visibilidad del chatbot
-     */
     function toggleChatbot() {
-        const container = document.getElementById('chatbotContainer');
-        if (container) {
-            container.classList.toggle('active');
-            container.style.display = container.style.display === 'none' ? 'flex' : 'none';
+        if (typeof window.toggleChatbot === 'function') {
+            window.toggleChatbot();
         }
     }
 

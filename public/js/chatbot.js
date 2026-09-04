@@ -1211,46 +1211,66 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
 
         // 🎯 VARIABLES DE CONTROL DEL CHATBOT
         let chatbotOpen = false;
+        let isChatbotToggling = false;
 
-        // 🔄 FUNCIÓN PARA ALTERNAR VISIBILIDAD
-        function toggleChatbot() {
+        // 🔄 FUNCIÓN PARA ALTERNAR VISIBILIDAD (Sincronizada atómicamente con el DOM real)
+        function toggleChatbot(forceOpen) {
             const container = document.getElementById('chatbotContainer');
             const toggle = document.getElementById('chatbotToggle');
 
             if (!container || !toggle) {
-                //void 0;
                 return;
             }
 
-            chatbotOpen = !chatbotOpen;
+            // Anti-rebote / debouncing para evitar clics duplicados o eventos en ráfaga
+            if (isChatbotToggling) return;
+            isChatbotToggling = true;
+            setTimeout(() => { isChatbotToggling = false; }, 120);
 
-            if (chatbotOpen) {
+            // Determinar visibilidad real computada en el DOM
+            const computedDisplay = window.getComputedStyle(container).display;
+            const isCurrentlyOpen = (container.style.display === 'flex' || (computedDisplay !== 'none' && container.style.display !== 'none'));
+            const shouldOpen = (typeof forceOpen === 'boolean') ? forceOpen : !isCurrentlyOpen;
+
+            chatbotOpen = shouldOpen;
+
+            if (shouldOpen) {
                 container.style.display = 'flex';
+                container.classList.add('active');
                 toggle.innerHTML = '<i class="fas fa-times"></i>';
+                toggle.setAttribute('aria-label', 'Cerrar asistente virtual');
 
-                // Limpiar mensajes anteriores si es necesario
+                // Mensaje de bienvenida profesional solo si no hay mensajes
                 const messagesContainer = document.getElementById('chatbotMessages');
                 if (messagesContainer && messagesContainer.children.length === 0) {
-                    // Mensaje de bienvenida profesional solo si no hay mensajes
                     setTimeout(() => {
-                        const welcomeMessage = {
-                            title: '🎓 Asistente Virtual BGE',
-                            content: [
-                                {
-                                    subtitle: '¡Hola! Soy tu asistente inteligente',
-                                    text: 'Puedo ayudarte con información sobre admisiones, carreras, becas, horarios, y todo lo relacionado con nuestro bachillerato.'
-                                }
-                            ],
-                            footer: '¿En qué puedo ayudarte hoy?'
-                        };
+                        if (messagesContainer && messagesContainer.children.length === 0) {
+                            const welcomeMessage = {
+                                title: '🎓 Asistente Virtual BGE',
+                                content: [
+                                    {
+                                        subtitle: '¡Hola! Soy tu asistente inteligente',
+                                        text: 'Puedo ayudarte con información sobre admisiones, carreras, becas, horarios, y todo lo relacionado con nuestro bachillerato.'
+                                    }
+                                ],
+                                footer: '¿En qué puedo ayudarte hoy?'
+                            };
 
-                        addMessage('bot', formatResponse(welcomeMessage));
-                    }, 500);
+                            addMessage('bot', formatResponse(welcomeMessage));
+                        }
+                    }, 400);
                 }
 
+                // Foco al input para mejor accesibilidad y UX
+                const input = document.getElementById('chatbotInput');
+                if (input) {
+                    setTimeout(() => input.focus(), 80);
+                }
             } else {
                 container.style.display = 'none';
+                container.classList.remove('active');
                 toggle.innerHTML = '<i class="fas fa-comments"></i>';
+                toggle.setAttribute('aria-label', 'Abrir asistente virtual');
             }
         }
 
@@ -1519,33 +1539,86 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
             }
         }
 
+        // 🔒 VINCULACIÓN SEGURA Y ROBUSTA DE EVENTOS
+        function bindChatbotEvents() {
+            const toggleBtn = document.getElementById('chatbotToggle');
+            if (toggleBtn && !toggleBtn._isToggleBound) {
+                toggleBtn._isToggleBound = true;
+                // Usar fase de captura (true) y stopImmediatePropagation para neutralizar
+                // cualquier script legacy o duplicado que intente invertir el display
+                toggleBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    toggleChatbot();
+                }, true);
+            }
+
+            const closeBtn = document.getElementById('chatbotCloseBtn');
+            if (closeBtn && !closeBtn._isCloseBound) {
+                closeBtn._isCloseBound = true;
+                closeBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    toggleChatbot(false);
+                }, true);
+            }
+
+            const sendBtn = document.getElementById('chatbotSendBtn');
+            if (sendBtn && !sendBtn._isSendBound) {
+                sendBtn._isSendBound = true;
+                sendBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    sendMessage();
+                }, true);
+            }
+
+            const chatInput = document.getElementById('chatbotInput');
+            if (chatInput && !chatInput._isKeyBound) {
+                chatInput._isKeyBound = true;
+                chatInput.addEventListener('keypress', function (e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        sendMessage();
+                    }
+                });
+            }
+        }
+
         function injectChatbotWidget() {
             if (document.getElementById('chatbotToggle') && document.getElementById('chatbotContainer')) {
+                bindChatbotEvents();
                 return;
             }
 
             // Crear boton flotante
-            const toggleBtn = document.createElement('button');
-            toggleBtn.id = 'chatbotToggle';
-            toggleBtn.className = 'chatbot-toggle';
-            toggleBtn.setAttribute('aria-label', 'Abrir asistente virtual');
-            toggleBtn.setAttribute('title', 'Asistente Virtual BGE');
-            toggleBtn.innerHTML = '<i class="fas fa-comments"></i>';
+            let toggleBtn = document.getElementById('chatbotToggle');
+            if (!toggleBtn) {
+                toggleBtn = document.createElement('button');
+                toggleBtn.id = 'chatbotToggle';
+                toggleBtn.className = 'chatbot-toggle';
+                toggleBtn.setAttribute('aria-label', 'Abrir asistente virtual');
+                toggleBtn.setAttribute('title', 'Asistente Virtual BGE');
+                toggleBtn.innerHTML = '<i class="fas fa-comments"></i>';
+                document.body.appendChild(toggleBtn);
+            }
 
             // Crear contenedor del chatbot
-            const chatContainer = document.createElement('div');
-            chatContainer.id = 'chatbotContainer';
-            chatContainer.className = 'chatbot-container';
-            chatContainer.style.display = 'none';
-            chatContainer.innerHTML = '<div class="chatbot-header"><div class="chatbot-header-content"><div class="chatbot-avatar">🎓</div><div class="chatbot-title-wrapper"><h4 class="chatbot-title">Asistente Virtual BGE</h4><span class="chatbot-status online">En linea</span></div></div><button class="chatbot-close" id="chatbotCloseBtn" aria-label="Cerrar chat"><i class="fas fa-times"></i></button></div><div class="chatbot-messages" id="chatbotMessages"></div><div class="chatbot-input-area"><div class="typing-indicator" id="typingIndicator" style="display: none;"><span></span><span></span><span></span></div><div class="chatbot-input-wrapper"><input type="text" id="chatbotInput" placeholder="Escribe tu pregunta..." autocomplete="off" maxlength="500"><button id="chatbotSendBtn" class="chatbot-send-btn" aria-label="Enviar mensaje"><i class="fas fa-paper-plane"></i></button></div></div><div class="chatbot-footer"><small>Bachillerato General Estatal | Disponible 24/7</small></div>';
+            let chatContainer = document.getElementById('chatbotContainer');
+            if (!chatContainer) {
+                chatContainer = document.createElement('div');
+                chatContainer.id = 'chatbotContainer';
+                chatContainer.className = 'chatbot-container';
+                chatContainer.style.display = 'none';
+                chatContainer.innerHTML = '<div class="chatbot-header"><div class="chatbot-header-content"><div class="chatbot-avatar">🎓</div><div class="chatbot-title-wrapper"><h4 class="chatbot-title">Asistente Virtual BGE</h4><span class="chatbot-status online">En linea</span></div></div><button class="chatbot-close" id="chatbotCloseBtn" aria-label="Cerrar chat"><i class="fas fa-times"></i></button></div><div class="chatbot-messages" id="chatbotMessages"></div><div class="chatbot-input-area"><div class="typing-indicator" id="typingIndicator" style="display: none;"><span></span><span></span><span></span></div><div class="chatbot-input-wrapper"><input type="text" id="chatbotInput" placeholder="Escribe tu pregunta..." autocomplete="off" maxlength="500"><button id="chatbotSendBtn" class="chatbot-send-btn" aria-label="Enviar mensaje"><i class="fas fa-paper-plane"></i></button></div></div><div class="chatbot-footer"><small>Bachillerato General Estatal | Disponible 24/7</small></div>';
+                document.body.appendChild(chatContainer);
+            }
 
-            document.body.appendChild(toggleBtn);
-            document.body.appendChild(chatContainer);
-
-            // Event listeners
-            toggleBtn.addEventListener('click', toggleChatbot);
-            document.getElementById('chatbotCloseBtn').addEventListener('click', toggleChatbot);
-            document.getElementById('chatbotSendBtn').addEventListener('click', sendMessage);
+            // Vincular eventos blindados
+            bindChatbotEvents();
 
             // Estilos del widget alineados con global-layout.css
             if (!document.getElementById('chatbot-widget-styles')) {
@@ -1563,30 +1636,21 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
             // Inicializar sesión del chatbot y conexión API
             initializeChatSession();
 
-            // Event listener para el botón toggle
-            const chatToggle = document.getElementById('chatbotToggle');
-            if (chatToggle && !chatToggle._hasListener) {
-                chatToggle.addEventListener('click', toggleChatbot);
-                chatToggle._hasListener = true;
-            }
+            // Vincular eventos
+            bindChatbotEvents();
 
-            // Event listener para Enter en el input
-            const chatInput = document.getElementById('chatbotInput');
-            if (chatInput && !chatInput._hasListener) {
-                chatInput.addEventListener('keypress', function (e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        sendMessage();
-                    }
-                });
-                chatInput._hasListener = true;
-            }
-
-            // Asegurar que el contenedor esté oculto inicialmente
+            // Asegurar que el contenedor esté oculto inicialmente y el ícono en comments
             const container = document.getElementById('chatbotContainer');
+            const toggle = document.getElementById('chatbotToggle');
             if (container) {
                 container.style.display = 'none';
+                container.classList.remove('active');
             }
+            if (toggle) {
+                toggle.innerHTML = '<i class="fas fa-comments"></i>';
+                toggle.setAttribute('aria-label', 'Abrir asistente virtual');
+            }
+            chatbotOpen = false;
 
             // Event listeners para botones externos con data-action
             if (!document._hasChatbotDataActionListener) {
@@ -1594,6 +1658,7 @@ if (typeof window.BGE_CHATBOT_LOADED === 'undefined') {
                     const target = e.target.closest('[data-action="toggle-chatbot"]');
                     if (target) {
                         e.preventDefault();
+                        e.stopPropagation();
                         toggleChatbot();
                     }
                 });

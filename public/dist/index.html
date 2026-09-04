@@ -2,21 +2,11 @@
 <html lang="es">
 
 <head>
-    <style>
-        body {
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-    </style>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- ? CSP META TAG (18 Nov 2025): Fallback for Vercel preview deployments -->
-    <!-- Vercel.json headers don't always apply in preview - meta tag ensures CSP is enforced -->
-    <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://www.googletagmanager.com https://www.google-analytics.com https://accounts.google.com https://www.googleapis.com https://cdn.tiny.cloud https://*.tiny.cloud https://sp.tinymce.com https://vercel.live https://*.vercel.live blob:; script-src-elem 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://www.googletagmanager.com https://www.google-analytics.com https://accounts.google.com https://www.googleapis.com https://cdn.tiny.cloud https://*.tiny.cloud https://sp.tinymce.com https://vercel.live https://*.vercel.live; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://fonts.googleapis.com https://accounts.google.com https://accounts.google.com/gsi/style https://cdn.tiny.cloud https://*.tiny.cloud; style-src-elem 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://fonts.googleapis.com https://accounts.google.com https://accounts.google.com/gsi/style https://cdn.tiny.cloud https://*.tiny.cloud; connect-src 'self' https://bge-heroesdelapatria.vercel.app https://sp.tinymce.com https://www.google-analytics.com https://www.googletagmanager.com https: ws: wss:; img-src 'self' data: blob: https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://cdn.tiny.cloud https://*.tiny.cloud https://ui-avatars.com https:; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://cdn.tiny.cloud https://*.tiny.cloud; frame-src 'self' https://accounts.google.com https://www.google.com https://maps.google.com https://forms.gle https://vercel.live https://*.vercel.live; object-src 'none'; form-action 'self'; base-uri 'self';">
-
-    <title id="page-title" data-base-title="Portal Institucional" data-tenant-field="school_name" id="page-title" data-base-title="Inicio" data-tenant-field="school_name">Bachillerato General</title>
+    <title id="page-title" data-base-title="Inicio" data-tenant-field="school_name">Bachillerato General</title>
 
     <!-- Preconnects -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,20 +14,21 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
 
     <!-- Preload critical resources -->
-    <link rel="preload" href="images/hero/fachada1.webp" as="image" type="image/webp">
+    <link rel="preload" href="images/hero/hero-bge-main.webp" as="image" type="image/webp">
     <link rel="preload" href="css/style.css" as="style">
 
     <!-- Meta tags -->
     <meta name="description" id="page-description"
-        content="Bachillerato General Estatal '<span data-tenant-field="school_short_name">nuestro plantel</span>' en <span data-tenant-field="direccion">DirecciÛn del plantel, Puebla</span>. EducaciÛn media superior de calidad con formaciÛn integral.">
+        data-tenant-field="mision"
+        content="Bachillerato General - Educaci√≥n media superior de calidad con formaci√≥n integral.">
     <meta name="keywords"
-        content="bachillerato, <span data-tenant-field="school_short_name">nuestro plantel</span>, puebla, <span data-tenant-field="municipio">Municipio</span>, <span data-tenant-field="direccion">DirecciÛn del plantel</span>, educacion media superior, prepa">
+        content="bachillerato, puebla, educacion media superior, prepa">
     <meta name="theme-color" content="#1976D2">
 
-    <!-- Script para actualizaciÛn din·mica de metadatos -->
+    <!-- Script para actualizaci√≥n din√°mica de metadatos -->
     <script src="js/meta-updater.js" defer></script>
 
-    <!-- ?? Multi-Tenancy: Carga y actualiza configuraciÛn del tenant -->
+    <!-- üè¢ Multi-Tenancy: Carga y actualiza configuraci√≥n del tenant -->
     <script src="js/tenant-config-loader.js"></script>
     <script src="js/tenant-content-binder.js"></script>
     <script src="js/tenant-auto-updater.js" defer></script>
@@ -58,6 +49,7 @@
 
     <!-- Icons -->
     <link rel="icon" href="/images/logo/logo-general-bge.webp" type="image/webp">
+    <link rel="apple-touch-icon" href="/images/logo/logo-general-bge.webp">
 
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -73,22 +65,21 @@
       "@type": "EducationalOrganization",
       "name": "Bachillerato General",
       "alternateName": "BGE",
-      "description": "Bachillerato General Estatal ubicado en <span data-tenant-field="direccion">DirecciÛn del plantel, Puebla</span>. Ofrecemos educaciÛn media superior de calidad con formaciÛn integral.",
-      "url": "/",
-      "logo": "/images/logo/logo-general-bge.webp",
+      "description": "Bachillerato General - Educaci√≥n media superior de calidad con formaci√≥n integral.",
+      "url": "",
+      "logo": "",
       "address": {
         "@type": "PostalAddress",
-        "streetAddress": "DirecciÛn del plantel",
+        "streetAddress": "Direcci√≥n del plantel",
         "addressLocality": "Municipio",
         "addressRegion": "Puebla",
         "addressCountry": "MX"
       },
       "contactPoint": {
         "@type": "ContactPoint",
-        "telephone": "+52-xxx-xxx-xxxx",
+        "telephone": "(XXX) XXX-XXXX",
         "contactType": "Admissions"
       },
-      "foundingDate": "1990",
       "educationalLevel": "Upper Secondary Education"
     }
     </script>
@@ -102,7 +93,6 @@
 
     <!-- Header will be injected here -->
     <header id="main-header"></header>
-    </div>
 
     <!-- Main Content -->
     <main id="main-content">
@@ -116,9 +106,8 @@
                         <div class="hero-image position-relative">
                             <div class="image-wrapper hero-image-hover">
                                 <picture>
-                                    <source srcset="images/hero/fachada1.webp" type="image/webp">
-                                    <img src="images/hero/fachada1.jpeg"
-                                        alt="Fachada del Bachillerato <span data-tenant-field="school_short_name">nuestro plantel</span>"
+                                    <img data-tenant-src="hero_image_url" src="/images/hero/hero-bge-main.webp"
+                                        alt="Estudiantes en el campus del Bachillerato General"
                                         class="img-fluid w-100 h-100 object-fit-cover rounded-3 shadow-lg"
                                         loading="eager" width="800" height="600">
                                 </picture>
@@ -130,51 +119,66 @@
                             <!-- Enhanced badges -->
                             <div class="d-flex gap-2 mb-3">
                                 <span class="badge bg-warning bg-opacity-90 text-dark fs-6 px-3 py-2 rounded-pill">
-                                    <i class="fas fa-star me-2"></i>Excelencia AcadÈmica
+                                    <i class="fas fa-star me-2"></i>Excelencia Acad√©mica
                                 </span>
                                 <span class="badge bg-success bg-opacity-90 fs-6 px-3 py-2 rounded-pill">
-                                    <i class="fas fa-award me-2"></i>CertificaciÛn SEP
+                                    <i class="fas fa-award me-2"></i>Certificaci√≥n SEP
                                 </span>
                             </div>
 
                             <h1 class="display-3 fw-bold mb-3 text-white">
                                 <span class="position-relative">
-                                    Bachillerato General Estatal
+                                    <span data-tenant-field="school_type">Bachillerato General</span>
                                     <div
                                         class="position-absolute bottom-0 start-0 w-100 h-1 bg-warning opacity-75 rounded">
                                     </div>
                                 </span>
                                 <span class="d-block text-warning mt-2 display-5"
-                                    data-tenant-field="school_short_name">"HÈroes
-                                    de la Patria"</span>
+                                    data-tenant-field="school_short_name">BGE</span>
                             </h1>
 
-                            <p class="fs-5 text-white-50 mb-4 lh-lg">
-                                ?? <strong>Formamos lÌderes del maÒana</strong> con educaciÛn integral, valores
-                                sÛlidos
+                            <p class="fs-5 text-white-50 mb-4 lh-lg"
+                                data-tenant-field="hero_description"
+                                data-tenant-default="Formamos l√≠deres del ma√±ana con educaci√≥n integral, valores s√≥lidos y preparaci√≥n universitaria de excelencia.">
+                                <strong>Formamos l√≠deres del ma√±ana</strong> con educaci√≥n integral, valores
+                                s√≥lidos
                                 y
-                                preparaciÛn universitaria de excelencia. Tu futuro comienza aquÌ.
+                                preparaci√≥n universitaria de excelencia. Tu futuro comienza aqu√≠.
                             </p>
 
-                            <!-- Success Metrics -->
+                            <!-- Success Metrics - Dynamic from tenant config -->
                             <div class="row g-3 mb-4">
                                 <div class="col-4">
                                     <div class="text-center p-3 rounded-3">
-                                        <h3 class="display-6 fw-bold text-warning mb-1 counter" data-target="27">0</h3>
-                                        <small class="text-white">AÒos de experiencia</small>
+                                        <h3 class="display-6 fw-bold text-warning mb-1 counter"
+                                            data-target="27"
+                                            data-tenant-field="stat_1_value"
+                                            data-tenant-field-label="stat_1_label">0</h3>
+                                        <small class="text-white"
+                                            data-tenant-field="stat_1_label"
+                                            data-tenant-default="A√±os de experiencia">A√±os de experiencia</small>
                                     </div>
                                 </div>
                                 <div class="col-4">
                                     <div class="text-center p-3 rounded-3">
-                                        <h3 class="display-6 fw-bold text-warning mb-1 counter" data-target="+1000">0
-                                        </h3>
-                                        <small class="text-white">Egresados exitosos</small>
+                                        <h3 class="display-6 fw-bold text-warning mb-1 counter"
+                                            data-target="1000"
+                                            data-tenant-field="stat_2_value"
+                                            data-tenant-field-label="stat_2_label">0</h3>
+                                        <small class="text-white"
+                                            data-tenant-field="stat_2_label"
+                                            data-tenant-default="Egresados exitosos">Egresados exitosos</small>
                                     </div>
                                 </div>
                                 <div class="col-4">
                                     <div class="text-center p-3 rounded-3">
-                                        <h3 class="display-6 fw-bold text-warning mb-1 counter" data-target="97">0</h3>
-                                        <small class="text-white">% AprobaciÛn</small>
+                                        <h3 class="display-6 fw-bold text-warning mb-1 counter"
+                                            data-target="97"
+                                            data-tenant-field="stat_3_value"
+                                            data-tenant-field-label="stat_3_label">0</h3>
+                                        <small class="text-white"
+                                            data-tenant-field="stat_3_label"
+                                            data-tenant-default="% Aprobaci√≥n">% Aprobaci√≥n</small>
                                     </div>
                                 </div>
                             </div>
@@ -183,11 +187,11 @@
                             <div class="hero-actions d-flex flex-wrap gap-3">
                                 <a href="oferta-educativa.html"
                                     class="btn btn-warning btn-lg px-5 py-3 rounded-pill fw-semibold shadow-lg">
-                                    <i class="fas fa-rocket me-2"></i>°InscrÌbete Ahora!
+                                    <i class="fas fa-rocket me-2"></i>¬°Inscr√≠bete Ahora!
                                 </a>
                                 <a href="#why-choose-us"
                                     class="btn btn-outline-light btn-lg px-5 py-3 rounded-pill fw-semibold">
-                                    <i class="fas fa-play-circle me-2"></i>øPor quÈ elegirnos?
+                                    <i class="fas fa-play-circle me-2"></i>¬øPor qu√© elegirnos?
                                 </a>
                             </div>
 
@@ -195,7 +199,7 @@
                             <div class="mt-4 pt-3">
                                 <small class="text-white-50 d-flex align-items-center">
                                     <i class="fas fa-shield-check text-success me-2"></i>
-                                    InstituciÛn oficial registrada ante la SEP ï CCT: <span data-tenant-field="cct">21EBHXXXXX</span>
+                                    Instituci√≥n oficial registrada ante la SEP ‚Ä¢ CCT: <span data-tenant-field="cct">21EBHXXXXX</span>
                                 </small>
                             </div>
                         </div>
@@ -217,12 +221,12 @@
         </section>
 
         <!-- Why Choose Us Section - RESTORED -->
-        <section id="why-choose-us" class="py-5 bg-light">
+        <section id="why-choose-us" class="py-5 bg-light" data-section-key="por_que_elegirnos">
             <div class="container">
                 <div class="row text-center mb-5">
                     <div class="col-12">
-                        <h2 class="display-5 fw-bold text-primary mb-3">øPor quÈ elegir <span data-tenant-field="school_short_name">nuestro plantel</span>?</h2>
-                        <p class="lead text-muted">Descubre lo que nos hace ˙nicos y por quÈ somos la mejor opciÛn para
+                        <h2 class="display-5 fw-bold text-primary mb-3">¬øPor qu√© elegir <span data-tenant-field="school_short_name">nuestra instituci√≥n</span>?</h2>
+                        <p class="lead text-muted">Descubre lo que nos hace √∫nicos y por qu√© somos la mejor opci√≥n para
                             tu futuro</p>
                     </div>
                 </div>
@@ -235,12 +239,12 @@
                                     <i class="fas fa-award fa-2x text-white"></i>
                                 </div>
                             </div>
-                            <h4 class="fw-bold text-primary mb-3">EducaciÛn Pr·ctica</h4>
-                            <p class="text-muted">Habilidades para el trabajo, no solo teorÌa. FormaciÛn laboral en 3
-                                especialidades tÈcnicas.</p>
+                            <h4 class="fw-bold text-primary mb-3">Educaci√≥n Pr√°ctica</h4>
+                            <p class="text-muted">Habilidades para el trabajo, no solo teor√≠a. Formaci√≥n laboral en 3
+                                especialidades t√©cnicas.</p>
                             <div class="feature-highlight mt-3">
                                 <span class="badge bg-primary-subtle text-primary">? Certificaciones
-                                    TÈcnicas</span>
+                                    T√©cnicas</span>
                             </div>
                         </div>
                     </div>
@@ -252,11 +256,11 @@
                                     <i class="fas fa-users fa-2x text-white"></i>
                                 </div>
                             </div>
-                            <h4 class="fw-bold text-success mb-3">InclusiÛn Total</h4>
-                            <p class="text-muted">Sin barreras econÛmicas. EducaciÛn p˙blica gratuita con beca Benito
-                                Ju·rez autom·tica.</p>
+                            <h4 class="fw-bold text-success mb-3">Inclusi√≥n Total</h4>
+                            <p class="text-muted">Sin barreras econ√≥micas. Educaci√≥n p√∫blica gratuita con beca Benito
+                                Ju√°rez autom√°tica.</p>
                             <div class="feature-highlight mt-3">
-                                <span class="badge bg-success-subtle text-success">? Beca Autom·tica</span>
+                                <span class="badge bg-success-subtle text-success">? Beca Autom√°tica</span>
                             </div>
                         </div>
                     </div>
@@ -269,10 +273,10 @@
                                 </div>
                             </div>
                             <h4 class="fw-bold text-warning mb-3">Proyectos Reales</h4>
-                            <p class="text-muted">CTIM ganadores, vinculaciÛn comunitaria y proyectos de impacto social
+                            <p class="text-muted">CTIM ganadores, vinculaci√≥n comunitaria y proyectos de impacto social
                                 real.</p>
                             <div class="feature-highlight mt-3">
-                                <span class="badge bg-warning-subtle text-warning">? InnovaciÛn</span>
+                                <span class="badge bg-warning-subtle text-warning">? Innovaci√≥n</span>
                             </div>
                         </div>
                     </div>
@@ -284,12 +288,12 @@
                                     <i class="fas fa-heart fa-2x text-white"></i>
                                 </div>
                             </div>
-                            <h4 class="fw-bold text-info mb-3">FormaciÛn Integral</h4>
-                            <p class="text-muted">Competencias acadÈmicas + valores sÛlidos = ciudadanos responsables
+                            <h4 class="fw-bold text-info mb-3">Formaci√≥n Integral</h4>
+                            <p class="text-muted">Competencias acad√©micas + valores s√≥lidos = ciudadanos responsables
                                 y
                                 exitosos.</p>
                             <div class="feature-highlight mt-3">
-                                <span class="badge bg-info-subtle text-info">? Valores SÛlidos</span>
+                                <span class="badge bg-info-subtle text-info">? Valores S√≥lidos</span>
                             </div>
                         </div>
                     </div>
@@ -302,8 +306,8 @@
                                 </div>
                             </div>
                             <h4 class="fw-bold text-secondary mb-3">Personal Experimentado</h4>
-                            <p class="text-muted">23+ aÒos promedio de experiencia docente. Maestros comprometidos con
-                                tu Èxito.</p>
+                            <p class="text-muted">23+ a√±os promedio de experiencia docente. Maestros comprometidos con
+                                tu √©xito.</p>
                             <div class="feature-highlight mt-3">
                                 <span class="badge bg-secondary-subtle text-secondary">? Experiencia</span>
                             </div>
@@ -317,8 +321,8 @@
                                     <i class="fas fa-laptop fa-2x text-white"></i>
                                 </div>
                             </div>
-                            <h4 class="fw-bold text-danger mb-3">TecnologÌa Responsable</h4>
-                            <p class="text-muted">Herramientas digitales para el crecimiento personal y acadÈmico del
+                            <h4 class="fw-bold text-danger mb-3">Tecnolog√≠a Responsable</h4>
+                            <p class="text-muted">Herramientas digitales para el crecimiento personal y acad√©mico del
                                 siglo XXI.</p>
                             <div class="feature-highlight mt-3">
                                 <span class="badge bg-danger-subtle text-danger">? Futuro Digital</span>
@@ -329,91 +333,133 @@
             </div>
         </section>
 
-        <!-- Quick Access Cards -->
-        <section class="py-5 bg-light">
+        <!-- üìä Estad√≠sticas Institucionales - Contadores Animados -->
+        <section class="py-5 stats-section" data-section-key="estadisticas">
             <div class="container">
                 <div class="row text-center mb-5">
                     <div class="col-12">
-                        <h2 class="fw-bold text-primary mb-3">Acceso R·pido</h2>
-                        <p class="lead text-muted">Encuentra r·pidamente la informaciÛn que necesitas</p>
+                        <h2 class="display-5 fw-bold text-white mb-3">Nuestros N√∫meros Hablan</h2>
+                        <p class="lead text-white-50">El impacto de nuestra comunidad educativa</p>
                     </div>
                 </div>
-                <div class="row g-4">
-                    <div class="col-md-6 col-lg-3">
-                        <div class="card h-100 border-0 shadow-sm hover-lift">
-                            <div class="card-body text-center p-4">
-                                <div
-                                    class="feature-icon bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
-                                    <i class="fas fa-users fa-2x"></i>
-                                </div>
-                                <h4 class="card-title h5 mb-3">ConÛcenos</h4>
-                                <p class="card-text text-muted">Nuestra misiÛn, visiÛn, historia e infraestructura
-                                    educativa.</p>
-                                <a href="conocenos.html" class="btn btn-outline-primary">
-                                    M·s informaciÛn <i class="fas fa-arrow-right ms-2"></i>
-                                </a>
+                <div class="row g-4 justify-content-center">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stat-card-glass text-center p-4 rounded-4" data-section-item="stat_planteles">
+                            <div class="stat-icon mb-3">
+                                <i class="fas fa-school fa-3x text-white opacity-75"></i>
                             </div>
+                            <div class="stat-number display-3 fw-bold text-white mb-2" data-count="1" data-suffix="+">0</div>
+                            <div class="stat-label text-white-50 fs-5">Planteles</div>
                         </div>
                     </div>
-                    <div class="col-md-6 col-lg-3">
-                        <div class="card h-100 border-0 shadow-sm hover-lift">
-                            <div class="card-body text-center p-4">
-                                <div
-                                    class="feature-icon bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
-                                    <i class="fas fa-graduation-cap fa-2x"></i>
-                                </div>
-                                <h4 class="card-title h5 mb-3">Oferta Educativa</h4>
-                                <p class="card-text text-muted">Plan de estudios, formaciones laborales y proceso de
-                                    admisiÛn.</p>
-                                <a href="oferta-educativa.html" class="btn btn-outline-success">
-                                    Ver oferta <i class="fas fa-arrow-right ms-2"></i>
-                                </a>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stat-card-glass text-center p-4 rounded-4" data-section-item="stat_alumnos">
+                            <div class="stat-icon mb-3">
+                                <i class="fas fa-user-graduate fa-3x text-white opacity-75"></i>
                             </div>
+                            <div class="stat-number display-3 fw-bold text-white mb-2" data-count="4800" data-suffix="+">0</div>
+                            <div class="stat-label text-white-50 fs-5">Alumnos Inscritos</div>
                         </div>
                     </div>
-                    <div class="col-md-6 col-lg-3">
-                        <div class="card h-100 border-0 shadow-sm hover-lift">
-                            <div class="card-body text-center p-4">
-                                <div
-                                    class="feature-icon bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
-                                    <i class="fas fa-cogs fa-2x"></i>
-                                </div>
-                                <h4 class="card-title h5 mb-3">Servicios</h4>
-                                <p class="card-text text-muted">Servicios escolares y estudiantiles para apoyar tu
-                                    formaciÛn.</p>
-                                <a href="servicios.html" class="btn btn-outline-info">
-                                    Descubrir <i class="fas fa-arrow-right ms-2"></i>
-                                </a>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stat-card-glass text-center p-4 rounded-4" data-section-item="stat_docentes">
+                            <div class="stat-icon mb-3">
+                                <i class="fas fa-chalkboard-teacher fa-3x text-white opacity-75"></i>
                             </div>
+                            <div class="stat-number display-3 fw-bold text-white mb-2" data-count="320" data-suffix="+">0</div>
+                            <div class="stat-label text-white-50 fs-5">Docentes</div>
                         </div>
                     </div>
-                    <div class="col-md-6 col-lg-3">
-                        <div class="card h-100 border-0 shadow-sm hover-lift">
-                            <div class="card-body text-center p-4">
-                                <div
-                                    class="feature-icon bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
-                                    <i class="fas fa-heart fa-2x"></i>
-                                </div>
-                                <h4 class="card-title h5 mb-3">Comunidad</h4>
-                                <p class="card-text text-muted">Vida estudiantil, testimonios de egresados y galerÌa
-                                    fotogr·fica.</p>
-                                <a href="comunidad.html" class="btn btn-outline-warning">
-                                    Explorar <i class="fas fa-arrow-right ms-2"></i>
-                                </a>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stat-card-glass text-center p-4 rounded-4" data-section-item="stat_egresados">
+                            <div class="stat-icon mb-3">
+                                <i class="fas fa-graduation-cap fa-3x text-white opacity-75"></i>
                             </div>
+                            <div class="stat-number display-3 fw-bold text-white mb-2" data-count="15000" data-suffix="+">0</div>
+                            <div class="stat-label text-white-50 fs-5">Egresados</div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
+        <!-- Quick Access Cards ‚Äî Bento Grid Premium -->
+        <section class="py-5 bg-light" data-section-key="acceso_rapido">
+            <div class="container">
+                <div class="row text-center mb-5">
+                    <div class="col-12">
+                        <h2 class="fw-bold text-primary mb-3">Acceso R√°pido</h2>
+                        <p class="lead text-muted">Encuentra r√°pidamente la informaci√≥n que necesitas</p>
+                    </div>
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-3">
+                        <a href="oferta-educativa.html" class="text-decoration-none">
+                            <div class="card h-100 border-0 shadow-sm bento-card">
+                                <div class="card-body text-center p-4">
+                                    <div class="bento-icon bg-primary-subtle text-primary rounded-3 d-inline-flex align-items-center justify-content-center mb-3">
+                                        <i class="fas fa-graduation-cap fa-2x"></i>
+                                    </div>
+                                    <h4 class="card-title h5 mb-2 fw-bold">Oferta Educativa</h4>
+                                    <p class="card-text text-muted small mb-0">Plan de estudios SEP, formaciones t√©cnicas y proceso de admisi√≥n.</p>
+                                    <span class="badge bg-primary bg-opacity-10 text-primary mt-3">Ver programas <i class="fas fa-arrow-right ms-1"></i></span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <a href="estudiantes.html" class="text-decoration-none">
+                            <div class="card h-100 border-0 shadow-sm bento-card">
+                                <div class="card-body text-center p-4">
+                                    <div class="bento-icon bg-success-subtle text-success rounded-3 d-inline-flex align-items-center justify-content-center mb-3">
+                                        <i class="fas fa-user-graduate fa-2x"></i>
+                                    </div>
+                                    <h4 class="card-title h5 mb-2 fw-bold">Portal de Alumnos</h4>
+                                    <p class="card-text text-muted small mb-0">Calificaciones, horarios y acceso directo al sistema SICEP.</p>
+                                    <span class="badge bg-success bg-opacity-10 text-success mt-3">Acceder <i class="fas fa-arrow-right ms-1"></i></span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <a href="servicios.html" class="text-decoration-none">
+                            <div class="card h-100 border-0 shadow-sm bento-card">
+                                <div class="card-body text-center p-4">
+                                    <div class="bento-icon bg-info-subtle text-info rounded-3 d-inline-flex align-items-center justify-content-center mb-3">
+                                        <i class="fas fa-file-contract fa-2x"></i>
+                                    </div>
+                                    <h4 class="card-title h5 mb-2 fw-bold">Ventanilla Digital</h4>
+                                    <p class="card-text text-muted small mb-0">Constancias, citas, tr√°mites y formatos en un solo lugar.</p>
+                                    <span class="badge bg-info bg-opacity-10 text-info mt-3">Tr√°mites <i class="fas fa-arrow-right ms-1"></i></span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <a href="calendario.html" class="text-decoration-none">
+                            <div class="card h-100 border-0 shadow-sm bento-card">
+                                <div class="card-body text-center p-4">
+                                    <div class="bento-icon bg-warning-subtle text-warning rounded-3 d-inline-flex align-items-center justify-content-center mb-3">
+                                        <i class="fas fa-calendar-days fa-2x"></i>
+                                    </div>
+                                    <h4 class="card-title h5 mb-2 fw-bold">Calendario y Convocatorias</h4>
+                                    <p class="card-text text-muted small mb-0">Ciclo escolar, evaluaciones y pr√≥ximos eventos.</p>
+                                    <span class="badge bg-warning bg-opacity-10 text-warning mt-3">Ver fechas <i class="fas fa-arrow-right ms-1"></i></span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Recent News -->
-        <section class="py-5">
+        <section class="py-5" data-section-key="noticias_recientes">
             <div class="container">
                 <div class="row mb-5">
                     <div class="col-lg-8 mx-auto text-center">
                         <h2 class="fw-bold text-primary mb-3">Noticias Recientes</h2>
-                        <p class="lead text-muted">Mantente al dÌa con las ˙ltimas novedades de nuestra instituciÛn
+                        <p class="lead text-muted">Mantente al d√≠a con las √∫ltimas novedades de nuestra instituci√≥n
                         </p>
                     </div>
                 </div>
@@ -431,11 +477,11 @@
         </section>
 
         <!-- Upcoming Events -->
-        <section class="py-5 bg-light">
+        <section class="py-5 bg-light" data-section-key="proximos_eventos">
             <div class="container">
                 <div class="row mb-5">
                     <div class="col-lg-8 mx-auto text-center">
-                        <h2 class="fw-bold text-primary mb-3">PrÛximos Eventos</h2>
+                        <h2 class="fw-bold text-primary mb-3">Pr√≥ximos Eventos</h2>
                         <p class="lead text-muted">No te pierdas las fechas importantes del calendario escolar</p>
                     </div>
                 </div>
@@ -453,18 +499,18 @@
         </section>
 
         <!-- Call to Action -->
-        <section class="py-5 bg-primary text-white cta-dark-mode">
+        <section class="py-5 bg-primary text-white cta-dark-mode" data-section-key="cta_inscripcion">
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-lg-8">
-                        <h3 class="fw-bold mb-3">øListo para formar parte de nuestra comunidad educativa?</h3>
+                        <h3 class="fw-bold mb-3">¬øListo para formar parte de nuestra comunidad educativa?</h3>
                         <p class="lead mb-0">
-                            Conoce nuestro proceso de admisiÛn y comienza tu camino hacia la excelencia acadÈmica.
+                            Conoce nuestro proceso de admisi√≥n y comienza tu camino hacia la excelencia acad√©mica.
                         </p>
                     </div>
                     <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
                         <a href="oferta-educativa.html#proceso-admision" class="btn btn-light btn-lg px-4 py-3">
-                            <i class="fas fa-user-plus me-2"></i>Proceso de AdmisiÛn
+                            <i class="fas fa-user-plus me-2"></i>Proceso de Admisi√≥n
                         </a>
                     </div>
                 </div>
@@ -482,12 +528,12 @@
                                 <i class="fas fa-mobile-alt fa-2x"></i>
                             </div>
                             <div>
-                                <h3 class="fw-bold mb-1">°Instala Nuestra App!</h3>
-                                <p class="mb-0">Accede r·pidamente desde tu pantalla de inicio</p>
+                                <h3 class="fw-bold mb-1">¬°Instala Nuestra App!</h3>
+                                <p class="mb-0">Accede r√°pidamente desde tu pantalla de inicio</p>
                             </div>
                         </div>
                         <p class="lead mb-0">
-                            Descarga nuestra aplicaciÛn web progresiva para tener acceso r·pido a toda la informaciÛn
+                            Descarga nuestra aplicaci√≥n web progresiva para tener acceso r√°pido a toda la informaci√≥n
                             del bachillerato desde cualquier dispositivo.
                         </p>
                     </div>
@@ -510,7 +556,7 @@
                 <div class="row">
                     <div class="col-lg-8 mx-auto text-center mb-5">
                         <h2 class="fw-bold text-primary mb-3">Preguntas Frecuentes</h2>
-                        <p class="lead text-muted">Encuentra respuestas a las dudas m·s comunes sobre nuestro
+                        <p class="lead text-muted">Encuentra respuestas a las dudas m√°s comunes sobre nuestro
                             bachillerato</p>
                     </div>
                 </div>
@@ -525,28 +571,28 @@
                                         type="button" data-bs-toggle="collapse" data-bs-target="#collapse1"
                                         aria-expanded="false" aria-controls="collapse1">
                                         <i class="fas fa-question-circle me-3 text-primary"></i>
-                                        øCu·les son los requisitos para ingresar al bachillerato?
+                                        ¬øCu√°les son los requisitos para ingresar al bachillerato?
                                     </button>
                                 </h3>
                                 <div id="collapse1" class="accordion-collapse collapse" aria-labelledby="faq1"
                                     data-bs-parent="#faqAccordion">
                                     <div class="accordion-body">
-                                        <p><strong>Requisitos b·sicos:</strong></p>
+                                        <p><strong>Requisitos b√°sicos:</strong></p>
                                         <ul class="list-group list-group-flush">
                                             <li class="list-group-item border-0 px-0">
-                                                <i class="fas fa-check text-success me-2"></i>CÈdula de Registro y
-                                                ActualizaciÛn de Datos (CRAD)
+                                                <i class="fas fa-check text-success me-2"></i>C√©dula de Registro y
+                                                Actualizaci√≥n de Datos (CRAD)
                                             </li>
                                             <li class="list-group-item border-0 px-0">
                                                 <i class="fas fa-check text-success me-2"></i>Acta de Nacimiento
                                                 (Original y copia)
                                             </li>
                                             <li class="list-group-item border-0 px-0">
-                                                <i class="fas fa-check text-success me-2"></i>Certificado de EducaciÛn
+                                                <i class="fas fa-check text-success me-2"></i>Certificado de Educaci√≥n
                                                 Secundaria (Original y copia)
                                             </li>
                                             <li class="list-group-item border-0 px-0">
-                                                <i class="fas fa-check text-success me-2"></i>Seis fotografÌas tamaÒo
+                                                <i class="fas fa-check text-success me-2"></i>Seis fotograf√≠as tama√±o
                                                 infantil (B/N)
                                             </li>
                                             <li class="list-group-item border-0 px-0">
@@ -554,13 +600,13 @@
                                                 Comprobante de Domicilio
                                             </li>
                                             <li class="list-group-item border-0 px-0">
-                                                <i class="fas fa-check text-success me-2"></i>N˙mero de IdentificaciÛn
+                                                <i class="fas fa-check text-success me-2"></i>N√∫mero de Identificaci√≥n
                                                 del Alumno (NIA)
                                             </li>
                                         </ul>
                                         <div class="alert alert-success mt-3">
                                             <i class="fas fa-star me-2"></i>
-                                            <strong>°No hay examen de admisiÛn ni promedio mÌnimo! °Todos son
+                                            <strong>¬°No hay examen de admisi√≥n ni promedio m√≠nimo! ¬°Todos son
                                                 bienvenidos!</strong>
                                         </div>
                                     </div>
@@ -574,20 +620,20 @@
                                         type="button" data-bs-toggle="collapse" data-bs-target="#collapse2"
                                         aria-expanded="false" aria-controls="collapse2">
                                         <i class="fas fa-tools me-3 text-primary"></i>
-                                        øCu·les son las especialidades de formaciÛn para el trabajo?
+                                        ¬øCu√°les son las especialidades de formaci√≥n para el trabajo?
                                     </button>
                                 </h3>
                                 <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="faq2"
                                     data-bs-parent="#faqAccordion">
                                     <div class="accordion-body">
-                                        <p>Nuestro bachillerato general incluye 3 ·reas de formaciÛn laboral:</p>
+                                        <p>Nuestro bachillerato general incluye 3 √°reas de formaci√≥n laboral:</p>
                                         <div class="row g-4">
                                             <div class="col-md-4">
                                                 <div class="card h-100 border-0 bg-light">
                                                     <div class="card-body text-center">
                                                         <i class="fas fa-palette fa-2x text-primary mb-3"></i>
-                                                        <h6 class="fw-bold">ComunicaciÛn Gr·fica</h6>
-                                                        <small>DiseÒo, fotografÌa, medios impresos y digitales,
+                                                        <h6 class="fw-bold">Comunicaci√≥n Gr√°fica</h6>
+                                                        <small>Dise√±o, fotograf√≠a, medios impresos y digitales,
                                                             sublimado</small>
                                                     </div>
                                                 </div>
@@ -596,8 +642,8 @@
                                                 <div class="card h-100 border-0 bg-light">
                                                     <div class="card-body text-center">
                                                         <i class="fas fa-utensils fa-2x text-primary mb-3"></i>
-                                                        <h6 class="fw-bold">PreparaciÛn de Alimentos</h6>
-                                                        <small>Cocina tradicional, higiene alimentaria, tÈcnicas
+                                                        <h6 class="fw-bold">Preparaci√≥n de Alimentos</h6>
+                                                        <small>Cocina tradicional, higiene alimentaria, t√©cnicas
                                                             artesanales</small>
                                                     </div>
                                                 </div>
@@ -607,7 +653,7 @@
                                                     <div class="card-body text-center">
                                                         <i class="fas fa-home fa-2x text-primary mb-3"></i>
                                                         <h6 class="fw-bold">Instalaciones Residenciales</h6>
-                                                        <small>Electricidad, plomerÌa, instalaciones hidr·ulicas y
+                                                        <small>Electricidad, plomer√≠a, instalaciones hidr√°ulicas y
                                                             mantenimiento</small>
                                                     </div>
                                                 </div>
@@ -624,7 +670,7 @@
                                         type="button" data-bs-toggle="collapse" data-bs-target="#collapse3"
                                         aria-expanded="false" aria-controls="collapse3">
                                         <i class="fas fa-hand-holding-heart me-3 text-primary"></i>
-                                        øOfrecen becas o apoyos econÛmicos?
+                                        ¬øOfrecen becas o apoyos econ√≥micos?
                                     </button>
                                 </h3>
                                 <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="faq3"
@@ -632,20 +678,21 @@
                                     <div class="accordion-body">
                                         <div class="alert alert-info">
                                             <h6 class="fw-bold mb-2">
-                                                <i class="fas fa-medal me-2"></i>Beca Universal Benito Ju·rez
+                                                <i class="fas fa-medal me-2"></i>Beca Universal Benito Ju√°rez
                                             </h6>
-                                            <p class="mb-0">Todos nuestros estudiantes inscritos son autom·ticamente
+                                            <p class="mb-0">Todos nuestros estudiantes inscritos son autom√°ticamente
                                                 considerados para esta beca,
-                                                que consiste en depÛsitos bimestrales. No se requiere tr·mite
+                                                que consiste en dep√≥sitos bimestrales. No se requiere tr√°mite
                                                 adicional.
                                             </p>
                                         </div>
                                         <p><strong>Para consultas:</strong></p>
                                         <ul>
                                             <li>Portal oficial: <a href="https://www.gob.mx/becasbenitojuarez"
-                                                    target="_blank" class="text-primary">gob.mx/becasbenitojuarez</a>
+                                                    target="_blank" rel="noopener"
+                                                    class="text-primary">gob.mx/becasbenitojuarez</a>
                                             </li>
-                                            <li>CoordinaciÛn escolar del plantel</li>
+                                            <li>Coordinaci√≥n escolar del plantel</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -658,7 +705,7 @@
                                         type="button" data-bs-toggle="collapse" data-bs-target="#collapse4"
                                         aria-expanded="false" aria-controls="collapse4">
                                         <i class="fas fa-running me-3 text-primary"></i>
-                                        øQuÈ actividades extracurriculares ofrecen?
+                                        ¬øQu√© actividades extracurriculares ofrecen?
                                     </button>
                                 </h3>
                                 <div id="collapse4" class="accordion-collapse collapse" aria-labelledby="faq4"
@@ -670,14 +717,14 @@
                                                     <i class="fas fa-palette me-2"></i>Arte y Cultura
                                                 </h6>
                                                 <ul class="list-unstyled">
-                                                    <li><i class="fas fa-music me-2 text-muted"></i>Ballet folklÛrico
+                                                    <li><i class="fas fa-music me-2 text-muted"></i>Ballet folkl√≥rico
                                                     </li>
                                                     <li><i class="fas fa-theater-masks me-2 text-muted"></i>Danza
-                                                        contempor·nea</li>
+                                                        contempor√°nea</li>
                                                     <li><i class="fas fa-drum me-2 text-muted"></i>Banda de guerra</li>
                                                     <li><i class="fas fa-magic me-2 text-muted"></i>Bastoneras</li>
                                                     <li><i class="fas fa-paint-brush me-2 text-muted"></i>Artes
-                                                        pl·sticas</li>
+                                                        pl√°sticas</li>
                                                 </ul>
                                             </div>
                                             <div class="col-md-6">
@@ -685,12 +732,12 @@
                                                     <i class="fas fa-trophy me-2"></i>Deportes y Clubes
                                                 </h6>
                                                 <ul class="list-unstyled">
-                                                    <li><i class="fas fa-futbol me-2 text-muted"></i>F˙tbol</li>
-                                                    <li><i class="fas fa-basketball-ball me-2 text-muted"></i>B·squetbol
+                                                    <li><i class="fas fa-futbol me-2 text-muted"></i>F√∫tbol</li>
+                                                    <li><i class="fas fa-basketball-ball me-2 text-muted"></i>B√°squetbol
                                                     </li>
                                                     <li><i class="fas fa-volleyball-ball me-2 text-muted"></i>Voleibol
                                                     </li>
-                                                    <li><i class="fas fa-robot me-2 text-muted"></i>Club de robÛtica
+                                                    <li><i class="fas fa-robot me-2 text-muted"></i>Club de rob√≥tica
                                                     </li>
                                                     <li><i class="fas fa-flask me-2 text-muted"></i>Ferias de ciencias
                                                     </li>
@@ -708,7 +755,7 @@
                                         type="button" data-bs-toggle="collapse" data-bs-target="#collapse5"
                                         aria-expanded="false" aria-controls="collapse5">
                                         <i class="fas fa-file-alt me-3 text-primary"></i>
-                                        øCÛmo descargo mi boleta de calificaciones (SICEP)?
+                                        ¬øC√≥mo descargo mi boleta de calificaciones (SICEP)?
                                     </button>
                                 </h3>
                                 <div id="collapse5" class="accordion-collapse collapse" aria-labelledby="faq5"
@@ -718,14 +765,15 @@
                                             <div class="col-md-8">
                                                 <ol class="list-group list-group-numbered">
                                                     <li class="list-group-item border-0 px-0">
-                                                        Ingresa a <a href="http://sisep.seppue.gob.mx/sicepconsulta/"
-                                                            target="_blank" class="text-primary">
-                                                            sisep.seppue.gob.mx/sicepconsulta/
+                                                         Ingresa a <a href="https://www.siged.sep.gob.mx/SIGED/alumnos.html"
+                                                            target="_blank" rel="noopener" class="text-primary"
+                                                            data-tenant-href="sicep_url">
+                                                            Portal SICEP - SIGED
                                                         </a>
                                                     </li>
                                                     <li class="list-group-item border-0 px-0">
                                                         Ten a la mano tu <strong>CURP</strong> y <strong>NIA</strong>
-                                                        (N˙mero de IdentificaciÛn del Alumno)
+                                                        (N√∫mero de Identificaci√≥n del Alumno)
                                                     </li>
                                                     <li class="list-group-item border-0 px-0">
                                                         Si tienes problemas, solicita ayuda en Control Escolar del
@@ -748,13 +796,13 @@
                                         type="button" data-bs-toggle="collapse" data-bs-target="#collapse6"
                                         aria-expanded="false" aria-controls="collapse6">
                                         <i class="fas fa-tshirt me-3 text-primary"></i>
-                                        øHay uniforme escolar?
+                                        ¬øHay uniforme escolar?
                                     </button>
                                 </h3>
                                 <div id="collapse6" class="accordion-collapse collapse" aria-labelledby="faq6"
                                     data-bs-parent="#faqAccordion">
                                     <div class="accordion-body">
-                                        <p>SÌ, tenemos un uniforme sencillo y econÛmico:</p>
+                                        <p>S√≠, tenemos un uniforme sencillo y econ√≥mico:</p>
                                         <div class="row g-4">
                                             <div class="col-md-6">
                                                 <div class="card border-0 bg-light">
@@ -763,9 +811,9 @@
                                                             <i class="fas fa-male me-2"></i>Uniforme Masculino
                                                         </h6>
                                                         <p><strong>Deportivo:</strong> Playera blanca con logo,
-                                                            pantalÛn
+                                                            pantal√≥n
                                                             azul de mezclilla</p>
-                                                        <p><strong>Gala:</strong> Camisa blanca con logo, pantalÛn gris
+                                                        <p><strong>Gala:</strong> Camisa blanca con logo, pantal√≥n gris
                                                             Oxford</p>
                                                     </div>
                                                 </div>
@@ -777,7 +825,7 @@
                                                             <i class="fas fa-female me-2"></i>Uniforme Femenino
                                                         </h6>
                                                         <p><strong>Deportivo:</strong> Playera blanca con logo,
-                                                            pantalÛn
+                                                            pantal√≥n
                                                             azul de mezclilla</p>
                                                         <p><strong>Gala:</strong> Blusa blanca con logo, falda gris
                                                             Oxford</p>
@@ -801,7 +849,7 @@
                                         type="button" data-bs-toggle="collapse" data-bs-target="#collapse7"
                                         aria-expanded="false" aria-controls="collapse7">
                                         <i class="fas fa-clock me-3 text-primary"></i>
-                                        øCu·les son los horarios de clases?
+                                        ¬øCu√°les son los horarios de clases?
                                     </button>
                                 </h3>
                                 <div id="collapse7" class="accordion-collapse collapse" aria-labelledby="faq7"
@@ -831,7 +879,7 @@
                                         </div>
                                         <div class="alert alert-info mt-3">
                                             <i class="fas fa-calendar-alt me-2"></i>
-                                            <small>Los horarios especÌficos por materia se dan a conocer al inicio del
+                                            <small>Los horarios espec√≠ficos por materia se dan a conocer al inicio del
                                                 semestre.</small>
                                         </div>
                                     </div>
@@ -845,7 +893,7 @@
                                         type="button" data-bs-toggle="collapse" data-bs-target="#collapse8"
                                         aria-expanded="false" aria-controls="collapse8">
                                         <i class="fas fa-calendar-check me-3 text-primary"></i>
-                                        øCu·ndo inician las inscripciones para el nuevo ciclo escolar?
+                                        ¬øCu√°ndo inician las inscripciones para el nuevo ciclo escolar?
                                     </button>
                                 </h3>
                                 <div id="collapse8" class="accordion-collapse collapse" aria-labelledby="faq8"
@@ -862,8 +910,8 @@
                                                             <i class="fas fa-user-plus me-2 text-success"></i>Nuevo
                                                             Ingreso
                                                         </h6>
-                                                        <p><strong>Pre-inscripciÛn:</strong> Febrero - Marzo</p>
-                                                        <p><strong>InscripciÛn:</strong> Julio - Agosto</p>
+                                                        <p><strong>Pre-inscripci√≥n:</strong> Febrero - Marzo</p>
+                                                        <p><strong>Inscripci√≥n:</strong> Julio - Agosto</p>
                                                         <small class="text-muted">Para estudiantes de nuevo
                                                             ingreso</small>
                                                     </div>
@@ -873,7 +921,7 @@
                                                 <div class="card border-0 bg-light h-100">
                                                     <div class="card-body">
                                                         <h6 class="fw-bold">
-                                                            <i class="fas fa-redo me-2 text-info"></i>ReinscripciÛn
+                                                            <i class="fas fa-redo me-2 text-info"></i>Reinscripci√≥n
                                                         </h6>
                                                         <p><strong>Semestre 2:</strong> Enero</p>
                                                         <p><strong>Semestre 4 y 6:</strong> Agosto</p>
@@ -898,7 +946,7 @@
                                         type="button" data-bs-toggle="collapse" data-bs-target="#collapse9"
                                         aria-expanded="false" aria-controls="collapse9">
                                         <i class="fas fa-dollar-sign me-3 text-primary"></i>
-                                        øCu·les son los costos de inscripciÛn y mensualidades?
+                                        ¬øCu√°les son los costos de inscripci√≥n y mensualidades?
                                     </button>
                                 </h3>
                                 <div id="collapse9" class="accordion-collapse collapse" aria-labelledby="faq9"
@@ -906,24 +954,24 @@
                                     <div class="accordion-body">
                                         <div class="alert alert-success">
                                             <h6 class="fw-bold mb-2">
-                                                <i class="fas fa-gift me-2"></i>°EducaciÛn P˙blica Gratuita!
+                                                <i class="fas fa-gift me-2"></i>¬°Educaci√≥n P√∫blica Gratuita!
                                             </h6>
-                                            <p class="mb-0">Como bachillerato p˙blico, no cobramos inscripciÛn ni
+                                            <p class="mb-0">Como bachillerato p√∫blico, no cobramos inscripci√≥n ni
                                                 mensualidades.</p>
                                         </div>
-                                        <p><strong>√É≈°nicos costos aplicables:</strong></p>
+                                        <p><strong>√önicos costos aplicables:</strong></p>
                                         <ul class="list-group list-group-flush">
                                             <li class="list-group-item border-0 px-0">
-                                                <i class="fas fa-book me-2 text-muted"></i>Materiales did·cticos
-                                                (opcional, seg˙n la materia)
+                                                <i class="fas fa-book me-2 text-muted"></i>Materiales did√°cticos
+                                                (opcional, seg√∫n la materia)
                                             </li>
                                             <li class="list-group-item border-0 px-0">
-                                                <i class="fas fa-flask me-2 text-muted"></i>Pr·cticas de laboratorio
-                                                (costo mÌnimo)
+                                                <i class="fas fa-flask me-2 text-muted"></i>Pr√°cticas de laboratorio
+                                                (costo m√≠nimo)
                                             </li>
                                             <li class="list-group-item border-0 px-0">
-                                                <i class="fas fa-certificate me-2 text-muted"></i>Tr·mites de
-                                                certificaciÛn y titulaciÛn (seg˙n normativa SEP)
+                                                <i class="fas fa-certificate me-2 text-muted"></i>Tr√°mites de
+                                                certificaci√≥n y titulaci√≥n (seg√∫n normativa SEP)
                                             </li>
                                             <li class="list-group-item border-0 px-0">
                                                 <i class="fas fa-tshirt me-2 text-muted"></i>Uniforme escolar (opcional)
@@ -940,7 +988,7 @@
                                         type="button" data-bs-toggle="collapse" data-bs-target="#collapse10"
                                         aria-expanded="false" aria-controls="collapse10">
                                         <i class="fas fa-graduation-cap me-3 text-primary"></i>
-                                        øCÛmo obtengo mi certificado de bachillerato?
+                                        ¬øC√≥mo obtengo mi certificado de bachillerato?
                                     </button>
                                 </h3>
                                 <div id="collapse10" class="accordion-collapse collapse" aria-labelledby="faq10"
@@ -972,14 +1020,14 @@
                                                     </li>
                                                     <li class="list-group-item border-0 px-0">
                                                         <i class="fas fa-check text-success me-2"></i>Pago de derechos
-                                                        (seg˙n normativa)
+                                                        (seg√∫n normativa)
                                                     </li>
                                                 </ul>
                                             </div>
                                         </div>
                                         <div class="alert alert-info mt-3">
                                             <i class="fas fa-clock me-2"></i>
-                                            <strong>Tiempo de entrega:</strong> De 15 a 30 dÌas h·biles despuÈs de
+                                            <strong>Tiempo de entrega:</strong> De 15 a 30 d√≠as h√°biles despu√©s de
                                             presentar la solicitud completa.
                                         </div>
                                     </div>
@@ -993,7 +1041,7 @@
                                         type="button" data-bs-toggle="collapse" data-bs-target="#collapse11"
                                         aria-expanded="false" aria-controls="collapse11">
                                         <i class="fas fa-university me-3 text-primary"></i>
-                                        øEl certificado me permite ingresar a cualquier universidad?
+                                        ¬øEl certificado me permite ingresar a cualquier universidad?
                                     </button>
                                 </h3>
                                 <div id="collapse11" class="accordion-collapse collapse" aria-labelledby="faq11"
@@ -1004,8 +1052,8 @@
                                                 <i class="fas fa-award me-2"></i>Reconocimiento Oficial Total
                                             </h6>
                                             <p class="mb-0">Nuestro certificado tiene validez oficial ante la SEP y es
-                                                reconocido por todas las instituciones de educaciÛn superior en
-                                                MÈxico.
+                                                reconocido por todas las instituciones de educaci√≥n superior en
+                                                M√©xico.
                                             </p>
                                         </div>
                                         <p><strong>Con tu certificado puedes ingresar a:</strong></p>
@@ -1014,7 +1062,7 @@
                                                 <ul class="list-group list-group-flush">
                                                     <li class="list-group-item border-0 px-0">
                                                         <i class="fas fa-university me-2 text-primary"></i>Universidades
-                                                        p˙blicas
+                                                        p√∫blicas
                                                     </li>
                                                     <li class="list-group-item border-0 px-0">
                                                         <i class="fas fa-building me-2 text-primary"></i>Universidades
@@ -1022,7 +1070,7 @@
                                                     </li>
                                                     <li class="list-group-item border-0 px-0">
                                                         <i class="fas fa-cogs me-2 text-primary"></i>Institutos
-                                                        tecnolÛgicos
+                                                        tecnol√≥gicos
                                                     </li>
                                                 </ul>
                                             </div>
@@ -1034,14 +1082,14 @@
                                                     </li>
                                                     <li class="list-group-item border-0 px-0">
                                                         <i class="fas fa-briefcase me-2 text-primary"></i>Instituciones
-                                                        tÈcnicas superiores
+                                                        t√©cnicas superiores
                                                     </li>
                                                 </ul>
                                             </div>
                                         </div>
                                         <div class="alert alert-info mt-3">
                                             <i class="fas fa-info-circle me-2"></i>
-                                            <small>Cada universidad tiene sus propios procesos de admisiÛn y ex·menes
+                                            <small>Cada universidad tiene sus propios procesos de admisi√≥n y ex√°menes
                                                 de
                                                 ingreso.</small>
                                         </div>
@@ -1056,7 +1104,7 @@
                                         type="button" data-bs-toggle="collapse" data-bs-target="#collapse12"
                                         aria-expanded="false" aria-controls="collapse12">
                                         <i class="fas fa-calendar-alt me-3 text-primary"></i>
-                                        øCu·les son las fechas importantes del calendario escolar?
+                                        ¬øCu√°les son las fechas importantes del calendario escolar?
                                     </button>
                                 </h3>
                                 <div id="collapse12" class="accordion-collapse collapse" aria-labelledby="faq12"
@@ -1074,10 +1122,10 @@
                                                                     class="fas fa-calendar-check me-2 text-muted"></i>Inicio:
                                                                 Agosto</li>
                                                             <li><i
-                                                                    class="fas fa-clipboard-check me-2 text-muted"></i>Ex·menes:
+                                                                    class="fas fa-clipboard-check me-2 text-muted"></i>Ex√°menes:
                                                                 Diciembre</li>
                                                             <li><i
-                                                                    class="fas fa-calendar-times me-2 text-muted"></i>TÈrmino:
+                                                                    class="fas fa-calendar-times me-2 text-muted"></i>T√©rmino:
                                                                 Enero</li>
                                                         </ul>
                                                     </div>
@@ -1094,10 +1142,10 @@
                                                                     class="fas fa-calendar-check me-2 text-muted"></i>Inicio:
                                                                 Enero</li>
                                                             <li><i
-                                                                    class="fas fa-clipboard-check me-2 text-muted"></i>Ex·menes:
+                                                                    class="fas fa-clipboard-check me-2 text-muted"></i>Ex√°menes:
                                                                 Junio</li>
                                                             <li><i
-                                                                    class="fas fa-calendar-times me-2 text-muted"></i>TÈrmino:
+                                                                    class="fas fa-calendar-times me-2 text-muted"></i>T√©rmino:
                                                                 Julio</li>
                                                         </ul>
                                                     </div>
@@ -1105,7 +1153,7 @@
                                             </div>
                                         </div>
                                         <div class="mt-3">
-                                            <h6 class="fw-bold text-primary">PerÌodos de Vacaciones:</h6>
+                                            <h6 class="fw-bold text-primary">Per√≠odos de Vacaciones:</h6>
                                             <ul class="list-group list-group-flush">
                                                 <li class="list-group-item border-0 px-0">
                                                     <i class="fas fa-snowflake me-2 text-info"></i>Vacaciones de
@@ -1132,7 +1180,7 @@
                                         type="button" data-bs-toggle="collapse" data-bs-target="#collapse13"
                                         aria-expanded="false" aria-controls="collapse13">
                                         <i class="fas fa-bus me-3 text-primary"></i>
-                                        øHay transporte escolar disponible?
+                                        ¬øHay transporte escolar disponible?
                                     </button>
                                 </h3>
                                 <div id="collapse13" class="accordion-collapse collapse" aria-labelledby="faq13"
@@ -1150,12 +1198,12 @@
                                                 <div class="card border-0 bg-light h-100">
                                                     <div class="card-body">
                                                         <h6 class="fw-bold text-primary">
-                                                            <i class="fas fa-bus me-2"></i>Transporte P˙blico
+                                                            <i class="fas fa-bus me-2"></i>Transporte P√∫blico
                                                         </h6>
                                                         <ul class="list-unstyled">
                                                             <li><i
                                                                     class="fas fa-map-marker-alt me-2 text-muted"></i>Rutas
-                                                                de autob˙s urbano</li>
+                                                                de autob√∫s urbano</li>
                                                             <li><i class="fas fa-clock me-2 text-muted"></i>Servicio
                                                                 frecuente</li>
                                                             <li><i class="fas fa-dollar-sign me-2 text-muted"></i>Costo
@@ -1185,7 +1233,7 @@
                                         </div>
                                         <div class="alert alert-warning mt-3">
                                             <i class="fas fa-exclamation-triangle me-2"></i>
-                                            <small>La escuela puede proporcionar informaciÛn sobre opciones de
+                                            <small>La escuela puede proporcionar informaci√≥n sobre opciones de
                                                 transporte, pero no se hace responsable por servicios externos.</small>
                                         </div>
                                     </div>
@@ -1199,7 +1247,7 @@
                                         type="button" data-bs-toggle="collapse" data-bs-target="#collapse14"
                                         aria-expanded="false" aria-controls="collapse14">
                                         <i class="fas fa-utensils me-3 text-primary"></i>
-                                        øHay servicio de cafeterÌa o comedor escolar?
+                                        ¬øHay servicio de cafeter√≠a o comedor escolar?
                                     </button>
                                 </h3>
                                 <div id="collapse14" class="accordion-collapse collapse" aria-labelledby="faq14"
@@ -1230,7 +1278,7 @@
                                                 <div class="card border-0 bg-light h-100">
                                                     <div class="card-body">
                                                         <h6 class="fw-bold text-primary">
-                                                            <i class="fas fa-clock me-2"></i>Horarios de AtenciÛn
+                                                            <i class="fas fa-clock me-2"></i>Horarios de Atenci√≥n
                                                         </h6>
                                                         <ul class="list-unstyled">
                                                             <li><i class="fas fa-sun me-2 text-muted"></i>Apertura: 7:30
@@ -1248,7 +1296,7 @@
                                         </div>
                                         <div class="alert alert-success mt-3">
                                             <i class="fas fa-leaf me-2"></i>
-                                            <strong>AlimentaciÛn Saludable:</strong> Se promueve la venta de alimentos
+                                            <strong>Alimentaci√≥n Saludable:</strong> Se promueve la venta de alimentos
                                             nutritivos y se evita la comida chatarra.
                                         </div>
                                     </div>
@@ -1262,7 +1310,7 @@
                                         type="button" data-bs-toggle="collapse" data-bs-target="#collapse15"
                                         aria-expanded="false" aria-controls="collapse15">
                                         <i class="fas fa-question-circle me-3 text-primary"></i>
-                                        øQuÈ hacer si tengo problemas acadÈmicos o personales?
+                                        ¬øQu√© hacer si tengo problemas acad√©micos o personales?
                                     </button>
                                 </h3>
                                 <div id="collapse15" class="accordion-collapse collapse" aria-labelledby="faq15"
@@ -1274,13 +1322,13 @@
                                                 <div class="card border-0 bg-light h-100">
                                                     <div class="card-body">
                                                         <h6 class="fw-bold text-primary">
-                                                            <i class="fas fa-user-friends me-2"></i>Apoyo AcadÈmico
+                                                            <i class="fas fa-user-friends me-2"></i>Apoyo Acad√©mico
                                                         </h6>
                                                         <ul class="list-unstyled">
                                                             <li><i
-                                                                    class="fas fa-chalkboard-teacher me-2 text-muted"></i>AsesorÌas
+                                                                    class="fas fa-chalkboard-teacher me-2 text-muted"></i>Asesor√≠as
                                                                 con maestros</li>
-                                                            <li><i class="fas fa-users me-2 text-muted"></i>TutorÌas
+                                                            <li><i class="fas fa-users me-2 text-muted"></i>Tutor√≠as
                                                                 entre pares</li>
                                                             <li><i class="fas fa-book me-2 text-muted"></i>Material de
                                                                 apoyo adicional</li>
@@ -1298,16 +1346,16 @@
                                                         </h6>
                                                         <ul class="list-unstyled">
                                                             <li><i
-                                                                    class="fas fa-user-tie me-2 text-muted"></i>OrientaciÛn
+                                                                    class="fas fa-user-tie me-2 text-muted"></i>Orientaci√≥n
                                                                 vocacional</li>
                                                             <li><i
-                                                                    class="fas fa-comments me-2 text-muted"></i>ConsejerÌa
+                                                                    class="fas fa-comments me-2 text-muted"></i>Consejer√≠a
                                                                 estudiantil</li>
                                                             <li><i
                                                                     class="fas fa-shield-alt me-2 text-muted"></i>Programa
                                                                 anti-bullying</li>
                                                             <li><i
-                                                                    class="fas fa-handshake me-2 text-muted"></i>MediaciÛn
+                                                                    class="fas fa-handshake me-2 text-muted"></i>Mediaci√≥n
                                                                 de conflictos</li>
                                                         </ul>
                                                     </div>
@@ -1316,10 +1364,10 @@
                                         </div>
                                         <div class="alert alert-info mt-3">
                                             <i class="fas fa-phone me-2"></i>
-                                            <strong>øNecesitas ayuda?</strong> AcÈrcate a cualquier maestro, prefecto
+                                            <strong>¬øNecesitas ayuda?</strong> Ac√©rcate a cualquier maestro, prefecto
                                             o
                                             directivo.
-                                            Estamos aquÌ para apoyarte en tu desarrollo acadÈmico y personal.
+                                            Estamos aqu√≠ para apoyarte en tu desarrollo acad√©mico y personal.
                                         </div>
                                     </div>
                                 </div>
@@ -1332,8 +1380,8 @@
                     <div class="col-12 text-center">
                         <p class="text-muted">
                             <i class="fas fa-question-circle me-2"></i>
-                            øNo encontraste la respuesta que buscabas?
-                            <a href="contacto.html" class="text-primary ms-2">Cont·ctanos directamente</a>
+                            ¬øNo encontraste la respuesta que buscabas?
+                            <a href="contacto.html" class="text-primary ms-2">Cont√°ctanos directamente</a>
                         </p>
                     </div>
                 </div>
@@ -1342,13 +1390,13 @@
 
 
 
-        <!-- SecciÛn Contacto -->
+        <!-- Secci√≥n Contacto -->
         <section id="contacto" class="py-5 bg-light" role="region" aria-labelledby="contacto-title">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 mx-auto text-center mb-5">
                         <h2 class="fw-bold text-primary mb-3" id="contacto-title">Contacto</h2>
-                        <p class="lead text-muted">øTienes alguna pregunta? Cont·ctanos y te ayudaremos.</p>
+                        <p class="lead text-muted">¬øTienes alguna pregunta? Cont√°ctanos y te ayudaremos.</p>
                     </div>
                 </div>
 
@@ -1360,12 +1408,10 @@
                                     class="contact-icon bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
                                     <i class="fas fa-map-marker-alt fa-2x"></i>
                                 </div>
-                                <h5 class="card-title">DirecciÛn</h5>
+                                <h5 class="card-title">Direcci√≥n</h5>
                                 <p class="card-text text-muted">
-                                    C. Manuel ¡vila Camacho #7, Col. Centro<br>
-                                    <span data-tenant-field="direccion">DirecciÛn del plantel</span><br>
-                                    <span data-tenant-field="municipio">Municipio</span>, Puebla<br>
-                                    C.P. 73030
+                                    <span data-tenant-field="direccion">Direcci√≥n del plantel</span><br>
+                                    <span data-tenant-field="municipio">Municipio</span>, Puebla
                                 </p>
                             </div>
                         </div>
@@ -1397,7 +1443,7 @@
                                 <p class="card-text text-muted">
                                     <strong>Clases:</strong> Lunes a Viernes<br>
                                     8:00 AM - 1:30 PM<br>
-                                    <strong>AtenciÛn:</strong> Mismo horario
+                                    <strong>Atenci√≥n:</strong> Mismo horario
                                 </p>
                             </div>
                         </div>
@@ -1406,13 +1452,13 @@
             </div>
         </section>
 
-        <!-- SecciÛn Quejas y Sugerencias -->
+        <!-- Secci√≥n Quejas y Sugerencias -->
         <section id="quejas-sugerencias" class="py-5" role="region" aria-labelledby="quejas-title">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 mx-auto text-center mb-5">
                         <h2 class="fw-bold text-primary mb-3" id="quejas-title">Quejas y Sugerencias</h2>
-                        <p class="lead text-muted">Tu opiniÛn es importante para nosotros. Ay˙danos a mejorar.</p>
+                        <p class="lead text-muted">Tu opini√≥n es importante para nosotros. Ay√∫danos a mejorar.</p>
                     </div>
                 </div>
 
@@ -1441,7 +1487,7 @@
                                                 <option value="">Selecciona...</option>
                                                 <option value="queja">Queja</option>
                                                 <option value="sugerencia">Sugerencia</option>
-                                                <option value="felicitacion">FelicitaciÛn</option>
+                                                <option value="felicitacion">Felicitaci√≥n</option>
                                             </select>
                                         </div>
                                         <div class="col-12">
@@ -1464,7 +1510,7 @@
             </div>
         </section>
 
-        <!-- SecciÛn Mapa del Sitio Mejorada -->
+        <!-- Secci√≥n Mapa del Sitio Mejorada -->
         <section id="mapa-sitio" class="py-5" role="region" aria-labelledby="mapa-title">
             <div class="container">
                 <div class="row">
@@ -1472,23 +1518,23 @@
                         <h2 class="fw-bold mb-2" id="mapa-title">
                             <i class="fas fa-sitemap me-2"></i>Mapa del Sitio
                         </h2>
-                        <p class="text-muted mb-0">NavegaciÛn r·pida y organizada de todas nuestras secciones</p>
+                        <p class="text-muted mb-0">Navegaci√≥n r√°pida y organizada de todas nuestras secciones</p>
                     </div>
                 </div>
 
                 <div class="row g-3">
-                    <!-- P·ginas Principales -->
+                    <!-- P√°ginas Principales -->
                     <div class="col-lg-3 col-md-6 col-sm-12">
                         <div class="sitemap-card sitemap-card-primary">
                             <div class="sitemap-card-header">
                                 <div class="sitemap-icon">
                                     <i class="fas fa-home"></i>
                                 </div>
-                                <h6 class="sitemap-title">P·ginas Principales</h6>
+                                <h6 class="sitemap-title">P√°ginas Principales</h6>
                             </div>
                             <div class="sitemap-links">
                                 <a href="index.html"><i class="fas fa-home"></i>Inicio</a>
-                                <a href="conocenos.html#hero"><i class="fas fa-users"></i>ConÛcenos</a>
+                                <a href="conocenos.html#hero"><i class="fas fa-users"></i>Con√≥cenos</a>
                                 <a href="contacto.html#hero"><i class="fas fa-envelope"></i>Contacto</a>
                                 <a href="#quejas-sugerencias"><i class="fas fa-comment-dots"></i>Quejas y
                                     Sugerencias</a>
@@ -1497,20 +1543,20 @@
                         </div>
                     </div>
 
-                    <!-- InformaciÛn Institucional -->
+                    <!-- Informaci√≥n Institucional -->
                     <div class="col-lg-3 col-md-6 col-sm-12">
                         <div class="sitemap-card sitemap-card-success">
                             <div class="sitemap-card-header">
                                 <div class="sitemap-icon">
                                     <i class="fas fa-university"></i>
                                 </div>
-                                <h6 class="sitemap-title">InformaciÛn Institucional</h6>
+                                <h6 class="sitemap-title">Informaci√≥n Institucional</h6>
                             </div>
                             <div class="sitemap-links">
                                 <a href="conocenos.html#mensaje-director"><i class="fas fa-user-tie"></i>Mensaje del
                                     Director</a>
-                                <a href="conocenos.html#mision-vision"><i class="fas fa-history"></i>Historia, MisiÛn,
-                                    VisiÛn</a>
+                                <a href="conocenos.html#mision-vision"><i class="fas fa-history"></i>Historia, Misi√≥n,
+                                    Visi√≥n</a>
                                 <a href="conocenos.html#organigrama"><i class="fas fa-sitemap"></i>Organigrama</a>
                                 <a href="conocenos.html#infraestructura"><i
                                         class="fas fa-building"></i>Infraestructura</a>
@@ -1520,14 +1566,14 @@
                         </div>
                     </div>
 
-                    <!-- InformaciÛn AcadÈmica -->
+                    <!-- Informaci√≥n Acad√©mica -->
                     <div class="col-lg-3 col-md-6 col-sm-12">
                         <div class="sitemap-card sitemap-card-info">
                             <div class="sitemap-card-header">
                                 <div class="sitemap-icon">
                                     <i class="fas fa-graduation-cap"></i>
                                 </div>
-                                <h6 class="sitemap-title">InformaciÛn AcadÈmica</h6>
+                                <h6 class="sitemap-title">Informaci√≥n Acad√©mica</h6>
                             </div>
                             <div class="sitemap-links">
                                 <a href="oferta-educativa.html#hero"><i class="fas fa-book-open"></i>Oferta
@@ -1535,7 +1581,7 @@
                                 <a href="oferta-educativa.html#plan-estudios"><i class="fas fa-book"></i>Plan de
                                     Estudios</a>
                                 <a href="oferta-educativa.html#capacitacion-trabajo"><i
-                                        class="fas fa-tools"></i>FormaciÛn
+                                        class="fas fa-tools"></i>Formaci√≥n
                                     para el Trabajo</a>
                                 <a href="oferta-educativa.html#proceso-admision"><i
                                         class="fas fa-user-plus"></i>Admisiones</a>
@@ -1557,7 +1603,7 @@
                             <div class="sitemap-links">
                                 <a href="comunidad.html#hero"><i class="fas fa-users"></i>Vida Estudiantil</a>
                                 <a href="comunidad.html#noticias"><i class="fas fa-newspaper"></i>Noticias y Eventos</a>
-                                <a href="comunidad.html#galeria"><i class="fas fa-images"></i>GalerÌa Fotogr·fica</a>
+                                <a href="comunidad.html#galeria"><i class="fas fa-images"></i>Galer√≠a Fotogr√°fica</a>
                                 <a href="comunidad.html#testimonios"><i class="fas fa-medal"></i>Testimonios</a>
                                 <a href="comunidad.html#eventos"><i class="fas fa-futbol"></i>Actividades
                                     Extracurriculares</a>
@@ -1577,14 +1623,14 @@
                             <div class="sitemap-links">
                                 <a href="servicios.html#servicios-principales"><i
                                         class="fas fa-concierge-bell"></i>Servicios Escolares</a>
-                                <a href="mensajeria.html"><i class="fas fa-envelope"></i>MensajerÌa</a>
+                                <a href="mensajeria.html"><i class="fas fa-envelope"></i>Mensajer√≠a</a>
                                 <a href="encuestas.html"><i class="fas fa-poll"></i>Encuestas</a>
                                 <a href="servicios.html#servicios-principales"><i
-                                        class="fas fa-file-signature"></i>Tr·mites</a>
+                                        class="fas fa-file-signature"></i>Tr√°mites</a>
                                 <a href="servicios.html#servicios-principales"><i
-                                        class="fas fa-hands-helping"></i>OrientaciÛn Educativa</a>
+                                        class="fas fa-hands-helping"></i>Orientaci√≥n Educativa</a>
                                 <a href="servicios.html#requisitos"><i class="fas fa-clipboard-list"></i>Requisitos de
-                                    Tr·mites</a>
+                                    Tr√°mites</a>
                                 <a href="descargas.html#hero"><i class="fas fa-download"></i>Centro de Descargas</a>
                             </div>
                         </div>
@@ -1603,21 +1649,21 @@
                                 <a href="calendario.html#hero"><i class="fas fa-calendar-alt"></i>Calendario Escolar</a>
                                 <a href="convocatorias.html#hero"><i class="fas fa-bullhorn"></i>Convocatorias</a>
                                 <a href="calendario.html#periodos-academicos"><i class="fas fa-clock"></i>Horarios</a>
-                                <a href="calendario.html#tipos-eventos"><i class="fas fa-bell"></i>Eventos PrÛximos</a>
+                                <a href="calendario.html#tipos-eventos"><i class="fas fa-bell"></i>Eventos Pr√≥ximos</a>
                                 <a href="calendario.html#ciclo-escolar"><i class="fas fa-graduation-cap"></i>Fechas
                                     Importantes</a>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Portales AcadÈmicos -->
+                    <!-- Portales Acad√©micos -->
                     <div class="col-lg-3 col-md-6 col-sm-12">
                         <div class="sitemap-card sitemap-card-secondary">
                             <div class="sitemap-card-header">
                                 <div class="sitemap-icon">
                                     <i class="fas fa-laptop"></i>
                                 </div>
-                                <h6 class="sitemap-title">Portales AcadÈmicos</h6>
+                                <h6 class="sitemap-title">Portales Acad√©micos</h6>
                             </div>
                             <div class="sitemap-links">
                                 <a href="estudiantes.html#hero"><i class="fas fa-user-graduate"></i>Portal
@@ -1633,14 +1679,14 @@
                         </div>
                     </div>
 
-                    <!-- Herramientas y Recursos √É≈°tiles -->
+                    <!-- Herramientas y Recursos √ötiles -->
                     <div class="col-lg-3 col-md-6 col-sm-12">
                         <div class="sitemap-card sitemap-card-light">
                             <div class="sitemap-card-header">
                                 <div class="sitemap-icon">
                                     <i class="fas fa-tools"></i>
                                 </div>
-                                <h6 class="sitemap-title">Herramientas y Recursos √É≈°tiles</h6>
+                                <h6 class="sitemap-title">Herramientas y Recursos √ötiles</h6>
                             </div>
                             <div class="sitemap-links">
                                 <a href="chatbot.html"><i class="fas fa-robot"></i>Asistente Virtual</a>
@@ -1648,30 +1694,30 @@
                                 <a href="bolsa-trabajo.html#hero"><i class="fas fa-graduation-cap"></i>Bolsa de
                                     Trabajo</a>
                                 <a href="sitios-interes.html#hero"><i class="fas fa-external-link-alt"></i>Sitios de
-                                    InterÈs</a>
+                                    Inter√©s</a>
                                 <a href="egresados.html#hero"><i class="fas fa-user-graduate"></i>Portal de
                                     Egresados</a>
                             </div>
                         </div>
                     </div>
 
-                    <!-- ComunicaciÛn -->
+                    <!-- Comunicaci√≥n -->
                     <div class="col-lg-3 col-md-6 col-sm-12">
                         <div class="sitemap-card sitemap-card-primary">
                             <div class="sitemap-card-header">
                                 <div class="sitemap-icon">
                                     <i class="fas fa-comments"></i>
                                 </div>
-                                <h6 class="sitemap-title">ComunicaciÛn</h6>
+                                <h6 class="sitemap-title">Comunicaci√≥n</h6>
                             </div>
                             <div class="sitemap-links">
                                 <a href="contacto.html#hero"><i class="fas fa-envelope"></i>Contacto General</a>
                                 <a href="contacto.html#directorio"><i class="fas fa-phone"></i>Directorio
-                                    TelefÛnico</a>
-                                <a href="chatbot.html"><i class="fas fa-comment"></i>Chat en LÌnea</a>
-                                <a href="contacto.html#ubicacion"><i class="fas fa-map-marker-alt"></i>UbicaciÛn</a>
+                                    Telef√≥nico</a>
+                                <a href="chatbot.html"><i class="fas fa-comment"></i>Chat en L√≠nea</a>
+                                <a href="contacto.html#ubicacion"><i class="fas fa-map-marker-alt"></i>Ubicaci√≥n</a>
                                 <a href="contacto.html#info-contacto"><i class="fas fa-clock"></i>Horarios de
-                                    AtenciÛn</a>
+                                    Atenci√≥n</a>
                             </div>
                         </div>
                     </div>
@@ -1690,7 +1736,7 @@
                                 <a href="soporte.html"><i class="fas fa-headset"></i>Centro de Soporte</a>
                                 <a href="chatbot.html"><i class="fas fa-robot"></i>Asistente Virtual</a>
                                 <a href="contacto.html#info-contacto"><i class="fas fa-phone"></i>Contacto</a>
-                                <a href="descargas.html"><i class="fas fa-file-pdf"></i>Manuales y GuÌas</a>
+                                <a href="descargas.html"><i class="fas fa-file-pdf"></i>Manuales y Gu√≠as</a>
                                 <a href="#quejas-sugerencias"><i class="fas fa-comment-dots"></i>Reportar Problema</a>
                             </div>
                         </div>
@@ -1708,26 +1754,26 @@
                             <div class="sitemap-links">
                                 <a href="transparencia.html#hero"><i class="fas fa-eye"></i>Transparencia</a>
                                 <a href="normatividad.html#hero"><i class="fas fa-gavel"></i>Normatividad</a>
-                                <a href="privacidad.html"><i class="fas fa-shield-alt"></i>PolÌtica de Privacidad</a>
-                                <a href="terminos.html"><i class="fas fa-file-contract"></i>TÈrminos y Condiciones</a>
+                                <a href="privacidad.html"><i class="fas fa-shield-alt"></i>Pol√≠tica de Privacidad</a>
+                                <a href="terminos.html"><i class="fas fa-file-contract"></i>T√©rminos y Condiciones</a>
                                 <a href="reglamento.html"><i class="fas fa-book"></i>Reglamento Interno</a>
                             </div>
                         </div>
                     </div>
 
-                    <!-- IA Coins y GamificaciÛn -->
+                    <!-- IA Coins y Gamificaci√≥n -->
                     <div class="col-lg-3 col-md-6 col-sm-12">
                         <div class="sitemap-card sitemap-card-warning">
                             <div class="sitemap-card-header">
                                 <div class="sitemap-icon">
                                     <i class="fas fa-coins"></i>
                                 </div>
-                                <h6 class="sitemap-title">IA Coins y GamificaciÛn</h6>
+                                <h6 class="sitemap-title">IA Coins y Gamificaci√≥n</h6>
                             </div>
                             <div class="sitemap-links">
                                 <a href="gamification-center.html"><i class="fas fa-gamepad"></i>Centro de
-                                    GamificaciÛn</a>
-                                <a href="challenges.html"><i class="fas fa-trophy"></i>DesafÌos Diarios</a>
+                                    Gamificaci√≥n</a>
+                                <a href="challenges.html"><i class="fas fa-trophy"></i>Desaf√≠os Diarios</a>
                                 <a href="iacoins-dashboard.html"><i class="fas fa-chart-bar"></i>Dashboard IA Coins</a>
                                 <a href="iacoins-store.html"><i class="fas fa-store"></i>Tienda IA Coins</a>
                                 <a href="ar-vr-lab.html"><i class="fas fa-vr-cardboard"></i>Laboratorio AR/VR</a>
@@ -1736,7 +1782,7 @@
                     </div>
 
                     <!-- Herramientas Admin (Solo Administradores) -->
-                    <div class="col-lg-3 col-md-6 col-sm-12" id="admin-sitemap-section" style="display:none;">
+                    <div class="col-lg-3 col-md-6 col-sm-12 d-none" id="admin-sitemap-section">
                         <div class="sitemap-card sitemap-card-dark">
                             <div class="sitemap-card-header">
                                 <div class="sitemap-icon">
@@ -1775,14 +1821,14 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-8">
-                    <h6 class="mb-2"><i class="fas fa-mobile-alt me-2"></i>°Instala nuestra App!</h6>
-                    <p class="mb-0 small">Accede r·pidamente desde tu pantalla de inicio</p>
+                    <h6 class="mb-2"><i class="fas fa-mobile-alt me-2"></i>¬°Instala nuestra App!</h6>
+                    <p class="mb-0 small">Accede r√°pidamente desde tu pantalla de inicio</p>
                 </div>
                 <div class="col-lg-4 text-lg-end mt-2 mt-lg-0">
                     <button class="btn btn-sm btn-light me-2" id="pwa-install-btn">
                         <i class="fas fa-download me-1"></i>Instalar
                     </button>
-                    <button class="btn btn-sm btn-outline-light" id="pwa-close-btn">
+                    <button class="btn btn-sm btn-outline-light" id="pwa-close-btn" aria-label="Cerrar">
                         <i class="fas fa-times"></i>
                     </button>
                     <div class="chatbot-input">
@@ -1793,134 +1839,91 @@
                         </button>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
 
-                <!-- √∞≈∏≈°‚Ç¨ BGE FRAMEWORK MODULAR - SISTEMA CONSOLIDADO DE NUEVA GENERACI√É"N -->
+    <!-- üöÄ BGE FRAMEWORK MODULAR - SISTEMA CONSOLIDADO DE NUEVA GENERACI√ìN -->
 
                 <!-- Bootstrap JS -->
                 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
                     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
                     crossorigin="anonymous"></script>
 
-                <!-- ‚≈ì‚Ä¶ DebugLog Initialization (MUST be first) -->
+                <!-- √¢√Ö‚Äú"¬¶ DebugLog Initialization (MUST be first) -->
                 <script src="js/debuglog-init.js"></script>
 
-                <!-- √∞≈∏"' DOMPurify XSS Protection (Browser Version) -->
+                <!-- üîí DOMPurify XSS Protection (Browser Version) -->
                 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
                 <script src="js/dompurify-config.js"></script>
 
-                <!-- √∞≈∏"¬ß MAIN.JS - CARGA DIN¡MICA DE HEADER Y FOOTER -->
-                <!-- <script src="js/main.js"></script> --> <!-- Migrado a TS Bundle -->
+                <!-- ‚öôÔ∏è MAIN.JS - CARGA DIN√ÅMICA DE HEADER Y FOOTER -->
+                <script src="js/main.js"></script>
 
-                <!-- √∞≈∏¬è¬¢ TENANT CONFIG LOADER - Carga configuraciÛn multi-tenancy desde BD -->
+                <!-- üöÄ¬è¬¢ TENANT CONFIG LOADER - Carga configuraci√≥n multi-tenancy desde BD -->
                 <script src="js/tenant-config-loader.js"></script>
 
-                <!-- √∞≈∏"¬ß SISTEMA CORE (OBLIGATORIO - NO CONSOLIDADO) -->
-                <!-- Estos scripts DEBEN mantenerse separados por dependencias crÌticas -->
-                <script src="js/context-manager.js"></script> <!-- √∞≈∏"' Base del sistema -->
-                <script src="js/config.js?v=2024091401"></script> <!-- √∞≈∏"¬ß ConfiguraciÛn global -->
-                <script src="js/theme-manager.js"></script> <!-- √∞≈∏≈Ω¬® GestiÛn de temas -->
-                <script src="js/dynamic-loader.js"></script> <!-- √∞≈∏"¬¶ Carga din·mica -->
+                <!-- ‚öôÔ∏è SISTEMA CORE (OBLIGATORIO - NO CONSOLIDADO) -->
+                <!-- Estos scripts DEBEN mantenerse separados por dependencias cr√≠ticas -->
+                <script src="js/context-manager.js"></script> <!-- üîí Base del sistema -->
+                <script src="js/config.js?v=2024091401"></script> <!-- ‚öôÔ∏è Configuraci√≥n global -->
+                <script src="js/theme-manager.js"></script> <!-- üé® Gesti√≥n de temas -->
+                <script src="js/dynamic-loader.js"></script> <!-- üì¶ Carga din√°mica -->
 
-                <!-- √∞≈∏≈Ω¬Ø BGE FRAMEWORK CORE - MOTOR PRINCIPAL -->
+                <!-- üéØ BGE FRAMEWORK CORE - MOTOR PRINCIPAL -->
                 <script src="js/bge-framework-core.js"></script>
 
-                <!-- √∞≈∏"≈† M√É"DULOS BGE CONSOLIDADOS (6 M√É"DULOS PRINCIPALES) -->
-                <!-- ‚≈°° Performance y Core Web Vitals --><!-- √∞≈∏"≈† Analytics y mÈtricas avanzadas --><!-- √∞≈∏≈Ω" IA educativa y tutorÌas --><!-- √∞≈∏"¬± PWA y mÛvil optimizado -->
-                <script src="js/pwa-optimizer.js"></script> <!-- √∞≈∏"¬± PWA Optimizer -->
-                <!-- √∞≈∏"' Seguridad y autenticaciÛn --><!-- √∞≈∏≈í¬ê APIs externas y conectividad -->
+                <!-- üìä M√ìDULOS BGE CONSOLIDADOS (6 M√ìDULOS PRINCIPALES) -->
+                <!-- ‚ö° Performance y Core Web Vitals --><!-- üìä Analytics y m√©tricas avanzadas --><!-- üéì IA educativa y tutor√≠as --><!-- üì± PWA y m√≥vil optimizado -->
+                <script src="js/pwa-optimizer.js"></script> <!-- üì± PWA Optimizer -->
+                <!-- üîí Seguridad y autenticaci√≥n --><!-- üåê¬ê APIs externas y conectividad -->
                 <script src="js/bge-security-module.js"></script>
-                <!-- ‚≈ì‚Ä¶ Sistema de seguridad completo CON autenticaciÛn real JWT -->
-                <!-- <script src="js/admin-auth.js"></script> ‚≈°¬†√Ø¬∏¬è DESHABILITADO: Funcionalidad b·sica, reemplazada por bge-security-module.js mejorado -->
+                <!-- √¢√Ö‚Äú"¬¶ Sistema de seguridad completo CON autenticaci√≥n real JWT -->
+                <!-- <script src="js/admin-auth.js"></script> ‚ö†Ô∏è¬è DESHABILITADO: Funcionalidad b√°sica, reemplazada por bge-security-module.js mejorado -->
 
-                <!-- √∞≈∏"¬ß FUNCIONALIDADES ESPECÕFICAS DE INDEX.HTML -->
-                <!-- Estos scripts son especÌficos para la p·gina principal -->
-                <!-- <script src="js/dev-override.js"></script> --> <!-- ‚≈°¬†√Ø¬∏¬è DESHABILITADO PARA PRODUCCI√É"N -->
+                <!-- ‚öôÔ∏è FUNCIONALIDADES ESPEC√çFICAS DE INDEX.HTML -->
+                <!-- Estos scripts son espec√≠ficos para la p√°gina principal -->
+                <!-- <script src="js/dev-override.js"></script> --> <!-- ‚ö†Ô∏è¬è DESHABILITADO PARA PRODUCCI√ìN -->
                 <!-- <script src="js/dev-credentials.js"></script> -->
-                <!-- ‚≈°¬†√Ø¬∏¬è DESHABILITADO PARA PRODUCCI√É"N -->
-                <!-- <script src="js/script.js"></script> --> <!-- √∞≈∏"' Script principal (Migrado a TS) -->
-                <script src="js/chatbot.js?v=FIX_AUTO_OPEN_V3"></script>
-                <!-- √∞≈∏¬§‚Äì Chatbot principal -->
-                <script src="js/index-events.js"></script> <!-- √∞≈∏"≈∏ Eventos especÌficos index -->
-                <script src="js/search-simple.js"></script> <!-- √∞≈∏"¬ç B˙squeda simple -->
-                <!-- <script src="js/api-client.js"></script> --> <!-- √∞≈∏"‚Äî Cliente API (Reemplazado por Bundle) -->
+                <!-- ‚ö†Ô∏è¬è DESHABILITADO PARA PRODUCCI√ìN -->
+                <!-- <script src="js/script.js"></script> --> <!-- üîí Script principal (Migrado a TS) -->
+                <script src="js/chatbot.js?v=FIX_CHATBOT_TOGGLE_V4"></script>
+                <!-- ü§ñ Chatbot principal -->
+                <script src="js/index-events.js"></script> <!-- üìå Eventos espec√≠ficos index -->
+                <script src="js/search-simple.js"></script> <!-- üìå¬ç B√∫squeda simple -->
+                <!-- <script src="js/api-client.js"></script> --> <!-- üîå Cliente API (Reemplazado por Bundle) -->
 
-                <script src="js/gamification-system.js"></script> <!-- √∞≈∏≈Ω¬Æ Sistema de GamificaciÛn -->
-                <script src="js/dashboard-personalizer.js"></script> <!-- √∞≈∏"‚Äπ Personalizador Dashboard -->
-                <!-- √∞≈∏≈°‚Ç¨ BGE FRAMEWORK CORE BUNDLE (Consolidado) -->
-                <script src="js/core.bundle.js"></script> <!-- √∞≈∏""√∞≈∏¬§‚Äì Notificaciones + IA Tutor consolidado -->
-                <script src="js/ia-dashboard-access.js"></script> <!-- √∞≈∏¬§‚Äì Acceso dashboard IA -->
+                <script src="js/gamification-system.js"></script> <!-- üéÆ Sistema de Gamificaci√≥n -->
+                <script src="js/dashboard-personalizer.js"></script> <!-- üìä Personalizador Dashboard -->
+                <!-- üöÄ BGE FRAMEWORK CORE BUNDLE (Consolidado) -->
+                <script src="js/core.bundle.js"></script> <!-- üîîü§ñ Notificaciones + IA Tutor consolidado -->
+                <script src="js/ia-dashboard-access.js"></script> <!-- ü§ñ Acceso dashboard IA -->
                 <!-- <script src="js/floating-toolbar.js"></script> -->
-                <!-- √∞≈∏≈Ω¬Ø Barra de herramientas flotante (Reemplazado por Bundle) -->
+                <!-- üéØ Barra de herramientas flotante (Reemplazado por Bundle) -->
                 <!-- <script src="js/notification-manager.js"></script> -->
-                <!-- ‚¬ù≈í DESHABILITADO: Ya incluido en core.bundle.js -->
-                <script src="js/notification-config-ui.js"></script> <!-- √∞≈∏"" BotÛn flotante de notificaciones -->
+                <!-- √¢¬ù√Ö‚Äô DESHABILITADO: Ya incluido en core.bundle.js -->
+                <script src="js/notification-config-ui.js"></script> <!-- üîî Bot√≥n flotante de notificaciones -->
 
-                <!-- √∞≈∏"¬ß SISTEMAS ESPECIALES NO CONSOLIDADOS -->
+                <!-- ‚öôÔ∏è SISTEMAS ESPECIALES NO CONSOLIDADOS -->
                 <!-- Sistemas que requieren carga individual por compatibilidad -->
                 <!-- <script src="js/advanced-floating-widgets.js"></script> -->
-                <!-- √∞≈∏≈Ω¬® DESHABILITADO: Widgets flotantes eran inapropiados para UX -->
-                <script src="js/ar-education-system.js"></script> <!-- √∞≈∏¬•¬Ω Sistema educativo AR/VR -->
-                <!-- √∞≈∏"¬ê Google Login OAuth - DEPRECATED: Reemplazado por unified-auth-system-v2.js desde main.js -->
+                <!-- üé® DESHABILITADO: Widgets flotantes eran inapropiados para UX -->
+                <script src="js/ar-education-system.js"></script> <!-- ü•Ω Sistema educativo AR/VR -->
+                <!-- üìå¬ê Google Login OAuth - DEPRECATED: Reemplazado por unified-auth-system-v2.js desde main.js -->
                 <!-- <script src="js/google-auth-integration.js"></script> -->
-                <!-- <script src="js/widget-buttons-fix.js"></script> --> <!-- √∞≈∏"¬ß Fix widgets - OBSOLETO -->
+                <!-- <script src="js/widget-buttons-fix.js"></script> --> <!-- ‚öôÔ∏è Fix widgets - OBSOLETO -->
 
-                <!-- √∞≈∏"¬ê Sistema de Login Unificado V2 - Se carga desde main.js en loadHeaderFooter() -->
+                <!-- üìå¬ê Sistema de Login Unificado V2 - Se carga desde main.js en loadHeaderFooter() -->
                 <!-- <script src="js/unified-login-system.js"></script> --> <!-- DEPRECATED - Reemplazado por V2 -->
 
-                <script src="js/csp-universal-fixer.js"></script> <!-- √∞≈∏"' CSP compliance (˙ltimo) -->
+                <script src="js/csp-universal-fixer.js"></script> <!-- üîí CSP compliance (√∫ltimo) -->
 
-                <!-- √∞≈∏≈°‚Ç¨ SCRIPTS EMPAQUETADOS POR WEBPACK (ELIMINADOS - LEGACY BUILD SYSTEM) -->
+                <!-- üöÄ SCRIPTS EMPAQUETADOS POR WEBPACK (ELIMINADOS - LEGACY BUILD SYSTEM) -->
                 <!-- Bundles webpack legacy removidos: runtime, vendors, main (artefactos de antiguo build system) -->
 
                 <!-- Service Worker Registration - DESACTIVADO (archivo sw-offline-first.js no existe) -->
                 <!--
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', async () => {
-                // EVITAR RE-REGISTRO M√É≈°LTIPLE - VerificaciÛn mejorada
-                if (window.swAlreadyRegistered) {
-                    console.log('√∞≈∏"' SW registration ya intentado, saltando...');
-                    return;
-                }
-                window.swAlreadyRegistered = true;
-
-                try {
-                    // Verificar si ya hay un SW registrado para evitar re-registros
-                    const existingRegistration = await navigator.serviceWorker.getRegistration();
-
-                    if (existingRegistration && existingRegistration.active &&
-                        existingRegistration.active.scriptURL.includes('sw-offline-first.js')) {
-                        console.log('‚≈ì‚Ä¶ Service Worker Offline-First ya est· activo y funcionando');
-                        return; // No hacer nada si ya est· registrado
-                    }
-
-                    console.log('√∞≈∏"‚Äû Registrando Service Worker Offline-First estable...');
-
-                    // Limpiar todos los SW anteriores para evitar conflictos
-                    const registrations = await navigator.serviceWorker.getRegistrations();
-                    for (let registration of registrations) {
-                        if (!registration.active?.scriptURL.includes('sw-offline-first.js')) {
-                            await registration.unregister();
-                            console.log('√∞≈∏‚Äî‚Äò√Ø¬∏¬è Cleaned old SW:', registration.active?.scriptURL);
-                        }
-                    }
-
-                    // Registrar el nuevo SW estable solo una vez
-                    let registration = await navigator.serviceWorker.register('./sw-offline-first.js', {
-                        updateViaCache: 'none', // Evitar cache del SW mismo
-                        scope: './' // Scope explÌcito
-                    });
-
-                    console.log('‚≈ì‚Ä¶ Service Worker ESTABLE registrado una sola vez:', registration);
-
-                    // NO manejar updatefound para evitar ciclos infinitos
-
-                } catch (error) {
-                    console.error('‚¬ù≈í Service Worker registration failed:', error);
-                }
-            });
-        }
-    </script>
+    <script src="js/inline/index-inline-1.js"></script>
     -->
 
                 <!-- Enhanced Index Styles and Animations -->
@@ -2033,7 +2036,7 @@
 
                     /* ===== DARK MODE STYLES ===== */
 
-                    /* PrÛximos Eventos - Section background and content */
+                    /* Pr√≥ximos Eventos - Section background and content */
                     body.dark-mode .py-5.bg-primary.text-white.cta-dark-mode {
                         background-color: #1a1a1a !important;
                     }
@@ -2060,7 +2063,7 @@
                         box-shadow: none !important;
                     }
 
-                    /* Flechas de acordeÛn en modo oscuro */
+                    /* Flechas de acorde√≥n en modo oscuro */
                     body.dark-mode .accordion.faq-dark-mode .accordion-button.accordion-button-dark::after {
                         filter: invert(1) !important;
                     }
@@ -2139,7 +2142,7 @@
                         border-color: #404040 !important;
                     }
 
-                    /* SecciÛn Herramientas y Recursos √É≈°tiles */
+                    /* Secci√≥n Herramientas y Recursos √ötiles */
                     body.dark-mode .card.bg-primary.text-white.herramientas-dark-mode {
                         background-color: #2d2d2d !important;
                         border-color: #404040 !important;
@@ -2161,7 +2164,7 @@
                     }
                 </style>
 
-                <!-- ‚≈ì‚Ä¶ Enhanced Index JavaScript - EXTRACTED TO EXTERNAL FILE FOR CSP COMPLIANCE -->
+                <!-- √¢√Ö‚Äú"¬¶ Enhanced Index JavaScript - EXTRACTED TO EXTERNAL FILE FOR CSP COMPLIANCE -->
                 <script src="js/index-counter-animation.js?v=2025111801"></script>
 
                 <!-- Sitemap Cards CSS -->
@@ -2338,23 +2341,120 @@
                     <i class="fas fa-arrow-up"></i>
                 </button>
 
-                <!-- ===== BGE FRAMEWORK INICIALIZACI√É"N ===== -->
+                <!-- ===== EDUZONA VISUAL ENGINE - FASE 4 ===== -->
+                <style>
+                    /* --- Stats Section with Glassmorphism --- */
+                    .stats-section {
+                        background: linear-gradient(135deg, #1976D2 0%, #0D47A1 50%, #0a2a5e 100%);
+                        position: relative;
+                        overflow: hidden;
+                    }
+                    .stats-section::before {
+                        content: '';
+                        position: absolute;
+                        top: -50%;
+                        left: -50%;
+                        width: 200%;
+                        height: 200%;
+                        background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 60%);
+                        animation: statsPulse 8s ease-in-out infinite;
+                    }
+                    @keyframes statsPulse {
+                        0%, 100% { transform: scale(1); opacity: 0.5; }
+                        50% { transform: scale(1.1); opacity: 0.8; }
+                    }
+                    .stat-card-glass {
+                        background: rgba(255, 255, 255, 0.1);
+                        backdrop-filter: blur(12px);
+                        -webkit-backdrop-filter: blur(12px);
+                        border: 1px solid rgba(255, 255, 255, 0.2);
+                        transition: transform 0.3s ease, box-shadow 0.3s ease;
+                    }
+                    .stat-card-glass:hover {
+                        transform: translateY(-8px);
+                        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+                    }
 
-                <!-- ‚≈ì‚Ä¶ InicializaciÛn Framework BGE - EXTRACTED TO EXTERNAL FILE FOR CSP COMPLIANCE -->
+                    /* --- Feature Cards Micro-Interactions --- */
+                    #why-choose-us .feature-card {
+                        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+                        border: 1px solid transparent;
+                    }
+                    #why-choose-us .feature-card:hover {
+                        transform: translateY(-6px) scale(1.02);
+                        box-shadow: 0 16px 48px rgba(25, 118, 210, 0.15);
+                        border-color: rgba(25, 118, 210, 0.2);
+                    }
+                    #why-choose-us .feature-icon > div {
+                        transition: transform 0.3s ease, box-shadow 0.3s ease;
+                    }
+                    #why-choose-us .feature-card:hover .feature-icon > div {
+                        transform: scale(1.1);
+                        box-shadow: 0 4px 20px rgba(25, 118, 210, 0.3);
+                    }
+
+                    /* --- Quick Access Cards Premium Bento Micro-Interactions --- */
+                    [data-section-key="acceso_rapido"] .bento-card {
+                        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s ease;
+                        border: 1px solid rgba(0, 0, 0, 0.04) !important;
+                        border-radius: 1rem;
+                    }
+                    [data-section-key="acceso_rapido"] .bento-card:hover {
+                        transform: translateY(-6px);
+                        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.10), 0 0 0 1px rgba(25, 118, 210, 0.08);
+                    }
+                    [data-section-key="acceso_rapido"] .bento-icon {
+                        width: 64px; height: 64px;
+                        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                    }
+                    [data-section-key="acceso_rapido"] .bento-card:hover .bento-icon {
+                        transform: scale(1.08);
+                    }
+
+                    /* --- Respect prefers-reduced-motion --- */
+                    @media (prefers-reduced-motion: reduce) {
+                        .stats-section::before { animation: none; }
+                        .stat-card-glass,
+                        #why-choose-us .feature-card,
+                        #why-choose-us .feature-icon > div,
+                        [data-section-key="acceso_rapido"] .bento-card,
+                        [data-section-key="acceso_rapido"] .bento-icon {
+                            transition: none;
+                        }
+                    }
+                </style>
+
+                <!-- ===== BGE FRAMEWORK INICIALIZACI√ìN ===== -->
+
+                <!-- √¢√Ö‚Äú"¬¶ Inicializaci√≥n Framework BGE - EXTRACTED TO EXTERNAL FILE FOR CSP COMPLIANCE -->
                 <script src="js/index-framework-init.js?v=2025111801"></script>
 
-                <!-- ‚≈ì‚Ä¶ PWA Optimizer - InicializaciÛn - EXTRACTED TO EXTERNAL FILE FOR CSP COMPLIANCE -->
+                <!-- √¢√Ö‚Äú"¬¶ PWA Optimizer - Inicializaci√≥n - EXTRACTED TO EXTERNAL FILE FOR CSP COMPLIANCE -->
                 <script src="js/index-pwa-init.js?v=2025111801"></script>
 
-                <!-- ‚≈ì‚Ä¶ Estilos para animaciones - EXTRACTED TO EXTERNAL FILE FOR CSP COMPLIANCE -->
+                <!-- √¢√Ö‚Äú"¬¶ Estilos para animaciones - EXTRACTED TO EXTERNAL FILE FOR CSP COMPLIANCE -->
                 <link rel="stylesheet" href="css/index-animations.css?v=2025111801">
 
                 <!-- Modal de Login JWT -->
-                <!-- Modal de Login JWT Eliminado - Reemplazado por AuthInterface din·mico -->
+                <!-- Modal de Login JWT Eliminado - Reemplazado por AuthInterface din√°mico -->
 
-                <!-- Build Assets (Restored) -->
+                <!-- Build Assets - CRITICAL FOR HEADER/FOOTER LOADING -->
                 <link rel="stylesheet" href="/dist/assets/main.css">
+                <!-- Fetch Interceptor - Fix /auth/* URLs to /api/auth/* (CSP Compliant) -->
+                <script src="/js/fetch-interceptor.js"></script>
                 <script type="module" src="/dist/assets/main.js"></script>
+
+                <!-- üîß AUTH LOGIN PATCH - Corregir l√≥gica de validaci√≥n (15 DIC 2025) -->
+                <!-- Este parche se ejecuta DESPU√âS de /dist/assets/main.js y corrige la validaci√≥n del login -->
+                <script src="/js/auth-login-patch.js"></script>
+
+                <!-- üéõÔ∏è CMS LOADER - Carga contenido din√°mico del CMS del director -->
+                <script src="js/tenant-cms-loader.js" defer></script>
+                <script src="js/page-sections-loader.js" defer></script>
+
+                <!-- üåä EDUZONA VISUAL ENGINE - Lenis Smooth Scroll + CountUp.js Animated Counters -->
+                <script src="https://cdn.jsdelivr.net/npm/countup.js@2.8.0/dist/countUp.umd.js" defer></script>
+                <script src="js/index-visual-engine.js" defer></script>
 </body>
 
 </html>

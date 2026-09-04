@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutor IA Escolar (LangGraph Socrático) | Bachillerato General Estatal</title>
+    <meta name="description" content="Tutor Escolar Inteligente con razonamiento socrático guiado para estudiantes del Bachillerato General Estatal Héroes de la Patria.">
+
+    <!-- CSS Institucional y Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/global-layout.css">
+
+    <style>
+        .tutor-page-wrapper {
+            min-height: calc(100vh - 160px);
+            background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.05), transparent 40%),
+                        radial-gradient(circle at bottom left, rgba(16, 185, 129, 0.05), transparent 40%);
+            padding: 2rem 0;
+        }
+        .tutor-glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 20px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+        body.dark-mode .tutor-glass-card,
+        [data-theme="dark"] .tutor-glass-card {
+            background: rgba(30, 30, 36, 0.95);
+            border-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.3);
+        }
+        .tutor-subject-bar {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 10px 0;
+            scrollbar-width: thin;
+        }
+        .tutor-subject-chip {
+            white-space: nowrap;
+            padding: 8px 16px;
+            border-radius: 30px;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            color: #475569;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .tutor-subject-chip:hover {
+            transform: translateY(-2px);
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+        .tutor-subject-chip.active {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            border-color: #2563eb;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+        body.dark-mode .tutor-subject-chip,
+        [data-theme="dark"] .tutor-subject-chip {
+            background: #26272e;
+            color: #cbd5e1;
+            border-color: #3b3d4a;
+        }
+        body.dark-mode .tutor-subject-chip.active,
+        [data-theme="dark"] .tutor-subject-chip.active {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border-color: #3b82f6;
+        }
+        .tutor-chat-box {
+            height: 520px;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        body.dark-mode .tutor-chat-box,
+        [data-theme="dark"] .tutor-chat-box {
+            background: #141418;
+        }
+        .tutor-msg {
+            display: flex;
+            gap: 12px;
+            max-width: 85%;
+        }
+        .tutor-msg-assistant {
+            align-self: flex-start;
+        }
+        .tutor-msg-user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+        .tutor-msg-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .tutor-msg-assistant .tutor-msg-avatar {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+        }
+        .tutor-msg-user .tutor-msg-avatar {
+            background: linear-gradient(135deg, #059669, #047857);
+            color: white;
+            box-shadow: 0 4px 10px rgba(5, 150, 105, 0.3);
+        }
+        .tutor-msg-body {
+            background: white;
+            padding: 16px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid #f1f5f9;
+        }
+        body.dark-mode .tutor-msg-body,
+        [data-theme="dark"] .tutor-msg-body {
+            background: #1e1e24;
+            border-color: #2e303d;
+            color: #f1f5f9;
+        }
+        .tutor-msg-user .tutor-msg-body {
+            background: #eff6ff;
+            border-color: #dbeafe;
+        }
+        body.dark-mode .tutor-msg-user .tutor-msg-body,
+        [data-theme="dark"] .tutor-msg-user .tutor-msg-body {
+            background: #172554;
+            border-color: #1e3a8a;
+            color: #f8fafc;
+        }
+        .tutor-msg-challenge-box {
+            margin-top: 12px;
+            padding: 12px;
+            background: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+        body.dark-mode .tutor-msg-challenge-box,
+        [data-theme="dark"] .tutor-msg-challenge-box {
+            background: #292211;
+            border-color: #d97706;
+            color: #fef3c7;
+        }
+        .tutor-quote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 12px;
+            margin: 10px 0;
+            color: #475569;
+            font-style: italic;
+        }
+        body.dark-mode .tutor-quote,
+        [data-theme="dark"] .tutor-quote {
+            color: #cbd5e1;
+            border-color: #60a5fa;
+        }
+        .tutor-input-wrapper {
+            padding: 16px;
+            background: white;
+            border-top: 1px solid #f1f5f9;
+        }
+        body.dark-mode .tutor-input-wrapper,
+        [data-theme="dark"] .tutor-input-wrapper {
+            background: #1e1e24;
+            border-color: #2e303d;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar Institucional -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+                <img src="images/logo-bge.png" alt="Logo" width="40" height="40" class="rounded-circle bg-white p-1" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎓</text></svg>'">
+                <div>
+                    <span class="fw-bold d-block leading-none">BGE "Héroes de la Patria"</span>
+                    <small class="text-white-50" style="font-size: 0.75rem;">Bachillerato General Estatal</small>
+                </div>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navMain">
+                <ul class="navbar-nav ms-auto align-items-center gap-2">
+                    <li class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-home me-1"></i>Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="tutor-ia.html"><i class="fas fa-brain me-1"></i>Tutor Socrático IA</a></li>
+                    <li class="nav-item"><a class="nav-link" href="estudiantes.html"><i class="fas fa-user-graduate me-1"></i>Estudiantes</a></li>
+                    <li class="nav-item"><a class="nav-link" href="calificaciones.html"><i class="fas fa-chart-line me-1"></i>Calificaciones</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contacto.html"><i class="fas fa-envelope me-1"></i>Contacto</a></li>
+                    <li class="nav-item ms-2">
+                        <button id="darkModeToggle" class="btn btn-outline-light btn-sm rounded-circle" style="width: 36px; height: 36px;" title="Alternar modo oscuro">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="tutor-page-wrapper">
+        <div class="container" id="tutorContainer">
+            <!-- Header del Tutor -->
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+                <div>
+                    <span class="badge bg-primary px-3 py-2 rounded-pill mb-2">
+                        <i class="fas fa-robot me-1"></i> LangGraph Pedagogic StateGraph v1.0
+                    </span>
+                    <h1 class="h3 fw-bold mb-1">Tutor Escolar Inteligente Socrático</h1>
+                    <p class="text-muted mb-0">Razonamiento guiado, andamiaje cognitivo y preparación para tus materias escolares.</p>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <div id="tutorStatusIndicator">
+                        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2">
+                            <i class="fas fa-check-circle me-1"></i> Grafo Activo
+                        </span>
+                    </div>
+                    <button id="tutorResetBtn" class="btn btn-outline-secondary btn-sm" title="Reiniciar sesión de estudio">
+                        <i class="fas fa-redo-alt me-1"></i> Nueva Sesión
+                    </button>
+                </div>
+            </div>
+
+            <!-- Selector de Asignaturas -->
+            <div class="tutor-glass-card p-3 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="small fw-semibold text-muted text-uppercase">Selecciona tu Asignatura:</span>
+                </div>
+                <div class="tutor-subject-bar" id="tutorSubjectList">
+                    <!-- Se inyecta dinámicamente -->
+                </div>
+            </div>
+
+            <!-- Ventana Principal del Tutor (Layout 2 columnas) -->
+            <div class="row g-4">
+                <!-- Columna Izquierda: Chat Socrático -->
+                <div class="col-lg-8">
+                    <div class="tutor-glass-card">
+                        <!-- Header del Chat -->
+                        <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="fw-bold mb-0" id="activeSubjectTitle">Matemáticas y Razonamiento Lógico</h5>
+                                <small class="text-muted" id="activeSubjectDesc">Álgebra, Ecuaciones, Trigonometría</small>
+                            </div>
+                            <div class="small text-muted">
+                                <i class="fas fa-shield-alt text-primary me-1"></i> Principio Socrático
+                            </div>
+                        </div>
+
+                        <!-- Indicador de razonamiento del grafo -->
+                        <div id="tutorGraphStep" class="px-3 py-2 bg-light small text-muted align-items-center" style="display: none;">
+                            <span class="spinner-border spinner-border-sm text-primary me-2"></span>
+                            <span>Procesando nodo en el grafo...</span>
+                        </div>
+
+                        <!-- Caja de Mensajes -->
+                        <div class="tutor-chat-box" id="tutorChatMessages">
+                            <!-- Los mensajes se inyectan dinámicamente -->
+                        </div>
+
+                        <!-- Input del Estudiante -->
+                        <div class="tutor-input-wrapper">
+                            <div class="input-group">
+                                <input type="text" id="tutorChatInput" class="form-control form-control-lg rounded-start-pill ps-4" placeholder="Escribe tu duda o responde al reto..." maxlength="500">
+                                <button id="tutorSendBtn" class="btn btn-primary px-4 rounded-end-pill" type="button">
+                                    <i class="fas fa-paper-plane me-1"></i> Enviar
+                                </button>
+                            </div>
+                            <small class="text-muted d-block mt-2 text-center">
+                                💡 <em>El tutor no da respuestas directas de exámenes o tareas. Te guía con pistas y razonamiento socrático.</em>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Columna Derecha: Panel de Retos & Ayuda Pedagógica -->
+                <div class="col-lg-4">
+                    <!-- Micro-Reto Activo -->
+                    <div id="tutorActiveChallenge" class="mb-4" style="display: none;">
+                        <!-- Se inyecta dinámicamente -->
+                    </div>
+
+                    <!-- Tarjeta de Metodología Socrática -->
+                    <div class="card shadow-sm border-0 mb-4 tutor-glass-card">
+                        <div class="card-body p-4">
+                            <h6 class="fw-bold text-primary mb-3">
+                                <i class="fas fa-lightbulb me-2"></i>¿Cómo Funciona el Tutor Socrático?
+                            </h6>
+                            <ul class="list-unstyled small d-flex flex-column gap-2 mb-0 text-muted">
+                                <li class="d-flex align-items-start gap-2">
+                                    <i class="fas fa-check text-success mt-1"></i>
+                                    <span><strong>Descomposición:</strong> Divide problemas complejos en pasos manejables.</span>
+                                </li>
+                                <li class="d-flex align-items-start gap-2">
+                                    <i class="fas fa-check text-success mt-1"></i>
+                                    <span><strong>Pistas Progresivas:</strong> Si te bloqueas, te brinda pistas para encontrar el camino.</span>
+                                </li>
+                                <li class="d-flex align-items-start gap-2">
+                                    <i class="fas fa-check text-success mt-1"></i>
+                                    <span><strong>RAG Normativo:</strong> Responde dudas sobre justificantes, becas y reglamentos oficiales del BGE.</span>
+                                </li>
+                                <li class="d-flex align-items-start gap-2">
+                                    <i class="fas fa-check text-success mt-1"></i>
+                                    <span><strong>Memoria de Sesión:</strong> Guarda tu avance en Neon PostgreSQL para que nunca pierdas tu hilo de estudio.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Enlaces rápidos a materias del BGE -->
+                    <div class="card shadow-sm border-0 tutor-glass-card">
+                        <div class="card-body p-4">
+                            <h6 class="fw-bold mb-3">
+                                <i class="fas fa-compass me-2 text-info"></i>Recursos Académicos
+                            </h6>
+                            <div class="d-grid gap-2">
+                                <a href="biblioteca.html" class="btn btn-sm btn-outline-secondary text-start">
+                                    <i class="fas fa-book-reader me-2"></i>Biblioteca Digital
+                                </a>
+                                <a href="reglamento.html" class="btn btn-sm btn-outline-secondary text-start">
+                                    <i class="fas fa-balance-scale me-2"></i>Reglamento Oficial BGE
+                                </a>
+                                <a href="calificaciones.html" class="btn btn-sm btn-outline-secondary text-start">
+                                    <i class="fas fa-graduation-cap me-2"></i>Portal de Calificaciones
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Institucional -->
+    <footer class="bg-dark text-white py-4 mt-auto">
+        <div class="container text-center">
+            <p class="mb-1 small">Bachillerato General Estatal "Héroes de la Patria" • CCT: 21EBH0200X</p>
+            <p class="text-white-50 mb-0" style="font-size: 0.75rem;">Sistema de Tutoría Inteligente con Grafo de Razonamiento Socrático (Fase 6 - Objetivo 3)</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/langgraph-tutor-client.js"></script>
+</body>
+</html>

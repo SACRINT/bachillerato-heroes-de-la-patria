@@ -111,34 +111,8 @@
      * Manejo del chatbot y envío de mensajes
      */
     function registerChatbotHandlers() {
-        // Botón toggle del chatbot
-        const chatbotToggle = document.getElementById('chatbotToggle');
-        if (chatbotToggle) {
-            chatbotToggle.addEventListener('click', toggleChatbot);
-        }
-
-        // Botón cerrar chatbot (dentro del contenedor)
-        const chatbotCloseBtn = document.querySelector('.chatbot-header button');
-        if (chatbotCloseBtn) {
-            chatbotCloseBtn.addEventListener('click', toggleChatbot);
-        }
-
-        // Botón enviar mensaje
-        const sendBtn = document.querySelector('.chatbot-input button');
-        if (sendBtn) {
-            sendBtn.addEventListener('click', sendMessage);
-        }
-
-        // Input del chatbot - Enter para enviar
-        const chatInput = document.getElementById('chatbotInput');
-        if (chatInput) {
-            chatInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    sendMessage();
-                }
-            });
-        }
+        // Chatbot es gestionado de forma centralizada por js/chatbot.js
+        // Se evita registrar listeners duplicados que desincronicen el DOM
     }
 
     /**
@@ -277,14 +251,9 @@
         }
     }
 
-    /**
-     * 💬 Alterna la visibilidad del chatbot
-     */
     function toggleChatbot() {
-        const container = document.getElementById('chatbotContainer');
-        if (container) {
-            container.classList.toggle('active');
-            container.style.display = container.style.display === 'none' ? 'flex' : 'none';
+        if (typeof window.toggleChatbot === 'function') {
+            window.toggleChatbot();
         }
     }
 

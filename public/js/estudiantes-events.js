@@ -191,33 +191,8 @@
     // ============================================
 
     function registerChatbotHandlers() {
-        // Botón toggle del chatbot (abrir/cerrar)
-        const chatbotToggleBtn = document.getElementById('chatbotToggle');
-        if (chatbotToggleBtn) {
-            chatbotToggleBtn.addEventListener('click', toggleChatbot);
-        }
-
-        // Botón cerrar chatbot (dentro del header)
-        const chatbotCloseBtn = document.querySelector('.chatbot-header button[aria-label="Cerrar chat"]');
-        if (chatbotCloseBtn) {
-            chatbotCloseBtn.addEventListener('click', toggleChatbot);
-        }
-
-        // Input del chatbot - Enter para enviar
-        const chatbotInput = document.getElementById('chatbotInput');
-        if (chatbotInput) {
-            chatbotInput.addEventListener('keypress', function (event) {
-                if (event.key === 'Enter') {
-                    sendMessage();
-                }
-            });
-        }
-
-        // Botón enviar mensaje
-        const chatbotSendBtn = document.querySelector('[data-action="sendMessage"]');
-        if (chatbotSendBtn) {
-            chatbotSendBtn.addEventListener('click', sendMessage);
-        }
+        // Chatbot es gestionado de forma centralizada por js/chatbot.js
+        // Se evita registrar listeners duplicados que desincronicen el DOM
     }
 
     // ============================================

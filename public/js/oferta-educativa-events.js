@@ -30,34 +30,8 @@
      * Handlers para el chatbot
      */
     function registerChatbotHandlers() {
-        // Botón toggle chatbot
-        const chatbotToggleBtn = document.querySelector('button[onclick*="toggleChatbot"]');
-        if (chatbotToggleBtn) {
-            chatbotToggleBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                toggleChatbot();
-            });
-        }
-
-        // Input chatbot con Enter
-        const chatInput = document.querySelector('[onkeypress*="handleKeyPress"]');
-        if (chatInput) {
-            chatInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    sendMessage();
-                }
-            });
-        }
-
-        // Botón enviar mensaje
-        const sendBtn = document.querySelector('button[onclick*="sendMessage"]');
-        if (sendBtn) {
-            sendBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                sendMessage();
-            });
-        }
+        // Chatbot es gestionado de forma centralizada por js/chatbot.js
+        // Se evita registrar listeners duplicados que desincronicen el DOM
     }
 
     // ============================================
