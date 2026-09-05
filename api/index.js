@@ -25,8 +25,11 @@ if (!process.env.NODE_ENV) {
 
 console.log('[VERCEL-API] Iniciando handler en NODE_ENV:', process.env.NODE_ENV);
 
-// JWT_SECRET: Usar SIEMPRE la misma constante para sign y verify
-const JWT_DEFAULT_SECRET = 'sipweb-bg-jwt-secret-2026-prod';
+// 🔐 VALIDACIÓN CRÍTICA DE SEGURIDAD: JWT_SECRET obligatorio
+if (!process.env.JWT_SECRET) {
+    throw new Error('FATAL: JWT_SECRET environment variable is missing.');
+}
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // Importar directamente los componentes de server.js SIN ejecutar .listen()
 const express = require('express');
@@ -705,7 +708,7 @@ app.post(['/api/auth/login', '/auth/login'], async (req, res) => {
                 permissions: getPermissionsForRole(user.role)
             };
 
-            const jwtSecret = process.env.JWT_SECRET || JWT_DEFAULT_SECRET;
+            const jwtSecret = JWT_SECRET;
 
             const accessToken = jwt.sign(
                 { ...userPayload, type: 'access' },
@@ -954,7 +957,7 @@ app.get('/api/wallet', async (req, res) => {
 
         // Decodificar token para obtener userId
         const jwt = require('jsonwebtoken');
-        const jwtSecret = process.env.JWT_SECRET || JWT_DEFAULT_SECRET;
+        const jwtSecret = JWT_SECRET;
 
         let decoded;
         try {
@@ -1111,7 +1114,7 @@ app.get('/api/iacoins/balance', async (req, res) => {
         }
 
         const jwt = require('jsonwebtoken');
-        const jwtSecret = process.env.JWT_SECRET || JWT_DEFAULT_SECRET;
+        const jwtSecret = JWT_SECRET;
 
         let decoded;
         try {
@@ -1181,7 +1184,7 @@ app.get('/api/iacoins/achievements', async (req, res) => {
         }
 
         const jwt = require('jsonwebtoken');
-        const jwtSecret = process.env.JWT_SECRET || JWT_DEFAULT_SECRET;
+        const jwtSecret = JWT_SECRET;
 
         let decoded;
         try {
@@ -1279,7 +1282,7 @@ app.get('/api/iacoins/challenges', async (req, res) => {
         }
 
         const jwt = require('jsonwebtoken');
-        const jwtSecret = process.env.JWT_SECRET || JWT_DEFAULT_SECRET;
+        const jwtSecret = JWT_SECRET;
 
         let decoded;
         try {
@@ -1533,7 +1536,7 @@ app.get('/api/iacoins/transactions', async (req, res) => {
         }
 
         const jwt = require('jsonwebtoken');
-        const jwtSecret = process.env.JWT_SECRET || JWT_DEFAULT_SECRET;
+        const jwtSecret = JWT_SECRET;
 
         let decoded;
         try {
@@ -1670,7 +1673,7 @@ app.get('/api/auth/profile', async (req, res) => {
         }
 
         const jwt = require('jsonwebtoken');
-        const jwtSecret = process.env.JWT_SECRET || JWT_DEFAULT_SECRET;
+        const jwtSecret = JWT_SECRET;
 
         let decoded;
         try {
@@ -1813,7 +1816,7 @@ app.get('/api/students-auth/check', async (req, res) => {
         }
 
         const jwt = require('jsonwebtoken');
-        const jwtSecret = process.env.JWT_SECRET || JWT_DEFAULT_SECRET;
+        const jwtSecret = JWT_SECRET;
 
         let decoded;
         try {

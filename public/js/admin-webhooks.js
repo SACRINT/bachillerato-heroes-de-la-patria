@@ -97,21 +97,18 @@
 
     /**
      * Generar Secreto Criptográfico HMAC Seguro (whsec_ + 64 hex chars)
+     * Utiliza estrictamente la Web Crypto API (window.crypto.getRandomValues).
+     * No utiliza Math.random() para evitar secretos predecibles.
      */
     function generateClientSecret() {
-        try {
-            const arr = new Uint8Array(32);
-            window.crypto.getRandomValues(arr);
-            const hex = Array.from(arr, b => b.toString(16).padStart(2, '0')).join('');
-            return `whsec_${hex}`;
-        } catch (e) {
-            // Fallback
-            let s = 'whsec_';
-            for (let i = 0; i < 64; i++) {
-                s += Math.floor(Math.random() * 16).toString(16);
-            }
-            return s;
+        if (typeof window === 'undefined' || !window.crypto || !window.crypto.getRandomValues) {
+            showAlert('Tu navegador no soporta Web Crypto API segura (window.crypto). No es posible generar el secreto.', 'danger', 5000);
+            throw new Error('window.crypto.getRandomValues no disponible');
         }
+        const arr = new Uint8Array(32);
+        window.crypto.getRandomValues(arr);
+        const hex = Array.from(arr, b => b.toString(16).padStart(2, '0')).join('');
+        return `whsec_${hex}`;
     }
 
     /**
@@ -434,7 +431,16 @@
         }
 
         const url = urlInput.value.trim();
-        const secret = secretInput.value.trim() || generateClientSecret();
+        let secret = secretInput.value.trim();
+        if (!secret) {
+            try {
+                secret = generateClientSecret();
+                secretInput.value = secret;
+            } catch (secErr) {
+                showAlert('Por favor ingresa un secreto manualmente o usa un navegador moderno compatible con Web Crypto API.', 'warning', 5000);
+                return;
+            }
+        }
         const active = activeInput.checked;
 
         btnSubmit.disabled = true;
@@ -458,7 +464,11 @@
                 showAlert(`🎉 Webhook registrado exitosamente (#${result.subscription.id}).`, 'success');
                 // Limpiar formulario y regenerar secreto
                 urlInput.value = '';
-                secretInput.value = generateClientSecret();
+                try {
+                    secretInput.value = generateClientSecret();
+                } catch (e) {
+                    secretInput.value = '';
+                }
                 loadSubscriptions();
                 loadStats();
             } else {
@@ -508,15 +518,23 @@
         // Inicializar Secreto Seguro por defecto
         const secretInput = document.getElementById('whSecret');
         if (secretInput && !secretInput.value) {
-            secretInput.value = generateClientSecret();
+            try {
+                secretInput.value = generateClientSecret();
+            } catch (e) {
+                console.warn('[WEBHOOKS-ADMIN] crypto no disponible al inicializar secreto:', e.message);
+            }
         }
 
         // Botón Generar Secreto
         const btnGen = document.getElementById('btnGenerateSecret');
         if (btnGen) {
             btnGen.addEventListener('click', () => {
-                secretInput.value = generateClientSecret();
-                showAlert('Nuevo secreto HMAC generado con crypto seguro.', 'info', 2000);
+                try {
+                    secretInput.value = generateClientSecret();
+                    showAlert('Nuevo secreto HMAC generado con crypto seguro.', 'info', 2000);
+                } catch (e) {
+                    console.error('[WEBHOOKS-ADMIN] Error generando secreto seguro:', e.message);
+                }
             });
         }
 

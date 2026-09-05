@@ -19,7 +19,8 @@ const router = express.Router();
 const rateLimit = require('express-rate-limit');
 const webhooksService = require('../services/webhooks.service.js');
 const webhookDelivery = require('../services/webhook-delivery.js');
-const { authenticateToken } = require('../middleware/auth.js');
+const { getJWTUtils } = require('../utils/jwtUtils.js');
+const jwtUtils = getJWTUtils();
 const devLogger = require('../utils/devLogger.js');
 
 // 🛑 Rate Limiter para creación de webhooks y disparos de prueba
@@ -34,22 +35,81 @@ const webhookMutationLimiter = rateLimit({
     }
 });
 
-// Middleware opcional de autenticación suave (permite tokens administrativos o peticiones locales seguras)
-const softAuthMiddleware = async (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    if (authHeader) {
-        return authenticateToken(req, res, next);
+// Roles administrativos autorizados para gestionar la integración de Webhooks
+const ADMIN_ROLES = ['admin', 'administrator', 'directivo', 'superadmin', 'director'];
+
+/**
+ * 🔐 Middleware estricto de autenticación JWT para administración de Webhooks.
+ * Requiere header Authorization: Bearer <token> válido y rol administrativo.
+ * Rechaza peticiones anónimas (HTTP 401) y usuarios sin privilegios administrativos (HTTP 403).
+ */
+const requireAdminAuth = async (req, res, next) => {
+    try {
+        const authHeader = req.headers['authorization'];
+        if (!authHeader) {
+            return res.status(401).json({
+                success: false,
+                error: 'Token de acceso requerido',
+                message: 'Header Authorization requerido con formato: Bearer <token>'
+            });
+        }
+
+        let token;
+        try {
+            token = jwtUtils.extractTokenFromHeader(authHeader);
+        } catch (tokErr) {
+            return res.status(401).json({
+                success: false,
+                error: 'Formato de token inválido',
+                message: tokErr.message
+            });
+        }
+
+        let decoded;
+        try {
+            decoded = jwtUtils.verifyToken(token);
+        } catch (verifyErr) {
+            return res.status(403).json({
+                success: false,
+                error: 'Token inválido o expirado',
+                message: verifyErr.message
+            });
+        }
+
+        // Obtener rol del token o de user
+        const rawRole = decoded.role || decoded.user?.role;
+        const role = typeof rawRole === 'string' ? rawRole.toLowerCase() : '';
+
+        if (!role || !ADMIN_ROLES.includes(role)) {
+            return res.status(403).json({
+                success: false,
+                error: 'Acceso denegado',
+                message: 'Se requieren permisos de administrador para gestionar webhooks escolares.'
+            });
+        }
+
+        req.user = {
+            id: decoded.userId || decoded.id,
+            email: decoded.email,
+            role,
+            tenant_id: decoded.tenant_id || decoded.tenantId || req.tenantId || 1
+        };
+
+        next();
+    } catch (err) {
+        devLogger.error('[API-WEBHOOKS] Error en middleware de autenticación:', err.message);
+        return res.status(500).json({
+            success: false,
+            error: 'Error interno de autenticación'
+        });
     }
-    // Si no viene header, asignamos tenant por defecto
-    req.user = { tenant_id: 1, role: 'admin' };
-    next();
 };
 
 /**
  * GET /api/webhooks
  * Listar suscripciones del tenant
  */
-router.get('/', softAuthMiddleware, async (req, res) => {
+router.get('/', requireAdminAuth, async (req, res) => {
     try {
         const tenantId = req.user?.tenant_id || 1;
         const event = req.query.event || null;
@@ -70,7 +130,7 @@ router.get('/', softAuthMiddleware, async (req, res) => {
  * GET /api/webhooks/stats
  * Estadísticas y métricas generales
  */
-router.get('/stats', softAuthMiddleware, async (req, res) => {
+router.get('/stats', requireAdminAuth, async (req, res) => {
     try {
         const tenantId = req.user?.tenant_id || 1;
         const stats = await webhooksService.getWebhookStats(tenantId);
@@ -99,7 +159,7 @@ router.get('/events', (req, res) => {
  * POST /api/webhooks
  * Registrar una nueva suscripción
  */
-router.post('/', webhookMutationLimiter, softAuthMiddleware, async (req, res) => {
+router.post('/', webhookMutationLimiter, requireAdminAuth, async (req, res) => {
     try {
         const tenantId = req.user?.tenant_id || 1;
         const { url, events, secret, active } = req.body;
@@ -159,7 +219,7 @@ router.post('/', webhookMutationLimiter, softAuthMiddleware, async (req, res) =>
  * PUT /api/webhooks/:id
  * Actualizar una suscripción existente
  */
-router.put('/:id', webhookMutationLimiter, softAuthMiddleware, async (req, res) => {
+router.put('/:id', webhookMutationLimiter, requireAdminAuth, async (req, res) => {
     try {
         const tenantId = req.user?.tenant_id || 1;
         const id = parseInt(req.params.id);
@@ -192,7 +252,7 @@ router.put('/:id', webhookMutationLimiter, softAuthMiddleware, async (req, res) 
  * DELETE /api/webhooks/:id
  * Eliminar una suscripción
  */
-router.delete('/:id', softAuthMiddleware, async (req, res) => {
+router.delete('/:id', requireAdminAuth, async (req, res) => {
     try {
         const tenantId = req.user?.tenant_id || 1;
         const id = parseInt(req.params.id);
@@ -216,7 +276,7 @@ router.delete('/:id', softAuthMiddleware, async (req, res) => {
  * POST /api/webhooks/:id/test
  * Enviar payload de prueba interactivo (Ping)
  */
-router.post('/:id/test', webhookMutationLimiter, softAuthMiddleware, async (req, res) => {
+router.post('/:id/test', webhookMutationLimiter, requireAdminAuth, async (req, res) => {
     try {
         const tenantId = req.user?.tenant_id || 1;
         const id = parseInt(req.params.id);
@@ -240,7 +300,7 @@ router.post('/:id/test', webhookMutationLimiter, softAuthMiddleware, async (req,
  * GET /api/webhooks/logs
  * Obtener bitácora de entregas con paginación
  */
-router.get('/logs', softAuthMiddleware, async (req, res) => {
+router.get('/logs', requireAdminAuth, async (req, res) => {
     try {
         const tenantId = req.user?.tenant_id || 1;
         const limit = Math.min(parseInt(req.query.limit) || 50, 100);
@@ -264,7 +324,7 @@ router.get('/logs', softAuthMiddleware, async (req, res) => {
  * POST /api/webhooks/process-queue
  * Procesar manualmente o mediante cron la cola de reintentos pendientes
  */
-router.post('/process-queue', softAuthMiddleware, async (req, res) => {
+router.post('/process-queue', requireAdminAuth, async (req, res) => {
     try {
         const limit = Math.min(parseInt(req.body?.limit || req.query.limit) || 50, 100);
         const result = await webhookDelivery.processPendingRetries(limit);

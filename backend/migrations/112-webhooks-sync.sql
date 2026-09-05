@@ -41,40 +41,7 @@ CREATE INDEX IF NOT EXISTS idx_webhook_delivery_retry ON webhook_delivery_log(ne
 CREATE INDEX IF NOT EXISTS idx_webhook_delivery_webhook ON webhook_delivery_log(webhook_id);
 CREATE INDEX IF NOT EXISTS idx_webhook_delivery_created ON webhook_delivery_log(created_at DESC);
 
--- =========================================================================
--- SEED DATA: Suscripciones iniciales de ejemplo para sistemas escolares
--- =========================================================================
-
-INSERT INTO webhook_subscriptions (tenant_id, url, events, secret, active)
-VALUES 
-(
-    1,
-    'https://sigpad.sep.gob.mx/api/v1/integrations/bge-sync',
-    ARRAY['student.review.completed', 'student.deck.completed', 'student.streak.achieved', 'tutor.session.completed', 'alert.low.retention']::text[],
-    'whsec_9b2d8e41a7c54f19b6e82c1a4e9f3b5d7e2a8c1f4e9b6a3c5d8e1f2a4b7c9e0f',
-    true
-),
-(
-    1,
-    'https://sisat-atp.puebla.gob.mx/webhooks/academic-alerts',
-    ARRAY['alert.low.retention', 'student.streak.achieved', 'teacher.deck.created']::text[],
-    'whsec_7c1a8f3b2d9e4a5c6e8b1f4a9c2d7e0b5f8a1c4e9d3b6a2f7c0e5b8d1a4f9c2e',
-    true
-)
-ON CONFLICT DO NOTHING;
-
--- Registro histórico inicial de entrega para validación en bitácora
-INSERT INTO webhook_delivery_log (webhook_id, event, payload, status, response_code, response_body, attempts, delivered_at)
-SELECT 
-    id,
-    'student.streak.achieved',
-    '{"event": "student.streak.achieved", "tenant_id": 1, "timestamp": "2026-09-04T12:00:00Z", "data": {"student_id": "101", "streak_days": 7, "date": "2026-09-04"}}'::jsonb,
-    'delivered',
-    200,
-    '{"success": true, "message": "Streak event received and acknowledged by SIGPAD-EMS"}',
-    1,
-    NOW()
-FROM webhook_subscriptions
-WHERE url LIKE '%sigpad%'
-LIMIT 1
-ON CONFLICT DO NOTHING;
+-- NOTA DE SEGURIDAD (OWASP / Auditoría):
+-- El sembrado inicial de webhooks y secretos HMAC se gestiona de forma segura
+-- a través del script backend/seeds/seed-webhooks.js utilizando variables de entorno
+-- o generación criptográfica dinámica, evitando versionar secretos en texto plano.

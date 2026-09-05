@@ -9,7 +9,10 @@ const crypto = require('crypto');
 
 class JWTUtils {
     constructor() {
-        this.jwtSecret = process.env.JWT_SECRET || 'sipweb-bg-jwt-secret-2026-production';
+        if (!process.env.JWT_SECRET) {
+            throw new Error('FATAL: JWT_SECRET environment variable is missing. Refusing to initialize JWTUtils with insecure fallback.');
+        }
+        this.jwtSecret = process.env.JWT_SECRET;
         this.algorithm = 'HS256';
 
         // Configuraciones de tiempo

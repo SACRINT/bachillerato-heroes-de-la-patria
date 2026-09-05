@@ -22,6 +22,12 @@ if (process.env.NODE_ENV !== 'production') {
     }
 }
 
+// 🔐 VALIDACIÓN CRÍTICA DE SEGURIDAD: JWT_SECRET obligatorio
+if (!process.env.JWT_SECRET) {
+    console.error('❌ [FATAL] La variable de entorno JWT_SECRET no está configurada. El servidor no iniciará sin un secreto seguro.');
+    process.exit(1);
+}
+
 const express = require('express');
 const http = require('http');  // ✅ HTTP Server para Socket.IO
 const cors = require('cors');
@@ -526,7 +532,7 @@ app.use('/api/page-sections', require('./routes/page-sections'));  // ✅ SECCIO
 app.use('/api/search', require('./routes/semantic-search'));  // 🧠 BÚSQUEDA SEMÁNTICA PGVECTOR - Fase 6 Objetivo 2 (Sep 2026)
 app.use('/api/tutor/graph', require('./routes/langgraph-tutor')); // 🎓 LANGGRAPH TUTOR ESCOLAR - Fase 6 Objetivo 3 (Sep 2026)
 app.use('/api/flashcards', require('./routes/flashcards')); // 🧠 REPETICIÓN ESPACIADA FSRS v4 - Fase 6 Objetivo 4 (Sep 2026)
-app.use('/api/webhooks', require('./routes/webhooks')); // 🛰️ WEBHOOKS & SINCRONIZACIÓN ESCOLAR - Fase 6 Objetivo 5 (Sep 2026)
+if (webhooksRoutes) app.use('/api/webhooks', webhooksRoutes); // 🛰️ WEBHOOKS & SINCRONIZACIÓN ESCOLAR - Fase 6 Objetivo 5 (Sep 2026)
 app.use('/api/comunicados', comunicadosRoutes);
 app.use('/api/push', pushNotificationsRoutes); // ✅ PUSH NOTIFICATIONS
 app.use('/api/upload', uploadsRoutes);
@@ -558,7 +564,6 @@ app.use('/api/test-events', testEventsRoutes);  // ✅ TESTING - Event Bus testi
 app.use('/api/charts', chartsDataRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/emails', emailsRoutes);
-app.use('/api/webhooks', webhooksRoutes);  // ✅ WEBHOOKS - SEMANA 8 (17 NOV 2025)
 app.use('/api/polls', pollsRoutes);
 app.use('/api/parents', parentsRoutes);
 app.use('/api/install-polls', installPollsRoutes);
