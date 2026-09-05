@@ -316,7 +316,24 @@ async function createDeck({ subject, name, description, category = 'General', te
          RETURNING *;`,
         [tenant_id, subject, name, description, category, created_by]
     );
-    return res.rows[0];
+    const newDeck = res.rows[0];
+
+    // 🛰️ Emisión no bloqueante de evento teacher.deck.created (Fire-and-Forget)
+    try {
+        const webhooksService = require('./webhooks.service.js');
+        webhooksService.triggerEvent('teacher.deck.created', {
+            deck_id: newDeck.id,
+            subject: newDeck.subject,
+            name: newDeck.name,
+            category: newDeck.category,
+            created_by: newDeck.created_by,
+            tenant_id
+        }, tenant_id).catch(err => devLogger.warn('[FSRS-WEBHOOK] teacher.deck.created aviso:', err.message));
+    } catch (whErr) {
+        devLogger.warn('[FSRS-WEBHOOK] Error despachando teacher.deck.created:', whErr.message);
+    }
+
+    return newDeck;
 }
 
 /**
@@ -496,6 +513,72 @@ async function reviewCard(cardId, userId, grade) {
     } catch (gamificationErr) {
         // Loguear sin interrumpir la experiencia de aprendizaje
         devLogger.log('⚠️ Aviso gamificación:', gamificationErr.message);
+    }
+    // 🛰️ Emisión no bloqueante de Webhooks escolares (Fire-and-Forget con .catch())
+    try {
+        const webhooksService = require('./webhooks.service.js');
+        const reviewRecord = upsertRes.rows[0];
+
+        // 1. student.review.completed
+        webhooksService.triggerEvent('student.review.completed', {
+            student_id: uid,
+            card_id: cardId,
+            grade: g,
+            stability: newFSRS.stability,
+            difficulty: newFSRS.difficulty,
+            scheduled_days: newFSRS.scheduled_days,
+            due_date: newFSRS.due_date,
+            state: newFSRS.state,
+            coins_earned: coinsEarned
+        }, 1).catch(err => devLogger.warn('[FSRS-WEBHOOK] review.completed aviso:', err.message));
+
+        // 2. student.streak.achieved (Racha de 7+ días o hitos de racha)
+        if (todayCount >= 7 && (todayCount === 7 || streakBonus)) {
+            webhooksService.triggerEvent('student.streak.achieved', {
+                student_id: uid,
+                streak_count: todayCount,
+                date: new Date().toISOString().split('T')[0]
+            }, 1).catch(err => devLogger.warn('[FSRS-WEBHOOK] streak.achieved aviso:', err.message));
+        }
+
+        // 3. alert.low.retention (Alerta si califica Again o si la estabilidad cae por debajo de 0.70)
+        if (g === Grade.AGAIN || newFSRS.stability < 0.70) {
+            webhooksService.triggerEvent('alert.low.retention', {
+                student_id: uid,
+                card_id: cardId,
+                grade: g,
+                stability: newFSRS.stability,
+                difficulty: newFSRS.difficulty,
+                lapses: newFSRS.lapses
+            }, 1).catch(err => devLogger.warn('[FSRS-WEBHOOK] low.retention aviso:', err.message));
+        }
+
+        // 4. student.deck.completed (Comprobación en background)
+        setImmediate(async () => {
+            try {
+                const cardDeckRes = await pool.query('SELECT deck_id FROM flashcard_cards WHERE id = $1;', [cardId]);
+                const targetDeckId = cardDeckRes.rows[0]?.deck_id;
+                if (targetDeckId) {
+                    const remainingDue = await pool.query(`
+                        SELECT count(*) as due_count
+                        FROM flashcard_cards c
+                        LEFT JOIN flashcard_reviews r ON r.card_id = c.id AND r.user_id = $1
+                        WHERE c.deck_id = $2 AND (r.due_date IS NULL OR r.due_date <= NOW());
+                    `, [uid, targetDeckId]);
+                    if (parseInt(remainingDue.rows[0]?.due_count || 0) === 0) {
+                        webhooksService.triggerEvent('student.deck.completed', {
+                            student_id: uid,
+                            deck_id: targetDeckId,
+                            completed_at: new Date().toISOString()
+                        }, 1).catch(() => {});
+                    }
+                }
+            } catch (deckCheckErr) {
+                // Silencioso
+            }
+        });
+    } catch (whErr) {
+        devLogger.warn('[FSRS-WEBHOOK] Error general despachando webhooks:', whErr.message);
     }
 
     return {

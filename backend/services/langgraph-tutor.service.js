@@ -569,6 +569,25 @@ Devuelve tu respuesta en formato JSON estrictamente válido:
         // 7. Nodo Checkpointer (Persistir estado del grafo en Neon DB)
         await this.saveCheckpoint(state);
 
+        // 🛰️ Emisión no bloqueante de Webhooks escolares (Fire-and-Forget con .catch())
+        try {
+            const webhooksService = require('./webhooks.service.js');
+            webhooksService.triggerEvent('tutor.session.completed', {
+                session_id: state.session_id,
+                user_id: state.user_id,
+                subject: state.subject,
+                topic: state.topic,
+                bloom_level: state.bloom_level,
+                pedagogical_strategy: state.pedagogical_strategy,
+                messages_count: state.messages.length,
+                cognitive_state: state.cognitive_state,
+                evaluation: state.evaluation_feedback,
+                step_count: state.step_count || 1
+            }, 1).catch(whErr => console.warn('[LANGGRAPH-WEBHOOK] tutor.session.completed aviso:', whErr.message));
+        } catch (e) {
+            // Silencioso para no interferir con la tutoría
+        }
+
         return {
             sessionId: state.session_id,
             subject: state.subject,

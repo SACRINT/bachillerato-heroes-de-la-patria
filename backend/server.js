@@ -526,6 +526,7 @@ app.use('/api/page-sections', require('./routes/page-sections'));  // ✅ SECCIO
 app.use('/api/search', require('./routes/semantic-search'));  // 🧠 BÚSQUEDA SEMÁNTICA PGVECTOR - Fase 6 Objetivo 2 (Sep 2026)
 app.use('/api/tutor/graph', require('./routes/langgraph-tutor')); // 🎓 LANGGRAPH TUTOR ESCOLAR - Fase 6 Objetivo 3 (Sep 2026)
 app.use('/api/flashcards', require('./routes/flashcards')); // 🧠 REPETICIÓN ESPACIADA FSRS v4 - Fase 6 Objetivo 4 (Sep 2026)
+app.use('/api/webhooks', require('./routes/webhooks')); // 🛰️ WEBHOOKS & SINCRONIZACIÓN ESCOLAR - Fase 6 Objetivo 5 (Sep 2026)
 app.use('/api/comunicados', comunicadosRoutes);
 app.use('/api/push', pushNotificationsRoutes); // ✅ PUSH NOTIFICATIONS
 app.use('/api/upload', uploadsRoutes);

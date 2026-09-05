@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 🔒 PROTECCIÓN JWT ESTRICTA - CERO CONFIANZA: OCULTA EL DOCUMENTO HASTA VALIDAR TOKEN REAL -->
+    <style id="auth-gate-style">html { display: none !important; }</style>
+    <script src="js/dashboard/dashboard-auth-check.js?v=20260904_auth_v5"></script>
+
+    <title>Webhooks & Sincronización Escolar | BGE Héroes de la Patria</title>
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+
+    <!-- Bootstrap 5 y FontAwesome 6 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Estilos de la plataforma -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/admin-style.css">
+    <link rel="stylesheet" href="css/global-layout.css">
+
+    <style>
+        :root {
+            --wh-primary: #3b82f6;
+            --wh-primary-hover: #2563eb;
+            --wh-success: #10b981;
+            --wh-warning: #f59e0b;
+            --wh-danger: #ef4444;
+            --wh-purple: #8b5cf6;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+        }
+
+        .dark-theme body {
+            background-color: #0f172a;
+            color: #f1f5f9;
+        }
+
+        .navbar-admin-brand {
+            font-weight: 700;
+            background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .kpi-card {
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            border-radius: 16px;
+            background: #ffffff;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .dark-theme .kpi-card {
+            background: #1e293b;
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+        }
+
+        .kpi-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+        }
+
+        .content-card {
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            border-radius: 18px;
+            background: #ffffff;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+            margin-bottom: 24px;
+        }
+
+        .dark-theme .content-card {
+            background: #1e293b;
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .event-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            margin: 2px;
+            background-color: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .dark-theme .event-badge {
+            background-color: rgba(99, 102, 241, 0.2);
+            color: #c7d2fe;
+        }
+
+        .event-checkbox-label {
+            cursor: pointer;
+            padding: 10px 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            transition: all 0.15s ease;
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+        }
+
+        .dark-theme .event-checkbox-label {
+            background: #1e293b;
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+
+        .form-check-input:checked + .event-checkbox-label {
+            border-color: var(--wh-primary);
+            background-color: rgba(59, 130, 246, 0.08);
+            box-shadow: 0 0 0 1px var(--wh-primary);
+        }
+
+        .secret-field {
+            font-family: 'Consolas', 'Courier New', monospace;
+            letter-spacing: 0.5px;
+            font-size: 0.88rem;
+        }
+
+        .table-custom th {
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            font-weight: 600;
+            color: #64748b;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .dark-theme .table-custom th {
+            background: #0f172a;
+            color: #94a3b8;
+            border-color: #334155;
+        }
+
+        .dark-theme .table-custom td {
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+
+        .json-viewer {
+            background: #0f172a;
+            color: #38bdf8;
+            font-family: 'Consolas', monospace;
+            padding: 14px;
+            border-radius: 10px;
+            max-height: 380px;
+            overflow-y: auto;
+            font-size: 0.84rem;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Barra Superior de Navegación -->
+    <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap px-4 py-2 shadow">
+        <a class="navbar-brand fs-5 navbar-admin-brand d-flex align-items-center gap-2" href="#">
+            <i class="fas fa-satellite-dish text-primary"></i>
+            <span>BGE Webhooks & Sincronización</span>
+        </a>
+        <div class="d-flex align-items-center gap-3">
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill">
+                <i class="fas fa-school me-1"></i> SIGPAD-EMS & SISAT-ATP
+            </span>
+            <a href="admin-dashboard.html" class="btn btn-outline-light btn-sm rounded-pill px-3">
+                <i class="fas fa-arrow-left me-1"></i> Panel Admin
+            </a>
+        </div>
+    </header>
+
+    <main class="container-fluid py-4 px-lg-5">
+        <!-- Título y descripción -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
+            <div>
+                <h1 class="h3 fw-bold mb-1">🛰️ Sincronización Automática con Sistemas Escolares</h1>
+                <p class="text-muted mb-0">
+                    Despacho de eventos en tiempo real con firma <strong>HMAC-SHA256</strong> y retroceso exponencial de 5 intentos.
+                </p>
+            </div>
+            <div class="d-flex gap-2 mt-3 mt-md-0">
+                <button id="btnRefresh" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                    <i class="fas fa-sync-alt me-1"></i> Actualizar
+                </button>
+                <button id="btnProcessQueue" class="btn btn-warning btn-sm rounded-pill px-3 fw-semibold">
+                    <i class="fas fa-bolt me-1"></i> Procesar Cola de Reintentos
+                </button>
+            </div>
+        </div>
+
+        <!-- Tarjetas KPI -->
+        <div class="row g-3 mb-4">
+            <div class="col-sm-6 col-xl-3">
+                <div class="p-3 kpi-card d-flex align-items-center gap-3">
+                    <div class="kpi-icon bg-primary-subtle text-primary">
+                        <i class="fas fa-link"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted small fw-semibold">Webhooks Activos</div>
+                        <div class="fs-4 fw-bold" id="kpiActiveWebhooks">--</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="p-3 kpi-card d-flex align-items-center gap-3">
+                    <div class="kpi-icon bg-success-subtle text-success">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted small fw-semibold">Entregas Exitosas (2xx)</div>
+                        <div class="fs-4 fw-bold" id="kpiDelivered">--</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="p-3 kpi-card d-flex align-items-center gap-3">
+                    <div class="kpi-icon bg-warning-subtle text-warning">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted small fw-semibold">Reintentos Pendientes</div>
+                        <div class="fs-4 fw-bold" id="kpiPending">--</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="p-3 kpi-card d-flex align-items-center gap-3">
+                    <div class="kpi-icon bg-info-subtle text-info">
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted small fw-semibold">Tasa de Efectividad</div>
+                        <div class="fs-4 fw-bold" id="kpiRate">--%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alerta de retroalimentación -->
+        <div id="liveAlertPlaceholder"></div>
+
+        <div class="row g-4">
+            <!-- Columna Izquierda: Formulario de Registro -->
+            <div class="col-lg-5">
+                <div class="content-card p-4">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <i class="fas fa-plus-circle text-primary fs-5"></i>
+                        <h5 class="fw-bold mb-0">Registrar Nuevo Webhook</h5>
+                    </div>
+                    <form id="webhookForm">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">URL de Destino (Endpoint HTTP/HTTPS)</label>
+                            <input type="url" class="form-control" id="whUrl" placeholder="https://sistema.sep.gob.mx/api/webhook" required>
+                            <div class="form-text">Debe responder con HTTP 200..299 para confirmar la recepción.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label class="form-label small fw-bold mb-0">Secreto Criptográfico HMAC</label>
+                                <button type="button" id="btnGenerateSecret" class="btn btn-link btn-sm p-0 text-decoration-none">
+                                    <i class="fas fa-magic me-1"></i>Generar Seguro
+                                </button>
+                            </div>
+                            <div class="input-group">
+                                <input type="text" class="form-control secret-field" id="whSecret" placeholder="whsec_..." required>
+                                <button class="btn btn-outline-secondary" type="button" id="btnCopySecret" title="Copiar Secreto">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                            <div class="form-text">Firma cabecera <code>X-Webhook-Signature</code> con SHA-256.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="form-label small fw-bold mb-0">Eventos Escolares Suscritos</label>
+                                <div class="d-flex gap-2">
+                                    <button type="button" id="btnSelectAllEvents" class="btn btn-link btn-sm p-0 text-decoration-none">Todos</button>
+                                    <span class="text-muted">|</span>
+                                    <button type="button" id="btnClearEvents" class="btn btn-link btn-sm p-0 text-decoration-none">Limpiar</button>
+                                </div>
+                            </div>
+
+                            <div class="row g-2" id="eventsContainer">
+                                <!-- Eventos canónicos -->
+                                <div class="col-12">
+                                    <input class="form-check-input d-none" type="checkbox" id="ev_review" value="student.review.completed" checked>
+                                    <label class="event-checkbox-label" for="ev_review">
+                                        <div class="fw-bold small text-primary"><i class="fas fa-check-double me-1"></i>student.review.completed</div>
+                                        <div class="text-muted extra-small" style="font-size:0.75rem;">Cuando un estudiante califica un repaso FSRS</div>
+                                    </label>
+                                </div>
+                                <div class="col-12">
+                                    <input class="form-check-input d-none" type="checkbox" id="ev_deck" value="student.deck.completed" checked>
+                                    <label class="event-checkbox-label" for="ev_deck">
+                                        <div class="fw-bold small text-success"><i class="fas fa-layer-group me-1"></i>student.deck.completed</div>
+                                        <div class="text-muted" style="font-size:0.75rem;">Cuando un estudiante completa todas las tarjetas de un mazo</div>
+                                    </label>
+                                </div>
+                                <div class="col-12">
+                                    <input class="form-check-input d-none" type="checkbox" id="ev_streak" value="student.streak.achieved" checked>
+                                    <label class="event-checkbox-label" for="ev_streak">
+                                        <div class="fw-bold small text-warning"><i class="fas fa-fire me-1"></i>student.streak.achieved</div>
+                                        <div class="text-muted" style="font-size:0.75rem;">Alcanza hitos de racha de estudio constante (7+ días)</div>
+                                    </label>
+                                </div>
+                                <div class="col-12">
+                                    <input class="form-check-input d-none" type="checkbox" id="ev_tutor" value="tutor.session.completed" checked>
+                                    <label class="event-checkbox-label" for="ev_tutor">
+                                        <div class="fw-bold small text-info"><i class="fas fa-robot me-1"></i>tutor.session.completed</div>
+                                        <div class="text-muted" style="font-size:0.75rem;">Interacción pedagógica socrática finalizada en LangGraph</div>
+                                    </label>
+                                </div>
+                                <div class="col-12">
+                                    <input class="form-check-input d-none" type="checkbox" id="ev_alert" value="alert.low.retention" checked>
+                                    <label class="event-checkbox-label" for="ev_alert">
+                                        <div class="fw-bold small text-danger"><i class="fas fa-exclamation-triangle me-1"></i>alert.low.retention</div>
+                                        <div class="text-muted" style="font-size:0.75rem;">Alerta temprana si la retención cae por debajo del 70%</div>
+                                    </label>
+                                </div>
+                                <div class="col-12">
+                                    <input class="form-check-input d-none" type="checkbox" id="ev_teacher" value="teacher.deck.created">
+                                    <label class="event-checkbox-label" for="ev_teacher">
+                                        <div class="fw-bold small text-purple" style="color:#8b5cf6;"><i class="fas fa-chalkboard-teacher me-1"></i>teacher.deck.created</div>
+                                        <div class="text-muted" style="font-size:0.75rem;">Docente publica un nuevo mazo de estudio</div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-check form-switch mb-4">
+                            <input class="form-check-input" type="checkbox" id="whActive" checked>
+                            <label class="form-check-label small fw-semibold" for="whActive">Suscripción Activa para Envíos Inmediatos</label>
+                        </div>
+
+                        <button type="submit" id="btnSubmitWebhook" class="btn btn-primary w-100 py-2 fw-bold rounded-pill">
+                            <i class="fas fa-save me-1"></i> Guardar y Activar Suscripción
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Columna Derecha: Lista de Webhooks y Bitácora -->
+            <div class="col-lg-7">
+                <!-- Tabla de Suscripciones -->
+                <div class="content-card p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fas fa-list-check text-success fs-5"></i>
+                            <h5 class="fw-bold mb-0">Webhooks Registrados</h5>
+                        </div>
+                        <span class="badge bg-secondary-subtle text-secondary rounded-pill" id="badgeSubsCount">0 suscripciones</span>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle table-custom mb-0">
+                            <thead>
+                                <tr>
+                                    <th>URL Destino</th>
+                                    <th>Eventos</th>
+                                    <th>Estado</th>
+                                    <th class="text-end">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="webhooksTableBody">
+                                <tr>
+                                    <td colspan="4" class="text-center py-4 text-muted">
+                                        <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                                        Cargando webhooks configurados...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Bitácora de Entregas Recientes -->
+                <div class="content-card p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fas fa-history text-info fs-5"></i>
+                            <h5 class="fw-bold mb-0">Bitácora de Entregas (Logs)</h5>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <select id="logStatusFilter" class="form-select form-select-sm" style="width: auto;">
+                                <option value="">Todos los estados</option>
+                                <option value="delivered">Entregados (200)</option>
+                                <option value="pending">Reintentos pendientes</option>
+                                <option value="failed">Fallidos</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle table-custom mb-0">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Evento</th>
+                                    <th>Respuesta HTTP</th>
+                                    <th>Intentos</th>
+                                    <th>Fecha / Hora</th>
+                                    <th class="text-end">Detalle</th>
+                                </tr>
+                            </thead>
+                            <tbody id="logsTableBody">
+                                <tr>
+                                    <td colspan="6" class="text-center py-4 text-muted">
+                                        <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                                        Cargando historial de entregas...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de Inspección de Entrega -->
+    <div class="modal fade" id="logModal" tabindex="-1" aria-labelledby="logModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title fs-6 fw-bold" id="logModalLabel">
+                        <i class="fas fa-code me-2 text-info"></i>Inspección de Entrega de Webhook
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="small fw-bold text-muted">Evento Disparado</label>
+                            <div class="fw-semibold" id="modalEventName">--</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="small fw-bold text-muted">Código de Respuesta HTTP</label>
+                            <div id="modalHttpStatus">--</div>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="small fw-bold text-muted">URL del Endpoint</label>
+                            <div class="text-break font-monospace small" id="modalTargetUrl">--</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="small fw-bold text-muted mb-1">Payload Enviado (JSON Canónico)</label>
+                        <pre class="json-viewer mb-0" id="modalPayloadJson">{}</pre>
+                    </div>
+
+                    <div>
+                        <label class="small fw-bold text-muted mb-1">Cuerpo de Respuesta del Servidor (Máx 1KB)</label>
+                        <pre class="json-viewer mb-0" style="color: #4ade80;" id="modalResponseBody">--</pre>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary btn-sm px-4 rounded-pill" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Cliente de Webhooks -->
+    <script src="js/admin-webhooks.js"></script>
+</body>
+
+</html>

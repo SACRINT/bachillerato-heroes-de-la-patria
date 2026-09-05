@@ -170,6 +170,7 @@ try { mountRouteSafe('/api/tenant-cms', require('../backend/routes/tenant-cms.js
 try { mountRouteSafe('/api/search', require('../backend/routes/semantic-search.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/search:', e.stack || e); }
 try { mountRouteSafe('/api/tutor/graph', require('../backend/routes/langgraph-tutor.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/tutor/graph:', e.stack || e); }
 try { mountRouteSafe('/api/flashcards', require('../backend/routes/flashcards.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/flashcards:', e.stack || e); }
+try { mountRouteSafe('/api/webhooks', require('../backend/routes/webhooks.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/webhooks:', e.stack || e); }
 
 try { mountRouteSafe('/api/page-sections', require('../backend/routes/page-sections.js')); } catch (e) { console.error('[VERCEL-ROUTER] /api/page-sections:', e.stack || e); }
 
